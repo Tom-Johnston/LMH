@@ -79,7 +79,7 @@
         android:layout_alignBaseline="@+id/DateTitle"
         android:layout_toRightOf="@id/DateTitle"
         android:gravity="left"
-        android:text="@string/time_zero"
+        android:text="@string/never_updated"
         android:textSize="16sp"
         android:textStyle="normal"
         android:freezesText="true"/>
