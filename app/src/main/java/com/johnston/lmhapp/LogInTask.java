@@ -37,7 +37,6 @@ public class LogInTask extends AsyncTask<Object, String, Boolean> {
             System.out.println("Attempt");
             HttpsURLConnection urlc = (HttpsURLConnection) url.openConnection();
             urlc.setSSLSocketFactory(context.getSocketFactory());
-//            urlc.connect();
             System.out.println(urlc.getResponseCode());
             System.out.println(urlc.getURL());
             if (urlc.getURL().toString().equals("https://intranet.lmh.ox.ac.uk/mealmenus.asp")) {

@@ -123,27 +123,10 @@ public class GetEpos extends AsyncTask<Object, String, String[]> {
                 conn2.setRequestProperty("Accept-Encoding", "identity");
                 conn2.setInstanceFollowRedirects(true);
                 System.out.println(conn2.getURL());
-////                conn2.getResponseCode();
-//                    CookieManager manager = (CookieManager) Objects[0];
-//                    CookieStore cookieJar = manager.getCookieStore();
-//                    cookieJar.add(new URI("cookie"), new HttpCookie("Test", "Testing"));
-//                    List<HttpCookie> cookies =
-//                            cookieJar.getCookies();
-//                    for (int i = 0; i < cookies.size() - 1; i++) {
-//
-//                        HttpCookie cookie = cookies.get(i);
-//                        System.out.println("CookieHandler retrieved cookie: " + cookie);
-//                    }
-//                String IGIVEUP = conn2.getHeaderField("Set-Cookie");
-//                conn2.getResponseCode();
-//                System.out.println(IGIVEUP);
-
 
                 for (int i = 0; ; i++) {
                     String headerName = conn2.getHeaderFieldKey(i);
                     String headerValue = conn2.getHeaderField(i);
-//                    System.out.println(headerName);
-//                    System.out.println(headerValue);
 
 //                        For some reason .COOKIECASHLESS isn't set. The cookie is therefore created manually.
 
