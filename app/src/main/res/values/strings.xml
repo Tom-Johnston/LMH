@@ -29,6 +29,7 @@
     <string name="on_for">On For(ms): </string>
     <string name="talbot">Talbot</string>
     <string name="time_zero">00:00 01/01/70 </string>
+    <string name="never_updated">Never</string>
     <string name="vibration">Vibration</string>
     <string name="off_for">Off For(ms): </string>
     <string name="one_thousand">1000</string>
