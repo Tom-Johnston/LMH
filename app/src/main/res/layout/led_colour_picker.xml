@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <ImageView
+        android:layout_width="30dp"
+        android:layout_height="0dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignBottom="@+id/seekBar3"
+        android:id="@+id/led"
+        android:background="#002147"
+        android:layout_margin="4dp"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_alignBaseline="@+id/seekBar"
+        android:layout_toRightOf="@+id/led"
+        android:text="@string/r"
+        android:gravity="center"
+        android:id="@+id/r"
+        android:layout_alignBottom="@+id/seekBar"
+        android:layout_alignTop="@+id/seekBar"/>
+
+    <SeekBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/seekBar"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/r"
+        android:max="255" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:text="@string/g"
+        android:gravity="center"
+        android:layout_toRightOf="@+id/led"
+        android:layout_alignBottom="@+id/seekBar2"
+        android:layout_alignTop="@+id/seekBar2"/>
+
+    <SeekBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/seekBar2"
+        android:layout_below="@+id/seekBar"
+        android:layout_toRightOf="@+id/r"
+        android:max="255" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:text="@string/b"
+        android:gravity="center"
+        android:layout_toRightOf="@+id/led"
+        android:layout_alignBottom="@+id/seekBar3"
+        android:layout_alignTop="@+id/seekBar3"/>
+
+    <SeekBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/seekBar3"
+        android:layout_below="@+id/seekBar2"
+        android:layout_toRightOf="@+id/r"
+        android:longClickable="false"
+        android:max="255" />
+
+        <TextView
+            android:id="@+id/textViewOnFor"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:text="@string/on_for"
+            android:layout_alignTop="@+id/editText"
+            android:layout_alignBottom="@+id/editText"
+            android:gravity="center"
+            android:layout_margin="4dp"/>
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:ems="10"
+            android:id="@+id/editText"
+            android:hint="1000"
+            android:layout_toRightOf="@+id/textViewOnFor"
+            android:layout_below="@+id/seekBar3"/>
+        <TextView
+            android:id="@+id/textViewOffFor"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:text="@string/off_for"
+            android:layout_alignTop="@+id/editText2"
+            android:layout_alignBottom="@+id/editText2"
+            android:gravity="center"
+            android:layout_margin="4dp"
+            />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:ems="10"
+            android:id="@+id/editText2"
+            android:hint="@string/one_thousand"
+            android:layout_toRightOf="@+id/textViewOffFor"
+            android:layout_below="@+id/editText"/>
+
+</RelativeLayout>

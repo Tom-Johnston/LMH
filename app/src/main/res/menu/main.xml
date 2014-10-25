@@ -1,0 +1,20 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:lmh="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.johnston.lmhapp.MainActivity">
+
+    <!-- Refresh, should appear as action button -->
+    <item
+        android:id="@+id/action_refresh"
+        android:enabled="false"
+        android:icon="@drawable/ic_action_refresh"
+        android:onClick="Refresh"
+        android:title="@string/action_refresh"
+        android:visible="false"
+        lmh:showAsAction="ifRoom" />
+
+    <!--<item android:id="@+id/action_settings"-->
+    <!--android:title="@string/action_settings"-->
+    <!--android:orderInCategory="100"-->
+    <!--app:showAsAction="never" />-->
+</menu>
