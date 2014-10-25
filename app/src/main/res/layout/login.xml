@@ -55,7 +55,7 @@
         android:layout_height="wrap_content"
         android:onClick="toggleNotifications"
         android:text="@string/notifications"
-        android:textSize="20sp"
+        android:textSize="18sp"
         android:layout_below="@+id/checkBox"
         android:layout_marginTop="40dp"
         android:layout_marginLeft="40dp"
