@@ -40,7 +40,7 @@ public class GetEpos extends AsyncTask<Object, String, String[]> {
         handler = (Handler) Objects[2];
         try {
             URL url = new URL("https://www.upay.co.uk/Shibboleth.sso/Login?entityID=https://registry.shibboleth.ox.ac.uk/idp&target=https://www.upay.co.uk/shib/sso.aspx ");
-            System.out.println("Attempt");
+            System.out.println("Attemptasdasda");
             HttpsURLConnection urlc = (HttpsURLConnection) url.openConnection();
             System.out.println(urlc.getResponseCode());
             String newURL = urlc.getURL().toString();
