@@ -53,7 +53,6 @@ public class EPOS extends Fragment {
         System.out.println("1");
         Main = (MainActivity) getActivity();
         System.out.println(finished);
-        System.out.println("Why isn't this working?");
         if (finished) {
             ListView lv = (ListView) view.findViewById(R.id.transactionsListView);
             Context context = getActivity().getBaseContext();
