@@ -44,20 +44,27 @@ public class GetEpos extends AsyncTask<Object, String, String[]> {
             HttpsURLConnection urlc = (HttpsURLConnection) url.openConnection();
             System.out.println(urlc.getResponseCode());
             String newURL = urlc.getURL().toString();
-            System.out.println(newURL);
-
+            System.out.println("newURL:" + newURL);
+            BufferedReader in = new BufferedReader(new InputStreamReader(
+                    urlc.getInputStream(), "UTF-8"));
+            String inputLine;
+            StringBuilder a = new StringBuilder();
+            while ((inputLine = in.readLine()) != null) {
+                a.append(inputLine);
+                System.out.println(inputLine);
+            }
             //LOTs to do here
 
             if (newURL.contains("login")) {
                 publishProgress("SSO Confirmation");
-                BufferedReader in = new BufferedReader(new InputStreamReader(
-                        urlc.getInputStream(), "UTF-8"));
-                String inputLine;
-                StringBuilder a = new StringBuilder();
-                while ((inputLine = in.readLine()) != null) {
-                    a.append(inputLine);
-//                        System.out.println(inputLine);
-                }
+//                BufferedReader in = new BufferedReader(new InputStreamReader(
+//                        urlc.getInputStream(), "UTF-8"));
+//                String inputLine;
+//                StringBuilder a = new StringBuilder();
+//                while ((inputLine = in.readLine()) != null) {
+//                    a.append(inputLine);
+//                    System.out.println(inputLine);
+//                }
                 in.close();
                 urlc.disconnect();
                 int Start = a.indexOf("https://idp.shibboleth.ox.ac.uk/idp");
@@ -143,6 +150,8 @@ public class GetEpos extends AsyncTask<Object, String, String[]> {
                             HttpCookie myCookie = new HttpCookie(".COOKIECASHLESS", cookieValue);
                             myCookie.setVersion(0);
                             myCookie.setPath("/");
+                            myCookie.setMaxAge(890000);
+//                            890,000 is 14 minutes 50 seconds. I believe the cookie should be suitable for 15 minutes.
                             cookieValue = myCookie.toString();
                             System.out.println(cookieValue);
                             CookieManager cookieManager = (CookieManager) Objects[0];
@@ -161,7 +170,7 @@ public class GetEpos extends AsyncTask<Object, String, String[]> {
             conn3.setInstanceFollowRedirects(true);
             conn3.getResponseCode();
             System.out.println(conn3.getURL());
-            String inputLine;
+//            String inputLine;
             BufferedReader Reader3 = new BufferedReader(new InputStreamReader(
                     conn3.getInputStream(), "UTF-8"));
             while ((inputLine = Reader3.readLine()) != null) {
