@@ -90,9 +90,9 @@ public class TwitterScraper extends AsyncTask<Handler, Void, ArrayList<Tweet>> {
                         picture = BitmapFactory.decodeStream(in2);
                     }
 
-                    if (inputLine.contains("data-Tweet-id")) {
+                    if (inputLine.contains("data-tweet-id")) {
 //                        System.out.println(handle);
-                        start = inputLine.indexOf("data-Tweet-id") + 15;
+                        start = inputLine.indexOf("data-tweet-id") + 15;
                         id = inputLine.substring(start,
                                 inputLine.indexOf("\"", start));
                     }

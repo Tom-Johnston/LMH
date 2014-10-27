@@ -83,12 +83,13 @@ public class MenuList extends AsyncTask<Object, Void, Void> {
                     } else {
                         outputLine = "01";
                     }
+                    if (!inputLine.equals("")) {
                     outputLine = outputLine + inputLine;
-                    meals.add(outputLine);
+                        meals.add(outputLine);
+                    }
                 }
             }
             System.out.println(meals);
-            meals.add(outputLine.substring(0, 2));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (ParseException e) {

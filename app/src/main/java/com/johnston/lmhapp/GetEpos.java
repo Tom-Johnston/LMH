@@ -39,33 +39,45 @@ public class GetEpos extends AsyncTask<Object, String, String[]> {
         Status = (TextView) view.findViewById(R.id.Status);
         handler = (Handler) Objects[2];
         try {
-            URL url = new URL("https://www.upay.co.uk/Shibboleth.sso/Login?entityID=https://registry.shibboleth.ox.ac.uk/idp&target=https://www.upay.co.uk/shib/sso.aspx ");
-            System.out.println("Attempt");
-            HttpsURLConnection urlc = (HttpsURLConnection) url.openConnection();
-            System.out.println(urlc.getResponseCode());
-            String newURL = urlc.getURL().toString();
-            System.out.println(newURL);
+            String inputLine;
+            URL testLogIn = new URL("https://www.upay.co.uk/balance.aspx");
+            HttpsURLConnection testconn = (HttpsURLConnection) testLogIn.openConnection();
+            testconn.setRequestProperty("User-Agent", UserAgent);
+            testconn.setInstanceFollowRedirects(true);
+            testconn.getResponseCode();
+            System.out.println("testing URL: " + testconn.getURL());
+            if (!testLogIn.equals(testconn.getURL())) {
 
-            //LOTs to do here
 
-            if (newURL.contains("login")) {
-                publishProgress("SSO Confirmation");
-                BufferedReader in = new BufferedReader(new InputStreamReader(
-                        urlc.getInputStream(), "UTF-8"));
-                String inputLine;
-                StringBuilder a = new StringBuilder();
-                while ((inputLine = in.readLine()) != null) {
-                    a.append(inputLine);
-//                        System.out.println(inputLine);
+                URL url = new URL("https://www.upay.co.uk/Shibboleth.sso/Login?entityID=https://registry.shibboleth.ox.ac.uk/idp&target=https://www.upay.co.uk/shib/sso.aspx ");
+                System.out.println("Attempt");
+                HttpsURLConnection urlc = (HttpsURLConnection) url.openConnection();
+                System.out.println(urlc.getResponseCode());
+                String newURL = urlc.getURL().toString();
+                System.out.println("newURL:" + newURL);
+                //LOTs to do here
+                HttpsURLConnection Cookiec;
+                if (newURL.contains("login")) {
+                    publishProgress("SSO Confirmation");
+                    BufferedReader in = new BufferedReader(new InputStreamReader(
+                            urlc.getInputStream(), "UTF-8"));
+
+                    StringBuilder a = new StringBuilder();
+                    while ((inputLine = in.readLine()) != null) {
+                        a.append(inputLine);
+                        System.out.println(inputLine);
+                    }
+                    in.close();
+                    urlc.disconnect();
+                    int Start = a.indexOf("https://idp.shibboleth.ox.ac.uk/idp");
+                    int End = a.indexOf("\"><span");
+                    GetCookie = a.substring(Start, End);
+                    System.out.println(GetCookie);
+                    URL Cookie = new URL(GetCookie);
+                    Cookiec = (HttpsURLConnection) Cookie.openConnection();
+                } else {
+                    Cookiec = urlc;
                 }
-                in.close();
-                urlc.disconnect();
-                int Start = a.indexOf("https://idp.shibboleth.ox.ac.uk/idp");
-                int End = a.indexOf("\"><span");
-                GetCookie = a.substring(Start, End);
-                System.out.println(GetCookie);
-                URL Cookie = new URL(GetCookie);
-                HttpsURLConnection Cookiec = (HttpsURLConnection) Cookie.openConnection();
                 StringBuilder b = new StringBuilder();
                 BufferedReader Cookier = new BufferedReader(new InputStreamReader(
                         Cookiec.getInputStream(), "UTF-8"));
@@ -79,8 +91,8 @@ public class GetEpos extends AsyncTask<Object, String, String[]> {
                 int RSStart = b.indexOf("value=\"") + 7;
                 int RSEnd = b.indexOf(">", RSStart);
                 String RelayState = b.substring(RSStart, RSEnd - 2);
-                Start = b.indexOf("value=\"", RSStart) + 7;
-                End = b.indexOf(">", Start);
+                int Start = b.indexOf("value=\"", RSStart) + 7;
+                int End = b.indexOf(">", Start);
                 String SAMLRespose = b.substring(Start, End - 2);
                 SAMLRespose = SAMLRespose.replace("=", "%3D");
 //                System.out.println(SAMLRespose.substring(SAMLRespose.length()-10));
@@ -123,27 +135,10 @@ public class GetEpos extends AsyncTask<Object, String, String[]> {
                 conn2.setRequestProperty("Accept-Encoding", "identity");
                 conn2.setInstanceFollowRedirects(true);
                 System.out.println(conn2.getURL());
-////                conn2.getResponseCode();
-//                    CookieManager manager = (CookieManager) Objects[0];
-//                    CookieStore cookieJar = manager.getCookieStore();
-//                    cookieJar.add(new URI("cookie"), new HttpCookie("Test", "Testing"));
-//                    List<HttpCookie> cookies =
-//                            cookieJar.getCookies();
-//                    for (int i = 0; i < cookies.size() - 1; i++) {
-//
-//                        HttpCookie cookie = cookies.get(i);
-//                        System.out.println("CookieHandler retrieved cookie: " + cookie);
-//                    }
-//                String IGIVEUP = conn2.getHeaderField("Set-Cookie");
-//                conn2.getResponseCode();
-//                System.out.println(IGIVEUP);
-
 
                 for (int i = 0; ; i++) {
                     String headerName = conn2.getHeaderFieldKey(i);
                     String headerValue = conn2.getHeaderField(i);
-//                    System.out.println(headerName);
-//                    System.out.println(headerValue);
 
 //                        For some reason .COOKIECASHLESS isn't set. The cookie is therefore created manually.
 
@@ -160,6 +155,8 @@ public class GetEpos extends AsyncTask<Object, String, String[]> {
                             HttpCookie myCookie = new HttpCookie(".COOKIECASHLESS", cookieValue);
                             myCookie.setVersion(0);
                             myCookie.setPath("/");
+                            myCookie.setMaxAge(890000);
+//                            890,000 is 14 minutes 50 seconds. I believe the cookie should be suitable for 15 minutes.
                             cookieValue = myCookie.toString();
                             System.out.println(cookieValue);
                             CookieManager cookieManager = (CookieManager) Objects[0];
@@ -178,7 +175,7 @@ public class GetEpos extends AsyncTask<Object, String, String[]> {
             conn3.setInstanceFollowRedirects(true);
             conn3.getResponseCode();
             System.out.println(conn3.getURL());
-            String inputLine;
+//            String inputLine;
             BufferedReader Reader3 = new BufferedReader(new InputStreamReader(
                     conn3.getInputStream(), "UTF-8"));
             while ((inputLine = Reader3.readLine()) != null) {

@@ -21,7 +21,6 @@ public class LoadStatus extends AsyncTask<Object, Void, String> {
     View view;
     Handler handler;
 
-    //Is BitBucket working yet?
     @Override
     protected String doInBackground(Object[] objects) {
         view = (View) objects[0];
