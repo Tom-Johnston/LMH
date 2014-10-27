@@ -31,6 +31,8 @@
     <string name="time_zero">00:00 01/01/70 </string>
     <string name="never_updated">Never</string>
     <string name="vibration">Vibration</string>
+    <string name="notificationSound">Notification Sound</string>
+    <string name="LEDText">LED Colour</string>
     <string name="off_for">Off For(ms): </string>
     <string name="one_thousand">1000</string>
     <string-array name="options">
@@ -40,5 +42,6 @@
         <item>Meal Menu</item>
         <item>Settings</item>
     </string-array>
+    <string name="SSOLogin">SSO Login Settings</string>
 
 </resources>
