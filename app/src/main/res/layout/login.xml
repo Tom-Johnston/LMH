@@ -74,14 +74,17 @@
         android:onClick="toggleNotifications"
         android:text="@string/notifications"
         android:textSize="24sp" />
-
+<RelativeLayout
+    android:id="@+id/notificationLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/switchNotifications">
     <TextView
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="20dp"
         android:text="@string/vibration"
-        android:layout_below="@id/switchNotifications"
         android:textSize="24sp"
         android:id="@+id/vibrateText"/>
 
@@ -136,7 +139,7 @@
         android:layout_toRightOf="@+id/LEDText"
         android:layout_alignTop="@+id/LEDText"/>
 
-
+</RelativeLayout>
 
 
 

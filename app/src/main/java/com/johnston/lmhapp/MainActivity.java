@@ -25,6 +25,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -105,7 +106,7 @@ public class MainActivity extends ActionBarActivity {
 
     public void toggleNotifications(View view) {
         boolean on = ((Switch) view).isChecked();
-        LinearLayout notification = (LinearLayout) this.findViewById(R.id.notificationSettings);
+        RelativeLayout notification = (RelativeLayout) this.findViewById(R.id.notificationLayout);
         if (on) {
             SharedPreferences Notifications = getSharedPreferences("Notifications", 0);
             SharedPreferences.Editor editor = Notifications.edit();
