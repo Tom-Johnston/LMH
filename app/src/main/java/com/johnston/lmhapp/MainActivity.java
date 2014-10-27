@@ -23,6 +23,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -104,6 +105,7 @@ public class MainActivity extends ActionBarActivity {
 
     public void toggleNotifications(View view) {
         boolean on = ((Switch) view).isChecked();
+        LinearLayout notification = (LinearLayout) this.findViewById(R.id.notificationSettings);
         if (on) {
             SharedPreferences Notifications = getSharedPreferences("Notifications", 0);
             SharedPreferences.Editor editor = Notifications.edit();
@@ -111,12 +113,14 @@ public class MainActivity extends ActionBarActivity {
             editor.commit();
             Intent newIntent = new Intent(this, NotificationsService.class);
             sendBroadcast(newIntent);
+            notification.setVisibility(LinearLayout.VISIBLE);
 
         } else {
             SharedPreferences Notifications = getSharedPreferences("Notifications", 0);
             SharedPreferences.Editor editor = Notifications.edit();
             editor.putBoolean("toggle", false);
             editor.commit();
+            notification.setVisibility(LinearLayout.GONE);
         }
     }
 
