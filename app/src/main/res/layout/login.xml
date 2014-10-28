@@ -90,16 +90,16 @@
         android:id="@+id/vibrateText"/>
 
     <Spinner
+        android:id="@+id/vibrations"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:clickable="true"
         android:gravity="right"
-        android:layout_marginLeft="10dp"
         android:text="@string/vibration"
-        android:layout_toRightOf="@+id/vibrateText"
         android:layout_alignTop="@+id/vibrateText"
-        android:layout_marginRight="20dp"/>
+        android:layout_marginRight="20dp"
+        android:onClick=""/>
 
     <TextView
         android:layout_width="250dp"

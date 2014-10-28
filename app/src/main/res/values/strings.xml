@@ -42,6 +42,14 @@
         <item>Meal Menu</item>
         <item>Settings</item>
     </string-array>
+    <string-array name="vibrations">
+        <item>1 buzz</item>
+        <item>2 buzz</item>
+        <item>3 buzz</item>
+        <item>Custom</item>
+    </string-array>
     <string name="SSOLogin">SSO Login Settings</string>
-
+    <string name="buzz1">0,600</string>
+    <string name="buzz2">0,300,100,300</string>
+    <string name="buzz3">0,250,100,250,100,250</string>
 </resources>

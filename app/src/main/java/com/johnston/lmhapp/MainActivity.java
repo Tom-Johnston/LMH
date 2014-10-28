@@ -99,7 +99,7 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    public void notificationVibrate(View v) {
+    public void notificationVibrate() {
         VibrateSettings newFragment = VibrateSettings.newInstance();
         newFragment.show(getFragmentManager(), "vibrate");
     }

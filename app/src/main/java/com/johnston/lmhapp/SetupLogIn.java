@@ -10,8 +10,10 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Switch;
 
 /**
@@ -20,6 +22,7 @@ import android.widget.Switch;
 public class SetupLogIn extends Fragment {
     View view;
     MainActivity Main;
+    VibrateSpinnerListener vsl;
 
 
     @Override
@@ -51,6 +54,21 @@ public class SetupLogIn extends Fragment {
         drawCircle(r, g, b);
         System.out.println(toggle);
         tb.setChecked(toggle);
+
+
+
+        Spinner spinner = (Spinner) view.findViewById(R.id.vibrations);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.vibrations, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        vsl.firstCall = true;
+        vsl.main = (MainActivity) getActivity();
+
+        spinner.setOnItemSelectedListener(vsl);
+
+
+
+
         return view;
     }
 
