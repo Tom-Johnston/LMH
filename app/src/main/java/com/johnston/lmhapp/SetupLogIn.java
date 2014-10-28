@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 
 /**
@@ -51,6 +53,14 @@ public class SetupLogIn extends Fragment {
         drawCircle(r, g, b);
         System.out.println(toggle);
         tb.setChecked(toggle);
+
+        RelativeLayout notification = (RelativeLayout) view.findViewById(R.id.notificationLayout);
+        if (toggle){
+            notification.setVisibility(LinearLayout.VISIBLE);
+        }else{
+            notification.setVisibility(LinearLayout.INVISIBLE);
+        }
+
         return view;
     }
 
