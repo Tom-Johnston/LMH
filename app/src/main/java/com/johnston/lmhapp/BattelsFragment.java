@@ -40,7 +40,15 @@ public class BattelsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.battels, container, false);
-        LoadBattels();
+        if (finished) {
+            ListView lv = (ListView) view.findViewById(R.id.battelsListView);
+            Context context = getActivity().getBaseContext();
+            BattelsListAdapter adapter = new BattelsListAdapter(context, R.layout.battels_list_item, entries);
+            lv.setAdapter(adapter);
+        } else {
+            LoadBattels();
+        }
+
 
 
         return view;

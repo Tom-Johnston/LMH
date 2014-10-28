@@ -1,25 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="10dp">
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_alignBottom="@+id/battelsDescription"
+        android:layout_alignTop="@+id/battelsDescription"
         android:id="@+id/battelsDate"
         android:text="20/07/14"
         android:textSize="14sp"
-        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical"
         android:layout_marginRight="5dp" />
 
 
     <TextView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_toRightOf="@+id/battelsDate"
+        android:layout_toLeftOf="@+id/battelsAmount"
         android:id="@+id/battelsDescription"
         android:text="Robbing you of all your money. Lets make this overflow"
         android:textSize="14sp"
@@ -31,7 +33,10 @@
         android:id="@+id/battelsAmount"
         android:text="£1513.24"
         android:textSize="14sp"
-        android:layout_gravity="center_vertical" />
+        android:gravity="center_vertical"
+        android:layout_alignBottom="@+id/battelsDescription"
+        android:layout_alignTop="@+id/battelsDescription"
+        android:layout_alignParentRight="true" />
 
 
-</LinearLayout>
+</RelativeLayout>
