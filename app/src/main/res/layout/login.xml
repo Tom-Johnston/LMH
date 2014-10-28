@@ -98,8 +98,7 @@
         android:gravity="right"
         android:text="@string/vibration"
         android:layout_alignTop="@+id/vibrateText"
-        android:layout_marginRight="20dp"
-        android:onClick=""/>
+        android:layout_marginRight="20dp" />
 
     <TextView
         android:layout_width="250dp"

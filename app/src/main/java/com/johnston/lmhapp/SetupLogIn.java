@@ -61,6 +61,20 @@ public class SetupLogIn extends Fragment {
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.vibrations, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+        String current = Notifications.getString("vibrateSettings","");
+        if (current == getResources().getString(R.string.buzz1)){
+            spinner.setSelection(0);
+        }else if (current == getResources().getString(R.string.buzz2)){
+            spinner.setSelection(1);
+        }else if (current == getResources().getString(R.string.buzz2)){
+            spinner.setSelection(2);
+        }else {
+            spinner.setSelection(3);
+        }
+        //vsl.firstCall = true;
+        if (vsl == null){
+            vsl = new VibrateSpinnerListener();
+        }
         vsl.firstCall = true;
         vsl.main = (MainActivity) getActivity();
 
