@@ -302,7 +302,7 @@ public class MainActivity extends ActionBarActivity {
         Intent intent = getIntent();
         Boolean LaunchMenu = intent.getBooleanExtra("Launch", false);
         if (LaunchMenu && savedInstanceState == null) {
-            mDrawerList.performItemClick(mDrawerList.getAdapter().getView(3, null, null), 3, mDrawerList.getAdapter().getItemId(3));
+            mDrawerList.performItemClick(mDrawerList.getAdapter().getView(4, null, null), 4, mDrawerList.getAdapter().getItemId(4));
 
         } else if (savedInstanceState == null) {
             mDrawerList.performItemClick(mDrawerList.getAdapter().getView(0, null, null), 0, mDrawerList.getAdapter().getItemId(0));
@@ -360,10 +360,10 @@ public class MainActivity extends ActionBarActivity {
         if (fragmentType.equals(Options[1])) {
             LaundryView fragment = (LaundryView) fragment1;
             fragment.LoadStatus();
-        } else if (fragmentType.equals(Options[2])) {
+        } else if (fragmentType.equals(Options[3])) {
             EPOS fragment = (EPOS) fragment1;
             fragment.GetEpos();
-        } else if (fragmentType.equals(Options[3])) {
+        } else if (fragmentType.equals(Options[4])) {
             MenuFragment fragment = (MenuFragment) fragment1;
             fragment.downloadNewMenu();
         } else if (fragmentType.equals(Options[0])) {
@@ -407,19 +407,19 @@ public class MainActivity extends ActionBarActivity {
             } else if (position == 0) {
                 newFragment = new HomeFragment();
                 transaction.addToBackStack(Options[position]);
-            } else if (position == 2) {
+            } else if (position == 3) {
                 newFragment = new EPOS();
                 transaction.addToBackStack(Options[position]);
             } else if (position == 1) {
                 newFragment = new LaundryView();
                 transaction.addToBackStack(Options[position]);
-            } else if (position == 3) {
+            } else if (position == 4) {
                 newFragment = new MenuFragment();
                 transaction.addToBackStack(Options[position]);
-            } else if (position == 4) {
+            } else if (position == 5) {
                 newFragment = new SetupLogIn();
                 transaction.addToBackStack(Options[position]);
-            } else if (position == 5) {
+            } else if (position == 2) {
                 newFragment = new BattelsFragment();
                 transaction.addToBackStack(Options[position]);
             }

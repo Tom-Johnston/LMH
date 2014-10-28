@@ -11,26 +11,26 @@
         android:layout_height="wrap_content"
         android:id="@+id/battelsDate"
         android:text="20/07/14"
-        android:textSize="16sp"
-        android:layout_gravity="center_vertical" />
+        android:textSize="14sp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginRight="5dp" />
 
 
     <TextView
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:id="@+id/battelsDescription"
-        android:text="Robbing you of all your money"
-        android:textSize="16sp" />
+        android:text="Robbing you of all your money. Lets make this overflow"
+        android:textSize="14sp"
+        android:layout_marginRight="5dp" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/battelsAmount"
         android:text="£1513.24"
-        android:textSize="16sp"
+        android:textSize="14sp"
         android:layout_gravity="center_vertical" />
 
 
