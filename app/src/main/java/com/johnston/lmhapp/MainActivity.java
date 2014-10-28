@@ -130,21 +130,16 @@ public class MainActivity extends ActionBarActivity {
         if (Type == 1) {
             new GetEpos().execute(manager, view, handler);
         } else if (Type == 2) {
-            new Battels().execute(sslContext);
+            new Battels().execute(sslContext, view, handler);
         }
     }
 
-    public void GetBattels(View v) {
-        Type = 2;
-        view = v;
-        LogInView();
-    }
 
-    public void GetBalance(View v, Handler passedHandler) {
+    public void getInfo(View v, Handler passedHandler, byte passedType) {
 //        System.out.println(manager.getCookieStore().getCookies().toString());
         handler = passedHandler;
         view = v;
-        Type = 1;
+        Type = passedType;
         LogInView();
 
     }

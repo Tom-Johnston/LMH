@@ -16,7 +16,8 @@
         android:textColor="@color/abc_search_url_text_holo"
         android:freezesText="true" />
 
-    <TextView
+    <ListView
+        android:id="@+id/battelsListView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
