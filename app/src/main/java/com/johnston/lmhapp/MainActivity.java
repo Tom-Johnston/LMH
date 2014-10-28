@@ -59,6 +59,7 @@ public class MainActivity extends ActionBarActivity {
     View view;
     Handler handler;
     int lastPosition = -1;
+    SSLContext sslContext = null;
 
     public void drawCircle(int r, int g, int b) {
         Fragment fragment1 = getFragmentManager().findFragmentById(R.id.Frame);
@@ -128,7 +129,15 @@ public class MainActivity extends ActionBarActivity {
     public void Initialise() {
         if (Type == 1) {
             new GetEpos().execute(manager, view, handler);
+        } else if (Type == 2) {
+            new Battels().execute(sslContext);
         }
+    }
+
+    public void GetBattels(View v) {
+        Type = 2;
+        view = v;
+        LogInView();
     }
 
     public void GetBalance(View v, Handler passedHandler) {
@@ -232,6 +241,7 @@ public class MainActivity extends ActionBarActivity {
             SSLContext context = SSLContext.getInstance("TLS");
             context.init(null, tmf.getTrustManagers(), null);
             System.out.println("Success!");
+            sslContext = context;
             return context;
 
         } catch (CertificateException e) {
@@ -413,6 +423,9 @@ public class MainActivity extends ActionBarActivity {
                 transaction.addToBackStack(Options[position]);
             } else if (position == 4) {
                 newFragment = new SetupLogIn();
+                transaction.addToBackStack(Options[position]);
+            } else if (position == 5) {
+                newFragment = new BattelsFragment();
                 transaction.addToBackStack(Options[position]);
             }
             newFragment.setRetainInstance(true);

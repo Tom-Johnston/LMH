@@ -41,6 +41,7 @@
         <item>EPOS Account</item>
         <item>Meal Menu</item>
         <item>Settings</item>
+        <item>Battels</item>
     </string-array>
     <string name="SSOLogin">SSO Login Settings</string>
 
