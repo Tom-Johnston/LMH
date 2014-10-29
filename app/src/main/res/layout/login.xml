@@ -89,7 +89,7 @@
         android:textSize="24sp"
         android:id="@+id/vibrateText"/>
 
-    <Spinner
+    <com.johnston.lmhapp.CustomSpinner
         android:id="@+id/vibrations"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

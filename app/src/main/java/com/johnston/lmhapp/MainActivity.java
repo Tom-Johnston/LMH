@@ -324,6 +324,7 @@ public class MainActivity extends ActionBarActivity {
         // Sync the toggle state after onRestoreInstanceState has occurred.
         mDrawerToggle.syncState();
 
+
     }
 
 

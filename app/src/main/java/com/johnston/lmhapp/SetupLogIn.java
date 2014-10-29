@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.Switch;
 
 /**
@@ -23,6 +22,7 @@ public class SetupLogIn extends Fragment {
     View view;
     MainActivity Main;
     VibrateSpinnerListener vsl;
+
 
 
     @Override
@@ -57,7 +57,7 @@ public class SetupLogIn extends Fragment {
 
 
 
-        Spinner spinner = (Spinner) view.findViewById(R.id.vibrations);
+        final CustomSpinner spinner = (CustomSpinner) view.findViewById(R.id.vibrations);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.vibrations, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
@@ -71,14 +71,19 @@ public class SetupLogIn extends Fragment {
         }else {
             spinner.setSelection(3);
         }
-        //vsl.firstCall = true;
+
         if (vsl == null){
             vsl = new VibrateSpinnerListener();
         }
         vsl.firstCall = true;
         vsl.main = (MainActivity) getActivity();
+        spinner.post(new Runnable() {
+            @Override
+            public void run() {
+                spinner.setOnItemSelectedListener(vsl);
+            }
+        });
 
-        spinner.setOnItemSelectedListener(vsl);
 
 
 

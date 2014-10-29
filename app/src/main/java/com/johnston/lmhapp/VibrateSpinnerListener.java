@@ -20,7 +20,7 @@ public class VibrateSpinnerListener implements AdapterView.OnItemSelectedListene
 
 
         // Need to fix re-opening of custom.
-        if (pos == last || firstCall) {
+        if (firstCall) {
             firstCall = false;
         } else {
 
