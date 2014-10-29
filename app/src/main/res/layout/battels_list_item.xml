@@ -24,6 +24,7 @@
         android:layout_toLeftOf="@+id/battelsAmount"
         android:id="@+id/battelsDescription"
         android:text="Robbing you of all your money. Lets make this overflow"
+        android:includeFontPadding="false"
         android:textSize="14sp"
         android:layout_marginRight="5dp" />
 
