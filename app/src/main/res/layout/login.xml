@@ -80,23 +80,25 @@
     android:layout_height="wrap_content"
     android:layout_below="@id/switchNotifications">
     <TextView
-        android:layout_width="250dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="20dp"
         android:text="@string/vibration"
         android:textSize="24sp"
         android:id="@+id/vibrateText"/>
 
-    <TextView
+    <com.johnston.lmhapp.CustomSpinner
+        android:id="@+id/vibrations"
         android:layout_width="wrap_content"
-        android:layout_height="30dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
         android:clickable="true"
-        android:gravity="center"
-        android:onClick="notificationVibrate"
+        android:gravity="right"
         android:text="@string/vibration"
-        android:layout_toRightOf="@+id/vibrateText"
-        android:layout_alignTop="@+id/vibrateText"/>
+        android:layout_alignTop="@+id/vibrateText"
+        android:layout_marginRight="20dp" />
 
     <TextView
         android:layout_width="250dp"
@@ -115,6 +117,7 @@
         android:scaleType="fitCenter"
         android:src="@drawable/ic_action_volume_on"
         android:layout_toRightOf="@+id/soundText"
+        android:layout_alignParentRight="true"
         android:layout_alignTop="@+id/soundText"/>
 
     <TextView
@@ -137,6 +140,7 @@
         android:onClick="LedSettings"
         android:scaleType="fitCenter"
         android:layout_toRightOf="@+id/LEDText"
+        android:layout_alignParentRight="true"
         android:layout_alignTop="@+id/LEDText"/>
 
 </RelativeLayout>

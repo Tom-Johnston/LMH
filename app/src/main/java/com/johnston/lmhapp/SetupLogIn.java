@@ -10,6 +10,7 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -22,6 +23,8 @@ import android.widget.Switch;
 public class SetupLogIn extends Fragment {
     View view;
     MainActivity Main;
+    VibrateSpinnerListener vsl;
+
 
 
     @Override
@@ -54,12 +57,38 @@ public class SetupLogIn extends Fragment {
         System.out.println(toggle);
         tb.setChecked(toggle);
 
-        RelativeLayout notification = (RelativeLayout) view.findViewById(R.id.notificationLayout);
-        if (toggle){
-            notification.setVisibility(LinearLayout.VISIBLE);
-        }else{
-            notification.setVisibility(LinearLayout.INVISIBLE);
+
+
+        final CustomSpinner spinner = (CustomSpinner) view.findViewById(R.id.vibrations);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.vibrations, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        String current = Notifications.getString("vibrateSettings","");
+        if (current == getResources().getString(R.string.buzz1)){
+            spinner.setSelection(0);
+        }else if (current == getResources().getString(R.string.buzz2)){
+            spinner.setSelection(1);
+        }else if (current == getResources().getString(R.string.buzz2)){
+            spinner.setSelection(2);
+        }else {
+            spinner.setSelection(3);
         }
+
+        if (vsl == null){
+            vsl = new VibrateSpinnerListener();
+        }
+
+        vsl.main = (MainActivity) getActivity();
+        spinner.post(new Runnable() {
+            @Override
+            public void run() {
+                spinner.setOnItemSelectedListener(vsl);
+            }
+        });
+
+
+
+
 
         return view;
     }
