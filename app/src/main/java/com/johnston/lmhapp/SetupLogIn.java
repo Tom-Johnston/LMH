@@ -75,7 +75,7 @@ public class SetupLogIn extends Fragment {
         if (vsl == null){
             vsl = new VibrateSpinnerListener();
         }
-        vsl.firstCall = true;
+
         vsl.main = (MainActivity) getActivity();
         spinner.post(new Runnable() {
             @Override
