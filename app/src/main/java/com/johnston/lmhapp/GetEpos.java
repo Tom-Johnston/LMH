@@ -18,6 +18,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 import javax.net.ssl.HttpsURLConnection;
 //import javax.net.ssl.HttpsURLConnection;
@@ -229,12 +230,11 @@ public class GetEpos extends AsyncTask<Object, String, String[]> {
                 if (inputLine.contains("<td align=\"left\">")) {
                     transactionStart = inputLine.indexOf("<td align=\"left\">") + 17;
                     transaction = inputLine.substring(transactionStart, inputLine.indexOf("<", transactionStart));
-                    Character char1 = transaction.charAt(2);
-                    Character char2 = transaction.charAt(5);
+                    Pattern date = Pattern.compile(".*\\d{2}/\\d{2}/\\d{2,4}.*");
                     if (transaction.contains("&#163;")) {
                         transaction = "02   " + transaction.replace("&#163;", "£") + " " + meal;
                         transactions.add(transaction);
-                    } else if (char1.equals('/')&&char2.equals('/')) {
+                    } else if (date.matcher(transaction).matches()) {
                         if (!lastDate.equals(transaction)) {
                             sameMeal = false;
                             lastDate = transaction;
