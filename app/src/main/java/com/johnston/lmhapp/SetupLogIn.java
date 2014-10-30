@@ -7,14 +7,16 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.LayoutInflater;
+import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.Switch;
 
 /**
@@ -24,7 +26,7 @@ public class SetupLogIn extends Fragment {
     View view;
     MainActivity Main;
     VibrateSpinnerListener vsl;
-
+    int rotation = Surface.ROTATION_0;
 
 
     @Override
@@ -56,39 +58,36 @@ public class SetupLogIn extends Fragment {
         drawCircle(r, g, b);
         System.out.println(toggle);
         tb.setChecked(toggle);
-
-
-
-        final CustomSpinner spinner = (CustomSpinner) view.findViewById(R.id.vibrations);
+        final Spinner spinner = (Spinner) view.findViewById(R.id.vibrations);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.vibrations, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
-        String current = Notifications.getString("vibrateSettings","");
-        if (current == getResources().getString(R.string.buzz1)){
+        SharedPreferences vibratePattern = this.getActivity().getSharedPreferences("vibratePattern", 0);
+        String current = vibratePattern.getString("vibratePattern", "null");
+        System.out.println("vibrateSettigs:" + current);
+        if (current.equals(getResources().getString(R.string.buzz1))) {
+            System.out.println("1");
             spinner.setSelection(0);
-        }else if (current == getResources().getString(R.string.buzz2)){
+        } else if (current.equals(getResources().getString(R.string.buzz2))) {
             spinner.setSelection(1);
-        }else if (current == getResources().getString(R.string.buzz2)){
+        } else if (current.equals(getResources().getString(R.string.buzz2))) {
             spinner.setSelection(2);
-        }else {
+        } else {
             spinner.setSelection(3);
         }
 
-        if (vsl == null){
+        Display display = ((WindowManager) this.getActivity().getSystemService(getActivity().WINDOW_SERVICE)).getDefaultDisplay();
+        if (vsl == null) {
             vsl = new VibrateSpinnerListener();
-        }
-
-        vsl.main = (MainActivity) getActivity();
-        spinner.post(new Runnable() {
-            @Override
-            public void run() {
-                spinner.setOnItemSelectedListener(vsl);
+        } else {
+            if (rotation != display.getRotation()) {
+                vsl.secondCall = true;
             }
-        });
-
-
-
-
+        }
+        rotation = display.getRotation();
+        vsl.main = (MainActivity) getActivity();
+        vsl.firstCall = true;
+        spinner.setOnItemSelectedListener(vsl);
 
         return view;
     }

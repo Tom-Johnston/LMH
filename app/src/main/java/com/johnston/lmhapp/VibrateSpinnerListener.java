@@ -13,17 +13,23 @@ import java.util.StringTokenizer;
 public class VibrateSpinnerListener implements AdapterView.OnItemSelectedListener {
     public int last = 0;
     public MainActivity main;
-    public long t0 = System.nanoTime();
+    public Boolean firstCall = true;
+    public Boolean secondCall = false;
 
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-        long t1 = System.nanoTime();
-        if (t1 - t0 < 300000000) {
-            t0 = t1;
+        System.out.println(R.id.vibrations);
+        System.out.println(last);
+        System.out.println(pos);
+
+        if (firstCall == true) {
+//           First call is set to true when creating the fragment,rotating the fragment and loading from back stack.
+            firstCall = false;
+            return;
+        } else if (secondCall == true && last == pos && pos != 0) {
+//           second is set to true when rotating the fragment.
+            secondCall = false;
             return;
         }
-        t0 = t1;
-
-
         Toast.makeText(parent.getContext(),
                 "OnItemSelectedListener : " + parent.getItemAtPosition(pos).toString() + Integer.toString(pos),
                 Toast.LENGTH_SHORT).show();
@@ -46,22 +52,22 @@ public class VibrateSpinnerListener implements AdapterView.OnItemSelectedListene
             //User selected "Custom"
             main.notificationVibrate();
         }
-
-        SharedPreferences vibratePattern = main.getSharedPreferences("vibratePattern", 0);
-        if (vibratePattern.contains("vibratePattern")) {
-            String pattern = vibratePattern.getString("vibratePattern", "null");
-            StringTokenizer stringTokenizer = new StringTokenizer(pattern, ",");
-            ArrayList<Long> vibratePatternList = new ArrayList<Long>();
-            while (stringTokenizer.hasMoreElements()) {
-                vibratePatternList.add(Long.parseLong(stringTokenizer.nextToken()));
+        if (pos != 3) {
+            SharedPreferences vibratePattern = main.getSharedPreferences("vibratePattern", 0);
+            if (vibratePattern.contains("vibratePattern")) {
+                String pattern = vibratePattern.getString("vibratePattern", "null");
+                StringTokenizer stringTokenizer = new StringTokenizer(pattern, ",");
+                ArrayList<Long> vibratePatternList = new ArrayList<Long>();
+                while (stringTokenizer.hasMoreElements()) {
+                    vibratePatternList.add(Long.parseLong(stringTokenizer.nextToken()));
+                }
+                long[] vibrateArray = new long[vibratePatternList.size()];
+                for (int i = 0; i < vibratePatternList.size(); i++) {
+                    vibrateArray[i] = vibratePatternList.get(i);
+                }
+                Vibrator v = (Vibrator) main.getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+                v.vibrate(vibrateArray, -1);
             }
-            long[] vibrateArray = new long[vibratePatternList.size()];
-            for (int i = 0; i < vibratePatternList.size(); i++) {
-                vibrateArray[i] = vibratePatternList.get(i);
-            }
-            Vibrator v = (Vibrator) main.getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
-            v.vibrate(vibrateArray, -1);
-
         }
         last = pos;
 
