@@ -55,7 +55,7 @@ public class Battels extends AsyncTask<Object, String, Void> {
                         if (column == 5) {
                             column = 0;
                         } else {
-                            Entries.add(inputLine.substring(start + 1, end));
+                            Entries.add(inputLine.substring(start + 1, end).trim());
                         }
                     }
                 }
@@ -67,7 +67,7 @@ public class Battels extends AsyncTask<Object, String, Void> {
                         if (column == 5) {
                             column = 0;
                         }
-                        Entries.add("¬" + inputLine.substring(start + 1, end));
+                        Entries.add("¬" + inputLine.substring(start + 1, end).trim());
                     }
                 }
                 if (inputLine.contains("</table>")) {
@@ -94,8 +94,8 @@ public class Battels extends AsyncTask<Object, String, Void> {
                             end = inputLine.indexOf("</td>");
                             start = inputLine.lastIndexOf(">", end);
                             if (start + 1 != end) {
-                                System.out.println(inputLine.substring(start + 1, end));
-                                Entries.set(i + 1, inputLine.substring(start + 1, end));
+                                System.out.println(inputLine.substring(start + 1, end).trim());
+                                Entries.set(i + 1, inputLine.substring(start + 1, end).trim());
                                 break;
                             }
                         }
