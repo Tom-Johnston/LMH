@@ -7,12 +7,9 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.view.Display;
 import android.view.LayoutInflater;
-import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -26,7 +23,6 @@ public class SetupLogIn extends Fragment {
     View view;
     MainActivity Main;
     VibrateSpinnerListener vsl;
-    int rotation = Surface.ROTATION_0;
 
 
     @Override
@@ -76,19 +72,12 @@ public class SetupLogIn extends Fragment {
             spinner.setSelection(3);
         }
 
-        Display display = ((WindowManager) this.getActivity().getSystemService(getActivity().WINDOW_SERVICE)).getDefaultDisplay();
         if (vsl == null) {
             vsl = new VibrateSpinnerListener();
-        } else {
-            if (rotation != display.getRotation()) {
-                vsl.secondCall = true;
-            }
         }
-        rotation = display.getRotation();
         vsl.main = (MainActivity) getActivity();
         vsl.firstCall = true;
         spinner.setOnItemSelectedListener(vsl);
-
         return view;
     }
 

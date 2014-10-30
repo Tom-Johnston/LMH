@@ -14,7 +14,6 @@ public class VibrateSpinnerListener implements AdapterView.OnItemSelectedListene
     public int last = 0;
     public MainActivity main;
     public Boolean firstCall = true;
-    public Boolean secondCall = false;
 
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
         System.out.println(R.id.vibrations);
@@ -25,9 +24,8 @@ public class VibrateSpinnerListener implements AdapterView.OnItemSelectedListene
 //           First call is set to true when creating the fragment,rotating the fragment and loading from back stack.
             firstCall = false;
             return;
-        } else if (secondCall == true && last == pos && pos != 0) {
-//           second is set to true when rotating the fragment.
-            secondCall = false;
+        } else if (last == pos) {
+//           This should fix the problem on rotation.
             return;
         }
         Toast.makeText(parent.getContext(),
