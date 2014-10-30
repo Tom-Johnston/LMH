@@ -16,6 +16,7 @@ public class VibrateSpinnerListener implements AdapterView.OnItemSelectedListene
     public MainActivity main;
     public Boolean firstCall = true;
     public Handler handler;
+    public int lastBeforeDialog = 0;
 
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
         System.out.println(R.id.vibrations);
@@ -48,9 +49,11 @@ public class VibrateSpinnerListener implements AdapterView.OnItemSelectedListene
             editor.putString("vibratePattern", main.getResources().getString(R.string.buzz3));
             editor.commit();
         } else {
+            lastBeforeDialog = last;
             main.notificationVibrate(handler);
         }
-        if (pos != 3) {
+        last = pos;
+        if (pos < 3) {
             SharedPreferences vibratePattern = main.getSharedPreferences("vibratePattern", 0);
             if (vibratePattern.contains("vibratePattern")) {
                 String pattern = vibratePattern.getString("vibratePattern", "null");
@@ -66,8 +69,9 @@ public class VibrateSpinnerListener implements AdapterView.OnItemSelectedListene
                 Vibrator v = (Vibrator) main.getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
                 v.vibrate(vibrateArray, -1);
             }
+            lastBeforeDialog = last;
+            handler.obtainMessage(0, false).sendToTarget();
         }
-        last = pos;
 
 
     }

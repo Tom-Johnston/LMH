@@ -97,10 +97,19 @@ public class VibrateSettings extends DialogFragment {
                     @Override
                     public void onClick(View useless) {
                         Vibrate();
-                        Handler handler = ((MainActivity) getActivity()).handler;
-                        handler.obtainMessage(0, false).sendToTarget();
+
                     }
 
+                });
+                Button b3 = d.getButton(AlertDialog.BUTTON_NEGATIVE);
+                b3.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View view) {
+                        Handler handler = ((MainActivity) getActivity()).handler;
+                        handler.obtainMessage(0, false).sendToTarget();
+                        d.dismiss();
+                    }
                 });
 
 

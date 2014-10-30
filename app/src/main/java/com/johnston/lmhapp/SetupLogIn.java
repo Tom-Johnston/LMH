@@ -34,6 +34,7 @@ public class SetupLogIn extends Fragment {
     final Handler handler = new Handler() {
         @Override
         public void handleMessage(Message message) {
+
             finishedDialog((Boolean) message.obj);
         }
     };
@@ -103,18 +104,26 @@ public class SetupLogIn extends Fragment {
         String changeCustom = getResources().getString(R.string.changeCustom);
         int vibrationStringsSize = vibrationStrings.size();
         if (savedCustom) {
-            vsl.firstCall = true;
+            vsl.last = 3;
             spinner.setSelection(3, true);
             if (!vibrationStrings.get(vibrationStringsSize - 1).equals(changeCustom)) {
                 vibrationStrings.add(changeCustom);
                 adapter.notifyDataSetChanged();
             }
         } else {
-            if (vibrationStrings.get(vibrationStringsSize - 1).equals(changeCustom)) {
-                vibrationStrings.remove(vibrationStringsSize - 1);
-                System.out.println("Removed");
-                adapter.notifyDataSetChanged();
+            if (vsl.last == 4) {
+                vsl.last = 3;
+                spinner.setSelection(3, true);
+            } else {
+                spinner.setSelection(vsl.lastBeforeDialog, true);
+                if (vibrationStrings.get(vibrationStringsSize - 1).equals(changeCustom)) {
+                    vibrationStrings.remove(vibrationStringsSize - 1);
+                    System.out.println("Removed");
+                    adapter.notifyDataSetChanged();
+                }
             }
+
+
         }
     }
 
