@@ -6,6 +6,8 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +18,9 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Switch;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 /**
  * Created by Tom on 08/08/2014.
  */
@@ -23,6 +28,14 @@ public class SetupLogIn extends Fragment {
     View view;
     MainActivity Main;
     VibrateSpinnerListener vsl;
+    ArrayList<String> vibrationStrings;
+    ArrayAdapter adapter;
+    final Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message message) {
+            finishedDialog((Boolean) message.obj);
+        }
+    };
 
 
     @Override
@@ -34,6 +47,7 @@ public class SetupLogIn extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(null, null, savedInstanceState);
+        vibrationStrings = new ArrayList<String>(Arrays.asList(getResources().getStringArray(R.array.vibrations)));
         view = inflater.inflate(R.layout.login, container, false);
         System.out.println("SetUpLogIn");
         Main = (MainActivity) getActivity();
@@ -55,7 +69,7 @@ public class SetupLogIn extends Fragment {
         System.out.println(toggle);
         tb.setChecked(toggle);
         final Spinner spinner = (Spinner) view.findViewById(R.id.vibrations);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.vibrations, android.R.layout.simple_spinner_item);
+        adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, vibrationStrings);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         SharedPreferences vibratePattern = this.getActivity().getSharedPreferences("vibratePattern", 0);
@@ -78,9 +92,26 @@ public class SetupLogIn extends Fragment {
         vsl.main = (MainActivity) getActivity();
         vsl.firstCall = true;
         spinner.setOnItemSelectedListener(vsl);
+        vsl.handler = handler;
         return view;
     }
 
+
+    public void finishedDialog(Boolean savedCustom) {
+        String changeCustom = getResources().getString(R.string.changeCustom);
+        int vibrationStringsSize = vibrationStrings.size();
+        if (savedCustom) {
+            if (!vibrationStrings.get(vibrationStringsSize - 1).equals(changeCustom)) {
+                vibrationStrings.add(changeCustom);
+                adapter.notifyDataSetChanged();
+            }
+        } else {
+            if (vibrationStrings.get(vibrationStrings.size() - 1).equals(changeCustom)) {
+                vibrationStrings.remove(vibrationStringsSize - 1);
+                adapter.notifyDataSetChanged();
+            }
+        }
+    }
 
     public void drawCircle(int r, int g, int b) {
         Bitmap.Config conf = Bitmap.Config.ARGB_8888;

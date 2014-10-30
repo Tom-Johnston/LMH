@@ -2,6 +2,7 @@ package com.johnston.lmhapp;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Handler;
 import android.os.Vibrator;
 import android.view.View;
 import android.widget.AdapterView;
@@ -14,6 +15,7 @@ public class VibrateSpinnerListener implements AdapterView.OnItemSelectedListene
     public int last = 0;
     public MainActivity main;
     public Boolean firstCall = true;
+    public Handler handler;
 
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
         System.out.println(R.id.vibrations);
@@ -46,9 +48,8 @@ public class VibrateSpinnerListener implements AdapterView.OnItemSelectedListene
             SharedPreferences.Editor editor = vibratePattern.edit();
             editor.putString("vibratePattern", main.getResources().getString(R.string.buzz3));
             editor.commit();
-        } else if (pos == 3) {
-            //User selected "Custom"
-            main.notificationVibrate();
+        } else {
+            main.notificationVibrate(handler);
         }
         if (pos != 3) {
             SharedPreferences vibratePattern = main.getSharedPreferences("vibratePattern", 0);

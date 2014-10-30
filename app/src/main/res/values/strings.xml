@@ -54,4 +54,5 @@
     <string name="buzz1">0,600</string>
     <string name="buzz2">0,300,100,300</string>
     <string name="buzz3">0,250,100,250,100,250</string>
+    <string name="changeCustom">Change Custom</string>
 </resources>

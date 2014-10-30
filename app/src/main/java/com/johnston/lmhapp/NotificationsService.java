@@ -32,7 +32,7 @@ public class NotificationsService extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        long refreshTime = 2*60*60*1000;
+        long refreshTime = 2 * 60 * 60 * 1000;
         long notifyTime = 600000;
 //        I think alarm manager automatically holds a wakelock for me.
 //        Wakelock so the notification can be sent even when the device is asleep;
@@ -158,11 +158,6 @@ public class NotificationsService extends BroadcastReceiver {
             PendingIntent pi = PendingIntent.getBroadcast(context, 0, newIntent, 0);
             am.set(AlarmManager.RTC_WAKEUP, startOfNextMeal - notifyTime, pi);
 
-//            builder.setSound()
-
-//            builder.setVibrate()
-
-//            wl.release();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {

@@ -100,8 +100,8 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    public void notificationVibrate() {
-        VibrateSettings newFragment = VibrateSettings.newInstance();
+    public void notificationVibrate(Handler handler) {
+        VibrateSettings newFragment = VibrateSettings.newInstance(handler);
         newFragment.show(getFragmentManager(), "vibrate");
     }
 
