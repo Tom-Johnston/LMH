@@ -30,6 +30,7 @@ public class SetupLogIn extends Fragment {
     VibrateSpinnerListener vsl;
     ArrayList<String> vibrationStrings;
     ArrayAdapter adapter;
+    Spinner spinner;
     final Handler handler = new Handler() {
         @Override
         public void handleMessage(Message message) {
@@ -68,13 +69,18 @@ public class SetupLogIn extends Fragment {
         drawCircle(r, g, b);
         System.out.println(toggle);
         tb.setChecked(toggle);
-        final Spinner spinner = (Spinner) view.findViewById(R.id.vibrations);
+        spinner = (Spinner) view.findViewById(R.id.vibrations);
         adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, vibrationStrings);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         SharedPreferences vibratePattern = this.getActivity().getSharedPreferences("vibratePattern", 0);
         String current = vibratePattern.getString("vibratePattern", "null");
         System.out.println("vibrateSettigs:" + current);
+
+
+        if (vsl == null) {
+            vsl = new VibrateSpinnerListener();
+        }
         if (current.equals(getResources().getString(R.string.buzz1))) {
             System.out.println("1");
             spinner.setSelection(0);
@@ -83,11 +89,7 @@ public class SetupLogIn extends Fragment {
         } else if (current.equals(getResources().getString(R.string.buzz2))) {
             spinner.setSelection(2);
         } else {
-            spinner.setSelection(3);
-        }
-
-        if (vsl == null) {
-            vsl = new VibrateSpinnerListener();
+            finishedDialog(true);
         }
         vsl.main = (MainActivity) getActivity();
         vsl.firstCall = true;
@@ -101,13 +103,16 @@ public class SetupLogIn extends Fragment {
         String changeCustom = getResources().getString(R.string.changeCustom);
         int vibrationStringsSize = vibrationStrings.size();
         if (savedCustom) {
+            vsl.firstCall = true;
+            spinner.setSelection(3, true);
             if (!vibrationStrings.get(vibrationStringsSize - 1).equals(changeCustom)) {
                 vibrationStrings.add(changeCustom);
                 adapter.notifyDataSetChanged();
             }
         } else {
-            if (vibrationStrings.get(vibrationStrings.size() - 1).equals(changeCustom)) {
+            if (vibrationStrings.get(vibrationStringsSize - 1).equals(changeCustom)) {
                 vibrationStrings.remove(vibrationStringsSize - 1);
+                System.out.println("Removed");
                 adapter.notifyDataSetChanged();
             }
         }

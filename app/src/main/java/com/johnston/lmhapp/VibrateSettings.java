@@ -23,13 +23,11 @@ import java.util.StringTokenizer;
  */
 public class VibrateSettings extends DialogFragment {
     View view;
-    Handler handler;
 
-    static VibrateSettings newInstance(Handler passedHandler) {
+    static VibrateSettings newInstance() {
         VibrateSettings f = new VibrateSettings();
         Bundle args = new Bundle();
         f.setArguments(args);
-        handler = passedHandler;
         return f;
     }
 
@@ -87,6 +85,8 @@ public class VibrateSettings extends DialogFragment {
                             editor.commit();
                             Vibrate();
                             d.dismiss();
+                            Handler handler = ((MainActivity) getActivity()).handler;
+                            handler.obtainMessage(0, true).sendToTarget();
                         }
 
                     }
@@ -97,6 +97,8 @@ public class VibrateSettings extends DialogFragment {
                     @Override
                     public void onClick(View useless) {
                         Vibrate();
+                        Handler handler = ((MainActivity) getActivity()).handler;
+                        handler.obtainMessage(0, false).sendToTarget();
                     }
 
                 });

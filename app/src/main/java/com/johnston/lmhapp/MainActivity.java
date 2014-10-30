@@ -57,7 +57,7 @@ public class MainActivity extends ActionBarActivity {
     CookieManager manager;
     byte Type;
     View view;
-    Handler handler;
+    public Handler handler;
     int lastPosition = -1;
     SSLContext sslContext = null;
 
@@ -100,8 +100,9 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    public void notificationVibrate(Handler handler) {
-        VibrateSettings newFragment = VibrateSettings.newInstance(handler);
+    public void notificationVibrate(Handler passedhandler) {
+        handler = passedhandler;
+        VibrateSettings newFragment = VibrateSettings.newInstance();
         newFragment.show(getFragmentManager(), "vibrate");
     }
 
