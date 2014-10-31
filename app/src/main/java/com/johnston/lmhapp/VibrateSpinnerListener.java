@@ -31,7 +31,7 @@ public class VibrateSpinnerListener implements AdapterView.OnItemSelectedListene
             return;
         }
         Toast.makeText(parent.getContext(),
-                "OnItemSelectedListener : " + parent.getItemAtPosition(pos).toString() + Integer.toString(pos),
+                "Vibrate pattern updated",
                 Toast.LENGTH_SHORT).show();
         if (pos == 0) {
             SharedPreferences vibratePattern = main.getSharedPreferences("vibratePattern", 0);
