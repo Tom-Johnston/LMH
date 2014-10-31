@@ -15,6 +15,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
 
@@ -96,6 +98,16 @@ public class SetupLogIn extends Fragment {
         vsl.firstCall = true;
         spinner.setOnItemSelectedListener(vsl);
         vsl.handler = handler;
+
+        Switch aswitch = (Switch) view.findViewById(R.id.switchNotifications);
+        Boolean on = aswitch.isChecked();
+        RelativeLayout notification = (RelativeLayout) view.findViewById(R.id.notificationLayout);
+        if(on){
+            notification.setVisibility(LinearLayout.VISIBLE);
+        }else{
+            notification.setVisibility(LinearLayout.GONE);
+        }
+
         return view;
     }
 
