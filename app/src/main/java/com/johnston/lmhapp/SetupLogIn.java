@@ -51,10 +51,10 @@ public class SetupLogIn extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(null, null, savedInstanceState);
-        vibrationStrings = new ArrayList<String>(Arrays.asList(getResources().getStringArray(R.array.vibrations)));
         view = inflater.inflate(R.layout.login, container, false);
-        System.out.println("SetUpLogIn");
+        vibrationStrings = new ArrayList<String>(Arrays.asList(getResources().getStringArray(R.array.vibrations)));
         Main = (MainActivity) getActivity();
+
         String[] LogInDetails = Main.returnLogIn();
         if (LogInDetails != null) {
             EditText Username = (EditText) view.findViewById(R.id.Username);
@@ -65,27 +65,30 @@ public class SetupLogIn extends Fragment {
         SharedPreferences Notifications = this.getActivity().getSharedPreferences("Notifications", 0);
         Boolean toggle = Notifications.getBoolean("toggle", false);
         Switch tb = (Switch) view.findViewById(R.id.switchNotifications);
+        tb.setChecked(toggle);
+        RelativeLayout notification = (RelativeLayout) view.findViewById(R.id.notificationLayout);
+        if (toggle) {
+            notification.setVisibility(LinearLayout.VISIBLE);
+        } else {
+            notification.setVisibility(LinearLayout.GONE);
+        }
         SharedPreferences LEDSettings = this.getActivity().getSharedPreferences("LEDSettings", 0);
         int r = LEDSettings.getInt("redValue", 0);
         int g = LEDSettings.getInt("greenValue", 33);
         int b = LEDSettings.getInt("blueValue", 71);
         drawCircle(r, g, b);
-        System.out.println(toggle);
-        tb.setChecked(toggle);
+
         spinner = (Spinner) view.findViewById(R.id.vibrations);
         adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, vibrationStrings);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         SharedPreferences vibratePattern = this.getActivity().getSharedPreferences("vibratePattern", 0);
         String current = vibratePattern.getString("vibratePattern", "null");
-        System.out.println("vibrateSettigs:" + current);
-
-
         if (vsl == null) {
             vsl = new VibrateSpinnerListener();
         }
         if (current.equals(getResources().getString(R.string.buzz1))) {
-            System.out.println("1");
+            ;
             spinner.setSelection(0);
         } else if (current.equals(getResources().getString(R.string.buzz2))) {
             spinner.setSelection(1);
@@ -99,14 +102,6 @@ public class SetupLogIn extends Fragment {
         spinner.setOnItemSelectedListener(vsl);
         vsl.handler = handler;
 
-        Switch aswitch = (Switch) view.findViewById(R.id.switchNotifications);
-        Boolean on = aswitch.isChecked();
-        RelativeLayout notification = (RelativeLayout) view.findViewById(R.id.notificationLayout);
-        if(on){
-            notification.setVisibility(LinearLayout.VISIBLE);
-        }else{
-            notification.setVisibility(LinearLayout.GONE);
-        }
 
         return view;
     }
