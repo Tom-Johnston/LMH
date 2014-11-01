@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
+import android.widget.ToggleButton;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -102,6 +103,12 @@ public class SetupLogIn extends Fragment {
         spinner.setOnItemSelectedListener(vsl);
         vsl.handler = handler;
 
+
+        SharedPreferences mealsToNotifyFor = getActivity().getSharedPreferences("mealsToNotifyFor", 0);
+        ToggleButton Lunch = (ToggleButton) view.findViewById(R.id.toggleLunch);
+        ToggleButton Dinner = (ToggleButton) view.findViewById(R.id.toggleDinner);
+        Lunch.setChecked(mealsToNotifyFor.getBoolean("Lunch", true));
+        Lunch.setChecked(mealsToNotifyFor.getBoolean("Dinner", true));
 
         return view;
     }

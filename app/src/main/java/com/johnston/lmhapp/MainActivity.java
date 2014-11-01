@@ -29,6 +29,7 @@ import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -65,6 +66,14 @@ public class MainActivity extends ActionBarActivity {
         Fragment fragment1 = getFragmentManager().findFragmentById(R.id.Frame);
         ((SetupLogIn) fragment1).drawCircle(r, g, b);
 
+    }
+
+    public void toggleMealNotification(View v) {
+        ToggleButton button = (ToggleButton) v;
+        SharedPreferences mealsToNotifyFor = getSharedPreferences("mealsToNotifyFor", 0);
+        SharedPreferences.Editor editor = mealsToNotifyFor.edit();
+        editor.putBoolean(button.getTextOn().toString(), button.isChecked());
+        editor.commit();
     }
 
     public void notificationSound(View v) {

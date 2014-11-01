@@ -7,21 +7,22 @@
     android:padding="4dp">
 
     <TextView
+        android:id="@+id/SSOLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/SSOLogin"
-        android:textSize="24sp"
         android:layout_margin="10dp"
-        android:id="@+id/SSOLogin"/>
+        android:text="@string/SSOLogin"
+        android:textSize="24sp" />
+
     <EditText
         android:id="@+id/Username"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/SSOLogin"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="10dp"
-        android:hint="@string/username"
-        android:layout_below="@+id/SSOLogin"/>
+        android:hint="@string/username" />
 
     <EditText
         android:id="@+id/Password"
@@ -58,12 +59,12 @@
         android:text="@string/show_password" />
 
     <View
+        android:id="@+id/notificationsDivider"
         android:layout_width="match_parent"
         android:layout_height="5dp"
-        android:background="#0C000000"
         android:layout_below="@+id/saveButton"
         android:layout_margin="5dp"
-        android:id="@+id/notificationsDivider"/>
+        android:background="#0C000000" />
 
     <Switch
         android:id="@+id/switchNotifications"
@@ -74,78 +75,101 @@
         android:onClick="toggleNotifications"
         android:text="@string/notifications"
         android:textSize="24sp" />
-<RelativeLayout
-    android:id="@+id/notificationLayout"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_below="@id/switchNotifications">
-    <TextView
-        android:layout_width="wrap_content"
+
+    <RelativeLayout
+        android:id="@+id/notificationLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="20dp"
-        android:text="@string/vibration"
-        android:textSize="24sp"
-        android:id="@+id/vibrateText"/>
+        android:layout_below="@id/switchNotifications">
 
-    <Spinner
-        android:id="@+id/vibrations"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:clickable="true"
-        android:gravity="right"
-        android:text="@string/vibration"
-        android:layout_alignTop="@+id/vibrateText"
-        android:layout_marginRight="20dp" />
+        <TextView
+            android:id="@+id/vibrateText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/vibration"
+            android:textSize="24sp" />
 
-    <TextView
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="20dp"
-        android:text="@string/notificationSound"
-        android:layout_below="@id/vibrateText"
-        android:textSize="24sp"
-        android:id="@+id/soundText"/>
+        <Spinner
+            android:id="@+id/vibrations"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/vibrateText"
+            android:layout_marginRight="20dp"
+            android:clickable="true"
+            android:gravity="right"
+            android:text="@string/vibration" />
 
-    <ImageView
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:onClick="notificationSound"
-        android:scaleType="fitCenter"
-        android:src="@drawable/ic_action_volume_on"
-        android:layout_toRightOf="@+id/soundText"
-        android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/soundText"/>
+        <TextView
+            android:id="@+id/soundText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/vibrateText"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/notificationSound"
+            android:textSize="24sp" />
 
-    <TextView
-        android:layout_width="250dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="20dp"
-        android:text="@string/LEDText"
-        android:layout_below="@id/soundText"
-        android:textSize="24sp"
-        android:id="@+id/LEDText"/>
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/soundText"
+            android:layout_toRightOf="@+id/soundText"
+            android:onClick="notificationSound"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_action_volume_on" />
 
-
-
-    <ImageView
-        android:id="@+id/ledColour"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_gravity="center"
-        android:onClick="LedSettings"
-        android:scaleType="fitCenter"
-        android:layout_toRightOf="@+id/LEDText"
-        android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/LEDText"/>
-
-</RelativeLayout>
+        <TextView
+            android:id="@+id/LEDText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/soundText"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/LEDText"
+            android:textSize="24sp" />
 
 
+        <ImageView
+            android:id="@+id/ledColour"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/LEDText"
+            android:layout_gravity="center"
+            android:layout_toRightOf="@+id/LEDText"
+            android:onClick="LedSettings"
+            android:scaleType="fitCenter" />
+
+        <ToggleButton
+            android:id="@+id/toggleLunch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/LEDText"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:textOff="@string/lunch"
+            android:textOn="@string/lunch"
+            android:onClick="toggleMealNotification" />
+
+        <ToggleButton
+            android:id="@+id/toggleDinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/LEDText"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_toRightOf="@+id/toggleLunch"
+            android:text="New ToggleButton"
+            android:textOff="@string/dinner"
+            android:textOn="@string/dinner"
+            android:onClick="toggleMealNotification" />
+
+    </RelativeLayout>
 
 
 </RelativeLayout>
