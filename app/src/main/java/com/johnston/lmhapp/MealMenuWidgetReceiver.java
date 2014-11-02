@@ -167,9 +167,9 @@ public class MealMenuWidgetReceiver extends BroadcastReceiver {
                         System.out.println("This One");
                         record = true;
                         Meal = br.readLine();
-                        if (notifyForLunch && Meal.equals("Lunch")) {
+                        if (!notifyForLunch && Meal.equals("Lunch")) {
                             record = false;
-                        } else if (notifyForDinner && Meal.equals("Dinner")) {
+                        } else if (!notifyForDinner && Meal.equals("Dinner")) {
                             record = false;
                         }
                         keepDay = day;
