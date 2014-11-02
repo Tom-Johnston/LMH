@@ -36,7 +36,8 @@ public class EPOS extends Fragment {
 
     public void GetEpos() {
         finished = false;
-        Main.GetBalance(view, handler);
+        byte b = 1;
+        Main.getInfo(view, handler, b);
     }
 
 

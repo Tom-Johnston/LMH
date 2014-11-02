@@ -23,10 +23,13 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -48,6 +51,7 @@ import javax.net.ssl.TrustManagerFactory;
 
 
 public class MainActivity extends ActionBarActivity {
+    public Handler handler;
     ActionBarDrawerToggle mDrawerToggle;
     String mTitle = "LMH";
     ListView mDrawerList;
@@ -55,13 +59,21 @@ public class MainActivity extends ActionBarActivity {
     CookieManager manager;
     byte Type;
     View view;
-    Handler handler;
     int lastPosition = -1;
+    SSLContext sslContext = null;
 
     public void drawCircle(int r, int g, int b) {
         Fragment fragment1 = getFragmentManager().findFragmentById(R.id.Frame);
         ((SetupLogIn) fragment1).drawCircle(r, g, b);
 
+    }
+
+    public void toggleMealNotification(View v) {
+        ToggleButton button = (ToggleButton) v;
+        SharedPreferences mealsToNotifyFor = getSharedPreferences("mealsToNotifyFor", 0);
+        SharedPreferences.Editor editor = mealsToNotifyFor.edit();
+        editor.putBoolean(button.getTextOn().toString(), button.isChecked());
+        editor.commit();
     }
 
     public void notificationSound(View v) {
@@ -97,13 +109,15 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    public void notificationVibrate(View v) {
+    public void notificationVibrate(Handler passedhandler) {
+        handler = passedhandler;
         VibrateSettings newFragment = VibrateSettings.newInstance();
         newFragment.show(getFragmentManager(), "vibrate");
     }
 
     public void toggleNotifications(View view) {
         boolean on = ((Switch) view).isChecked();
+        RelativeLayout notification = (RelativeLayout) this.findViewById(R.id.notificationLayout);
         if (on) {
             SharedPreferences Notifications = getSharedPreferences("Notifications", 0);
             SharedPreferences.Editor editor = Notifications.edit();
@@ -111,26 +125,31 @@ public class MainActivity extends ActionBarActivity {
             editor.commit();
             Intent newIntent = new Intent(this, NotificationsService.class);
             sendBroadcast(newIntent);
+            notification.setVisibility(LinearLayout.VISIBLE);
 
         } else {
             SharedPreferences Notifications = getSharedPreferences("Notifications", 0);
             SharedPreferences.Editor editor = Notifications.edit();
             editor.putBoolean("toggle", false);
             editor.commit();
+            notification.setVisibility(LinearLayout.GONE);
         }
     }
 
     public void Initialise() {
         if (Type == 1) {
             new GetEpos().execute(manager, view, handler);
+        } else if (Type == 2) {
+            new Battels().execute(sslContext, view, handler);
         }
     }
 
-    public void GetBalance(View v, Handler passedHandler) {
+
+    public void getInfo(View v, Handler passedHandler, byte passedType) {
 //        System.out.println(manager.getCookieStore().getCookies().toString());
         handler = passedHandler;
         view = v;
-        Type = 1;
+        Type = passedType;
         LogInView();
 
     }
@@ -227,6 +246,7 @@ public class MainActivity extends ActionBarActivity {
             SSLContext context = SSLContext.getInstance("TLS");
             context.init(null, tmf.getTrustManagers(), null);
             System.out.println("Success!");
+            sslContext = context;
             return context;
 
         } catch (CertificateException e) {
@@ -292,7 +312,7 @@ public class MainActivity extends ActionBarActivity {
         Intent intent = getIntent();
         Boolean LaunchMenu = intent.getBooleanExtra("Launch", false);
         if (LaunchMenu && savedInstanceState == null) {
-            mDrawerList.performItemClick(mDrawerList.getAdapter().getView(3, null, null), 3, mDrawerList.getAdapter().getItemId(3));
+            mDrawerList.performItemClick(mDrawerList.getAdapter().getView(4, null, null), 4, mDrawerList.getAdapter().getItemId(4));
 
         } else if (savedInstanceState == null) {
             mDrawerList.performItemClick(mDrawerList.getAdapter().getView(0, null, null), 0, mDrawerList.getAdapter().getItemId(0));
@@ -350,10 +370,10 @@ public class MainActivity extends ActionBarActivity {
         if (fragmentType.equals(Options[1])) {
             LaundryView fragment = (LaundryView) fragment1;
             fragment.LoadStatus();
-        } else if (fragmentType.equals(Options[2])) {
+        } else if (fragmentType.equals(Options[3])) {
             EPOS fragment = (EPOS) fragment1;
             fragment.GetEpos();
-        } else if (fragmentType.equals(Options[3])) {
+        } else if (fragmentType.equals(Options[4])) {
             MenuFragment fragment = (MenuFragment) fragment1;
             fragment.downloadNewMenu();
         } else if (fragmentType.equals(Options[0])) {
@@ -397,17 +417,20 @@ public class MainActivity extends ActionBarActivity {
             } else if (position == 0) {
                 newFragment = new HomeFragment();
                 transaction.addToBackStack(Options[position]);
-            } else if (position == 2) {
+            } else if (position == 3) {
                 newFragment = new EPOS();
                 transaction.addToBackStack(Options[position]);
             } else if (position == 1) {
                 newFragment = new LaundryView();
                 transaction.addToBackStack(Options[position]);
-            } else if (position == 3) {
+            } else if (position == 4) {
                 newFragment = new MenuFragment();
                 transaction.addToBackStack(Options[position]);
-            } else if (position == 4) {
+            } else if (position == 5) {
                 newFragment = new SetupLogIn();
+                transaction.addToBackStack(Options[position]);
+            } else if (position == 2) {
+                newFragment = new BattelsFragment();
                 transaction.addToBackStack(Options[position]);
             }
             newFragment.setRetainInstance(true);

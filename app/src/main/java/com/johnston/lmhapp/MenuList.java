@@ -84,7 +84,7 @@ public class MenuList extends AsyncTask<Object, Void, Void> {
                         outputLine = "01";
                     }
                     if (!inputLine.equals("")) {
-                    outputLine = outputLine + inputLine;
+                        outputLine = outputLine + inputLine;
                         meals.add(outputLine);
                     }
                 }

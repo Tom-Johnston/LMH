@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Vibrator;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -82,7 +83,10 @@ public class VibrateSettings extends DialogFragment {
                             SharedPreferences.Editor editor = vibratePattern.edit();
                             editor.putString("vibratePattern", pattern);
                             editor.commit();
+                            Vibrate();
                             d.dismiss();
+                            Handler handler = ((MainActivity) getActivity()).handler;
+                            handler.obtainMessage(0, true).sendToTarget();
                         }
 
                     }
@@ -92,34 +96,19 @@ public class VibrateSettings extends DialogFragment {
                 b2.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View useless) {
-                        EditText editText = (EditText) view.findViewById(R.id.vibratePattern);
-                        String pattern = editText.getText().toString();
-                        if (!pattern.endsWith(",")) {
-                            pattern = pattern + ",";
-                        }
-                        StringTokenizer stringTokenizer = new StringTokenizer(pattern, ",");
-                        Boolean parse = true;
-                        ArrayList<Long> vibratePatternList = new ArrayList<Long>();
-                        while (stringTokenizer.hasMoreElements()) {
-                            try {
-                                vibratePatternList.add(Long.parseLong(stringTokenizer.nextToken()));
-                            } catch (NumberFormatException nfe) {
-                                parse = false;
-                                break;
-                            }
-                        }
-                        if (!parse || vibratePatternList.size() < 1) {
-                            Toast toast = Toast.makeText(getActivity().getApplicationContext(), "Problem parsing integers.", Toast.LENGTH_SHORT);
-                            toast.show();
-                        } else {
-                            Vibrator v = (Vibrator) getActivity().getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
-                            long[] vibrateArray = new long[vibratePatternList.size()];
-                            for (int i = 0; i < vibratePatternList.size(); i++) {
-                                vibrateArray[i] = vibratePatternList.get(i);
-                            }
-                            v.vibrate(vibrateArray, -1);
-                        }
+                        Vibrate();
 
+                    }
+
+                });
+                Button b3 = d.getButton(AlertDialog.BUTTON_NEGATIVE);
+                b3.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View view) {
+                        Handler handler = ((MainActivity) getActivity()).handler;
+                        handler.obtainMessage(0, false).sendToTarget();
+                        d.dismiss();
                     }
                 });
 
@@ -129,4 +118,34 @@ public class VibrateSettings extends DialogFragment {
         return d;
     }
 
+    public void Vibrate() {
+        EditText editText = (EditText) view.findViewById(R.id.vibratePattern);
+        String pattern = editText.getText().toString();
+        if (!pattern.endsWith(",")) {
+            pattern = pattern + ",";
+        }
+        StringTokenizer stringTokenizer = new StringTokenizer(pattern, ",");
+        Boolean parse = true;
+        ArrayList<Long> vibratePatternList = new ArrayList<Long>();
+        while (stringTokenizer.hasMoreElements()) {
+            try {
+                vibratePatternList.add(Long.parseLong(stringTokenizer.nextToken()));
+            } catch (NumberFormatException nfe) {
+                parse = false;
+                break;
+            }
+        }
+        if (!parse || vibratePatternList.size() < 1) {
+            Toast toast = Toast.makeText(getActivity().getApplicationContext(), "Problem parsing integers.", Toast.LENGTH_SHORT);
+            toast.show();
+        } else {
+            Vibrator v = (Vibrator) getActivity().getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+            long[] vibrateArray = new long[vibratePatternList.size()];
+            for (int i = 0; i < vibratePatternList.size(); i++) {
+                vibrateArray[i] = vibratePatternList.get(i);
+            }
+            v.vibrate(vibrateArray, -1);
+        }
+
+    }
 }

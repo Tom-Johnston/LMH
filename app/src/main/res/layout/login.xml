@@ -1,115 +1,178 @@
 <?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:padding="4dp">
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical"
-    android:padding="4dp">
+        <TextView
+            android:id="@+id/SSOLogin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="@string/SSOLogin"
+            android:textSize="24sp" />
 
+        <EditText
+            android:id="@+id/Username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/SSOLogin"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="10dp"
+            android:hint="@string/username" />
 
-    <EditText
-        android:id="@+id/Username"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="40dp"
-        android:hint="@string/username" />
+        <EditText
+            android:id="@+id/Password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/Username"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"
+            android:ems="10"
+            android:hint="@string/password"
+            android:inputType="textPassword" />
 
-    <EditText
-        android:id="@+id/Password"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/Username"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="20dp"
-        android:ems="10"
-        android:hint="@string/password"
-        android:inputType="textPassword" />
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/Password"
-        android:id="@+id/saveButton"
-        android:layout_toRightOf="@+id/checkBox"
-        android:layout_alignRight="@+id/Password"
-        android:text="@string/save"
-        android:onClick="SaveAccount"
-        android:layout_marginTop="10dp"/>
+        <Button
+            android:id="@+id/saveButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@+id/Password"
+            android:layout_below="@+id/Password"
+            android:layout_marginTop="10dp"
+            android:layout_toRightOf="@+id/checkBox"
+            android:onClick="SaveAccount"
+            android:text="@string/save" />
 
-    <CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/show_password"
-        android:id="@+id/checkBox"
-        android:layout_alignTop="@+id/saveButton"
-        android:layout_alignBottom="@+id/saveButton"
-        android:layout_marginTop="10dp"
-        android:layout_alignLeft="@+id/Password"
-        android:onClick="showPassword"/>
+        <CheckBox
+            android:id="@+id/checkBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/saveButton"
+            android:layout_alignLeft="@+id/Password"
+            android:layout_alignTop="@+id/saveButton"
+            android:layout_marginTop="10dp"
+            android:onClick="showPassword"
+            android:text="@string/show_password" />
 
-    <Switch
-        android:id="@+id/switchNotifications"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="toggleNotifications"
-        android:text="@string/notifications"
-        android:textSize="20sp"
-        android:layout_below="@+id/checkBox"
-        android:layout_marginTop="40dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"/>
+        <View
+            android:id="@+id/notificationsDivider"
+            android:layout_width="match_parent"
+            android:layout_height="5dp"
+            android:layout_below="@+id/saveButton"
+            android:layout_margin="5dp"
+            android:background="#0C000000" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/switchNotifications">
+        <Switch
+            android:id="@+id/switchNotifications"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/notificationsDivider"
+            android:layout_margin="10dp"
+            android:onClick="toggleNotifications"
+            android:text="@string/notifications"
+            android:textSize="24sp" />
+
+        <RelativeLayout
+            android:id="@+id/notificationLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/switchNotifications">
+
+            <TextView
+                android:id="@+id/vibrateText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
+                android:text="@string/vibration"
+                android:textSize="24sp" />
+
+            <Spinner
+                android:id="@+id/vibrations"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignTop="@+id/vibrateText"
+                android:layout_marginRight="20dp"
+                android:clickable="true"
+                android:gravity="right"
+                android:text="@string/vibration" />
+
+            <TextView
+                android:id="@+id/soundText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/vibrateText"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
+                android:text="@string/notificationSound"
+                android:textSize="24sp" />
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignTop="@+id/soundText"
+                android:layout_toRightOf="@+id/soundText"
+                android:onClick="notificationSound"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_action_volume_on" />
+
+            <TextView
+                android:id="@+id/LEDText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/soundText"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
+                android:text="@string/LEDText"
+                android:textSize="24sp" />
+
 
             <ImageView
                 android:id="@+id/ledColour"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignTop="@+id/LEDText"
                 android:layout_gravity="center"
+                android:layout_toRightOf="@+id/LEDText"
                 android:onClick="LedSettings"
-                android:scaleType="fitCenter"
-                android:layout_weight="1"/>
+                android:scaleType="fitCenter" />
 
-        <View
-            android:layout_width="2dp"
-            android:layout_height="30dp"
-            android:layout_marginLeft="2dp"
-            android:layout_marginRight="2dp"
-            android:background="#0C000000"/>
+            <ToggleButton
+                android:id="@+id/toggleLunch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/LEDText"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
+                android:textOff="@string/lunch"
+                android:textOn="@string/lunch"
+                android:onClick="toggleMealNotification" />
 
+            <ToggleButton
+                android:id="@+id/toggleDinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/LEDText"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_toRightOf="@+id/toggleLunch"
+                android:text="New ToggleButton"
+                android:textOff="@string/dinner"
+                android:textOn="@string/dinner"
+                android:onClick="toggleMealNotification" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="30dp"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="@string/vibration"
-            android:clickable="true"
-            android:onClick="notificationVibrate"/>
-
-        <View
-            android:layout_width="2dp"
-            android:layout_height="30dp"
-            android:layout_marginLeft="2dp"
-            android:layout_marginRight="2dp"
-            android:background="#0C000000"/>
-
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_weight="1"
-            android:src="@drawable/ic_action_volume_on"
-            android:scaleType="fitCenter"
-            android:onClick="notificationSound"/>
+        </RelativeLayout>
 
 
-
-
-    </LinearLayout>
-
-</RelativeLayout>
+    </RelativeLayout>
+</ScrollView>

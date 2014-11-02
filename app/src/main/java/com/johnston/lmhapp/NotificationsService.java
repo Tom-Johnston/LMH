@@ -32,6 +32,8 @@ public class NotificationsService extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        long refreshTime = 2 * 60 * 60 * 1000;
+        long notifyTime = 600000;
 //        I think alarm manager automatically holds a wakelock for me.
 //        Wakelock so the notification can be sent even when the device is asleep;
 //        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
@@ -60,7 +62,7 @@ public class NotificationsService extends BroadcastReceiver {
             String dateString = br.readLine();
             Date date = new SimpleDateFormat("dd/MM/yy", Locale.ENGLISH).parse(dateString);
             long time = date.getTime();
-            String[] output = mealMenu.constructMenu(br, time);
+            String[] output = mealMenu.constructMenu(br, time, context);
 
             String nextMeal = output[2];
 
@@ -73,7 +75,7 @@ public class NotificationsService extends BroadcastReceiver {
                 dateString = br.readLine();
                 date = new SimpleDateFormat("dd/MM/yy", Locale.ENGLISH).parse(dateString);
                 time = date.getTime();
-                output = mealMenu.constructMenu(br, time);
+                output = mealMenu.constructMenu(br, time, context);
                 nextMeal = output[2];
             }
             long startOfNextMeal = Long.parseLong(output[4]);
@@ -83,18 +85,18 @@ public class NotificationsService extends BroadcastReceiver {
             if (nextMeal.equals("")) {
 //                Looks like even the new menu is old;
 //                Handle this.
-                startOfNextMeal = System.currentTimeMillis() + 7800000;
+                startOfNextMeal = System.currentTimeMillis() + refreshTime;
                 AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
                 Intent newIntent = new Intent(context, NotificationsService.class);
                 PendingIntent pi = PendingIntent.getBroadcast(context, 0, newIntent, 0);
-                am.set(AlarmManager.RTC_WAKEUP, startOfNextMeal - 600000, pi);
+                am.set(AlarmManager.RTC_WAKEUP, startOfNextMeal - notifyTime, pi);
                 return;
             }
 
             if (startOfNextMeal == 0) {
-                startOfNextMeal = System.currentTimeMillis() + 7800000;
+                startOfNextMeal = System.currentTimeMillis() + refreshTime;
             }
-            if (System.currentTimeMillis() + 900000 > startOfMeal) {
+            if (System.currentTimeMillis() + notifyTime > startOfMeal) {
 //                We are supposed to be showing a notification. This is because this class is called to start the chain of notifications.
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
                 builder.setContentTitle(Meal + " at " + Times);
@@ -154,13 +156,8 @@ public class NotificationsService extends BroadcastReceiver {
             AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
             Intent newIntent = new Intent(context, NotificationsService.class);
             PendingIntent pi = PendingIntent.getBroadcast(context, 0, newIntent, 0);
-            am.set(AlarmManager.RTC_WAKEUP, startOfNextMeal - 600000, pi);
+            am.set(AlarmManager.RTC_WAKEUP, startOfNextMeal - notifyTime, pi);
 
-//            builder.setSound()
-
-//            builder.setVibrate()
-
-//            wl.release();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {

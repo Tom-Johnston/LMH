@@ -31,14 +31,30 @@
     <string name="time_zero">00:00 01/01/70 </string>
     <string name="never_updated">Never</string>
     <string name="vibration">Vibration</string>
+    <string name="notificationSound">Notification Sound</string>
+    <string name="LEDText">LED Colour</string>
     <string name="off_for">Off For(ms): </string>
     <string name="one_thousand">1000</string>
     <string-array name="options">
         <item>Home</item>
         <item>Laundry View</item>
+        <item>Battels</item>
         <item>EPOS Account</item>
         <item>Meal Menu</item>
-        <item>Log In Details</item>
-    </string-array>
+        <item>Settings</item>
 
+    </string-array>
+    <string-array name="vibrations">
+        <item>1 buzz</item>
+        <item>2 buzz</item>
+        <item>3 buzz</item>
+        <item>Custom</item>
+    </string-array>
+    <string name="SSOLogin">SSO Login Settings</string>
+    <string name="buzz1">0,600</string>
+    <string name="buzz2">0,300,100,300</string>
+    <string name="buzz3">0,250,100,250,100,250</string>
+    <string name="changeCustom">Change Custom</string>
+    <string name="lunch">Lunch</string>
+    <string name="dinner">Dinner</string>
 </resources>

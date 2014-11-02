@@ -88,6 +88,14 @@ public class MenuFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        MenuItem item = menu.findItem(R.id.action_refresh);
+        item.setEnabled(true);
+        item.setVisible(true);
+    }
+
     final Handler handler = new Handler() {
         @Override
         public void handleMessage(Message message) {
@@ -111,14 +119,6 @@ public class MenuFragment extends Fragment {
             }
         }
     };
-
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-        MenuItem item = menu.findItem(R.id.action_refresh);
-        item.setEnabled(true);
-        item.setVisible(true);
-    }
 
 
 }

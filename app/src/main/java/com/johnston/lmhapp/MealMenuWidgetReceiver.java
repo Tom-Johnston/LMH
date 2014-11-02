@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.widget.RemoteViews;
 
@@ -44,7 +45,7 @@ public class MealMenuWidgetReceiver extends BroadcastReceiver {
             String dateString = br.readLine();
             Date date = new SimpleDateFormat("dd/MM/yy", Locale.ENGLISH).parse(dateString);
             long time = date.getTime();
-            String[] output = constructMenu(br, time);
+            String[] output = constructMenu(br, time, context);
             String Day = output[0];
             String Meal = output[1];
             String nextMeal = output[2];
@@ -58,7 +59,7 @@ public class MealMenuWidgetReceiver extends BroadcastReceiver {
                 dateString = br.readLine();
                 date = new SimpleDateFormat("dd/MM/yy", Locale.ENGLISH).parse(dateString);
                 time = date.getTime();
-                output = constructMenu(br, time);
+                output = constructMenu(br, time, context);
                 Day = output[0];
                 Meal = output[1];
                 nextMeal = output[2];
@@ -108,7 +109,10 @@ public class MealMenuWidgetReceiver extends BroadcastReceiver {
     }
 
 
-    public String[] constructMenu(BufferedReader br, long time) throws IOException {
+    public String[] constructMenu(BufferedReader br, long time, Context context) throws IOException {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("mealsToNotifyFor", 0);
+        Boolean notifyForLunch = sharedPreferences.getBoolean("Lunch", true);
+        Boolean notifyForDinner = sharedPreferences.getBoolean("Dinner", true);
         String inputLine;
         int day = 0;
         String nextMeal = "";
@@ -163,6 +167,11 @@ public class MealMenuWidgetReceiver extends BroadcastReceiver {
                         System.out.println("This One");
                         record = true;
                         Meal = br.readLine();
+                        if (!notifyForLunch && Meal.equals("Lunch")) {
+                            record = false;
+                        } else if (!notifyForDinner && Meal.equals("Dinner")) {
+                            record = false;
+                        }
                         keepDay = day;
                     }
                 }
