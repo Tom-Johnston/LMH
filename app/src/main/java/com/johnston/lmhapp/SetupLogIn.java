@@ -107,7 +107,7 @@ public class SetupLogIn extends Fragment {
         ToggleButton Lunch = (ToggleButton) view.findViewById(R.id.toggleLunch);
         ToggleButton Dinner = (ToggleButton) view.findViewById(R.id.toggleDinner);
         Lunch.setChecked(mealsToNotifyFor.getBoolean("Lunch", true));
-        Lunch.setChecked(mealsToNotifyFor.getBoolean("Dinner", true));
+        Dinner.setChecked(mealsToNotifyFor.getBoolean("Dinner", true));
 
         return view;
     }
