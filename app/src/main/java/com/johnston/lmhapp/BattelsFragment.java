@@ -50,7 +50,6 @@ public class BattelsFragment extends Fragment {
         }
 
 
-
         return view;
     }
 

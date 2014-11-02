@@ -51,6 +51,7 @@ import javax.net.ssl.TrustManagerFactory;
 
 
 public class MainActivity extends ActionBarActivity {
+    public Handler handler;
     ActionBarDrawerToggle mDrawerToggle;
     String mTitle = "LMH";
     ListView mDrawerList;
@@ -58,7 +59,6 @@ public class MainActivity extends ActionBarActivity {
     CookieManager manager;
     byte Type;
     View view;
-    public Handler handler;
     int lastPosition = -1;
     SSLContext sslContext = null;
 

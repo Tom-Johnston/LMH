@@ -62,7 +62,7 @@ public class NotificationsService extends BroadcastReceiver {
             String dateString = br.readLine();
             Date date = new SimpleDateFormat("dd/MM/yy", Locale.ENGLISH).parse(dateString);
             long time = date.getTime();
-            String[] output = mealMenu.constructMenu(br, time);
+            String[] output = mealMenu.constructMenu(br, time, context);
 
             String nextMeal = output[2];
 
@@ -75,7 +75,7 @@ public class NotificationsService extends BroadcastReceiver {
                 dateString = br.readLine();
                 date = new SimpleDateFormat("dd/MM/yy", Locale.ENGLISH).parse(dateString);
                 time = date.getTime();
-                output = mealMenu.constructMenu(br, time);
+                output = mealMenu.constructMenu(br, time, context);
                 nextMeal = output[2];
             }
             long startOfNextMeal = Long.parseLong(output[4]);

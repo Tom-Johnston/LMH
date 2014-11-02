@@ -28,12 +28,6 @@ import java.util.Arrays;
  * Created by Tom on 08/08/2014.
  */
 public class SetupLogIn extends Fragment {
-    View view;
-    MainActivity Main;
-    VibrateSpinnerListener vsl;
-    ArrayList<String> vibrationStrings;
-    ArrayAdapter adapter;
-    Spinner spinner;
     final Handler handler = new Handler() {
         @Override
         public void handleMessage(Message message) {
@@ -41,7 +35,12 @@ public class SetupLogIn extends Fragment {
             finishedDialog((Boolean) message.obj);
         }
     };
-
+    View view;
+    MainActivity Main;
+    VibrateSpinnerListener vsl;
+    ArrayList<String> vibrationStrings;
+    ArrayAdapter adapter;
+    Spinner spinner;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
