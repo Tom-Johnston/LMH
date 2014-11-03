@@ -73,6 +73,15 @@ public class MainActivity extends ActionBarActivity {
         SharedPreferences mealsToNotifyFor = getSharedPreferences("mealsToNotifyFor", 0);
         SharedPreferences.Editor editor = mealsToNotifyFor.edit();
         editor.putBoolean(button.getTextOn().toString(), button.isChecked());
+//        Replace an existing notification..
+        Intent intent = new Intent(this, NotificationsService.class);
+        this.sendBroadcast(intent);
+        SharedPreferences widgetEnabled = this.getSharedPreferences("widgetEnabled", 0);
+//       Update the widget.
+        if (widgetEnabled.getBoolean("widgetEnabled", false)) {
+            Intent updateWidget = new Intent(this, MealMenuWidgetReceiver.class);
+            this.sendBroadcast(updateWidget);
+        }
         editor.commit();
     }
 
