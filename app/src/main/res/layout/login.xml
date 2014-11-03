@@ -47,7 +47,9 @@
             android:layout_marginTop="10dp"
             android:layout_toRightOf="@+id/checkBox"
             android:onClick="SaveAccount"
-            android:text="@string/save" />
+            android:text="@string/save"
+            android:background="?attr/colorAccent"
+            android:textColor="#ffffff" />
 
         <CheckBox
             android:id="@+id/checkBox"
@@ -68,7 +70,7 @@
             android:layout_margin="5dp"
             android:background="#0C000000" />
 
-        <Switch
+        <android.support.v7.widget.SwitchCompat
             android:id="@+id/switchNotifications"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -76,7 +78,8 @@
             android:layout_margin="10dp"
             android:onClick="toggleNotifications"
             android:text="@string/notifications"
-            android:textSize="24sp" />
+            android:textSize="24sp"
+            android:theme="@style/AppTheme" />
 
         <RelativeLayout
             android:id="@+id/notificationLayout"

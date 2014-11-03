@@ -18,7 +18,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
-import android.widget.Switch;
+import android.support.v7.widget.SwitchCompat;
 import android.widget.ToggleButton;
 
 import java.util.ArrayList;
@@ -64,7 +64,7 @@ public class SetupLogIn extends Fragment {
         }
         SharedPreferences Notifications = this.getActivity().getSharedPreferences("Notifications", 0);
         Boolean toggle = Notifications.getBoolean("toggle", false);
-        Switch tb = (Switch) view.findViewById(R.id.switchNotifications);
+        SwitchCompat tb = (SwitchCompat) view.findViewById(R.id.switchNotifications);
         tb.setChecked(toggle);
         RelativeLayout notification = (RelativeLayout) view.findViewById(R.id.notificationLayout);
         if (toggle) {

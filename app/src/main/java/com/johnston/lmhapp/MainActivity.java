@@ -27,7 +27,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.widget.Switch;
+import android.support.v7.widget.SwitchCompat;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -126,7 +126,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void toggleNotifications(View view) {
-        boolean on = ((Switch) view).isChecked();
+        boolean on = ((SwitchCompat) view).isChecked();
         RelativeLayout notification = (RelativeLayout) this.findViewById(R.id.notificationLayout);
         if (on) {
             SharedPreferences Notifications = getSharedPreferences("Notifications", 0);
@@ -410,6 +410,7 @@ public class MainActivity extends ActionBarActivity {
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(parent.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
             System.out.println(mDrawerList.getCheckedItemPosition());
+            mDrawerLayout.closeDrawers();
             if (lastPosition == position) {
                 mDrawerLayout.closeDrawers();
                 return;
@@ -446,7 +447,7 @@ public class MainActivity extends ActionBarActivity {
             transaction.replace(R.id.Frame, newFragment, Options[position]);
             transaction.commit();
             System.out.println(":::::::::::::::::::::" + getFragmentManager().getBackStackEntryCount());
-            mDrawerLayout.closeDrawers();
+
 
         }
     }
