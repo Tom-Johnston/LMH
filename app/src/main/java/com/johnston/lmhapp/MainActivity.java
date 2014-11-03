@@ -124,26 +124,7 @@ public class MainActivity extends ActionBarActivity {
         newFragment.show(getFragmentManager(), "vibrate");
     }
 
-    public void toggleNotifications(View view) {
-        boolean on = ((Switch) view).isChecked();
-        RelativeLayout notification = (RelativeLayout) this.findViewById(R.id.notificationLayout);
-        if (on) {
-            SharedPreferences Notifications = getSharedPreferences("Notifications", 0);
-            SharedPreferences.Editor editor = Notifications.edit();
-            editor.putBoolean("toggle", true);
-            editor.commit();
-            Intent newIntent = new Intent(this, NotificationsService.class);
-            sendBroadcast(newIntent);
-            notification.setVisibility(LinearLayout.VISIBLE);
 
-        } else {
-            SharedPreferences Notifications = getSharedPreferences("Notifications", 0);
-            SharedPreferences.Editor editor = Notifications.edit();
-            editor.putBoolean("toggle", false);
-            editor.commit();
-            notification.setVisibility(LinearLayout.GONE);
-        }
-    }
 
     public void Initialise() {
         if (Type == 1) {

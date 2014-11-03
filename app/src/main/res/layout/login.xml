@@ -74,7 +74,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/notificationsDivider"
             android:layout_margin="10dp"
-            android:onClick="toggleNotifications"
             android:text="@string/notifications"
             android:textSize="24sp" />
 

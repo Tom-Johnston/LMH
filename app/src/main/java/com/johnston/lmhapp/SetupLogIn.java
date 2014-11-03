@@ -1,6 +1,7 @@
 package com.johnston.lmhapp;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -13,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -108,6 +110,30 @@ public class SetupLogIn extends Fragment {
         ToggleButton Dinner = (ToggleButton) view.findViewById(R.id.toggleDinner);
         Lunch.setChecked(mealsToNotifyFor.getBoolean("Lunch", true));
         Dinner.setChecked(mealsToNotifyFor.getBoolean("Dinner", true));
+
+        Switch notifications = (Switch) view.findViewById(R.id.switchNotifications);
+        notifications.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                RelativeLayout notification = (RelativeLayout) view.findViewById(R.id.notificationLayout);
+                if (isChecked) {
+                    SharedPreferences Notifications = getActivity().getSharedPreferences("Notifications", 0);
+                    SharedPreferences.Editor editor = Notifications.edit();
+                    editor.putBoolean("toggle", true);
+                    editor.commit();
+                    Intent newIntent = new Intent(getActivity(), NotificationsService.class);
+                    getActivity().sendBroadcast(newIntent);
+                    notification.setVisibility(LinearLayout.VISIBLE);
+
+                } else {
+                    SharedPreferences Notifications = getActivity().getSharedPreferences("Notifications", 0);
+                    SharedPreferences.Editor editor = Notifications.edit();
+                    editor.putBoolean("toggle", false);
+                    editor.commit();
+                    notification.setVisibility(LinearLayout.GONE);
+                }
+            }
+        });
 
         return view;
     }
