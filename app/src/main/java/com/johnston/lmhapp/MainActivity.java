@@ -7,27 +7,33 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.InputType;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
-import android.support.v7.widget.SwitchCompat;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -46,6 +52,7 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
@@ -62,6 +69,9 @@ public class MainActivity extends ActionBarActivity {
     View view;
     int lastPosition = -1;
     SSLContext sslContext = null;
+    drawerAdapter mDrawerAdapter;
+    Bitmap selectedCircle;
+    Bitmap unselectedCircle;
 
     public void drawCircle(int r, int g, int b) {
         Fragment fragment1 = getFragmentManager().findFragmentById(R.id.Frame);
@@ -283,6 +293,11 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 //      Cookie Manager
+
+        selectedCircle = drawCircle(getResources().getColor(R.color.colorPrimary2));
+        unselectedCircle = drawCircle(Color.parseColor("#57000000"));
+        System.out.println("Color: " + getResources().getColor(R.color.colorPrimary2));
+
         manager = new CookieManager();
         manager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
         CookieHandler.setDefault(manager);
@@ -292,7 +307,8 @@ public class MainActivity extends ActionBarActivity {
         String[] Options = getResources().getStringArray(R.array.options);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, Options));
+        mDrawerAdapter = new drawerAdapter(this, R.layout.drawer_list_item, Arrays.asList(Options), selectedCircle, unselectedCircle);
+        mDrawerList.setAdapter(mDrawerAdapter);
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
         mDrawerToggle = new ActionBarDrawerToggle(
                 this,                  /* host Activity */
@@ -394,18 +410,43 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public void onBackPressed() {
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawers();
+            return;
+        }
         if (lastPosition == 0) {
             this.finish();
         } else {
             System.out.println("BackPressed");
             mDrawerList.performItemClick(mDrawerList.getAdapter().getView(0, null, null), 0, mDrawerList.getAdapter().getItemId(0));
+            String[] Options = getResources().getStringArray(R.array.options);
+            mTitle = Options[0];
+            getSupportActionBar().setTitle(mTitle);
         }
+    }
+
+    public Bitmap drawCircle(int color) {
+        Bitmap.Config conf = Bitmap.Config.ARGB_8888;
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        int size = (int) (24 * metrics.density);
+        Bitmap bmp = Bitmap.createBitmap(size, size, conf);
+        Canvas c = new Canvas(bmp);
+        int radius = size / 2;
+        Paint paint = new Paint();
+        paint.setColor(color);
+        c.drawCircle(radius, radius, radius, paint);
+        return bmp;
     }
 
     public class DrawerItemClickListener implements ListView.OnItemClickListener {
 
+
         @Override
         public void onItemClick(AdapterView parent, View view, int position, long id) {
+            TextView tv = (TextView) view.findViewById(R.id.text1);
+            ImageView imgv = (ImageView) view.findViewById(R.id.imageView);
+            imgv.setImageBitmap(selectedCircle);
+            tv.setTextColor(getResources().getColor(R.color.colorPrimary2));
             System.out.println("Clicked: " + position);
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(parent.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
@@ -415,7 +456,13 @@ public class MainActivity extends ActionBarActivity {
                 mDrawerLayout.closeDrawers();
                 return;
             }
+            if (lastPosition >= parent.getFirstVisiblePosition()) {
+                View layout = parent.getChildAt(lastPosition - parent.getFirstVisiblePosition());
+                ((TextView) layout.findViewById(R.id.text1)).setTextColor(Color.parseColor("#57000000"));
+                ((ImageView) layout.findViewById(R.id.imageView)).setImageBitmap(unselectedCircle);
+            }
             lastPosition = position;
+            mDrawerAdapter.selected = position;
             String[] Options = getResources().getStringArray(R.array.options);
             mTitle = Options[position];
             System.out.println("position" + position);

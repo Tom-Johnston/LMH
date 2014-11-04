@@ -3,6 +3,7 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
+
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
@@ -38,26 +39,34 @@
             android:hint="@string/password"
             android:inputType="textPassword" />
 
-        <Button
-            android:id="@+id/saveButton"
-            android:layout_width="wrap_content"
+
+        <FrameLayout
+            android:id="@+id/saveButtonLayout"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_alignRight="@+id/Password"
             android:layout_below="@+id/Password"
             android:layout_marginTop="10dp"
-            android:layout_toRightOf="@+id/checkBox"
-            android:onClick="SaveAccount"
-            android:text="@string/save"
-            android:background="?attr/colorAccent"
-            android:textColor="#ffffff" />
+            android:layout_toRightOf="@+id/checkBox">
+
+            <Button
+                android:layout_gravity="center"
+                android:id="@+id/saveButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="SaveAccount"
+                android:text="@string/save"
+                android:background="?attr/colorAccent"
+                android:textColor="#ffffff" />
+        </FrameLayout>
 
         <CheckBox
             android:id="@+id/checkBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/saveButton"
+            android:layout_alignBottom="@+id/saveButtonLayout"
             android:layout_alignLeft="@+id/Password"
-            android:layout_alignTop="@+id/saveButton"
+            android:layout_alignTop="@+id/saveButtonLayout"
             android:layout_marginTop="10dp"
             android:onClick="showPassword"
             android:text="@string/show_password" />
@@ -66,7 +75,7 @@
             android:id="@+id/notificationsDivider"
             android:layout_width="match_parent"
             android:layout_height="5dp"
-            android:layout_below="@+id/saveButton"
+            android:layout_below="@+id/saveButtonLayout"
             android:layout_margin="5dp"
             android:background="#0C000000" />
 
