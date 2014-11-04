@@ -434,6 +434,7 @@ public class MainActivity extends ActionBarActivity {
         int radius = size / 2;
         Paint paint = new Paint();
         paint.setColor(color);
+        paint.setAntiAlias(true);
         c.drawCircle(radius, radius, radius, paint);
         return bmp;
     }
@@ -443,17 +444,13 @@ public class MainActivity extends ActionBarActivity {
 
         @Override
         public void onItemClick(AdapterView parent, View view, int position, long id) {
-            TextView tv = (TextView) view.findViewById(R.id.text1);
-            ImageView imgv = (ImageView) view.findViewById(R.id.imageView);
-            imgv.setImageBitmap(selectedCircle);
-            tv.setTextColor(getResources().getColor(R.color.colorPrimary2));
+
             System.out.println("Clicked: " + position);
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(parent.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
             System.out.println(mDrawerList.getCheckedItemPosition());
             mDrawerLayout.closeDrawers();
             if (lastPosition == position) {
-                mDrawerLayout.closeDrawers();
                 return;
             }
             if (lastPosition >= parent.getFirstVisiblePosition()) {
@@ -461,6 +458,10 @@ public class MainActivity extends ActionBarActivity {
                 ((TextView) layout.findViewById(R.id.text1)).setTextColor(Color.parseColor("#57000000"));
                 ((ImageView) layout.findViewById(R.id.imageView)).setImageBitmap(unselectedCircle);
             }
+            TextView tv = (TextView) view.findViewById(R.id.text1);
+            ImageView imgv = (ImageView) view.findViewById(R.id.imageView);
+            imgv.setImageBitmap(selectedCircle);
+            tv.setTextColor(getResources().getColor(R.color.colorPrimary2));
             lastPosition = position;
             mDrawerAdapter.selected = position;
             String[] Options = getResources().getStringArray(R.array.options);

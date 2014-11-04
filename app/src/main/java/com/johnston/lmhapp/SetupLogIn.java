@@ -149,6 +149,7 @@ public class SetupLogIn extends Fragment {
         int radius = size / 2;
         Paint paint = new Paint();
         paint.setARGB(255, r, g, b);
+        paint.setAntiAlias(true);
         c.drawCircle(radius, radius, radius, paint);
         ImageView img = (ImageView) view.findViewById(R.id.ledColour);
         img.setImageBitmap(bmp);
