@@ -13,15 +13,16 @@
         android:layout_centerVertical="true" />
 
     <TextView
+        android:text="Testing"
         android:layout_marginLeft="72dp"
         android:layout_marginRight="16dp"
         android:id="@+id/text1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-    android:gravity="center_vertical"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
         android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
-    android:textColor="#57000000" />
+        android:textSize="14sp" />
 
 </RelativeLayout>

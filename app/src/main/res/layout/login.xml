@@ -57,7 +57,8 @@
                 android:onClick="SaveAccount"
                 android:text="@string/save"
                 android:background="?attr/colorAccent"
-                android:textColor="#ffffff" />
+                android:textColor="#ffffff"
+                android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
         </FrameLayout>
 
         <CheckBox
