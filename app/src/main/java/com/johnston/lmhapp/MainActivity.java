@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -15,6 +16,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -39,6 +41,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.CookieHandler;
@@ -175,6 +178,8 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void SaveAccount(View v) {
+
+//        Save the account
         EditText passwordView = (EditText) findViewById(R.id.Password);
         String password = passwordView.getText().toString();
         EditText usernameView = (EditText) findViewById(R.id.Username);
@@ -188,6 +193,22 @@ public class MainActivity extends ActionBarActivity {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         editor.commit();
+
+//      Create the custom graphic.
+        final Handler handler = new Handler() {
+            @Override
+            public void handleMessage(Message message) {
+                Bitmap bitmap = (Bitmap) message.obj;
+                ((ImageView) findViewById(R.id.graphic)).setImageBitmap(bitmap);
+            }
+        };
+        int sizex = (int) ((findViewById(R.id.graphic)).getWidth() * 1.1);
+//        Make the sizex an even number.
+        sizex = (sizex / 2) * 2;
+        System.out.println("sizex" + sizex);
+        int sizey = sizex / 2;
+        new imageGenerator().execute(username, handler, sizex, sizey, this.getApplicationContext());
+
     }
 
     public void showPassword(View v) {
@@ -292,6 +313,15 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+//
+//
+        File file = new File(getFilesDir(), "CustomGraphic.png");
+        if (file != null) {
+            ((ImageView) findViewById(R.id.graphic)).setImageBitmap(BitmapFactory.decodeFile(file.getAbsolutePath()));
+        }
+
+
 //      Cookie Manager
 
         selectedCircle = drawCircle(getResources().getColor(R.color.colorPrimary2));

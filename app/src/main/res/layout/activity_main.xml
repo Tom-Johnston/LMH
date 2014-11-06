@@ -34,8 +34,9 @@
         android:layout_gravity="start"
         android:background="@color/background_material_light">
 
-        <TextView
-            android:layout_height="50dp"
+        <ImageView
+            android:id="@+id/graphic"
+            android:layout_height="wrap_content"
             android:layout_width="match_parent" />
 
         <ListView
