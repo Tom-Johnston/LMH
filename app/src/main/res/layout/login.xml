@@ -136,7 +136,7 @@
                 android:layout_alignTop="@+id/soundText"
                 android:onClick="notificationSound"
                 android:scaleType="fitCenter"
-                android:src="@drawable/ic_action_volume_on"
+                android:src="@drawable/ic_volume"
                 android:id="@+id/imageView" />
 
             <TextView

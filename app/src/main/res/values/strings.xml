@@ -59,10 +59,10 @@
     <string name="dinner">Dinner</string>
     <string-array name="iconNames">
         <item>ic_home</item>
-        <item>Circle</item>
+        <item>ic_laundry</item>
         <item>ic_coins</item>
         <item>ic_payment</item>
-        <item>Circle</item>
+        <item>ic_meal_menu</item>
         <item>ic_settings</item>
     </string-array>
 </resources>
