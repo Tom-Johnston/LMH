@@ -163,6 +163,8 @@ public class MainActivity extends ActionBarActivity {
             new GetEpos().execute(manager, view, handler);
         } else if (Type == 2) {
             new Battels().execute(sslContext, view, handler);
+        } else if (Type == 3) {
+            new NameGrabber().execute(sslContext, this.getApplicationContext(), handler);
         }
     }
 
@@ -207,7 +209,17 @@ public class MainActivity extends ActionBarActivity {
         System.out.println("sizex" + sizex);
         int sizey = sizex / 2;
         new imageGenerator().execute(username, handler, sizex, sizey, this.getApplicationContext());
-
+        Byte three = 3;
+        final Handler nameHandler = new Handler() {
+            @Override
+            public void handleMessage(Message message) {
+                String name = (String) message.obj;
+                ((TextView) findViewById(R.id.name)).setText(name);
+            }
+        };
+        TextView usernameTextView = (TextView) findViewById(R.id.username);
+        usernameTextView.setText(username);
+        getInfo(null, nameHandler, three);
     }
 
     public void showPassword(View v) {
@@ -240,7 +252,10 @@ public class MainActivity extends ActionBarActivity {
 
     public void LogInView() {
         SharedPreferences LogIn = getSharedPreferences("LogIn", 0);
-        TextView Status = (TextView) view.findViewById(R.id.Status);
+        TextView Status = null;
+        if (view != null) {
+            Status = (TextView) view.findViewById(R.id.Status);
+        }
         if (LogIn.contains("Username") && LogIn.contains("Password")) {
             String username = LogIn.getString("Username", "Fail");
             String password = LogIn.getString("Password", "Fail");
