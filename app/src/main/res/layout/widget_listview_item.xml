@@ -9,6 +9,4 @@
     android:clickable="false"
     android:enabled="true"
     android:focusable="false"
-    android:textColor="#de000000" />
-
-    <!--</LinearLayout>-->
+    android:textColor="#8a000000" />

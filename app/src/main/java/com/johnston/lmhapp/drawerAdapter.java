@@ -50,23 +50,23 @@ public class drawerAdapter extends ArrayAdapter<String> {
         int id;
 
         if (position == selected) {
-            if (iconNames[position].equals("Circle")){
+            if (iconNames[position].equals("Circle")) {
                 circle.setImageBitmap(selectedCircle);
-            }else{
-                id = context.getResources().getIdentifier(iconNames[position]+"_blue","drawable","com.johnston.lmhapp");
+            } else {
+                id = context.getResources().getIdentifier(iconNames[position] + "_blue", "drawable", "com.johnston.lmhapp");
                 circle.setImageDrawable(context.getResources().getDrawable(id));
             }
 
             body.setTextColor(Color.parseColor("#002147"));
             //TODO change the above line.
         } else {
-            if (iconNames[position].equals("Circle")){
+            if (iconNames[position].equals("Circle")) {
                 circle.setImageBitmap(unselectedCircle);
-            }else{
-                id = context.getResources().getIdentifier(iconNames[position],"drawable","com.johnston.lmhapp");
+            } else {
+                id = context.getResources().getIdentifier(iconNames[position], "drawable", "com.johnston.lmhapp");
                 circle.setImageDrawable(context.getResources().getDrawable(id));
             }
-            body.setTextColor(Color.parseColor("#57000000"));
+            body.setTextColor(Color.parseColor("#de000000"));
         }
 
 

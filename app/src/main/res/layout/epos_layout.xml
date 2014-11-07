@@ -39,9 +39,8 @@
         android:gravity="left"
         android:text="@string/pound"
         android:textSize="20sp"
-        android:freezesText="true"/>
-        <!--android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"-->
-
+        android:freezesText="true"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
 
         <TextView
         android:id="@+id/TokenTitle"
@@ -62,8 +61,8 @@
         android:gravity="left"
         android:text="£"
         android:textSize="20sp"
-        android:freezesText="true"/>
-        <!--android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"-->
+        android:freezesText="true"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
 
 
         <TextView
@@ -74,9 +73,8 @@
         android:gravity="left"
         android:padding="10dp"
         android:text="@string/last_updated"
-            android:textSize="20sp" />
-        <!--android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"-->
-
+            android:textSize="20sp"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
 
         <TextView
         android:id="@+id/DateBalance"

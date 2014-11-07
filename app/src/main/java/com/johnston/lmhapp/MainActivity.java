@@ -12,7 +12,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.media.Image;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -342,9 +341,8 @@ public class MainActivity extends ActionBarActivity {
         name.setText(LogIn.getString("Name", ""));
 
 
-
         selectedCircle = drawCircle(getResources().getColor(R.color.colorPrimary2));
-        unselectedCircle = drawCircle(Color.parseColor("#57000000"));
+        unselectedCircle = drawCircle(Color.parseColor("#de000000"));
         System.out.println("Color: " + getResources().getColor(R.color.colorPrimary2));
 
 
@@ -508,23 +506,23 @@ public class MainActivity extends ActionBarActivity {
             String[] iconNames = getResources().getStringArray(R.array.iconNames);
             if (lastPosition >= parent.getFirstVisiblePosition()) {
                 View layout = parent.getChildAt(lastPosition - parent.getFirstVisiblePosition());
-                ((TextView) layout.findViewById(R.id.text1)).setTextColor(Color.parseColor("#57000000"));
+                ((TextView) layout.findViewById(R.id.text1)).setTextColor(Color.parseColor("#de000000"));
                 ImageView imageView = (ImageView) layout.findViewById(R.id.imageView);
-                if (iconNames[lastPosition].equals("Circle")){
+                if (iconNames[lastPosition].equals("Circle")) {
                     imageView.setImageBitmap(unselectedCircle);
-                }else{
+                } else {
 
-                    int drawableId = getResources().getIdentifier(iconNames[lastPosition],"drawable","com.johnston.lmhapp");
+                    int drawableId = getResources().getIdentifier(iconNames[lastPosition], "drawable", "com.johnston.lmhapp");
                     imageView.setImageDrawable(getResources().getDrawable(drawableId));
                 }
             }
             TextView tv = (TextView) view.findViewById(R.id.text1);
             ImageView imgv = (ImageView) view.findViewById(R.id.imageView);
-            if (iconNames[position].equals("Circle")){
+            if (iconNames[position].equals("Circle")) {
                 imgv.setImageBitmap(selectedCircle);
-            }else{
+            } else {
 
-                int drawableId = getResources().getIdentifier(iconNames[position]+"_blue","drawable","com.johnston.lmhapp");
+                int drawableId = getResources().getIdentifier(iconNames[position] + "_blue", "drawable", "com.johnston.lmhapp");
                 imgv.setImageDrawable(getResources().getDrawable(drawableId));
             }
             tv.setTextColor(getResources().getColor(R.color.colorPrimary2));

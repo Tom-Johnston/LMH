@@ -78,7 +78,7 @@
             android:layout_height="5dp"
             android:layout_below="@+id/saveButtonLayout"
             android:layout_margin="5dp"
-            android:background="#0C000000" />
+            android:background="#1f000000" />
 
         <android.support.v7.widget.SwitchCompat
             android:id="@+id/switchNotifications"

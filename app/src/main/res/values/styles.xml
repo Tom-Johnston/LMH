@@ -2,6 +2,7 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:textColor">#de000000</item>
         <item name="android:colorPrimary">@color/colorPrimary2</item>
         <item name="android:colorAccent">@color/colorAccent</item>
         <item name="android:colorPrimaryDark">#001123</item>
@@ -19,7 +20,7 @@
     </style>
 
     <style name="currentMenuTitle" parent="@android:style/TextAppearance.DeviceDefault.Medium">
-        <item name="android:textColor">#57000000</item>
+        <item name="android:textColor">#de000000</item>
         <item name="android:background">#FFFFFFFF</item>
         <item name="android:textSize">20sp</item>
     </style>
@@ -31,7 +32,7 @@
     </style>
 
     <style name="currentMenuBody" parent="@android:style/TextAppearance.DeviceDefault">
-        <item name="android:textColor">#57000000</item>
+        <item name="android:textColor">#de000000</item>
         <item name="android:background">#FFFFFFFF</item>
         <item name="android:textSize">14sp</item>
     </style>

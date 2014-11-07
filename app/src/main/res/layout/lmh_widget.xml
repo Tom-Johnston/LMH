@@ -14,7 +14,7 @@
         android:layout_marginBottom="2dp"
         android:layout_marginLeft="2dp"
         android:textSize="16sp"
-        android:textColor="#57000000"
+        android:textColor="#8a000000"
         android:textAppearance="@android:style/TextAppearance.Medium" />
 
     <TextView
@@ -41,7 +41,7 @@
         android:layout_toRightOf="@+id/divider"
         android:text="@string/meal"
         android:textSize="16sp"
-        android:textColor="#57000000" />
+        android:textColor="#8a000000" />
 
     <TextView
         android:id="@+id/divider2"
@@ -63,7 +63,6 @@
         android:fadingEdgeLength="0dp"
         android:overScrollMode="never"
         android:paddingLeft="5dp"
-        android:paddingRight="5dp"
-        android:textColor="#36000000"/>
+        android:paddingRight="5dp" />
 
 </RelativeLayout>
