@@ -57,4 +57,12 @@
     <string name="changeCustom">Change Custom</string>
     <string name="lunch">Lunch</string>
     <string name="dinner">Dinner</string>
+    <string-array name="iconNames">
+        <item>Circle</item>
+        <item>Circle</item>
+        <item>Circle</item>
+        <item>Circle</item>
+        <item>Circle</item>
+        <item>ic_settings</item>
+    </string-array>
 </resources>

@@ -22,6 +22,7 @@ public class drawerAdapter extends ArrayAdapter<String> {
     public int selected = 0;
     Bitmap selectedCircle;
     Bitmap unselectedCircle;
+    String[] iconNames;
 
 
     public drawerAdapter(Context passedcontext, int passedresource, List<String> passedobjects, Bitmap passedSelectedCircle, Bitmap passedUnselectedCircle) {
@@ -31,6 +32,7 @@ public class drawerAdapter extends ArrayAdapter<String> {
         objects = passedobjects;
         selectedCircle = passedSelectedCircle;
         unselectedCircle = passedUnselectedCircle;
+        iconNames = context.getResources().getStringArray(R.array.iconNames);
     }
 
 
@@ -44,12 +46,26 @@ public class drawerAdapter extends ArrayAdapter<String> {
         TextView body = (TextView) convertView.findViewById(R.id.text1);
         ImageView circle = (ImageView) convertView.findViewById(R.id.imageView);
         body.setText(data);
+
+        int id;
+
         if (position == selected) {
-            circle.setImageBitmap(selectedCircle);
+            if (iconNames[position].equals("Circle")){
+                circle.setImageBitmap(selectedCircle);
+            }else{
+                id = context.getResources().getIdentifier(iconNames[position]+"_blue","drawable","com.johnston.lmhapp");
+                circle.setImageDrawable(context.getResources().getDrawable(id));
+            }
+
             body.setTextColor(Color.parseColor("#002147"));
             //TODO change the above line.
         } else {
-            circle.setImageBitmap(unselectedCircle);
+            if (iconNames[position].equals("Circle")){
+                circle.setImageBitmap(unselectedCircle);
+            }else{
+                id = context.getResources().getIdentifier(iconNames[position],"drawable","com.johnston.lmhapp");
+                circle.setImageDrawable(context.getResources().getDrawable(id));
+            }
             body.setTextColor(Color.parseColor("#57000000"));
         }
 
