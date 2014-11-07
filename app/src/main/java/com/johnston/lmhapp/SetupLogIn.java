@@ -8,18 +8,18 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.widget.SwitchCompat;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
-import android.support.v7.widget.SwitchCompat;
-import android.widget.ToggleButton;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -79,7 +79,7 @@ public class SetupLogIn extends Fragment {
         drawCircle(r, g, b);
 
         spinner = (Spinner) view.findViewById(R.id.vibrations);
-        adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, vibrationStrings);
+        adapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_item, vibrationStrings);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
         SharedPreferences vibratePattern = this.getActivity().getSharedPreferences("vibratePattern", 0);
@@ -104,8 +104,8 @@ public class SetupLogIn extends Fragment {
 
 
         SharedPreferences mealsToNotifyFor = getActivity().getSharedPreferences("mealsToNotifyFor", 0);
-        ToggleButton Lunch = (ToggleButton) view.findViewById(R.id.toggleLunch);
-        ToggleButton Dinner = (ToggleButton) view.findViewById(R.id.toggleDinner);
+        CheckBox Lunch = (CheckBox) view.findViewById(R.id.toggleLunch);
+        CheckBox Dinner = (CheckBox) view.findViewById(R.id.toggleDinner);
         Lunch.setChecked(mealsToNotifyFor.getBoolean("Lunch", true));
         Dinner.setChecked(mealsToNotifyFor.getBoolean("Dinner", true));
 

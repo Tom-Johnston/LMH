@@ -129,14 +129,15 @@
                 android:textSize="24sp" />
 
             <ImageView
+                android:layout_marginRight="20dp"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_alignParentRight="true"
                 android:layout_alignTop="@+id/soundText"
-                android:layout_toRightOf="@+id/soundText"
                 android:onClick="notificationSound"
                 android:scaleType="fitCenter"
-                android:src="@drawable/ic_action_volume_on" />
+                android:src="@drawable/ic_action_volume_on"
+                android:id="@+id/imageView" />
 
             <TextView
                 android:id="@+id/LEDText"
@@ -150,28 +151,26 @@
 
 
             <ImageView
+                android:layout_marginRight="20dp"
                 android:id="@+id/ledColour"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_alignParentRight="true"
                 android:layout_alignTop="@+id/LEDText"
-                android:layout_gravity="center"
-                android:layout_toRightOf="@+id/LEDText"
                 android:onClick="LedSettings"
                 android:scaleType="fitCenter" />
 
-            <ToggleButton
+            <CheckBox
                 android:id="@+id/toggleLunch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/LEDText"
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="10dp"
-                android:textOff="@string/lunch"
-                android:textOn="@string/lunch"
+                android:text="@string/lunch"
                 android:onClick="toggleMealNotification" />
 
-            <ToggleButton
+            <CheckBox
                 android:id="@+id/toggleDinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -179,9 +178,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="10dp"
                 android:layout_toRightOf="@+id/toggleLunch"
-                android:text="New ToggleButton"
-                android:textOff="@string/dinner"
-                android:textOn="@string/dinner"
+                android:text="@string/dinner"
                 android:onClick="toggleMealNotification" />
 
         </RelativeLayout>

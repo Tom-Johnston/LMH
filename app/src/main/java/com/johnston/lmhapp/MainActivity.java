@@ -38,7 +38,6 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -83,10 +82,10 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void toggleMealNotification(View v) {
-        ToggleButton button = (ToggleButton) v;
+        CheckBox button = (CheckBox) v;
         SharedPreferences mealsToNotifyFor = getSharedPreferences("mealsToNotifyFor", 0);
         SharedPreferences.Editor editor = mealsToNotifyFor.edit();
-        editor.putBoolean(button.getTextOn().toString(), button.isChecked());
+        editor.putBoolean(button.getText().toString(), button.isChecked());
 //        Replace an existing notification..
         Intent intent = new Intent(this, NotificationsService.class);
         this.sendBroadcast(intent);
@@ -320,6 +319,11 @@ public class MainActivity extends ActionBarActivity {
         if (file != null) {
             ((ImageView) findViewById(R.id.graphic)).setImageBitmap(BitmapFactory.decodeFile(file.getAbsolutePath()));
         }
+        TextView username = (TextView) findViewById(R.id.username);
+        TextView name = (TextView) findViewById(R.id.name);
+        SharedPreferences LogIn = getSharedPreferences("LogIn", 0);
+        username.setText(LogIn.getString("Username", ""));
+        name.setText(LogIn.getString("Name", ""));
 
 
 //      Cookie Manager

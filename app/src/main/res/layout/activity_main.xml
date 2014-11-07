@@ -27,28 +27,51 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="304dp"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:layout_gravity="start"
-        android:background="@color/background_material_light">
+        android:background="@color/background_material_light"
+        android:fitsSystemWindows="true">
 
         <ImageView
+            android:adjustViewBounds="true"
             android:id="@+id/graphic"
             android:layout_height="wrap_content"
             android:layout_width="match_parent" />
+
+        <TextView
+            android:id="@+id/name"
+            android:textColor="#ffffff"
+            android:text="Tom Johnston"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
+            android:textSize="20sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/username"
+            android:layout_marginLeft="16dp" />
+
+        <TextView
+            android:id="@+id/username"
+            android:textColor="#ffffff"
+            android:text="Username"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
+            android:textSize="16sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/graphic"
+            android:layout_marginLeft="16dp"
+            android:layout_marginBottom="8dp" />
+
 
         <ListView
             android:id="@+id/left_drawer"
             android:layout_width="304dp"
             android:layout_height="match_parent"
             android:choiceMode="singleChoice"
-            android:fitsSystemWindows="true"
+            android:layout_below="@+id/graphic"
             android:divider="@android:color/transparent"
             android:dividerHeight="0dp" />
-        <!--android:background="@drawable/menu_dropdown_panel_"/>-->
-        <!--android:background="#193658"-->
 
-    </LinearLayout>
+    </RelativeLayout>
 </android.support.v4.widget.DrawerLayout>

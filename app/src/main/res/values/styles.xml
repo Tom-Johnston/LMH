@@ -3,10 +3,10 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:colorPrimary">@color/colorPrimary2</item>
-        <item name="android:colorAccent">@color/colorPrimary2</item>
+        <item name="android:colorAccent">@color/colorAccent</item>
         <item name="android:colorPrimaryDark">#001123</item>
         <item name="colorPrimary">@color/colorPrimary2</item>
-        <item name="colorAccent">@color/colorPrimary2</item>
+        <item name="colorAccent">@color/colorAccent</item>
         <item name="colorPrimaryDark">#001123</item>
 
     </style>

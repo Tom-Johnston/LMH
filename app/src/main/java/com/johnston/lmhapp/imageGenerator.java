@@ -41,7 +41,8 @@ public class imageGenerator extends AsyncTask<Object, Void, Void> {
             sizex = 2 * sizey;
         }
 
-        int numberOfIterationsToDo = (int) (2 * Math.log(sizex) / Math.log(5)) - 5;
+        int numberOfIterationsToDo = (int) ((2 * Math.log(sizex) / Math.log(5)) - 5);
+        System.out.println(2 * Math.log(sizex) / Math.log(5));
         if (numberOfIterationsToDo < 1) {
             numberOfIterationsToDo = 1;
         }
@@ -64,7 +65,7 @@ public class imageGenerator extends AsyncTask<Object, Void, Void> {
         for (int i = 0; i < username.length(); i++) {
             binary = binary + (Integer.toBinaryString(username.charAt(i)));
         }
-        int necessaryBinaryLength = (int) (Math.pow(5, numberOfIterationsToDo));
+        int necessaryBinaryLength = (int) (2 * Math.pow(5, numberOfIterationsToDo));
         int binaryLength = binary.length();
         if (necessaryBinaryLength > binary.length()) {
             int binaryInt;
@@ -86,7 +87,7 @@ public class imageGenerator extends AsyncTask<Object, Void, Void> {
         System.out.println("Binary Length:" + binary.length());
 
 
-//        Starting triangle
+//        Starting bottom triangle
         ArrayList<Triangle> triangles = new ArrayList<Triangle>();
         Triangle triangle = new Triangle();
         triangle.x1 = 0;
@@ -97,6 +98,17 @@ public class imageGenerator extends AsyncTask<Object, Void, Void> {
         triangle.y3 = sizey;
         triangles.add(triangle);
 
+// Starting top triangle
+        triangle = new Triangle();
+        triangle.x1 = sizex;
+        triangle.y1 = sizey;
+        triangle.x2 = 0;
+        triangle.y2 = sizey;
+        triangle.x3 = sizex;
+        triangle.y3 = 0;
+        triangles.add(triangle);
+
+
         for (int j = 0; j < numberOfIterationsToDo; j++) {
             triangles = NextIteration(triangles);
         }
@@ -105,12 +117,23 @@ public class imageGenerator extends AsyncTask<Object, Void, Void> {
         System.out.println("Added all the traingles");
         System.out.println("There are: " + triangles.size());
 
-
+        Paint bottomLeftFillPaint1 = new Paint();
+        bottomLeftFillPaint1.setColor(Color.parseColor("#002147"));
+        bottomLeftFillPaint1.setStyle(Paint.Style.FILL);
+        bottomLeftFillPaint1.setAntiAlias(true);
+        Paint bottomLeftFillPaint2 = new Paint();
+        bottomLeftFillPaint2.setColor(Color.parseColor("#001123"));
+        bottomLeftFillPaint2.setStyle(Paint.Style.FILL);
+        Paint bottomLeftStrokePaint = new Paint();
+        bottomLeftStrokePaint.setColor(Color.parseColor("#003D81"));
+        bottomLeftStrokePaint.setStyle(Paint.Style.STROKE);
+        bottomLeftStrokePaint.setAntiAlias(true);
+        bottomLeftStrokePaint.setStrokeWidth(2);
         Paint strokePaint = new Paint();
         strokePaint.setColor(Color.BLACK);
         strokePaint.setStyle(Paint.Style.STROKE);
         strokePaint.setAntiAlias(true);
-        strokePaint.setStrokeWidth(5);
+        strokePaint.setStrokeWidth(4);
         Paint fillPaint = new Paint();
         fillPaint.setStyle(Paint.Style.FILL);
         fillPaint.setColor(color[0]);
@@ -118,7 +141,28 @@ public class imageGenerator extends AsyncTask<Object, Void, Void> {
         Bitmap bmp = Bitmap.createBitmap(sizex, sizey, conf);
         Canvas c = new Canvas(bmp);
         int i;
-        for (i = 0; i < triangles.size(); i++) {
+
+        for (i = 0; i < triangles.size() / 2; i++) {
+            triangle = triangles.get(i);
+            Path path = new Path();
+            path.setFillType(Path.FillType.EVEN_ODD);
+            path.moveTo(triangle.x1, triangle.y1);
+            path.lineTo(triangle.x2, triangle.y2);
+            path.lineTo(triangle.x3, triangle.y3);
+//            System.out.println(triangle.x1 + "//" + triangle.y1 + "??" + triangle.x2 + "//" + triangle.y2 + "??" + triangle.x3 + "//" + triangle.y3);
+            path.close();
+
+            if (binary.charAt(i) == '1') {
+                c.drawPath(path, bottomLeftFillPaint2);
+            } else {
+                c.drawPath(path, bottomLeftFillPaint1);
+            }
+            c.drawPath(path, bottomLeftStrokePaint);
+
+        }
+
+
+        for (i = triangles.size() / 2; i < triangles.size(); i++) {
             if (binary.charAt(i) == '1') {
                 fillPaint.setColor(color[i % 9]);
             }
