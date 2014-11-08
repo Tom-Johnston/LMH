@@ -14,9 +14,9 @@
    version="1.1"
    inkscape:version="0.48.5 r10040"
    sodipodi:docname="ic_meal_menu_blue.svg"
-   inkscape:export-filename="C:\Users\Tom\Google Drive\LMH App Files\mdpi\ic_meal_menu_blue.png"
-   inkscape:export-xdpi="60"
-   inkscape:export-ydpi="60">
+   inkscape:export-filename="D:\Documents\Development\GitHub\LMH\app\src\main\res\drawable-xxhdpi\ic_meal_menu_blue.png"
+   inkscape:export-xdpi="180"
+   inkscape:export-ydpi="180">
   <metadata
      id="metadata12">
     <rdf:RDF>
@@ -25,7 +25,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>

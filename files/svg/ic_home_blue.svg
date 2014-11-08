@@ -13,7 +13,10 @@
    id="svg2997"
    version="1.1"
    inkscape:version="0.48.5 r10040"
-   sodipodi:docname="ic_home_blue.svg">
+   sodipodi:docname="ic_home_blue.svg"
+   inkscape:export-filename="D:\Documents\Development\GitHub\LMH\app\src\main\res\drawable-xxhdpi\ic_home_blue.png"
+   inkscape:export-xdpi="180"
+   inkscape:export-ydpi="180">
   <metadata
      id="metadata3007">
     <rdf:RDF>
@@ -22,7 +25,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
