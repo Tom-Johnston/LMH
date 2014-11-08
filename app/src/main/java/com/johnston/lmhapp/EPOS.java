@@ -26,6 +26,7 @@ public class EPOS extends Fragment {
         @Override
         public void handleMessage(Message message) {
             ListView lv = (ListView) view.findViewById(R.id.transactionsListView);
+            (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
             Context context = getActivity().getBaseContext();
             transactions = (ArrayList<String>) message.obj;
             MenuAdapter adapter = new MenuAdapter(context, R.layout.listview, transactions);
@@ -35,6 +36,7 @@ public class EPOS extends Fragment {
     };
 
     public void GetEpos() {
+        (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
         finished = false;
         byte b = 1;
         Main.getInfo(view, handler, b);

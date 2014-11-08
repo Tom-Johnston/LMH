@@ -430,6 +430,9 @@ public class MainActivity extends ActionBarActivity {
         } else if (fragmentType.equals(Options[0])) {
             HomeFragment fragment = (HomeFragment) fragment1;
             fragment.loadTweeterFeed();
+        }else if(fragmentType.equals(Options[2])){
+            BattelsFragment fragment = (BattelsFragment) fragment1;
+            fragment.LoadBattels();
         }
 
     }

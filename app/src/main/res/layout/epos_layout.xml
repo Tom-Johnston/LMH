@@ -4,12 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:elevation="2dp">
-
-        <TextView
+    <TextView
         android:id="@+id/Status"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -20,11 +15,34 @@
         android:textColor="@color/abc_search_url_text_holo"
         android:freezesText="true"/>
 
+    <RelativeLayout
+        android:id="@+id/progressBar"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center">
+
+
+        <ProgressBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:keepScreenOn="true"
+            />
+
+    </RelativeLayout>
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="2dp">
+
+
+
     <TextView
         android:id="@+id/AccountTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/Status"
         android:gravity="left"
         android:padding="10dp"
         android:text="@string/account_balance"

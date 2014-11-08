@@ -41,11 +41,7 @@ public class imageGenerator extends AsyncTask<Object, Void, Void> {
             sizex = 2 * sizey;
         }
 
-        int numberOfIterationsToDo = (int) ((2 * Math.log(sizex) / Math.log(5)) - 5);
-        System.out.println(2 * Math.log(sizex) / Math.log(5));
-        if (numberOfIterationsToDo < 1) {
-            numberOfIterationsToDo = 1;
-        }
+        int numberOfIterationsToDo = 3;
 
         int[] color = new int[9];
         color[0] = (Color.parseColor("#BA68C8"));
