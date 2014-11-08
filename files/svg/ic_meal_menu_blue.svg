@@ -12,8 +12,8 @@
    viewBox="0 0 48 48"
    id="svg2"
    version="1.1"
-   inkscape:version="0.48.4 r9939"
-   sodipodi:docname="ic_meal_menu.svg"
+   inkscape:version="0.48.5 r10040"
+   sodipodi:docname="ic_meal_menu_blue.svg"
    inkscape:export-filename="C:\Users\Tom\Google Drive\LMH App Files\mdpi\ic_meal_menu_blue.png"
    inkscape:export-xdpi="60"
    inkscape:export-ydpi="60">
@@ -25,7 +25,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -40,12 +40,12 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1366"
-     inkscape:window-height="706"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
      id="namedview8"
      showgrid="false"
      inkscape:zoom="4.9166667"
-     inkscape:cx="-7.7288136"
+     inkscape:cx="-39.457627"
      inkscape:cy="24"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
@@ -58,5 +58,5 @@
   <path
      d="M16.2 26.69l5.66-5.66-14.03-14.03c-3.12 3.12-3.12 8.19 0 11.31l8.37 8.38zm13.57-3.63c3.05 1.43 7.36.42 10.54-2.76 3.83-3.83 4.56-9.3 1.63-12.23-2.94-2.93-8.42-2.2-12.24 1.63-3.18 3.18-4.18 7.49-2.76 10.54-4.45 4.44-19.53 19.52-19.53 19.52l2.83 2.83 13.76-13.76 13.76 13.76 2.83-2.83-13.76-13.76 2.94-2.94z"
      id="path6"
-     style="fill:#002147;fill-opacity:1;stroke:none;stroke-opacity:1" />
+     style="fill:#030d80;fill-opacity:1;stroke:none;stroke-opacity:1" />
 </svg>

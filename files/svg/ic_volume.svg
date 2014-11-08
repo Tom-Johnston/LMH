@@ -12,9 +12,9 @@
    viewBox="0 0 48 48"
    id="svg2"
    version="1.1"
-   inkscape:version="0.48.4 r9939"
+   inkscape:version="0.48.5 r10040"
    sodipodi:docname="ic_volume.svg"
-   inkscape:export-filename="C:\Users\Tom\Google Drive\LMH App Files\xxhdpi\ic_volume.png"
+   inkscape:export-filename="D:\Documents\Development\GitHub\LMH\app\src\main\res\drawable-xxhdpi\ic_volume.png"
    inkscape:export-xdpi="180"
    inkscape:export-ydpi="180">
   <metadata
@@ -40,12 +40,12 @@
      guidetolerance="10"
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
-     inkscape:window-width="1366"
-     inkscape:window-height="706"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
      id="namedview8"
      showgrid="false"
      inkscape:zoom="4.9166667"
-     inkscape:cx="-7.7288136"
+     inkscape:cx="-39.457627"
      inkscape:cy="24"
      inkscape:window-x="-8"
      inkscape:window-y="-8"
@@ -54,7 +54,7 @@
   <path
      d="M6 18v12h8l10 10V8L14 18H6zm27 6c0-3.53-2.04-6.58-5-8.05v16.11c2.96-1.48 5-4.53 5-8.06zM28 6.46v4.13c5.78 1.72 10 7.07 10 13.41s-4.22 11.69-10 13.41v4.13c8.01-1.82 14-8.97 14-17.54S36.01 8.28 28 6.46z"
      id="path4"
-     style="stroke:#2962ff;stroke-opacity:0.94117647000000004;fill:#2962ff;fill-opacity:1" />
+     style="stroke:#030d80;stroke-opacity:1;fill:#030d80;fill-opacity:1" />
   <path
      d="M0 0h48v48H0z"
      fill="none"

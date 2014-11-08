@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Created by Tom on 03/11/2014.
  */
-public class drawerAdapter extends ArrayAdapter<String> {
+public class DrawerAdapter extends ArrayAdapter<String> {
     final int resource;
     final Context context;
     final List<String> objects;
@@ -25,7 +25,7 @@ public class drawerAdapter extends ArrayAdapter<String> {
     String[] iconNames;
 
 
-    public drawerAdapter(Context passedcontext, int passedresource, List<String> passedobjects, Bitmap passedSelectedCircle, Bitmap passedUnselectedCircle) {
+    public DrawerAdapter(Context passedcontext, int passedresource, List<String> passedobjects, Bitmap passedSelectedCircle, Bitmap passedUnselectedCircle) {
         super(passedcontext, passedresource, passedobjects);
         resource = passedresource;
         context = passedcontext;

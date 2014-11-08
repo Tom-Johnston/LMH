@@ -27,7 +27,7 @@ import java.util.Arrays;
 /**
  * Created by Tom on 08/08/2014.
  */
-public class SetupLogIn extends Fragment {
+public class SettingsFragment extends Fragment {
     final Handler handler = new Handler() {
         @Override
         public void handleMessage(Message message) {
@@ -73,9 +73,9 @@ public class SetupLogIn extends Fragment {
             notification.setVisibility(LinearLayout.GONE);
         }
         SharedPreferences LEDSettings = this.getActivity().getSharedPreferences("LEDSettings", 0);
-        int r = LEDSettings.getInt("redValue", 0);
-        int g = LEDSettings.getInt("greenValue", 33);
-        int b = LEDSettings.getInt("blueValue", 71);
+        int r = LEDSettings.getInt("redValue", 3);
+        int g = LEDSettings.getInt("greenValue", 13);
+        int b = LEDSettings.getInt("blueValue", 128);
         drawCircle(r, g, b);
 
         spinner = (Spinner) view.findViewById(R.id.vibrations);

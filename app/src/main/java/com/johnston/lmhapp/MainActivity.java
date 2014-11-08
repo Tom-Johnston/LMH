@@ -71,13 +71,13 @@ public class MainActivity extends ActionBarActivity {
     View view;
     int lastPosition = -1;
     SSLContext sslContext = null;
-    drawerAdapter mDrawerAdapter;
+    DrawerAdapter mDrawerAdapter;
     Bitmap selectedCircle;
     Bitmap unselectedCircle;
 
     public void drawCircle(int r, int g, int b) {
         Fragment fragment1 = getFragmentManager().findFragmentById(R.id.Frame);
-        ((SetupLogIn) fragment1).drawCircle(r, g, b);
+        ((SettingsFragment) fragment1).drawCircle(r, g, b);
 
     }
 
@@ -357,7 +357,7 @@ public class MainActivity extends ActionBarActivity {
         String[] Options = getResources().getStringArray(R.array.options);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
-        mDrawerAdapter = new drawerAdapter(this, R.layout.drawer_list_item, Arrays.asList(Options), selectedCircle, unselectedCircle);
+        mDrawerAdapter = new DrawerAdapter(this, R.layout.drawer_list_item, Arrays.asList(Options), selectedCircle, unselectedCircle);
         mDrawerList.setAdapter(mDrawerAdapter);
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
         mDrawerToggle = new ActionBarDrawerToggle(
@@ -549,7 +549,7 @@ public class MainActivity extends ActionBarActivity {
                 newFragment = new MenuFragment();
                 transaction.addToBackStack(Options[position]);
             } else if (position == 5) {
-                newFragment = new SetupLogIn();
+                newFragment = new SettingsFragment();
                 transaction.addToBackStack(Options[position]);
             } else if (position == 2) {
                 newFragment = new BattelsFragment();
