@@ -110,9 +110,7 @@ public class MealMenuWidgetReceiver extends BroadcastReceiver {
 
 
     public String[] constructMenu(BufferedReader br, long time, Context context) throws IOException {
-        SharedPreferences sharedPreferences = context.getSharedPreferences("mealsToNotifyFor", 0);
-        Boolean notifyForLunch = sharedPreferences.getBoolean("Lunch", true);
-        Boolean notifyForDinner = sharedPreferences.getBoolean("Dinner", true);
+
         String inputLine;
         int day = 0;
         String nextMeal = "";
@@ -167,11 +165,6 @@ public class MealMenuWidgetReceiver extends BroadcastReceiver {
                         System.out.println("This One");
                         record = true;
                         Meal = br.readLine();
-                        if (!notifyForLunch && Meal.equals("Lunch")) {
-                            record = false;
-                        } else if (!notifyForDinner && Meal.equals("Dinner")) {
-                            record = false;
-                        }
                         keepDay = day;
                     }
                 }

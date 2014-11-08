@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:elevation="2dp">
+
+        <TextView
         android:id="@+id/Status"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -35,10 +39,10 @@
         android:gravity="left"
         android:text="@string/pound"
         android:textSize="20sp"
-        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
-        android:freezesText="true"/>
+        android:freezesText="true"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
 
-    <TextView
+        <TextView
         android:id="@+id/TokenTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -57,10 +61,11 @@
         android:gravity="left"
         android:text="£"
         android:textSize="20sp"
-        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
-        android:freezesText="true"/>
+        android:freezesText="true"
+        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
 
-    <TextView
+
+        <TextView
         android:id="@+id/DateTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -68,11 +73,10 @@
         android:gravity="left"
         android:padding="10dp"
         android:text="@string/last_updated"
-        android:textSize="20sp"
-        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
-        />
+            android:textSize="20sp"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
 
-    <TextView
+        <TextView
         android:id="@+id/DateBalance"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -82,16 +86,15 @@
         android:text="@string/never_updated"
         android:textSize="16sp"
         android:textStyle="normal"
-        android:freezesText="true"/>
+            android:freezesText="true" />
+    </RelativeLayout>
 
     <ListView
         android:layout_width="match_parent"
-        android:layout_height="0px"
+        android:layout_height="match_parent"
         android:id="@+id/transactionsListView"
-        android:layout_below="@+id/DateTitle"
         android:layout_centerHorizontal="true"
-        android:layout_margin="10dp"
-        android:layout_alignParentBottom="true"
         />
 
-</RelativeLayout>
+
+</LinearLayout>
