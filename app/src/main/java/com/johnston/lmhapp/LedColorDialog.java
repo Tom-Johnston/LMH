@@ -14,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
-
 /**
  * Created by Johnston on 17/09/2014.
  */

@@ -2,30 +2,51 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/Status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:gravity="center"
+        android:text="@string/started"
+        android:textColor="@color/abc_search_url_text_holo"
+        android:freezesText="true"
+        android:layout_centerHorizontal="true" />
+
+    <RelativeLayout
+        android:layout_below="@+id/Status"
+        android:id="@+id/progressBar"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center">
+
+
+        <ProgressBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:keepScreenOn="true"
+            />
+
+    </RelativeLayout>
+
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:id="@+id/BalanceLayout">
+        android:id="@+id/BalanceLayout"
+        android:layout_below="@+id/progressBar">
 
-        <TextView
-            android:id="@+id/Status"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:gravity="center"
-            android:text="@string/started"
-            android:textColor="@color/abc_search_url_text_holo"
-            android:freezesText="true"
-            android:layout_centerHorizontal="true" />
+
 
         <TextView
             android:id="@+id/AccountTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/Status"
+
             android:gravity="left"
             android:padding="10dp"
             android:text="@string/account_balance"
@@ -91,6 +112,7 @@
     </RelativeLayout>
 
     <ListView
+        android:layout_below="@+id/progressBar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/transactionsListView"

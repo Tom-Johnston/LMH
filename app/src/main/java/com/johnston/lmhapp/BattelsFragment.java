@@ -25,6 +25,8 @@ public class BattelsFragment extends Fragment {
         @Override
         public void handleMessage(Message message) {
             ListView lv = (ListView) view.findViewById(R.id.battelsListView);
+            (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
+            lv.setVisibility(View.VISIBLE);
             Context context = getActivity().getBaseContext();
             entries = (ArrayList<String>) message.obj;
             BattelsListAdapter adapter = new BattelsListAdapter(context, R.layout.battels_list_item, entries);
@@ -34,6 +36,8 @@ public class BattelsFragment extends Fragment {
     };
 
     public void LoadBattels() {
+        (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
+        (view.findViewById(R.id.battelsListView)).setVisibility(View.GONE);
         MainActivity main = (MainActivity) this.getActivity();
         byte b = 2;
         main.getInfo(view, handler, b);
