@@ -36,6 +36,7 @@ public class Battels extends AsyncTask<Object, String, Void> {
             battelsConn.setInstanceFollowRedirects(true);
             BufferedReader in = new BufferedReader(new InputStreamReader(battelsConn.getInputStream(), "UTF-8"));
             String inputLine;
+            String Total = "£0.00";
             int start;
             int end;
             byte column = 0;
@@ -70,6 +71,15 @@ public class Battels extends AsyncTask<Object, String, Void> {
                         Entries.add("¬" + inputLine.substring(start + 1, end).trim());
                     }
                 }
+                if (inputLine.contains("</b>") && inTable) {
+                    end = inputLine.indexOf("</b>");
+                    end = inputLine.indexOf("</b>", end + 1);
+                    start = inputLine.lastIndexOf(">", end);
+                    if (start + 1 != end) {
+                        Total = inputLine.substring(start + 1, end).trim();
+                    }
+                }
+
                 if (inputLine.contains("</table>")) {
                     inTable = false;
                 }
@@ -103,6 +113,11 @@ public class Battels extends AsyncTask<Object, String, Void> {
                 }
 
             }
+
+            Entries.add("Total");
+            Entries.add("");
+            Entries.add("");
+            Entries.add(Total);
             publishProgress("Finished");
             handler.obtainMessage(0, Entries).sendToTarget();
             System.out.println(Entries);

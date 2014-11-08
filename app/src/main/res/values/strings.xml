@@ -14,7 +14,7 @@
     <string name="password">Password</string>
     <string name="katie_lee">Katie Lee</string>
     <string name="pound">£</string>
-    <string name="save">Save</string>
+    <string name="save">SAVE</string>
     <string name="screen_name">Screen Name</string>
     <string name="g">G</string>
     <string name="meal">Meal</string>
@@ -57,4 +57,12 @@
     <string name="changeCustom">Change Custom</string>
     <string name="lunch">Lunch</string>
     <string name="dinner">Dinner</string>
+    <string-array name="iconNames">
+        <item>ic_home</item>
+        <item>ic_laundry</item>
+        <item>ic_coins</item>
+        <item>ic_payment</item>
+        <item>ic_meal_menu</item>
+        <item>ic_settings</item>
+    </string-array>
 </resources>

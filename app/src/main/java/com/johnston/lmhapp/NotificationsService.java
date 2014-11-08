@@ -96,7 +96,18 @@ public class NotificationsService extends BroadcastReceiver {
             if (startOfNextMeal == 0) {
                 startOfNextMeal = System.currentTimeMillis() + refreshTime;
             }
-            if (System.currentTimeMillis() + notifyTime > startOfMeal) {
+            SharedPreferences sharedPreferences = context.getSharedPreferences("mealsToNotifyFor", 0);
+            Boolean notifyForLunch = sharedPreferences.getBoolean("Lunch", true);
+            Boolean notifyForDinner = sharedPreferences.getBoolean("Dinner", true);
+            System.out.println("notifyForDinner " + notifyForDinner);
+            Boolean skipNotification = false;
+            if (!notifyForLunch && Meal.equals("Lunch")) {
+                skipNotification = true;
+            } else if (!notifyForDinner && Meal.equals("Dinner")) {
+                skipNotification = true;
+            }
+
+            if (System.currentTimeMillis() + notifyTime > startOfMeal && !skipNotification) {
 //                We are supposed to be showing a notification. This is because this class is called to start the chain of notifications.
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
                 builder.setContentTitle(Meal + " at " + Times);
@@ -149,7 +160,7 @@ public class NotificationsService extends BroadcastReceiver {
                 builder.setStyle(inboxStyle);
                 NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                 mNotificationManager.notify(1, builder.build());
-            } else {
+            } else if (!skipNotification) {
                 startOfNextMeal = startOfMeal;
             }
             System.out.println("Finished");

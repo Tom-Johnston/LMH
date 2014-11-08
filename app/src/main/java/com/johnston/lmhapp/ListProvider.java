@@ -63,7 +63,7 @@ public class ListProvider implements RemoteViewsService.RemoteViewsFactory {
     @Override
     public RemoteViews getViewAt(int position) {
         System.out.println(position);
-        final RemoteViews remoteView = new RemoteViews(context.getPackageName(), R.layout.listview);
+        final RemoteViews remoteView = new RemoteViews(context.getPackageName(), R.layout.widget_listview_item);
 //        LauncherActivity.ListItem listItem = (LauncherActivity.ListItem)listItemList.get(position);
         String option = Options.get(position);
         remoteView.setTextViewText(R.id.ListViewBody, option);

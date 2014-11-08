@@ -1,6 +1,7 @@
 package com.johnston.lmhapp;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,9 +43,20 @@ public class BattelsListAdapter extends ArrayAdapter<String> {
             convertView = inflater.inflate(resource, parent, false);
         }
         position = position * 4;
+
         TextView battelsDate = (TextView) convertView.findViewById(R.id.battelsDate);
         TextView battelsDescription = (TextView) convertView.findViewById(R.id.battelsDescription);
         TextView battelsAmount = (TextView) convertView.findViewById(R.id.battelsAmount);
+
+        if (objects.get(position).equals("Total")) {
+            battelsDate.setTypeface(null, Typeface.BOLD);
+            battelsDescription.setTypeface(null, Typeface.BOLD);
+            battelsAmount.setTypeface(null, Typeface.BOLD);
+        } else {
+            battelsDate.setTypeface(null, Typeface.NORMAL);
+            battelsDescription.setTypeface(null, Typeface.NORMAL);
+            battelsAmount.setTypeface(null, Typeface.NORMAL);
+        }
         battelsDate.setText(objects.get(position));
         battelsDescription.setText(objects.get(position + 2));
         battelsAmount.setText(objects.get(position + 3));

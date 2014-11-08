@@ -7,31 +7,37 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.ActionBarDrawerToggle;
+import android.os.Message;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
 import android.text.InputType;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ToggleButton;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.CookieHandler;
@@ -45,6 +51,7 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.Arrays;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
@@ -61,18 +68,21 @@ public class MainActivity extends ActionBarActivity {
     View view;
     int lastPosition = -1;
     SSLContext sslContext = null;
+    DrawerAdapter mDrawerAdapter;
+    Bitmap selectedCircle;
+    Bitmap unselectedCircle;
 
     public void drawCircle(int r, int g, int b) {
         Fragment fragment1 = getFragmentManager().findFragmentById(R.id.Frame);
-        ((SetupLogIn) fragment1).drawCircle(r, g, b);
+        ((SettingsFragment) fragment1).drawCircle(r, g, b);
 
     }
 
     public void toggleMealNotification(View v) {
-        ToggleButton button = (ToggleButton) v;
+        CheckBox button = (CheckBox) v;
         SharedPreferences mealsToNotifyFor = getSharedPreferences("mealsToNotifyFor", 0);
         SharedPreferences.Editor editor = mealsToNotifyFor.edit();
-        editor.putBoolean(button.getTextOn().toString(), button.isChecked());
+        editor.putBoolean(button.getText().toString(), button.isChecked());
 //        Replace an existing notification..
         Intent intent = new Intent(this, NotificationsService.class);
         this.sendBroadcast(intent);
@@ -124,32 +134,14 @@ public class MainActivity extends ActionBarActivity {
         newFragment.show(getFragmentManager(), "vibrate");
     }
 
-    public void toggleNotifications(View view) {
-        boolean on = ((Switch) view).isChecked();
-        RelativeLayout notification = (RelativeLayout) this.findViewById(R.id.notificationLayout);
-        if (on) {
-            SharedPreferences Notifications = getSharedPreferences("Notifications", 0);
-            SharedPreferences.Editor editor = Notifications.edit();
-            editor.putBoolean("toggle", true);
-            editor.commit();
-            Intent newIntent = new Intent(this, NotificationsService.class);
-            sendBroadcast(newIntent);
-            notification.setVisibility(LinearLayout.VISIBLE);
-
-        } else {
-            SharedPreferences Notifications = getSharedPreferences("Notifications", 0);
-            SharedPreferences.Editor editor = Notifications.edit();
-            editor.putBoolean("toggle", false);
-            editor.commit();
-            notification.setVisibility(LinearLayout.GONE);
-        }
-    }
 
     public void Initialise() {
         if (Type == 1) {
             new GetEpos().execute(manager, view, handler);
         } else if (Type == 2) {
             new Battels().execute(sslContext, view, handler);
+        } else if (Type == 3) {
+            new NameGrabber().execute(sslContext, this.getApplicationContext(), handler);
         }
     }
 
@@ -164,6 +156,8 @@ public class MainActivity extends ActionBarActivity {
     }
 
     public void SaveAccount(View v) {
+
+//        Save the account
         EditText passwordView = (EditText) findViewById(R.id.Password);
         String password = passwordView.getText().toString();
         EditText usernameView = (EditText) findViewById(R.id.Username);
@@ -177,6 +171,32 @@ public class MainActivity extends ActionBarActivity {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         editor.commit();
+
+//      Create the custom graphic.
+        final Handler handler = new Handler() {
+            @Override
+            public void handleMessage(Message message) {
+                Bitmap bitmap = (Bitmap) message.obj;
+                ((ImageView) findViewById(R.id.graphic)).setImageBitmap(bitmap);
+            }
+        };
+        int sizex = (int) ((findViewById(R.id.graphic)).getWidth() * 1.1);
+//        Make the sizex an even number.
+        sizex = (sizex / 2) * 2;
+        System.out.println("sizex" + sizex);
+        int sizey = sizex / 2;
+        new imageGenerator().execute(username, handler, sizex, sizey, this.getApplicationContext());
+        Byte three = 3;
+        final Handler nameHandler = new Handler() {
+            @Override
+            public void handleMessage(Message message) {
+                String name = (String) message.obj;
+                ((TextView) findViewById(R.id.name)).setText(name);
+            }
+        };
+        TextView usernameTextView = (TextView) findViewById(R.id.username);
+        usernameTextView.setText(username);
+        getInfo(null, nameHandler, three);
     }
 
     public void showPassword(View v) {
@@ -209,7 +229,10 @@ public class MainActivity extends ActionBarActivity {
 
     public void LogInView() {
         SharedPreferences LogIn = getSharedPreferences("LogIn", 0);
-        TextView Status = (TextView) view.findViewById(R.id.Status);
+        TextView Status = null;
+        if (view != null) {
+            Status = (TextView) view.findViewById(R.id.Status);
+        }
         if (LogIn.contains("Username") && LogIn.contains("Password")) {
             String username = LogIn.getString("Username", "Fail");
             String password = LogIn.getString("Password", "Fail");
@@ -281,21 +304,43 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+//
+//
+        File file = new File(getFilesDir(), "CustomGraphic.png");
+        if (file != null) {
+            ((ImageView) findViewById(R.id.graphic)).setImageBitmap(BitmapFactory.decodeFile(file.getAbsolutePath()));
+        }
+        TextView username = (TextView) findViewById(R.id.username);
+        TextView name = (TextView) findViewById(R.id.name);
+        SharedPreferences LogIn = getSharedPreferences("LogIn", 0);
+        username.setText(LogIn.getString("Username", ""));
+        name.setText(LogIn.getString("Name", ""));
+
+
+        selectedCircle = drawCircle(getResources().getColor(R.color.colorPrimary2));
+        unselectedCircle = drawCircle(Color.parseColor("#de000000"));
+        System.out.println("Color: " + getResources().getColor(R.color.colorPrimary2));
+
+
+//      Cookie Manager
+
         manager = new CookieManager();
         manager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
         CookieHandler.setDefault(manager);
+//       Drawer/ActionBar
+        Toolbar toolbar = (Toolbar) findViewById(R.id.my_awesome_toolbar);
+        setSupportActionBar(toolbar);
         String[] Options = getResources().getStringArray(R.array.options);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
-        // Set the adapter for the list view
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_list_item, Options));
-        // Set the list's click listener
+        mDrawerAdapter = new DrawerAdapter(this, R.layout.drawer_list_item, Arrays.asList(Options), selectedCircle, unselectedCircle);
+        mDrawerList.setAdapter(mDrawerAdapter);
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
         mDrawerToggle = new ActionBarDrawerToggle(
                 this,                  /* host Activity */
                 mDrawerLayout,         /* DrawerLayout object */
-                R.drawable.ic_drawer,  /* nav drawer icon to replace 'Up' caret */
+                toolbar,  /* nav drawer icon to replace 'Up' caret */
                 R.string.drawer_open,  /* "open drawer" description */
                 R.string.drawer_close  /* "close drawer" description */
         ) {
@@ -303,31 +348,28 @@ public class MainActivity extends ActionBarActivity {
             /** Called when a drawer has settled in a completely closed state. */
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
-                getActionBar().setTitle(mTitle);
+                getSupportActionBar().setTitle(mTitle);
             }
 
             /** Called when a drawer has settled in a completely open state. */
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                getActionBar().setTitle("LMH");
             }
         };
 
         // Set the drawer toggle as the DrawerListener
         mDrawerLayout.setDrawerListener(mDrawerToggle);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setHomeButtonEnabled(true);
+//        Start Menu Fragment if clicked through from widget
         Intent intent = getIntent();
         Boolean LaunchMenu = intent.getBooleanExtra("Launch", false);
         if (LaunchMenu && savedInstanceState == null) {
             mDrawerList.performItemClick(mDrawerList.getAdapter().getView(4, null, null), 4, mDrawerList.getAdapter().getItemId(4));
-
         } else if (savedInstanceState == null) {
             mDrawerList.performItemClick(mDrawerList.getAdapter().getView(0, null, null), 0, mDrawerList.getAdapter().getItemId(0));
-
         } else {
-//            This is if savedIntanceState is not null
             mTitle = savedInstanceState.getString("mTitle");
         }
 
@@ -344,7 +386,7 @@ public class MainActivity extends ActionBarActivity {
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         System.out.println("Should be setting the title");
-        getActionBar().setTitle(mTitle);
+        getSupportActionBar().setTitle(mTitle);
         // Sync the toggle state after onRestoreInstanceState has occurred.
         mDrawerToggle.syncState();
 
@@ -394,27 +436,74 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public void onBackPressed() {
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawers();
+            return;
+        }
         if (lastPosition == 0) {
             this.finish();
         } else {
             System.out.println("BackPressed");
             mDrawerList.performItemClick(mDrawerList.getAdapter().getView(0, null, null), 0, mDrawerList.getAdapter().getItemId(0));
+            String[] Options = getResources().getStringArray(R.array.options);
+            mTitle = Options[0];
+            getSupportActionBar().setTitle(mTitle);
         }
+    }
+
+    public Bitmap drawCircle(int color) {
+        Bitmap.Config conf = Bitmap.Config.ARGB_8888;
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        int size = (int) (24 * metrics.density);
+        Bitmap bmp = Bitmap.createBitmap(size, size, conf);
+        Canvas c = new Canvas(bmp);
+        int radius = size / 2;
+        Paint paint = new Paint();
+        paint.setColor(color);
+        paint.setAntiAlias(true);
+        c.drawCircle(radius, radius, radius, paint);
+        return bmp;
     }
 
     public class DrawerItemClickListener implements ListView.OnItemClickListener {
 
+
         @Override
         public void onItemClick(AdapterView parent, View view, int position, long id) {
+
             System.out.println("Clicked: " + position);
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(parent.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
             System.out.println(mDrawerList.getCheckedItemPosition());
+            mDrawerLayout.closeDrawers();
             if (lastPosition == position) {
-                mDrawerLayout.closeDrawers();
                 return;
             }
+            String[] iconNames = getResources().getStringArray(R.array.iconNames);
+            if (lastPosition >= parent.getFirstVisiblePosition()) {
+                View layout = parent.getChildAt(lastPosition - parent.getFirstVisiblePosition());
+                ((TextView) layout.findViewById(R.id.text1)).setTextColor(Color.parseColor("#de000000"));
+                ImageView imageView = (ImageView) layout.findViewById(R.id.imageView);
+                if (iconNames[lastPosition].equals("Circle")) {
+                    imageView.setImageBitmap(unselectedCircle);
+                } else {
+
+                    int drawableId = getResources().getIdentifier(iconNames[lastPosition], "drawable", "com.johnston.lmhapp");
+                    imageView.setImageDrawable(getResources().getDrawable(drawableId));
+                }
+            }
+            TextView tv = (TextView) view.findViewById(R.id.text1);
+            ImageView imgv = (ImageView) view.findViewById(R.id.imageView);
+            if (iconNames[position].equals("Circle")) {
+                imgv.setImageBitmap(selectedCircle);
+            } else {
+
+                int drawableId = getResources().getIdentifier(iconNames[position] + "_blue", "drawable", "com.johnston.lmhapp");
+                imgv.setImageDrawable(getResources().getDrawable(drawableId));
+            }
+            tv.setTextColor(getResources().getColor(R.color.colorAccent));
             lastPosition = position;
+            mDrawerAdapter.selected = position;
             String[] Options = getResources().getStringArray(R.array.options);
             mTitle = Options[position];
             System.out.println("position" + position);
@@ -436,7 +525,7 @@ public class MainActivity extends ActionBarActivity {
                 newFragment = new MenuFragment();
                 transaction.addToBackStack(Options[position]);
             } else if (position == 5) {
-                newFragment = new SetupLogIn();
+                newFragment = new SettingsFragment();
                 transaction.addToBackStack(Options[position]);
             } else if (position == 2) {
                 newFragment = new BattelsFragment();
@@ -445,8 +534,7 @@ public class MainActivity extends ActionBarActivity {
             newFragment.setRetainInstance(true);
             transaction.replace(R.id.Frame, newFragment, Options[position]);
             transaction.commit();
-            System.out.println(":::::::::::::::::::::" + getFragmentManager().getBackStackEntryCount());
-            mDrawerLayout.closeDrawers();
+
 
         }
     }

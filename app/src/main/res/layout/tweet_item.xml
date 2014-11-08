@@ -6,7 +6,7 @@
 
     <TextView
         android:visibility="visible"
-        android:textColor="#36000000"
+        android:textColor="#8a000000"
         android:textSize="12sp"
         android:text="@string/retweeted"
         android:layout_width="wrap_content"
@@ -45,7 +45,7 @@
         android:layout_marginLeft="5dp"
         android:layout_toLeftOf="@+id/time"
         android:layout_toRightOf="@+id/textView"
-        android:textColor="#36000000"
+        android:textColor="#8a000000"
         android:textSize="12sp" />
 
     <TextView
@@ -55,7 +55,7 @@
         android:layout_alignBaseline="@+id/textView"
         android:layout_alignParentRight="true"
         android:layout_marginRight="5dp"
-        android:textColor="#36000000"
+        android:textColor="#8a000000"
         android:textSize="12sp" />
 
     <TextView

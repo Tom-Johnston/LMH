@@ -134,7 +134,9 @@ public class LogInTask extends AsyncTask<Object, String, Boolean> {
 
     @Override
     protected void onProgressUpdate(String... values) {
+        if (Status != null) {
         Status.setText(values[0]);
+        }
     }
 
     @Override
