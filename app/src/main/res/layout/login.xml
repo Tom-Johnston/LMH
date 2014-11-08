@@ -7,7 +7,7 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:padding="4dp">
+        android:padding="8dp">
 
         <TextView
             android:id="@+id/SSOLogin"
@@ -22,9 +22,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/SSOLogin"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginRight="24dp"
+            android:layout_marginTop="8dp"
             android:hint="@string/username" />
 
         <EditText
@@ -32,10 +32,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/Username"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="20dp"
-            android:ems="10"
+            android:layout_marginLeft="24dp"
+            android:layout_marginRight="24dp"
+            android:layout_marginTop="24dp"
+            android:ems="8"
             android:hint="@string/password"
             android:inputType="textPassword" />
 
@@ -46,7 +46,7 @@
             android:layout_height="wrap_content"
             android:layout_alignRight="@+id/Password"
             android:layout_below="@+id/Password"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="8dp"
             android:layout_toRightOf="@+id/checkBox">
 
             <Button
@@ -68,16 +68,16 @@
             android:layout_alignBottom="@+id/saveButtonLayout"
             android:layout_alignLeft="@+id/Password"
             android:layout_alignTop="@+id/saveButtonLayout"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="8dp"
             android:onClick="showPassword"
             android:text="@string/show_password" />
 
         <View
             android:id="@+id/notificationsDivider"
             android:layout_width="match_parent"
-            android:layout_height="5dp"
+            android:layout_height="8dp"
             android:layout_below="@+id/saveButtonLayout"
-            android:layout_margin="5dp"
+            android:layout_margin="8dp"
             android:background="#1f000000" />
 
         <android.support.v7.widget.SwitchCompat
@@ -85,7 +85,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/notificationsDivider"
-            android:layout_margin="10dp"
+            android:layout_margin="8dp"
             android:onClick="toggleNotifications"
             android:text="@string/notifications"
             android:textSize="24sp"
@@ -102,8 +102,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="8dp"
                 android:text="@string/vibration"
                 android:textSize="24sp" />
 
@@ -113,7 +113,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_alignTop="@+id/vibrateText"
-                android:layout_marginRight="20dp"
+                android:layout_marginRight="24dp"
                 android:clickable="true"
                 android:gravity="right"
                 android:text="@string/vibration" />
@@ -123,15 +123,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/vibrateText"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="8dp"
                 android:text="@string/notificationSound"
                 android:textSize="24sp" />
 
             <ImageView
-                android:layout_marginRight="20dp"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_marginRight="24dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:layout_alignParentRight="true"
                 android:layout_alignTop="@+id/soundText"
                 android:onClick="notificationSound"
@@ -144,17 +144,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/soundText"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="8dp"
                 android:text="@string/LEDText"
                 android:textSize="24sp" />
 
 
             <ImageView
-                android:layout_marginRight="20dp"
+                android:layout_marginRight="24dp"
                 android:id="@+id/ledColour"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:layout_alignParentRight="true"
                 android:layout_alignTop="@+id/LEDText"
                 android:onClick="LedSettings"
@@ -165,8 +165,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/LEDText"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="8dp"
                 android:text="@string/lunch"
                 android:onClick="toggleMealNotification" />
 
@@ -175,8 +175,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/LEDText"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="8dp"
                 android:layout_toRightOf="@+id/toggleLunch"
                 android:text="@string/dinner"
                 android:onClick="toggleMealNotification" />
