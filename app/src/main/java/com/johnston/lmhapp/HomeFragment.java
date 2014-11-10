@@ -57,15 +57,12 @@ public class HomeFragment extends Fragment {
     @Override
     public android.view.View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(null, null, savedInstanceState);
-        System.out.println(checking);
         checking = true;
-        System.out.println("Heap Size:" + Debug.getNativeHeapSize());
         view = inflater.inflate(R.layout.home_fragment, container, false);
         if (tweets != null) {
             final ListView listView = (ListView) view.findViewById(R.id.tweetList);
             final ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.PM1);
             progressBar.setVisibility(View.GONE);
-            System.out.println("///////////////////////////////" + tweets.size());
             listView.setAdapter(new TweetAdapter(this.getActivity(), R.layout.tweet_item, tweets, profilePictures));
         } else {
             loadTweeterFeed();

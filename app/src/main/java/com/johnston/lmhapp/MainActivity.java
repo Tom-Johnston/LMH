@@ -60,7 +60,7 @@ import javax.net.ssl.TrustManagerFactory;
 public class MainActivity extends ActionBarActivity {
     public Handler handler;
     ActionBarDrawerToggle mDrawerToggle;
-    String mTitle = "LMH";
+    String mTitle = this.getResources().getString(R.string.title);
     ListView mDrawerList;
     DrawerLayout mDrawerLayout;
     CookieManager manager;
@@ -147,7 +147,6 @@ public class MainActivity extends ActionBarActivity {
 
 
     public void getInfo(View v, Handler passedHandler, byte passedType) {
-//        System.out.println(manager.getCookieStore().getCookies().toString());
         handler = passedHandler;
         view = v;
         Type = passedType;
@@ -183,7 +182,6 @@ public class MainActivity extends ActionBarActivity {
         int sizex = (int) ((findViewById(R.id.graphic)).getWidth() * 1.1);
 //        Make the sizex an even number.
         sizex = (sizex / 2) * 2;
-        System.out.println("sizex" + sizex);
         int sizey = sizex / 2;
         new imageGenerator().execute(username, handler, sizex, sizey, this.getApplicationContext());
         Byte three = 3;
@@ -256,8 +254,6 @@ public class MainActivity extends ActionBarActivity {
             Certificate ca5;
             ca = cf.generateCertificate(caInput);
             ca5 = cf.generateCertificate(caInput5);
-            System.out.println("ca=" + ((X509Certificate) ca).getSubjectDN());
-            System.out.println("ca=" + ((X509Certificate) ca5).getSubjectDN());
             caInput.close();
             caInput5.close();
 
@@ -277,7 +273,6 @@ public class MainActivity extends ActionBarActivity {
 // Create an SSLContext that uses our TrustManager
             SSLContext context = SSLContext.getInstance("TLS");
             context.init(null, tmf.getTrustManagers(), null);
-            System.out.println("Success!");
             sslContext = context;
             return context;
 
@@ -324,7 +319,6 @@ public class MainActivity extends ActionBarActivity {
 
         selectedCircle = drawCircle(getResources().getColor(R.color.colorPrimary2));
         unselectedCircle = drawCircle(Color.parseColor("#de000000"));
-        System.out.println("Color: " + getResources().getColor(R.color.colorPrimary2));
 
 
 //      Cookie Manager
@@ -391,7 +385,6 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        System.out.println("Should be setting the title");
         getSupportActionBar().setTitle(mTitle);
         // Sync the toggle state after onRestoreInstanceState has occurred.
         mDrawerToggle.syncState();
@@ -452,7 +445,6 @@ public class MainActivity extends ActionBarActivity {
         if (lastPosition == 0) {
             this.finish();
         } else {
-            System.out.println("BackPressed");
             mDrawerList.performItemClick(mDrawerList.getAdapter().getView(0, null, null), 0, mDrawerList.getAdapter().getItemId(0));
             String[] Options = getResources().getStringArray(R.array.options);
             mTitle = Options[0];
@@ -480,10 +472,8 @@ public class MainActivity extends ActionBarActivity {
         @Override
         public void onItemClick(AdapterView parent, View view, int position, long id) {
 
-            System.out.println("Clicked: " + position);
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(parent.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-            System.out.println(mDrawerList.getCheckedItemPosition());
             mDrawerLayout.closeDrawers();
             if (lastPosition == position) {
                 return;
@@ -515,7 +505,6 @@ public class MainActivity extends ActionBarActivity {
             mDrawerAdapter.selected = position;
             String[] Options = getResources().getStringArray(R.array.options);
             mTitle = Options[position];
-            System.out.println("position" + position);
             Fragment newFragment;
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             newFragment = getFragmentManager().findFragmentByTag(Options[position]);

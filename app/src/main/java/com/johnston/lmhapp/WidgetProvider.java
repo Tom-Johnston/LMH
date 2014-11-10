@@ -34,7 +34,6 @@ public class WidgetProvider extends AppWidgetProvider {
         context.sendBroadcast(intent);
 //        PendingIntent pi = PendingIntent.getBroadcast(context, 0, intent, 0);
 //        am.set(AlarmManager.RTC,0,pi);
-        System.out.println("Started");
 
     }
 

@@ -86,10 +86,8 @@ public class Battels extends AsyncTask<Object, String, Void> {
             }
             publishProgress("Getting Better Descriptions");
             for (int i = 1; i < Entries.size(); i += 4) {
-                System.out.println(Entries.get(i));
                 if (Entries.get(i).contains("¬")) {
                     URL infoURL = new URL("https://intranet.lmh.ox.ac.uk/navbillingdetail.asp?invno=" + Entries.get(i).substring(1));
-                    System.out.println(infoURL);
                     HttpsURLConnection infoConn = (HttpsURLConnection) infoURL.openConnection();
                     infoConn.setSSLSocketFactory(sslContext.getSocketFactory());
                     infoConn.setInstanceFollowRedirects(true);
@@ -104,7 +102,6 @@ public class Battels extends AsyncTask<Object, String, Void> {
                             end = inputLine.indexOf("</td>");
                             start = inputLine.lastIndexOf(">", end);
                             if (start + 1 != end) {
-                                System.out.println(inputLine.substring(start + 1, end).trim());
                                 Entries.set(i + 1, inputLine.substring(start + 1, end).trim());
                                 break;
                             }
@@ -120,7 +117,6 @@ public class Battels extends AsyncTask<Object, String, Void> {
             Entries.add(Total);
             publishProgress("Finished");
             handler.obtainMessage(0, Entries).sendToTarget();
-            System.out.println(Entries);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {

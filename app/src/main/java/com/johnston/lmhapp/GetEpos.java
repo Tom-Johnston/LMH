@@ -46,16 +46,12 @@ public class GetEpos extends AsyncTask<Object, String, String[]> {
             testconn.setRequestProperty("User-Agent", UserAgent);
             testconn.setInstanceFollowRedirects(true);
             testconn.getResponseCode();
-            System.out.println("testing URL: " + testconn.getURL());
             if (!testLogIn.equals(testconn.getURL())) {
 
 
                 URL url = new URL("https://www.upay.co.uk/Shibboleth.sso/Login?entityID=https://registry.shibboleth.ox.ac.uk/idp&target=https://www.upay.co.uk/shib/sso.aspx ");
-                System.out.println("Attempt");
                 HttpsURLConnection urlc = (HttpsURLConnection) url.openConnection();
-                System.out.println(urlc.getResponseCode());
                 String newURL = urlc.getURL().toString();
-                System.out.println("newURL:" + newURL);
                 //LOTs to do here
                 HttpsURLConnection Cookiec;
                 if (newURL.contains("login")) {
@@ -66,14 +62,12 @@ public class GetEpos extends AsyncTask<Object, String, String[]> {
                     StringBuilder a = new StringBuilder();
                     while ((inputLine = in.readLine()) != null) {
                         a.append(inputLine);
-                        System.out.println(inputLine);
                     }
                     in.close();
                     urlc.disconnect();
                     int Start = a.indexOf("https://idp.shibboleth.ox.ac.uk/idp");
                     int End = a.indexOf("\"><span");
                     GetCookie = a.substring(Start, End);
-                    System.out.println(GetCookie);
                     URL Cookie = new URL(GetCookie);
                     Cookiec = (HttpsURLConnection) Cookie.openConnection();
                 } else {
@@ -83,11 +77,9 @@ public class GetEpos extends AsyncTask<Object, String, String[]> {
                 BufferedReader Cookier = new BufferedReader(new InputStreamReader(
                         Cookiec.getInputStream(), "UTF-8"));
                 while ((inputLine = Cookier.readLine()) != null) {
-                    System.out.println(inputLine);
                     b.append(inputLine);
                 }
                 Cookier.close();
-                System.out.println(Cookiec.getURL());
                 Cookiec.disconnect();
                 int RSStart = b.indexOf("value=\"") + 7;
                 int RSEnd = b.indexOf(">", RSStart);
@@ -96,14 +88,11 @@ public class GetEpos extends AsyncTask<Object, String, String[]> {
                 int End = b.indexOf(">", Start);
                 String SAMLRespose = b.substring(Start, End - 2);
                 SAMLRespose = SAMLRespose.replace("=", "%3D");
-//                System.out.println(SAMLRespose.substring(SAMLRespose.length()-10));
 //            Charset.forName("UTF-8").encode(SAMLRespose);
                 String post = "RelayState=" + RelayState + "&SAMLResponse=" + SAMLRespose;
                 post = post.replace("&#x3a;", "%3A");
                 post = post.replace("+", "%2B");
-                System.out.println(post.indexOf("#"));
 //              post= URLEncoder.encode(post, "UTF-8");
-                System.out.println(post);
                 publishProgress("No JavaScript Continue");
                 URL Final = new URL("https://www.upay.co.uk/Shibboleth.sso/SAML2/POST");
                 HttpsURLConnection connl = (HttpsURLConnection) Final.openConnection();
@@ -123,11 +112,7 @@ public class GetEpos extends AsyncTask<Object, String, String[]> {
                 osl.write(post.getBytes());
                 osl.flush();
                 osl.close();
-                System.out.println("OutPutDone");
-                System.out.println(connl.getResponseCode());
-                System.out.println(connl.getURL());
 //                conn.getResponseCode();
-//                System.out.println(conn.getResponseCode());
 
                 publishProgress("Getting .COOKIECASHLESS");
                 URL Test = new URL("https://www.upay.co.uk/shib/sso.aspx");
@@ -135,7 +120,6 @@ public class GetEpos extends AsyncTask<Object, String, String[]> {
                 conn2.setRequestProperty("User-Agent", UserAgent);
                 conn2.setRequestProperty("Accept-Encoding", "identity");
                 conn2.setInstanceFollowRedirects(true);
-                System.out.println(conn2.getURL());
 
                 for (int i = 0; ; i++) {
                     String headerName = conn2.getHeaderFieldKey(i);
@@ -144,22 +128,17 @@ public class GetEpos extends AsyncTask<Object, String, String[]> {
 //                        For some reason .COOKIECASHLESS isn't set. The cookie is therefore created manually.
 
                     if (headerName == null && headerValue == null) {
-                        System.out.println("No more headers");
                         break;
                     } else {
-                        System.out.println(headerName);
-                        System.out.println(headerValue);
                         if (headerValue.contains(".COOKIECASHLESS=")) {
                             publishProgress("Creating .COOKIECASHLESS");
                             String cookieValue = headerValue.substring(16, headerValue.indexOf(";"));
-                            System.out.println(cookieValue);
                             HttpCookie myCookie = new HttpCookie(".COOKIECASHLESS", cookieValue);
                             myCookie.setVersion(0);
                             myCookie.setPath("/");
                             myCookie.setMaxAge(890000);
 //                            890,000 is 14 minutes 50 seconds. I believe the cookie should be suitable for 15 minutes.
                             cookieValue = myCookie.toString();
-                            System.out.println(cookieValue);
                             CookieManager cookieManager = (CookieManager) Objects[0];
                             CookieHandler.setDefault(cookieManager);
                             CookieStore CookieJar = cookieManager.getCookieStore();
@@ -175,17 +154,14 @@ public class GetEpos extends AsyncTask<Object, String, String[]> {
             conn3.setRequestProperty("User-Agent", UserAgent);
             conn3.setInstanceFollowRedirects(true);
             conn3.getResponseCode();
-            System.out.println(conn3.getURL());
 //            String inputLine;
             BufferedReader Reader3 = new BufferedReader(new InputStreamReader(
                     conn3.getInputStream(), "UTF-8"));
             while ((inputLine = Reader3.readLine()) != null) {
-//                	System.out.println(inputLine);
                 if (inputLine.contains("Account balance: &#163;")) {
                     int AccountBalanceStart = inputLine.indexOf("Account balance: &#163;") + 23;
                     int AccountBalanceEnd = inputLine.indexOf("<", AccountBalanceStart);
                     String AccountBalance = inputLine.substring(AccountBalanceStart, AccountBalanceEnd);
-                    System.out.println("Account Balance: " + "\u00A3" + AccountBalance);
                     Amounts[0] = "£" + AccountBalance;
 
                 }
@@ -193,7 +169,6 @@ public class GetEpos extends AsyncTask<Object, String, String[]> {
                     int TokenBalanceStart = inputLine.indexOf("Available Token Balance:") + 25;
                     int TokenBalanceEnd = inputLine.indexOf("<", TokenBalanceStart);
                     String TokenBalance = inputLine.substring(TokenBalanceStart, TokenBalanceEnd);
-                    System.out.println("Token Balance: " + "\u00A3" + TokenBalance);
                     Amounts[1] = "£" + TokenBalance;
 
                 }
@@ -201,7 +176,6 @@ public class GetEpos extends AsyncTask<Object, String, String[]> {
                     int dateStart = inputLine.indexOf("Last updated:") + 14;
                     int dateEnd = inputLine.indexOf("<", dateStart);
                     String TokenBalance = inputLine.substring(dateStart, dateEnd);
-                    System.out.println("Last updated: " + TokenBalance);
                     Amounts[2] = TokenBalance;
                 }
 

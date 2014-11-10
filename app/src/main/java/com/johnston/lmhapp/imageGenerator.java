@@ -77,10 +77,8 @@ public class imageGenerator extends AsyncTask<Object, Void, Void> {
                 } else {
                     binary = binary + "0";
                 }
-                System.out.println(i);
             }
         }
-        System.out.println("Binary Length:" + binary.length());
 
 
 //        Starting bottom triangle
@@ -110,8 +108,6 @@ public class imageGenerator extends AsyncTask<Object, Void, Void> {
         }
 
 
-        System.out.println("Added all the traingles");
-        System.out.println("There are: " + triangles.size());
 
         Paint bottomLeftFillPaint1 = new Paint();
         bottomLeftFillPaint1.setColor(Color.parseColor("#002147"));
@@ -175,7 +171,6 @@ public class imageGenerator extends AsyncTask<Object, Void, Void> {
             c.drawPath(path, fillPaint);
             c.drawPath(path, strokePaint);
         }
-        System.out.println("Drew " + i + " triangles");
 
 //      Flip the matrix to
 

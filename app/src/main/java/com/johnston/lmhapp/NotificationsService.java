@@ -41,10 +41,8 @@ public class NotificationsService extends BroadcastReceiver {
 //        wl.setReferenceCounted(false);
 //        wl.acquire();
         SharedPreferences Notifications = context.getSharedPreferences("Notifications", 0);
-        System.out.println("Starting");
         Boolean toggle = Notifications.getBoolean("toggle", false);
         if (!toggle) {
-            System.out.println("Turned OFf");
             return;
         }
         MealMenuWidgetReceiver mealMenu = new MealMenuWidgetReceiver();
@@ -99,7 +97,6 @@ public class NotificationsService extends BroadcastReceiver {
             SharedPreferences sharedPreferences = context.getSharedPreferences("mealsToNotifyFor", 0);
             Boolean notifyForLunch = sharedPreferences.getBoolean("Lunch", true);
             Boolean notifyForDinner = sharedPreferences.getBoolean("Dinner", true);
-            System.out.println("notifyForDinner " + notifyForDinner);
             Boolean skipNotification = false;
             if (!notifyForLunch && Meal.equals("Lunch")) {
                 skipNotification = true;
@@ -115,7 +112,6 @@ public class NotificationsService extends BroadcastReceiver {
                 builder.setContentText("Expand to see menu");
                 SharedPreferences NotificationSound = context.getSharedPreferences("NotificationSound", 0);
                 if (NotificationSound.contains("SoundURI")) {
-                    System.out.println("contains SOundURi");
                     String SoundURI = (NotificationSound.getString("SoundURI", "null"));
                     if (!SoundURI.equals("None")) {
 
@@ -163,7 +159,6 @@ public class NotificationsService extends BroadcastReceiver {
             } else if (!skipNotification) {
                 startOfNextMeal = startOfMeal;
             }
-            System.out.println("Finished");
             AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
             Intent newIntent = new Intent(context, NotificationsService.class);
             PendingIntent pi = PendingIntent.getBroadcast(context, 0, newIntent, 0);

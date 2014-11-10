@@ -35,6 +35,7 @@
     <string name="LEDText">LED Colour</string>
     <string name="off_for">Off For(ms): </string>
     <string name="one_thousand">1000</string>
+    <string name="title">LMH</string>
     <string-array name="options">
         <item>Home</item>
         <item>Laundry View</item>

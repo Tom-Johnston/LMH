@@ -31,8 +31,6 @@ public class MealMenuWidgetReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        System.out.println(System.currentTimeMillis());
-        System.out.println("Update");
         File file = new File(context.getFilesDir(), "Menu.txt");
 
         try {
@@ -84,7 +82,6 @@ public class MealMenuWidgetReceiver extends BroadcastReceiver {
             remoteViews.setTextViewText(R.id.Day, Meal);
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
             ComponentName widget = new ComponentName(context, WidgetProvider.class);
-//            System.out.println(nextMeal);
             AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
             Intent newIntent = new Intent(context, MealMenuWidgetReceiver.class);
             PendingIntent pi = PendingIntent.getBroadcast(context, 0, newIntent, 0);
@@ -121,7 +118,6 @@ public class MealMenuWidgetReceiver extends BroadcastReceiver {
         int Minutes;
         Boolean record = false;
         long currentTime = System.currentTimeMillis();
-        System.out.println(currentTime);
         long TimeOfMeal = 0;
         long startOfNextMeal = 0;
         long startOfMeal = 0;
@@ -155,14 +151,12 @@ public class MealMenuWidgetReceiver extends BroadcastReceiver {
                     Times = inputLine;
                     Hours = Integer.parseInt(inputLine.substring(6, 8));
                     Minutes = Integer.parseInt(inputLine.substring(9, 11));
-//                    System.out.println(day + "//" + Hours + "//" + Minutes);
                     TimeOfMeal = time + (day - 2) * 86400000 + Hours * 3600000 + Minutes * 60000;
                     Hours = Integer.parseInt(inputLine.substring(0, 2));
                     Minutes = Integer.parseInt(inputLine.substring(3, 5));
                     startOfMeal = time + (day - 2) * 86400000 + Hours * 3600000 + Minutes * 60000;
 
                     if (currentTime < TimeOfMeal) {
-                        System.out.println("This One");
                         record = true;
                         Meal = br.readLine();
                         keepDay = day;

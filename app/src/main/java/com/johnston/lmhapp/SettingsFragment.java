@@ -157,7 +157,6 @@ public class SettingsFragment extends Fragment {
                 spinner.setSelection(vsl.lastBeforeDialog, true);
                 if (vibrationStrings.get(vibrationStringsSize - 1).equals(changeCustom)) {
                     vibrationStrings.remove(vibrationStringsSize - 1);
-                    System.out.println("Removed");
                     adapter.notifyDataSetChanged();
                 }
             }

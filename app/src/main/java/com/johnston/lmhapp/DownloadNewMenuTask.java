@@ -27,7 +27,6 @@ public class DownloadNewMenuTask extends AsyncTask<Object, Void, Void> {
             File file = new File(context.getFilesDir(), "Menu.txt");
             URL url = new URL("https://drive.google.com/uc?id=0Bzygl0tJta6ZZmdRdnZyb2Iyb0k&export=download");
             InputStream menus = url.openStream();
-            System.out.println("Menu Location:" + file.getAbsolutePath());
             FileOutputStream fos = new FileOutputStream(file);
             int length;
             byte[] buffer = new byte[1024];
@@ -46,7 +45,6 @@ public class DownloadNewMenuTask extends AsyncTask<Object, Void, Void> {
                     context.sendBroadcast(updateWidget);
                 }
             }
-            System.out.println("Menu was downloaded");
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {

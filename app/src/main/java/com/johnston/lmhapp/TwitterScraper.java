@@ -91,7 +91,6 @@ public class TwitterScraper extends AsyncTask<Handler, Void, ArrayList<Tweet>> {
                     }
 
                     if (inputLine.contains("data-tweet-id")) {
-//                        System.out.println(handle);
                         start = inputLine.indexOf("data-tweet-id") + 15;
                         id = inputLine.substring(start,
                                 inputLine.indexOf("\"", start));
@@ -99,7 +98,6 @@ public class TwitterScraper extends AsyncTask<Handler, Void, ArrayList<Tweet>> {
                     if (inputLine.contains("<img class=\"avatar js-action-profile-avatar\"") || inputLine.contains("<img class=\"ProfileTweet-avatar js-action-profile-avatar\"")) {
                         start = inputLine.indexOf("src=\"") + 5;
                         pictureString = inputLine.substring(start, inputLine.indexOf("\"", start));
-//                        System.out.println("pictureString  " + pictureString);
                         for (int i = 0; i < ProfilePictureURLS.size(); i++) {
                             if (ProfilePictureURLS.get(i).equals(pictureString)) {
                                 pictureIndex = i;
@@ -149,7 +147,6 @@ public class TwitterScraper extends AsyncTask<Handler, Void, ArrayList<Tweet>> {
                             bodySegment = body.substring(bodyStart, bodyEnd);
                             body = body.replace(bodySegment, "");
                         }
-//                        System.out.println(body);
                     }
 
                 }
@@ -171,7 +168,6 @@ public class TwitterScraper extends AsyncTask<Handler, Void, ArrayList<Tweet>> {
             Object[] objects = new Object[2];
             objects[0] = tweets;
             objects[1] = profilePictures;
-//            System.out.println("size of tweets" + tweets.size());
             handler.obtainMessage(0, objects).sendToTarget();
         } catch (MalformedURLException e) {
             // TODO Auto-generated catch block

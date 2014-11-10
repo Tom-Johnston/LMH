@@ -25,7 +25,6 @@ public class LaundryView extends Fragment {
     final Handler handler = new Handler() {
         @Override
         public void handleMessage(Message message) {
-            System.out.println("Message");
             startTime = (Long) message.obj;
             Loaded = true;
         }
@@ -47,7 +46,6 @@ public class LaundryView extends Fragment {
         P1.setVisibility(View.VISIBLE);
         P2.setVisibility(View.VISIBLE);
         P3.setVisibility(View.VISIBLE);
-//        System.out.println("2");
         try {
             URL KatieLee = new URL("http://classic.laundryview.com/laundry_room.php?lr=870043400887");
             URL NewOldHall = new URL("http://classic.laundryview.com/laundry_room.php?lr=870043400853");

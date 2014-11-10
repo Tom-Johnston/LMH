@@ -57,7 +57,6 @@ public class LoadStatus extends AsyncTask<Object, Void, String> {
 
                 }
                 PassBack.append("%%%");
-//                System.out.print(PassBack);
             }
             return PassBack.toString();
         } catch (MalformedURLException e) {

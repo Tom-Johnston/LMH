@@ -63,7 +63,6 @@ public class MenuList extends AsyncTask<Object, Void, Void> {
                 } else if (inputLine.contains(":")) {
                     Hours = Integer.parseInt(inputLine.substring(6, 8));
                     Minutes = Integer.parseInt(inputLine.substring(9, 11));
-                    System.out.println(day + "//" + Hours + "//" + Minutes);
                     mealTime = time + (day - 2) * 86400000 + Hours * 3600000 + Minutes * 60000;
                     if (mealTime < currentTime) {
                         old = true;
@@ -89,7 +88,6 @@ public class MenuList extends AsyncTask<Object, Void, Void> {
                     }
                 }
             }
-            System.out.println(meals);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (ParseException e) {

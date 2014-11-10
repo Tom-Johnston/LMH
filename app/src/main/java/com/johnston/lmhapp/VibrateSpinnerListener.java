@@ -19,9 +19,6 @@ public class VibrateSpinnerListener implements AdapterView.OnItemSelectedListene
     public int lastBeforeDialog = 0;
 
     public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-        System.out.println(R.id.vibrations);
-        System.out.println(last);
-        System.out.println(pos);
         if (firstCall == true) {
 //           First call is set to true when creating the fragment,rotating the fragment and loading from back stack.
             firstCall = false;

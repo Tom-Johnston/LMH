@@ -63,7 +63,6 @@ public class MenuFragment extends Fragment {
         adapter = new MenuAdapter(context, R.layout.listview, meals);
         lv.setAdapter(adapter);
         lv.setSelection(startat);
-        System.out.println(startat);
 
 
     }

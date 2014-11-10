@@ -53,9 +53,7 @@ public class EPOS extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(null, null, savedInstanceState);
         view = inflater.inflate(R.layout.epos_layout, container, false);
-        System.out.println("1");
         Main = (MainActivity) getActivity();
-        System.out.println(finished);
         if (finished) {
             ListView lv = (ListView) view.findViewById(R.id.transactionsListView);
             Context context = getActivity().getBaseContext();
