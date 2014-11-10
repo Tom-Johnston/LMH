@@ -300,11 +300,15 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        if (savedInstanceState!=null) {
+            lastPosition = savedInstanceState.getInt("lastPosition");
+        }
 //
 //
         File file = new File(getFilesDir(), "CustomGraphic.png");
@@ -335,6 +339,7 @@ public class MainActivity extends ActionBarActivity {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         mDrawerAdapter = new DrawerAdapter(this, R.layout.drawer_list_item, Arrays.asList(Options), selectedCircle, unselectedCircle);
+        mDrawerAdapter.selected = lastPosition;
         mDrawerList.setAdapter(mDrawerAdapter);
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
         mDrawerToggle = new ActionBarDrawerToggle(
@@ -380,6 +385,7 @@ public class MainActivity extends ActionBarActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString("mTitle", mTitle);
+        outState.putInt("lastPosition",lastPosition);
     }
 
     @Override
