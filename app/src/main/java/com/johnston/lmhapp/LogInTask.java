@@ -36,6 +36,7 @@ public class LogInTask extends AsyncTask<Object, String, Boolean> {
             URL url = new URL("https://intranet.lmh.ox.ac.uk/mealmenus.asp");
             HttpsURLConnection urlc = (HttpsURLConnection) url.openConnection();
             urlc.setSSLSocketFactory(context.getSocketFactory());
+            urlc.getResponseCode();
             if (urlc.getURL().toString().equals("https://intranet.lmh.ox.ac.uk/mealmenus.asp")) {
                 publishProgress("Already Logged In");
                 return true;
@@ -62,6 +63,7 @@ public class LogInTask extends AsyncTask<Object, String, Boolean> {
                 os.write(post.getBytes("UTF-8"));
                 os.flush();
                 os.close();
+                conn.getResponseCode();
                 publishProgress("Logging in");
                 BufferedReader in = new BufferedReader(new InputStreamReader(
                         conn.getInputStream(), "UTF-8"));
@@ -85,6 +87,7 @@ public class LogInTask extends AsyncTask<Object, String, Boolean> {
                 allowc.setSSLSocketFactory(context.getSocketFactory());
 
                 allowc.connect();
+                allowc.getResponseCode();
                 publishProgress("Finished Logging In");
                 return true;
             }

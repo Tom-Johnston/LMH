@@ -60,8 +60,7 @@ import javax.net.ssl.TrustManagerFactory;
 public class MainActivity extends ActionBarActivity {
     public Handler handler;
     ActionBarDrawerToggle mDrawerToggle;
-    // String mTitle = this.getResources().getString(R.string.title); NullPointerException
-    String mTitle = "LMH";
+    String mTitle;
     ListView mDrawerList;
     DrawerLayout mDrawerLayout;
     CookieManager manager;
@@ -137,6 +136,7 @@ public class MainActivity extends ActionBarActivity {
 
 
     public void Initialise() {
+        mTitle = getResources().getString(R.string.title);
         if (Type == 1) {
             new GetEpos().execute(manager, view, handler);
         } else if (Type == 2) {

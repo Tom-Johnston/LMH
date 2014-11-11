@@ -51,6 +51,7 @@ public class GetEpos extends AsyncTask<Object, String, String[]> {
 
                 URL url = new URL("https://www.upay.co.uk/Shibboleth.sso/Login?entityID=https://registry.shibboleth.ox.ac.uk/idp&target=https://www.upay.co.uk/shib/sso.aspx ");
                 HttpsURLConnection urlc = (HttpsURLConnection) url.openConnection();
+                urlc.getResponseCode();
                 String newURL = urlc.getURL().toString();
                 //LOTs to do here
                 HttpsURLConnection Cookiec;
@@ -112,7 +113,7 @@ public class GetEpos extends AsyncTask<Object, String, String[]> {
                 osl.write(post.getBytes());
                 osl.flush();
                 osl.close();
-//                conn.getResponseCode();
+                connl.getResponseCode();
 
                 publishProgress("Getting .COOKIECASHLESS");
                 URL Test = new URL("https://www.upay.co.uk/shib/sso.aspx");
