@@ -60,7 +60,8 @@ import javax.net.ssl.TrustManagerFactory;
 public class MainActivity extends ActionBarActivity {
     public Handler handler;
     ActionBarDrawerToggle mDrawerToggle;
-    String mTitle = this.getResources().getString(R.string.title);
+    // String mTitle = this.getResources().getString(R.string.title); NullPointerException
+    String mTitle = "LMH";
     ListView mDrawerList;
     DrawerLayout mDrawerLayout;
     CookieManager manager;

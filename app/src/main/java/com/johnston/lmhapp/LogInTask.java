@@ -90,18 +90,18 @@ public class LogInTask extends AsyncTask<Object, String, Boolean> {
             }
         } catch (MalformedURLException e) {
             e.printStackTrace();
-            publishProgress("Something went wrong");
+            publishProgress("Error logging in: MalformedURLException");
             return false;
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-            publishProgress("Something went wrong");
+            publishProgress("Error logging in: UnsupportedEncodingException");
             return false;
         } catch (ProtocolException e) {
             e.printStackTrace();
-            publishProgress("Something went wrong");
+            publishProgress("Error logging in: ProtocolException");
             return false;
         } catch (IOException e) {
-            publishProgress("Network Error?");
+            publishProgress("Error logging in: IOExeption. Check your network connection");
             e.printStackTrace();
             return false;
         }
