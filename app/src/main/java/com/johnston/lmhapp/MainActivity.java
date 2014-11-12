@@ -50,7 +50,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
 import java.util.Arrays;
 
 import javax.net.ssl.SSLContext;
@@ -183,7 +182,7 @@ public class MainActivity extends ActionBarActivity {
 //        Make the sizex an even number.
         sizex = (sizex / 2) * 2;
         int sizey = sizex / 2;
-        new imageGenerator().execute(username, handler, sizex, sizey, this.getApplicationContext());
+        new ImageGenerator().execute(username, handler, sizex, sizey, this.getApplicationContext());
         Byte three = 3;
         final Handler nameHandler = new Handler() {
             @Override

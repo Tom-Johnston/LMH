@@ -21,7 +21,7 @@ import java.util.Random;
 /**
  * Created by Tom on 05/11/2014.
  */
-public class imageGenerator extends AsyncTask<Object, Void, Void> {
+public class ImageGenerator extends AsyncTask<Object, Void, Void> {
     @Override
     protected Void doInBackground(Object... params) {
         Context context = (Context) params[4];
