@@ -45,6 +45,7 @@ public class MealMenuWidgetReceiver extends BroadcastReceiver {
             long time = date.getTime();
             String[] output = constructMenu(br, time, context);
             String Day = output[0];
+            String ShortDay = output[7];
             String Meal = output[1];
             String nextMeal = output[2];
             long TimeOfMeal = Long.parseLong(output[3]);
@@ -59,6 +60,7 @@ public class MealMenuWidgetReceiver extends BroadcastReceiver {
                 time = date.getTime();
                 output = constructMenu(br, time, context);
                 Day = output[0];
+                ShortDay = output[7];
                 Meal = output[1];
                 nextMeal = output[2];
                 TimeOfMeal = Long.parseLong(output[3]);
@@ -78,7 +80,12 @@ public class MealMenuWidgetReceiver extends BroadcastReceiver {
 
             remoteViews.setRemoteAdapter(R.id.Menu, svcIntent);
 
-            remoteViews.setTextViewText(R.id.WidgetTitle, Day);
+            int width = context.getSharedPreferences("widgetWidth",0).getInt("width",0);
+            if (width > 145) {
+                remoteViews.setTextViewText(R.id.WidgetTitle, Day);
+            }else{
+                remoteViews.setTextViewText(R.id.WidgetTitle, ShortDay);
+            }
             remoteViews.setTextViewText(R.id.Day, Meal);
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
             ComponentName widget = new ComponentName(context, WidgetProvider.class);
@@ -112,6 +119,7 @@ public class MealMenuWidgetReceiver extends BroadcastReceiver {
         int day = 0;
         String nextMeal = "";
         String Day;
+        String ShortDay;
         String Meal = "Meal";
         int keepDay = 0;
         int Hours;
@@ -169,22 +177,30 @@ public class MealMenuWidgetReceiver extends BroadcastReceiver {
         day = keepDay;
         if (day == 2) {
             Day = "Monday";
+            ShortDay = "Mon";
         } else if (day == 3) {
             Day = "Tuesday";
+            ShortDay = "Tues";
         } else if (day == 4) {
             Day = "Wednesday";
+            ShortDay = "Weds";
         } else if (day == 5) {
             Day = "Thursday";
+            ShortDay = "Thurs";
         } else if (day == 6) {
             Day = "Friday";
+            ShortDay = "Fri";
         } else if (day == 7) {
             Day = "Saturday";
+            ShortDay = "Sat";
         } else if (day == 8) {
             Day = "Sunday";
+            ShortDay = "Sun";
         } else {
             Day = "Problem";
+            ShortDay = "Problem";
         }
-        String[] output = new String[7];
+        String[] output = new String[8];
         output[0] = Day;
         output[1] = Meal;
         output[2] = nextMeal;
@@ -192,6 +208,7 @@ public class MealMenuWidgetReceiver extends BroadcastReceiver {
         output[4] = String.valueOf(startOfNextMeal);
         output[5] = Times;
         output[6] = String.valueOf(startOfMeal);
+        output[7] = ShortDay;
 //        This is undoubtedly bad practice but I am lazy. To be fixed in the future.
         return output;
     }
