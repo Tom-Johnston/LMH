@@ -136,7 +136,6 @@ public class MainActivity extends ActionBarActivity {
 
 
     public void Initialise() {
-        mTitle = getResources().getString(R.string.title);
         if (Type == 1) {
             new GetEpos().execute(manager, view, handler);
         } else if (Type == 2) {
@@ -300,6 +299,7 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        mTitle = getResources().getString(R.string.title);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if (savedInstanceState!=null) {
