@@ -129,4 +129,15 @@ public class Battels extends AsyncTask<Object, String, Void> {
     protected void onProgressUpdate(String... values) {
         Status.setText(values[0]);
     }
+
+    @Override
+    protected void onPostExecute(Void v) {
+        Status.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Status.setText("");
+            }
+        },3000);
+    }
+
 }

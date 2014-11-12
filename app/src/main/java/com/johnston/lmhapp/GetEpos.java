@@ -260,6 +260,14 @@ public class GetEpos extends AsyncTask<Object, String, String[]> {
             DateBalance.setText(strings[2]);
         }
 
+        Status.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Status.setText("");
+            }
+        }, 3000);
+
+
     }
 
 
