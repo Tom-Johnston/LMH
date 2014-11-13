@@ -66,4 +66,7 @@
         <item>ic_meal_menu</item>
         <item>ic_settings</item>
     </string-array>
+    <string name="mealChoiceText">Get notifications for:</string>
+    <string name="notificationTimeText">Notification time</string>
+    <string name="notificationTimeText2">mins</string>
 </resources>

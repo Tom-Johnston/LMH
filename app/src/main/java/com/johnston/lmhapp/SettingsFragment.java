@@ -20,6 +20,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 
@@ -48,14 +49,44 @@ public class SettingsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(null, null, savedInstanceState);
-        view = inflater.inflate(R.layout.login, container, false);
+        view = inflater.inflate(R.layout.settings, container, false);
         vibrationStrings = new ArrayList<String>(Arrays.asList(getResources().getStringArray(R.array.vibrations)));
         Main = (MainActivity) getActivity();
+        NumberPicker.OnValueChangeListener onValueChanged = new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                SharedPreferences NotifyTime = getActivity().getSharedPreferences("NotifyTime",0);
+                SharedPreferences.Editor editor = NotifyTime.edit();
+                editor.putInt("NotifyTime",newVal);
+                editor.commit();
+
+                // Probably need to propagate changes into NotificationsService somehow.
+            }
+        };
+
+        View.OnFocusChangeListener focusListener = new View.OnFocusChangeListener() {
+            public void onFocusChange(View v, boolean hasFocus) {
+           /* When focus is lost check that the text field
+            * has valid values.
+            */
+                if (!hasFocus) {
+
+                }
+            }
+        };
+
+        NumberPicker np = (NumberPicker) view.findViewById(R.id.notificationTime);
+        np.setMaxValue(60);
+        np.setMinValue(0);
+        int NotifyTime = getActivity().getSharedPreferences("NotifyTime",0).getInt("NotifyTime",10);
+        np.setValue(NotifyTime);
+        np.setOnValueChangedListener(onValueChanged);
 
         String[] LogInDetails = Main.returnLogIn();
         if (LogInDetails != null) {
@@ -134,6 +165,8 @@ public class SettingsFragment extends Fragment {
                 }
             }
         });
+
+
 
         return view;
     }

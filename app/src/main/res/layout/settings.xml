@@ -159,11 +159,21 @@
                 android:onClick="LedSettings"
                 android:scaleType="fitCenter" />
 
+            <TextView
+                android:id="@+id/mealChoiceText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_below="@+id/LEDText"
+                android:text="@string/mealChoiceText"
+                android:textSize="24sp"/>
+
             <CheckBox
                 android:id="@+id/toggleLunch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/LEDText"
+                android:layout_below="@+id/mealChoiceText"
                 android:layout_marginLeft="24dp"
                 android:layout_marginTop="8dp"
                 android:text="@string/lunch"
@@ -173,12 +183,34 @@
                 android:id="@+id/toggleDinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/LEDText"
+                android:layout_below="@+id/mealChoiceText"
                 android:layout_marginLeft="24dp"
                 android:layout_marginTop="8dp"
                 android:layout_toRightOf="@+id/toggleLunch"
                 android:text="@string/dinner"
                 android:onClick="toggleMealNotification" />
+
+            <TextView
+                android:id="@+id/notificationTimeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_below="@+id/toggleLunch"
+                android:text="@string/notificationTimeText"
+                android:textSize="24sp"/>
+
+            <NumberPicker
+                android:id="@+id/notificationTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/notificationTimeText"
+                android:layout_below="@+id/toggleLunch"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                android:focusable="true"/>
+
 
         </RelativeLayout>
 

@@ -29,11 +29,14 @@ import java.util.concurrent.ExecutionException;
  */
 public class NotificationsService extends BroadcastReceiver {
 
+    long refreshTime = 2 * 60 * 60 * 1000;
+    long notifyTime = 10*60*1000;
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        long refreshTime = 2 * 60 * 60 * 1000;
-        long notifyTime = 600000;
+        int nt = context.getSharedPreferences("NotifyTime",0).getInt("NotifyTime",10);
+        notifyTime = nt*60*1000;
+
 //        I think alarm manager automatically holds a wakelock for me.
 //        Wakelock so the notification can be sent even when the device is asleep;
 //        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);

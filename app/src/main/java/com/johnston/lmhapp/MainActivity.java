@@ -33,6 +33,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -93,6 +94,8 @@ public class MainActivity extends ActionBarActivity {
         }
         editor.commit();
     }
+
+
 
     public void notificationSound(View v) {
         SharedPreferences NotificationSound = getSharedPreferences("NotificationSound", 0);
@@ -304,6 +307,8 @@ public class MainActivity extends ActionBarActivity {
         if (savedInstanceState!=null) {
             lastPosition = savedInstanceState.getInt("lastPosition");
         }
+
+
 //
 //
         File file = new File(getFilesDir(), "CustomGraphic.png");
