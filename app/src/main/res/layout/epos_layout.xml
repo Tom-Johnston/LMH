@@ -77,7 +77,6 @@
         android:layout_alignLeft="@id/AccountBalance"
         android:layout_below="@+id/TokenTitle"
         android:gravity="left"
-        android:text="£"
         android:textSize="20sp"
         android:freezesText="true"
         android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
