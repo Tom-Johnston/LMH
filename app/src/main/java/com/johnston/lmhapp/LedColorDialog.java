@@ -88,8 +88,6 @@ public class LedColorDialog extends DialogFragment {
                         editor.putInt("blueValue", b);
 
                         editor.commit();
-                        MainActivity main = (MainActivity) getActivity();
-                        main.drawCircle(r, g, b);
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

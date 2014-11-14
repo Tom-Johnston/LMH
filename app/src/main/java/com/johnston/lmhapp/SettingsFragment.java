@@ -1,11 +1,14 @@
 package com.johnston.lmhapp;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -14,18 +17,22 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by Tom on 08/08/2014.
@@ -44,6 +51,8 @@ public class SettingsFragment extends Fragment {
     ArrayList<String> vibrationStrings;
     ArrayAdapter adapter;
     Spinner spinner;
+    List<String> strings;
+    SettingsListAdapter settingsListAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,119 +64,18 @@ public class SettingsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(null, null, savedInstanceState);
-        view = inflater.inflate(R.layout.settings, container, false);
+        view = inflater.inflate(R.layout.settings_layout, container, false);
         vibrationStrings = new ArrayList<String>(Arrays.asList(getResources().getStringArray(R.array.vibrations)));
         Main = (MainActivity) getActivity();
-        NumberPicker.OnValueChangeListener onValueChanged = new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                SharedPreferences NotifyTime = getActivity().getSharedPreferences("NotifyTime",0);
-                SharedPreferences.Editor editor = NotifyTime.edit();
-                editor.putInt("NotifyTime",newVal);
-                editor.commit();
-
-                // Probably need to propagate changes into NotificationsService somehow.
-            }
-        };
-
-        View.OnFocusChangeListener focusListener = new View.OnFocusChangeListener() {
-            public void onFocusChange(View v, boolean hasFocus) {
-           /* When focus is lost check that the text field
-            * has valid values.
-            */
-                if (!hasFocus) {
-
-                }
-            }
-        };
-
-        NumberPicker np = (NumberPicker) view.findViewById(R.id.notificationTime);
-        np.setMaxValue(60);
-        np.setMinValue(0);
-        int NotifyTime = getActivity().getSharedPreferences("NotifyTime",0).getInt("NotifyTime",10);
-        np.setValue(NotifyTime);
-        np.setOnValueChangedListener(onValueChanged);
-
-        String[] LogInDetails = Main.returnLogIn();
-        if (LogInDetails != null) {
-            EditText Username = (EditText) view.findViewById(R.id.Username);
-            EditText Password = (EditText) view.findViewById(R.id.Password);
-            Username.setText(LogInDetails[0]);
-            Password.setText(LogInDetails[1]);
-        }
+        ListView listView = (ListView) view.findViewById(R.id.settingsList);
+        strings = Arrays.asList(getResources().getStringArray(R.array.settings));
+        settingsListAdapter = new SettingsListAdapter(this.getActivity(),R.layout.settings_list_item,strings);
+        settingsListAdapter.switchHandler = switchHandler;
+        listView.setAdapter(settingsListAdapter);
+        listView.setOnItemClickListener(itemClickListener);
         SharedPreferences Notifications = this.getActivity().getSharedPreferences("Notifications", 0);
         Boolean toggle = Notifications.getBoolean("toggle", false);
-        SwitchCompat tb = (SwitchCompat) view.findViewById(R.id.switchNotifications);
-        tb.setChecked(toggle);
-        RelativeLayout notification = (RelativeLayout) view.findViewById(R.id.notificationLayout);
-        if (toggle) {
-            notification.setVisibility(LinearLayout.VISIBLE);
-        } else {
-            notification.setVisibility(LinearLayout.GONE);
-        }
-        SharedPreferences LEDSettings = this.getActivity().getSharedPreferences("LEDSettings", 0);
-        int r = LEDSettings.getInt("redValue", 3);
-        int g = LEDSettings.getInt("greenValue", 13);
-        int b = LEDSettings.getInt("blueValue", 128);
-        drawCircle(r, g, b);
-
-        spinner = (Spinner) view.findViewById(R.id.vibrations);
-        adapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_item, vibrationStrings);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-        SharedPreferences vibratePattern = this.getActivity().getSharedPreferences("vibratePattern", 0);
-        String current = vibratePattern.getString("vibratePattern", "null");
-        if (vsl == null) {
-            vsl = new VibrateSpinnerListener();
-        }
-        if (current.equals(getResources().getString(R.string.buzz1))) {
-            ;
-            spinner.setSelection(0);
-        } else if (current.equals(getResources().getString(R.string.buzz2))) {
-            spinner.setSelection(1);
-        } else if (current.equals(getResources().getString(R.string.buzz2))) {
-            spinner.setSelection(2);
-        } else {
-            finishedDialog(true);
-        }
-        vsl.main = (MainActivity) getActivity();
-        vsl.firstCall = true;
-        spinner.setOnItemSelectedListener(vsl);
-        vsl.handler = handler;
-
-
-        SharedPreferences mealsToNotifyFor = getActivity().getSharedPreferences("mealsToNotifyFor", 0);
-        CheckBox Lunch = (CheckBox) view.findViewById(R.id.toggleLunch);
-        CheckBox Dinner = (CheckBox) view.findViewById(R.id.toggleDinner);
-        Lunch.setChecked(mealsToNotifyFor.getBoolean("Lunch", true));
-        Dinner.setChecked(mealsToNotifyFor.getBoolean("Dinner", true));
-
-        SwitchCompat notifications = (SwitchCompat) view.findViewById(R.id.switchNotifications);
-        notifications.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                RelativeLayout notification = (RelativeLayout) view.findViewById(R.id.notificationLayout);
-                if (isChecked) {
-                    SharedPreferences Notifications = getActivity().getSharedPreferences("Notifications", 0);
-                    SharedPreferences.Editor editor = Notifications.edit();
-                    editor.putBoolean("toggle", true);
-                    editor.commit();
-                    Intent newIntent = new Intent(getActivity(), NotificationsService.class);
-                    getActivity().sendBroadcast(newIntent);
-                    notification.setVisibility(LinearLayout.VISIBLE);
-
-                } else {
-                    SharedPreferences Notifications = getActivity().getSharedPreferences("Notifications", 0);
-                    SharedPreferences.Editor editor = Notifications.edit();
-                    editor.putBoolean("toggle", false);
-                    editor.commit();
-                    notification.setVisibility(LinearLayout.GONE);
-                }
-            }
-        });
-
-
-
+        switchHandler.obtainMessage(0,toggle).sendToTarget();
         return view;
     }
 
@@ -181,6 +89,7 @@ public class SettingsFragment extends Fragment {
             if (!vibrationStrings.get(vibrationStringsSize - 1).equals(changeCustom)) {
                 vibrationStrings.add(changeCustom);
                 adapter.notifyDataSetChanged();
+
             }
         } else {
             if (vsl.last == 4) {
@@ -198,19 +107,98 @@ public class SettingsFragment extends Fragment {
         }
     }
 
-    public void drawCircle(int r, int g, int b) {
-        Bitmap.Config conf = Bitmap.Config.ARGB_8888;
-        DisplayMetrics metrics = getResources().getDisplayMetrics();
-        int size = (int) (32 * metrics.density);
-        Bitmap bmp = Bitmap.createBitmap(size, size, conf);
-        Canvas c = new Canvas(bmp);
-        int radius = size / 2;
-        Paint paint = new Paint();
-        paint.setARGB(255, r, g, b);
-        paint.setAntiAlias(true);
-        c.drawCircle(radius, radius, radius, paint);
-        ImageView img = (ImageView) view.findViewById(R.id.ledColour);
-        img.setImageBitmap(bmp);
+    AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//            TODO Vibration and notify time.
+            if (view.getTag().equals("Standard")){
+                String title = ((TextView)view.findViewById(R.id.itemTitle)).getText().toString();
+                if (title.equals("LED Colour")){
+                    LedColorDialog newFragment = LedColorDialog.newInstance();
+                    newFragment.show(getFragmentManager(), "missiles");
+                }else if(title.equals("Lunch")||title.equals("Dinner")){
+                    CheckBox checkBox = (CheckBox)((LinearLayout)view.findViewById(R.id.widget_frame)).getChildAt(0);
+                    if(checkBox.isChecked()){
+                        checkBox.setChecked(false);
+                    }else{
+                        checkBox.setChecked(true);
+                    }
+                    toggleMealNotification(checkBox,title);
+                }else if(title.equals("Notifications")){
+
+                    SwitchCompat switchCompat = (SwitchCompat)((LinearLayout)view.findViewById(R.id.widget_frame)).getChildAt(0);
+                    if(switchCompat.isChecked()){
+                        switchCompat.setChecked(false);
+                    }else{
+                        switchCompat.setChecked(true);
+                    }
+                }else if(title.equals("Vibration")){
+
+                }else if(title.equals("Notification Sound")){
+                    notificationSound();
+                }else if(title.equals("Login Details")){
+                    LoginDialog newFragment = LoginDialog.newInstance();
+                    newFragment.show(getFragmentManager(), "logIn");
+                }
+            }
+
+        }
+    };
+
+
+    public void notificationSound() {
+        SharedPreferences NotificationSound = getActivity().getSharedPreferences("NotificationSound", 0);
+        Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
+        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Select Tone");
+        if (NotificationSound.contains("SoundURI")) {
+            Uri uri = Uri.parse(NotificationSound.getString("SoundURI", "This is irrelevant"));
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, uri);
+        } else {
+            Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, uri);
+        }
+        this.startActivityForResult(intent, 5);
     }
+
+    public void toggleMealNotification(CheckBox checkBox,String title) {
+        SharedPreferences mealsToNotifyFor = getActivity().getSharedPreferences("mealsToNotifyFor", 0);
+        SharedPreferences.Editor editor = mealsToNotifyFor.edit();
+        editor.putBoolean(title, checkBox.isChecked());
+//        Replace an existing notification..
+        Intent intent = new Intent(this.getActivity(), NotificationsService.class);
+        this.getActivity().sendBroadcast(intent);
+        SharedPreferences widgetEnabled = getActivity().getSharedPreferences("widgetEnabled", 0);
+//       Update the widget.
+        if (widgetEnabled.getBoolean("widgetEnabled", false)) {
+            Intent updateWidget = new Intent(this.getActivity(), MealMenuWidgetReceiver.class);
+            this.getActivity().sendBroadcast(updateWidget);
+        }
+        editor.commit();
+    }
+
+    final Handler switchHandler = new Handler() {
+        @Override
+        public void handleMessage(Message message) {
+            if (!(Boolean)message.obj) {
+                SharedPreferences Notifications = getActivity().getSharedPreferences("Notifications", 0);
+                SharedPreferences.Editor editor = Notifications.edit();
+                editor.putBoolean("toggle", false);
+                editor.commit();
+                Intent newIntent = new Intent(getActivity(), NotificationsService.class);
+                getActivity().sendBroadcast(newIntent);
+                settingsListAdapter.strings = Arrays.asList(getResources().getStringArray(R.array.settings2));
+                settingsListAdapter.notifyDataSetChanged();
+            } else {
+                SharedPreferences Notifications = getActivity().getSharedPreferences("Notifications", 0);
+                SharedPreferences.Editor editor = Notifications.edit();
+                editor.putBoolean("toggle", true);
+                editor.commit();
+                settingsListAdapter.strings = Arrays.asList(getResources().getStringArray(R.array.settings));
+                settingsListAdapter.notifyDataSetChanged();
+
+            }
+        }
+    };
 
 }

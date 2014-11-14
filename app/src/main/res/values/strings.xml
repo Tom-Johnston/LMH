@@ -69,4 +69,25 @@
     <string name="mealChoiceText">Get notifications for:</string>
     <string name="notificationTimeText">Notification time</string>
     <string name="notificationTimeText2">mins</string>
+    <string-array name="settings">
+        <item>SSO Login Details</item>
+        <item>Login Details</item>
+        <item>Notification Settings</item>
+        <item>Notifications</item>
+        <item>Vibration</item>
+        <item>Notification Sound</item>
+        <item>LED Colour</item>
+        <item>Lunch</item>
+        <item>Dinner</item>
+        <item>Notify Time</item>
+    </string-array>
+    <string-array name="settings2">
+        <item>SSO Login Details</item>
+        <item>Login Details</item>
+        <item>Notification Settings</item>
+        <item>Notifications</item>
+    </string-array>
+    <string name="font_family_subhead_material">sans-serif</string>
+    <string name="font_family_body_1_material">sans-serif</string>
+    <dimen name="text_size_body_1_material">14sp</dimen>
 </resources>

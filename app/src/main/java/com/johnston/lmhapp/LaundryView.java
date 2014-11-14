@@ -67,7 +67,6 @@ public class LaundryView extends Fragment {
     @Override
     public android.view.View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
         super.onCreateView(null, null, savedInstanceState);
-        System.out.println("Loaded:" + Loaded);
         if (view == null) {
             view = inflater.inflate(R.layout.laundry_view, container, false);
         }
@@ -89,7 +88,6 @@ public class LaundryView extends Fragment {
             handler.post(updateTime);
         }
 
-        System.out.println("1");
         return view;
     }
 

@@ -72,46 +72,6 @@ public class MainActivity extends ActionBarActivity {
     Bitmap selectedCircle;
     Bitmap unselectedCircle;
 
-    public void drawCircle(int r, int g, int b) {
-        Fragment fragment1 = getFragmentManager().findFragmentById(R.id.Frame);
-        ((SettingsFragment) fragment1).drawCircle(r, g, b);
-
-    }
-
-    public void toggleMealNotification(View v) {
-        CheckBox button = (CheckBox) v;
-        SharedPreferences mealsToNotifyFor = getSharedPreferences("mealsToNotifyFor", 0);
-        SharedPreferences.Editor editor = mealsToNotifyFor.edit();
-        editor.putBoolean(button.getText().toString(), button.isChecked());
-//        Replace an existing notification..
-        Intent intent = new Intent(this, NotificationsService.class);
-        this.sendBroadcast(intent);
-        SharedPreferences widgetEnabled = this.getSharedPreferences("widgetEnabled", 0);
-//       Update the widget.
-        if (widgetEnabled.getBoolean("widgetEnabled", false)) {
-            Intent updateWidget = new Intent(this, MealMenuWidgetReceiver.class);
-            this.sendBroadcast(updateWidget);
-        }
-        editor.commit();
-    }
-
-
-
-    public void notificationSound(View v) {
-        SharedPreferences NotificationSound = getSharedPreferences("NotificationSound", 0);
-        Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
-        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
-        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Select Tone");
-        if (NotificationSound.contains("SoundURI")) {
-            Uri uri = Uri.parse(NotificationSound.getString("SoundURI", "This is irrelevant"));
-            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, uri);
-        } else {
-            Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, uri);
-        }
-        this.startActivityForResult(intent, 5);
-    }
-
     @Override
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
         if (resultCode == Activity.RESULT_OK && requestCode == 5) {
@@ -197,34 +157,6 @@ public class MainActivity extends ActionBarActivity {
         TextView usernameTextView = (TextView) findViewById(R.id.username);
         usernameTextView.setText(username);
         getInfo(null, nameHandler, three);
-    }
-
-    public void showPassword(View v) {
-        EditText editText = (EditText) findViewById(R.id.Password);
-
-        if (((CheckBox) v).isChecked()) {
-            editText.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
-
-        } else {
-            editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        }
-    }
-
-    public void LedSettings(View v) {
-        LedColorDialog newFragment = LedColorDialog.newInstance();
-        newFragment.show(getFragmentManager(), "missiles");
-    }
-
-    public String[] returnLogIn() {
-        String[] LogInDetails = new String[2];
-        SharedPreferences LogIn = getSharedPreferences("LogIn", 0);
-        if (LogIn.contains("Username") && LogIn.contains("Password")) {
-            LogInDetails[0] = LogIn.getString("Username", "Fail");
-            LogInDetails[1] = LogIn.getString("Password", "Fail");
-            return LogInDetails;
-        } else {
-            return null;
-        }
     }
 
     public void LogInView() {
