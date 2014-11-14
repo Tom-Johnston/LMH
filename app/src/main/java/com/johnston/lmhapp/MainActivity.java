@@ -22,20 +22,27 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.text.InputType;
 import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.johnston.lmhapp.Battels.BattelsAsync;
+import com.johnston.lmhapp.Battels.BattelsFragment;
+import com.johnston.lmhapp.EPOS.EPOSFragment;
+import com.johnston.lmhapp.EPOS.EPOSAsync;
+import com.johnston.lmhapp.Home.HomeFragment;
+import com.johnston.lmhapp.LaundryView.LaundryViewFragment;
+import com.johnston.lmhapp.MealMenus.MenuFragment;
+import com.johnston.lmhapp.Settings.SettingsFragment;
+import com.johnston.lmhapp.Settings.VibrateSettings;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -90,20 +97,13 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    public void notificationVibrate(Handler passedhandler) {
-        handler = passedhandler;
-        VibrateSettings newFragment = VibrateSettings.newInstance();
-        newFragment.show(getFragmentManager(), "vibrate");
-    }
-
-
     public void Initialise() {
         if (Type == 1) {
-            new GetEpos().execute(manager, view, handler);
+            new EPOSAsync().execute(manager, view, handler);
         } else if (Type == 2) {
-            new Battels().execute(sslContext, view, handler);
+            new BattelsAsync().execute(sslContext, view, handler);
         } else if (Type == 3) {
-            new NameGrabber().execute(sslContext, this.getApplicationContext(), handler);
+            new NameGrabberAsync().execute(sslContext, this.getApplicationContext(), handler);
         }
     }
 
@@ -145,7 +145,7 @@ public class MainActivity extends ActionBarActivity {
 //        Make the sizex an even number.
         sizex = (sizex / 2) * 2;
         int sizey = sizex / 2;
-        new ImageGenerator().execute(username, handler, sizex, sizey, this.getApplicationContext());
+        new ImageGeneratorAsync().execute(username, handler, sizex, sizey, this.getApplicationContext());
         Byte three = 3;
         final Handler nameHandler = new Handler() {
             @Override
@@ -169,7 +169,7 @@ public class MainActivity extends ActionBarActivity {
             String username = LogIn.getString("Username", "Fail");
             String password = LogIn.getString("Password", "Fail");
             SSLContext context = createTrustManager();
-            new LogInTask().execute(context, username, password, Status, this, manager);
+            new LoginAsync().execute(context, username, password, Status, this, manager);
         } else {
             Status.setText("Please input username and password");
         }
@@ -355,10 +355,10 @@ public class MainActivity extends ActionBarActivity {
         String fragmentType = fragment1.getTag();
         String[] Options = getResources().getStringArray(R.array.options);
         if (fragmentType.equals(Options[1])) {
-            LaundryView fragment = (LaundryView) fragment1;
+            LaundryViewFragment fragment = (LaundryViewFragment) fragment1;
             fragment.LoadStatus();
         } else if (fragmentType.equals(Options[3])) {
-            EPOS fragment = (EPOS) fragment1;
+            EPOSFragment fragment = (EPOSFragment) fragment1;
             fragment.GetEpos();
         } else if (fragmentType.equals(Options[4])) {
             MenuFragment fragment = (MenuFragment) fragment1;
@@ -451,10 +451,10 @@ public class MainActivity extends ActionBarActivity {
                 newFragment = new HomeFragment();
                 transaction.addToBackStack(Options[position]);
             } else if (position == 3) {
-                newFragment = new EPOS();
+                newFragment = new EPOSFragment();
                 transaction.addToBackStack(Options[position]);
             } else if (position == 1) {
-                newFragment = new LaundryView();
+                newFragment = new LaundryViewFragment();
                 transaction.addToBackStack(Options[position]);
             } else if (position == 4) {
                 newFragment = new MenuFragment();
