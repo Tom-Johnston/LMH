@@ -132,6 +132,9 @@ public class SettingsFragment extends Fragment {
                 }else if(title.equals("Login Details")){
                     LoginDialog newFragment = LoginDialog.newInstance();
                     newFragment.show(getFragmentManager(), "logIn");
+                }else if(title.equals("Notify Time")){
+                    NotifyTimeDialog newFragment = NotifyTimeDialog.newInstance();
+                    newFragment.show(getFragmentManager(), "notifyTime");
                 }
             }
 
