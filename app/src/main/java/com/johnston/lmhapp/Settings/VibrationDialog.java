@@ -40,24 +40,7 @@ public class VibrationDialog extends DialogFragment {
         view = inflater.inflate(R.layout.vibration_dialog, null);
         builder.setView(view);
         builder.setTitle("Vibration Settings");
-        builder.setPositiveButton("Save", new DialogInterface.OnClickListener(){
-            @Override
-            public void onClick(DialogInterface dialog, int id) {
-                EditText editText = (EditText) view.findViewById(R.id.Pattern);
-                String pattern = editText.getText().toString();
-                if(TestString(false)) {
-                    SharedPreferences vibratePreference = getActivity().getSharedPreferences("vibratePattern", 0);
-                    SharedPreferences.Editor editor = vibratePreference.edit();
-                    editor.putString("vibratePattern", pattern);
-                    Toast toast = Toast.makeText(getActivity(), "Vibrate Pattern Saved.", Toast.LENGTH_SHORT);
-                    toast.show();
-                    editor.commit();
-                }
-
-
-
-            }
-        });
+        builder.setPositiveButton("Save", null);
         builder.setNeutralButton("Test",null);
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
@@ -77,7 +60,7 @@ public class VibrationDialog extends DialogFragment {
         EditText patternText = (EditText) view.findViewById(R.id.Pattern);
         SharedPreferences vibratePreference = getActivity().getSharedPreferences("vibratePattern",0);
         patternText.setText(vibratePreference.getString("vibratePattern","0,600"));
-
+        patternText.setEnabled(false);
         if (vibratePreference.getString("vibratePattern","0,600").equals(getResources().getString(R.string.buzz1))){
             buzz1.setChecked(true);
         }else if (vibratePreference.getString("vibratePattern","0,600").equals(getResources().getString(R.string.buzz2))){
@@ -86,6 +69,7 @@ public class VibrationDialog extends DialogFragment {
             buzz3.setChecked(true);
         }else{
             buzzCustom.setChecked(true);
+            patternText.setEnabled(true);
         }
 
         final AlertDialog d = builder.create();
@@ -101,6 +85,23 @@ public class VibrationDialog extends DialogFragment {
 
                     }
 
+                });
+                Button b1 = d.getButton(AlertDialog.BUTTON_POSITIVE);
+                b1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        EditText editText = (EditText) view.findViewById(R.id.Pattern);
+                        String pattern = editText.getText().toString();
+                        if(TestString(false)) {
+                            SharedPreferences vibratePreference = getActivity().getSharedPreferences("vibratePattern", 0);
+                            SharedPreferences.Editor editor = vibratePreference.edit();
+                            editor.putString("vibratePattern", pattern);
+                            Toast toast = Toast.makeText(getActivity(), "Vibrate Pattern Saved.", Toast.LENGTH_SHORT);
+                            toast.show();
+                            editor.commit();
+                            d.dismiss();
+                        }
+                    }
                 });
             }
         });
