@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.johnston.lmhapp.R;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -25,12 +26,15 @@ public class SettingsListAdapter extends ArrayAdapter<String> {
     int resourceId;
     List<String> strings;
     public Handler switchHandler;
+    public Boolean[] showView;
 
     public SettingsListAdapter(Context context, int resource, List<String> objects) {
         super(context, resource, objects);
         this.context = context;
         resourceId = resource;
         strings = objects;
+        showView = new Boolean[strings.size()];
+        Arrays.fill(showView, true);
     }
 
     @Override
@@ -66,7 +70,6 @@ public class SettingsListAdapter extends ArrayAdapter<String> {
             }
         } else {
 
-
             if (convertView == null) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = inflater.inflate(R.layout.settings_list_item, parent, false);
@@ -92,6 +95,11 @@ public class SettingsListAdapter extends ArrayAdapter<String> {
             } else if (strings.get(position).equals("Notify Time")) {
             }
 
+        }
+        if(showView[position]==false){
+            ViewGroup.LayoutParams lp = convertView.getLayoutParams();
+            lp.height = 1;
+            convertView.setLayoutParams(lp);
         }
         return convertView;
     }

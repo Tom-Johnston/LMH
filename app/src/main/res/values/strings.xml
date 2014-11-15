@@ -81,12 +81,7 @@
         <item>Lunch</item>
         <item>Dinner</item>
         <item>Notify Time</item>
-    </string-array>
-    <string-array name="settings2">
-        <item>SSO Login Details</item>
-        <item>Login Details</item>
-        <item>Notification Settings</item>
-        <item>Notifications</item>
+        <item>Testing</item>
     </string-array>
     <string name="font_family_subhead_material">sans-serif</string>
     <string name="font_family_body_1_material">sans-serif</string>

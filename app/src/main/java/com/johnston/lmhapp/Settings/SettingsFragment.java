@@ -1,5 +1,8 @@
 package com.johnston.lmhapp.Settings;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
 import android.app.Fragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,18 +16,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.johnston.lmhapp.MainActivity;
 import com.johnston.lmhapp.MealMenus.NotificationsService;
 import com.johnston.lmhapp.R;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -140,18 +140,59 @@ public class SettingsFragment extends Fragment {
                 editor.commit();
                 Intent newIntent = new Intent(getActivity(), NotificationsService.class);
                 getActivity().sendBroadcast(newIntent);
-                settingsListAdapter.strings = Arrays.asList(getResources().getStringArray(R.array.settings2));
-                settingsListAdapter.notifyDataSetChanged();
+                dismissPositions(4, 9);
             } else {
                 SharedPreferences Notifications = getActivity().getSharedPreferences("Notifications", 0);
                 SharedPreferences.Editor editor = Notifications.edit();
                 editor.putBoolean("toggle", true);
                 editor.commit();
-                settingsListAdapter.strings = Arrays.asList(getResources().getStringArray(R.array.settings));
-                settingsListAdapter.notifyDataSetChanged();
-
             }
         }
     };
+
+
+    public void dismissPositions(int theFirstPosition, int theLastPosition){
+        ListView listView = (ListView) view.findViewById(R.id.settingsList);
+        View dismissView;
+        for(int i=theFirstPosition;i<theLastPosition+1;i++) {
+            settingsListAdapter.showView[i]=false;
+            if (i - listView.getFirstVisiblePosition() > -1) {
+                dismissView = listView.getChildAt(i-listView.getFirstVisiblePosition());
+                if (dismissView == null) {
+                    System.out.println("Null View.");
+                    return;
+                }
+                final View dismissView2= dismissView;
+                dismissView.animate()
+                        .translationX(dismissView.getWidth())
+                        .alpha(0)
+                        .setDuration(200)
+                        .setListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                performDismiss(dismissView2);
+                            }
+                        });
+            }else{
+//                TODO I think this should be handled in getView.
+            }
+        }
+
+    }
+
+    public void performDismiss(final View dismissView){
+        final ViewGroup.LayoutParams lp = dismissView.getLayoutParams();
+        final int originalHeight = dismissView.getHeight();
+        ValueAnimator animator = ValueAnimator.ofInt(originalHeight, 1).setDuration(200);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                System.out.println("AnimationUpdate");
+                lp.height = (Integer) valueAnimator.getAnimatedValue();
+                dismissView.setLayoutParams(lp);
+            }
+        });
+        animator.start();
+    }
 
 }
