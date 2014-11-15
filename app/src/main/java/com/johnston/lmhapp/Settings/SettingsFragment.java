@@ -126,7 +126,8 @@ public class SettingsFragment extends Fragment {
                         switchCompat.setChecked(true);
                     }
                 }else if(title.equals("Vibration")){
-
+                    VibrationDialog newFragment = VibrationDialog.newInstance();
+                    newFragment.show(getFragmentManager(), "vibrations");
                 }else if(title.equals("Notification Sound")){
                     notificationSound();
                 }else if(title.equals("Login Details")){
