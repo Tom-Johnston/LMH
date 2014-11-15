@@ -21,7 +21,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.johnston.lmhapp.MainActivity;
-import com.johnston.lmhapp.MealMenus.WidgetBroadcastReceiver;
 import com.johnston.lmhapp.MealMenus.NotificationsService;
 import com.johnston.lmhapp.R;
 
@@ -162,12 +161,6 @@ public class SettingsFragment extends Fragment {
 //        Replace an existing notification..
         Intent intent = new Intent(this.getActivity(), NotificationsService.class);
         this.getActivity().sendBroadcast(intent);
-        SharedPreferences widgetEnabled = getActivity().getSharedPreferences("widgetEnabled", 0);
-//       Update the widget.
-        if (widgetEnabled.getBoolean("widgetEnabled", false)) {
-            Intent updateWidget = new Intent(this.getActivity(), WidgetBroadcastReceiver.class);
-            this.getActivity().sendBroadcast(updateWidget);
-        }
         editor.commit();
     }
 

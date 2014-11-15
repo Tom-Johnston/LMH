@@ -99,6 +99,12 @@ public class SettingsListAdapter extends ArrayAdapter<String> {
     private View CheckBoxViewCreator(int position, View parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         CheckBox checkBox = (CheckBox) inflater.inflate(R.layout.checkbox, (ViewGroup) parent, false);
+        SharedPreferences mealsToNotifyFor = context.getSharedPreferences("mealsToNotifyFor", 0);
+        if(mealsToNotifyFor.getBoolean(strings.get(position),true)){
+         checkBox.setChecked(true);
+        }else{
+            checkBox.setChecked(false);
+        }
         return checkBox;
     }
 
