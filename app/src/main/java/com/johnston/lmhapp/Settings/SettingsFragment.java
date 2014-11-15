@@ -32,19 +32,8 @@ import java.util.List;
  * Created by Tom on 08/08/2014.
  */
 public class SettingsFragment extends Fragment {
-    final Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message message) {
-
-            finishedDialog((Boolean) message.obj);
-        }
-    };
     View view;
     MainActivity Main;
-    VibrateSpinnerListener vsl;
-    ArrayList<String> vibrationStrings;
-    ArrayAdapter adapter;
-    Spinner spinner;
     List<String> strings;
     SettingsListAdapter settingsListAdapter;
 
@@ -59,7 +48,6 @@ public class SettingsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(null, null, savedInstanceState);
         view = inflater.inflate(R.layout.settings_layout, container, false);
-        vibrationStrings = new ArrayList<String>(Arrays.asList(getResources().getStringArray(R.array.vibrations)));
         Main = (MainActivity) getActivity();
         ListView listView = (ListView) view.findViewById(R.id.settingsList);
         strings = Arrays.asList(getResources().getStringArray(R.array.settings));
@@ -74,36 +62,10 @@ public class SettingsFragment extends Fragment {
     }
 
 
-    public void finishedDialog(Boolean savedCustom) {
-        String changeCustom = getResources().getString(R.string.changeCustom);
-        int vibrationStringsSize = vibrationStrings.size();
-        if (savedCustom) {            vsl.last = 3;
-            spinner.setSelection(3, true);
-            if (!vibrationStrings.get(vibrationStringsSize - 1).equals(changeCustom)) {
-                vibrationStrings.add(changeCustom);
-                adapter.notifyDataSetChanged();
-
-            }
-        } else {
-            if (vsl.last == 4) {
-                vsl.last = 3;
-                spinner.setSelection(3, true);
-            } else {
-                spinner.setSelection(vsl.lastBeforeDialog, true);
-                if (vibrationStrings.get(vibrationStringsSize - 1).equals(changeCustom)) {
-                    vibrationStrings.remove(vibrationStringsSize - 1);
-                    adapter.notifyDataSetChanged();
-                }
-            }
-
-
-        }
-    }
 
     AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//            TODO Vibration and notify time.
             if (view.getTag().equals("Standard")){
                 String title = ((TextView)view.findViewById(R.id.itemTitle)).getText().toString();
                 if (title.equals("LED Colour")){

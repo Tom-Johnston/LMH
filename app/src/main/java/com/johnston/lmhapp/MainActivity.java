@@ -42,7 +42,6 @@ import com.johnston.lmhapp.Home.HomeFragment;
 import com.johnston.lmhapp.LaundryView.LaundryViewFragment;
 import com.johnston.lmhapp.MealMenus.MenuFragment;
 import com.johnston.lmhapp.Settings.SettingsFragment;
-import com.johnston.lmhapp.Settings.VibrateSettings;
 
 import java.io.BufferedInputStream;
 import java.io.File;

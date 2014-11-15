@@ -5,21 +5,15 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.Toast;
-
-import com.johnston.lmhapp.MealMenus.NotificationsService;
 import com.johnston.lmhapp.R;
-
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
@@ -48,25 +42,8 @@ public class VibrationDialog extends DialogFragment {
             public void onClick(DialogInterface dialog, int id) {
                 EditText editText = (EditText) view.findViewById(R.id.Pattern);
                 String pattern = editText.getText().toString();
-                if (!pattern.endsWith(",")) {
-                    pattern = pattern + ",";
-                }
-                StringTokenizer stringTokenizer = new StringTokenizer(pattern, ",");
-                Boolean parse = true;
-                ArrayList<Long> vibratePatternList = new ArrayList<Long>();
-                while (stringTokenizer.hasMoreElements()) {
-                    try {
-                        vibratePatternList.add(Long.parseLong(stringTokenizer.nextToken()));
-                    } catch (NumberFormatException nfe) {
-                        parse = false;
-                        break;
-                    }
-                }
-                if (!parse || vibratePatternList.size() < 1) {
-                    Toast toast = Toast.makeText(getActivity().getApplicationContext(), "Problem parsing integers.", Toast.LENGTH_SHORT);
-                    toast.show();
-                } else {
-                    SharedPreferences vibratePreference = getActivity().getSharedPreferences("vibratePattern",0);
+                if(TestString(false)) {
+                    SharedPreferences vibratePreference = getActivity().getSharedPreferences("vibratePattern", 0);
                     SharedPreferences.Editor editor = vibratePreference.edit();
                     editor.putString("vibratePattern", pattern);
                     Toast toast = Toast.makeText(getActivity(), "Vibrate Pattern Saved.", Toast.LENGTH_SHORT);
@@ -75,12 +52,13 @@ public class VibrationDialog extends DialogFragment {
                 }
 
 
+
             }
         });
         builder.setNeutralButton("Test", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Vibrate();
+                TestString(true);
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -136,7 +114,8 @@ public class VibrationDialog extends DialogFragment {
         }
     };
 
-    public void Vibrate() {
+    public boolean TestString(Boolean vibrate){
+        // Tests for a valid string. If vibrate is true, will vibrate on valid string.
         EditText editText = (EditText) view.findViewById(R.id.Pattern);
         String pattern = editText.getText().toString();
         if (!pattern.endsWith(",")) {
@@ -156,14 +135,21 @@ public class VibrationDialog extends DialogFragment {
         if (!parse || vibratePatternList.size() < 1) {
             Toast toast = Toast.makeText(getActivity().getApplicationContext(), "Problem parsing integers.", Toast.LENGTH_SHORT);
             toast.show();
+            return false;
         } else {
+            if (vibrate){
+                Vibrate(vibratePatternList);
+            }
+            return true;
+        }
+    }
+
+    public void Vibrate(ArrayList<Long> vibratePatternList) {
             Vibrator v = (Vibrator) getActivity().getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
             long[] vibrateArray = new long[vibratePatternList.size()];
             for (int i = 0; i < vibratePatternList.size(); i++) {
                 vibrateArray[i] = vibratePatternList.get(i);
             }
             v.vibrate(vibrateArray, -1);
-        }
-
     }
 }
