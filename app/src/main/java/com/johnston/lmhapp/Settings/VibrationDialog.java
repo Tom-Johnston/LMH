@@ -10,10 +10,13 @@ import android.os.Bundle;
 import android.os.Vibrator;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Toast;
+
 import com.johnston.lmhapp.R;
+
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
@@ -55,12 +58,7 @@ public class VibrationDialog extends DialogFragment {
 
             }
         });
-        builder.setNeutralButton("Test", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                TestString(true);
-            }
-        });
+        builder.setNeutralButton("Test",null);
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {
@@ -91,6 +89,21 @@ public class VibrationDialog extends DialogFragment {
         }
 
         final AlertDialog d = builder.create();
+        d.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface dialog) {
+
+                  Button b2 = d.getButton(AlertDialog.BUTTON_NEUTRAL);
+                b2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View useless) {
+                        TestString(true);
+
+                    }
+
+                });
+            }
+        });
         return d;
     }
 
