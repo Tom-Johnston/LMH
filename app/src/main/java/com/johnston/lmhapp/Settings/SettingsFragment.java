@@ -38,8 +38,9 @@ public class SettingsFragment extends Fragment {
     MainActivity Main;
     List<String> strings;
     SettingsListAdapter settingsListAdapter;
-    int animationTime=400;
-
+    int animationTime=250;
+    long switchAnimationTime=250;
+    SwitchCompat switchCompat;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,11 +85,13 @@ public class SettingsFragment extends Fragment {
                     toggleMealNotification(checkBox,title);
                 }else if(title.equals("Notifications")){
 
-                    SwitchCompat switchCompat = (SwitchCompat)((LinearLayout)view.findViewById(R.id.widget_frame)).getChildAt(0);
+                    switchCompat = (SwitchCompat)((LinearLayout)view.findViewById(R.id.widget_frame)).getChildAt(0);
                     if(switchCompat.isChecked()){
                         switchCompat.setChecked(false);
+                        switchAnimationTime = switchCompat.getAnimation().getDuration();
                     }else{
                         switchCompat.setChecked(true);
+                        switchAnimationTime = switchCompat.getAnimation().getDuration();
                     }
                 }else if(title.equals("Vibration")){
                     VibrationDialog newFragment = VibrationDialog.newInstance();
@@ -177,9 +180,8 @@ public class SettingsFragment extends Fragment {
                     workingHeight = addView.findViewById(R.id.widget_frame).getHeight()+4;
                 }
                 final int originalHeight = workingHeight;
-
                 ValueAnimator animator = ValueAnimator.ofInt(1,originalHeight).setDuration(animationTime);
-//                animator.setStartDelay((i-theFirstPosition)*50);
+                animator.setStartDelay(switchAnimationTime); //Wait for the switch to animate.....
                 animator.addListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
@@ -229,7 +231,7 @@ public class SettingsFragment extends Fragment {
                         .translationX(dismissView.getWidth())
                         .alpha(0)
                         .setDuration(animationTime)
-//                        .setStartDelay((i-theFirstPosition)*50)
+                        .setStartDelay(switchAnimationTime)
                         .setListener(new AnimatorListenerAdapter() {
                             @Override
                             public void onAnimationEnd(Animator animation) {
