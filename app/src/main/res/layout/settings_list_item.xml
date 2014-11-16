@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="?android:attr/listPreferredItemHeightSmall"
+        android:gravity="center_vertical"
+        android:paddingStart="?android:attr/listPreferredItemPaddingStart"
+        android:paddingLeft="?android:attr/listPreferredItemPaddingLeft"
+        android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
+        android:paddingRight="?android:attr/listPreferredItemPaddingRight"
+        android:background="?android:attr/selectableItemBackground"
+        android:descendantFocusability="blocksDescendants"
+        >
+
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingTop="16dip"
+            android:paddingBottom="16dip"
+            >
+
+            <TextView
+                android:id="@+id/itemTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:textColor="?android:attr/textColorPrimary"
+                android:ellipsize="marquee"
+                android:fadingEdge="horizontal"
+                android:textSize="@dimen/text_size_subhead_material"
+                android:fontFamily="@string/font_family_subhead_material"/>
+
+            <TextView
+                android:id="@+id/itemCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/itemTitle"
+                android:layout_alignLeft="@+id/itemTitle"
+                android:visibility="gone"
+                android:textAlignment="viewStart"
+                android:gravity="start"
+                android:textSize="@dimen/text_size_body_1_material"
+                android:fontFamily="@string/font_family_body_1_material"
+                android:textColor="?android:attr/textColorSecondary"
+                android:maxLines="10" />
+
+        </RelativeLayout>
+
+    <LinearLayout
+        android:theme="@style/AppTheme"
+        android:id="@+id/widget_frame"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:orientation="vertical" />
+
+
+
+</LinearLayout>

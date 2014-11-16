@@ -43,7 +43,6 @@
         <TextView
             android:id="@+id/name"
             android:textColor="#ffffff"
-            android:text="Tom Johnston"
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
             android:textSize="20sp"
             android:layout_width="match_parent"
@@ -54,7 +53,6 @@
         <TextView
             android:id="@+id/username"
             android:textColor="#ffffff"
-            android:text="Username"
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium"
             android:textSize="16sp"
             android:layout_width="match_parent"

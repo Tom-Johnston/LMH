@@ -23,7 +23,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <receiver android:name=".WidgetProvider">
+        <receiver android:name=".MealMenus.WidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -31,8 +31,8 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/lmh_widget" />
         </receiver>
-        <receiver android:name=".MealMenuWidgetReceiver" />
-        <receiver android:name=".NotificationsService">
+        <receiver android:name=".MealMenus.WidgetBroadcastReceiver" />
+        <receiver android:name=".MealMenus.NotificationsService">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"></action>
             </intent-filter>
@@ -40,7 +40,7 @@
         </receiver>
 
         <service
-            android:name=".ListViewService"
+            android:name=".MealMenus.WidgetListViewService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
 

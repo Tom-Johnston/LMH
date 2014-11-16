@@ -22,19 +22,26 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.text.InputType;
 import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.johnston.lmhapp.Battels.BattelsAsync;
+import com.johnston.lmhapp.Battels.BattelsFragment;
+import com.johnston.lmhapp.EPOS.EPOSFragment;
+import com.johnston.lmhapp.EPOS.EPOSAsync;
+import com.johnston.lmhapp.Home.HomeFragment;
+import com.johnston.lmhapp.LaundryView.LaundryViewFragment;
+import com.johnston.lmhapp.MealMenus.MenuFragment;
+import com.johnston.lmhapp.Settings.SettingsFragment;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -50,7 +57,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
 import java.util.Arrays;
 
 import javax.net.ssl.SSLContext;
@@ -60,7 +66,7 @@ import javax.net.ssl.TrustManagerFactory;
 public class MainActivity extends ActionBarActivity {
     public Handler handler;
     ActionBarDrawerToggle mDrawerToggle;
-    String mTitle = "LMH";
+    String mTitle;
     ListView mDrawerList;
     DrawerLayout mDrawerLayout;
     CookieManager manager;
@@ -71,44 +77,6 @@ public class MainActivity extends ActionBarActivity {
     DrawerAdapter mDrawerAdapter;
     Bitmap selectedCircle;
     Bitmap unselectedCircle;
-
-    public void drawCircle(int r, int g, int b) {
-        Fragment fragment1 = getFragmentManager().findFragmentById(R.id.Frame);
-        ((SettingsFragment) fragment1).drawCircle(r, g, b);
-
-    }
-
-    public void toggleMealNotification(View v) {
-        CheckBox button = (CheckBox) v;
-        SharedPreferences mealsToNotifyFor = getSharedPreferences("mealsToNotifyFor", 0);
-        SharedPreferences.Editor editor = mealsToNotifyFor.edit();
-        editor.putBoolean(button.getText().toString(), button.isChecked());
-//        Replace an existing notification..
-        Intent intent = new Intent(this, NotificationsService.class);
-        this.sendBroadcast(intent);
-        SharedPreferences widgetEnabled = this.getSharedPreferences("widgetEnabled", 0);
-//       Update the widget.
-        if (widgetEnabled.getBoolean("widgetEnabled", false)) {
-            Intent updateWidget = new Intent(this, MealMenuWidgetReceiver.class);
-            this.sendBroadcast(updateWidget);
-        }
-        editor.commit();
-    }
-
-    public void notificationSound(View v) {
-        SharedPreferences NotificationSound = getSharedPreferences("NotificationSound", 0);
-        Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
-        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
-        intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TITLE, "Select Tone");
-        if (NotificationSound.contains("SoundURI")) {
-            Uri uri = Uri.parse(NotificationSound.getString("SoundURI", "This is irrelevant"));
-            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, uri);
-        } else {
-            Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, uri);
-        }
-        this.startActivityForResult(intent, 5);
-    }
 
     @Override
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
@@ -128,26 +96,18 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    public void notificationVibrate(Handler passedhandler) {
-        handler = passedhandler;
-        VibrateSettings newFragment = VibrateSettings.newInstance();
-        newFragment.show(getFragmentManager(), "vibrate");
-    }
-
-
     public void Initialise() {
         if (Type == 1) {
-            new GetEpos().execute(manager, view, handler);
+            new EPOSAsync().execute(manager, view, handler);
         } else if (Type == 2) {
-            new Battels().execute(sslContext, view, handler);
+            new BattelsAsync().execute(sslContext, view, handler);
         } else if (Type == 3) {
-            new NameGrabber().execute(sslContext, this.getApplicationContext(), handler);
+            new NameGrabberAsync().execute(sslContext, this.getApplicationContext(), handler);
         }
     }
 
 
     public void getInfo(View v, Handler passedHandler, byte passedType) {
-//        System.out.println(manager.getCookieStore().getCookies().toString());
         handler = passedHandler;
         view = v;
         Type = passedType;
@@ -183,9 +143,8 @@ public class MainActivity extends ActionBarActivity {
         int sizex = (int) ((findViewById(R.id.graphic)).getWidth() * 1.1);
 //        Make the sizex an even number.
         sizex = (sizex / 2) * 2;
-        System.out.println("sizex" + sizex);
         int sizey = sizex / 2;
-        new imageGenerator().execute(username, handler, sizex, sizey, this.getApplicationContext());
+        new ImageGeneratorAsync().execute(username, handler, sizex, sizey, this.getApplicationContext());
         Byte three = 3;
         final Handler nameHandler = new Handler() {
             @Override
@@ -199,34 +158,6 @@ public class MainActivity extends ActionBarActivity {
         getInfo(null, nameHandler, three);
     }
 
-    public void showPassword(View v) {
-        EditText editText = (EditText) findViewById(R.id.Password);
-
-        if (((CheckBox) v).isChecked()) {
-            editText.setInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD);
-
-        } else {
-            editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        }
-    }
-
-    public void LedSettings(View v) {
-        LedColorDialog newFragment = LedColorDialog.newInstance();
-        newFragment.show(getFragmentManager(), "missiles");
-    }
-
-    public String[] returnLogIn() {
-        String[] LogInDetails = new String[2];
-        SharedPreferences LogIn = getSharedPreferences("LogIn", 0);
-        if (LogIn.contains("Username") && LogIn.contains("Password")) {
-            LogInDetails[0] = LogIn.getString("Username", "Fail");
-            LogInDetails[1] = LogIn.getString("Password", "Fail");
-            return LogInDetails;
-        } else {
-            return null;
-        }
-    }
-
     public void LogInView() {
         SharedPreferences LogIn = getSharedPreferences("LogIn", 0);
         TextView Status = null;
@@ -237,7 +168,7 @@ public class MainActivity extends ActionBarActivity {
             String username = LogIn.getString("Username", "Fail");
             String password = LogIn.getString("Password", "Fail");
             SSLContext context = createTrustManager();
-            new LogInTask().execute(context, username, password, Status, this, manager);
+            new LoginAsync().execute(context, username, password, Status, this, manager);
         } else {
             Status.setText("Please input username and password");
         }
@@ -256,8 +187,6 @@ public class MainActivity extends ActionBarActivity {
             Certificate ca5;
             ca = cf.generateCertificate(caInput);
             ca5 = cf.generateCertificate(caInput5);
-            System.out.println("ca=" + ((X509Certificate) ca).getSubjectDN());
-            System.out.println("ca=" + ((X509Certificate) ca5).getSubjectDN());
             caInput.close();
             caInput5.close();
 
@@ -277,7 +206,6 @@ public class MainActivity extends ActionBarActivity {
 // Create an SSLContext that uses our TrustManager
             SSLContext context = SSLContext.getInstance("TLS");
             context.init(null, tmf.getTrustManagers(), null);
-            System.out.println("Success!");
             sslContext = context;
             return context;
 
@@ -300,10 +228,17 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        mTitle = getResources().getString(R.string.title);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if (savedInstanceState!=null) {
+            lastPosition = savedInstanceState.getInt("lastPosition");
+        }
+
 
 //
 //
@@ -320,7 +255,6 @@ public class MainActivity extends ActionBarActivity {
 
         selectedCircle = drawCircle(getResources().getColor(R.color.colorPrimary2));
         unselectedCircle = drawCircle(Color.parseColor("#de000000"));
-        System.out.println("Color: " + getResources().getColor(R.color.colorPrimary2));
 
 
 //      Cookie Manager
@@ -335,6 +269,7 @@ public class MainActivity extends ActionBarActivity {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         mDrawerAdapter = new DrawerAdapter(this, R.layout.drawer_list_item, Arrays.asList(Options), selectedCircle, unselectedCircle);
+        mDrawerAdapter.selected = lastPosition;
         mDrawerList.setAdapter(mDrawerAdapter);
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
         mDrawerToggle = new ActionBarDrawerToggle(
@@ -380,12 +315,12 @@ public class MainActivity extends ActionBarActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString("mTitle", mTitle);
+        outState.putInt("lastPosition",lastPosition);
     }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        System.out.println("Should be setting the title");
         getSupportActionBar().setTitle(mTitle);
         // Sync the toggle state after onRestoreInstanceState has occurred.
         mDrawerToggle.syncState();
@@ -419,10 +354,10 @@ public class MainActivity extends ActionBarActivity {
         String fragmentType = fragment1.getTag();
         String[] Options = getResources().getStringArray(R.array.options);
         if (fragmentType.equals(Options[1])) {
-            LaundryView fragment = (LaundryView) fragment1;
+            LaundryViewFragment fragment = (LaundryViewFragment) fragment1;
             fragment.LoadStatus();
         } else if (fragmentType.equals(Options[3])) {
-            EPOS fragment = (EPOS) fragment1;
+            EPOSFragment fragment = (EPOSFragment) fragment1;
             fragment.GetEpos();
         } else if (fragmentType.equals(Options[4])) {
             MenuFragment fragment = (MenuFragment) fragment1;
@@ -446,7 +381,6 @@ public class MainActivity extends ActionBarActivity {
         if (lastPosition == 0) {
             this.finish();
         } else {
-            System.out.println("BackPressed");
             mDrawerList.performItemClick(mDrawerList.getAdapter().getView(0, null, null), 0, mDrawerList.getAdapter().getItemId(0));
             String[] Options = getResources().getStringArray(R.array.options);
             mTitle = Options[0];
@@ -474,10 +408,8 @@ public class MainActivity extends ActionBarActivity {
         @Override
         public void onItemClick(AdapterView parent, View view, int position, long id) {
 
-            System.out.println("Clicked: " + position);
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(parent.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-            System.out.println(mDrawerList.getCheckedItemPosition());
             mDrawerLayout.closeDrawers();
             if (lastPosition == position) {
                 return;
@@ -509,7 +441,6 @@ public class MainActivity extends ActionBarActivity {
             mDrawerAdapter.selected = position;
             String[] Options = getResources().getStringArray(R.array.options);
             mTitle = Options[position];
-            System.out.println("position" + position);
             Fragment newFragment;
             FragmentTransaction transaction = getFragmentManager().beginTransaction();
             newFragment = getFragmentManager().findFragmentByTag(Options[position]);
@@ -519,10 +450,10 @@ public class MainActivity extends ActionBarActivity {
                 newFragment = new HomeFragment();
                 transaction.addToBackStack(Options[position]);
             } else if (position == 3) {
-                newFragment = new EPOS();
+                newFragment = new EPOSFragment();
                 transaction.addToBackStack(Options[position]);
             } else if (position == 1) {
-                newFragment = new LaundryView();
+                newFragment = new LaundryViewFragment();
                 transaction.addToBackStack(Options[position]);
             } else if (position == 4) {
                 newFragment = new MenuFragment();

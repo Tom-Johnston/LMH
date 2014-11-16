@@ -16,9 +16,9 @@
         <item name="android:textColorPrimary">#ffffff</item>
         <item name="android:textColor">#ffffff</item>
         <item name="android:text">Title</item>
-        <item name="android:colorPrimary">@color/colorPrimary2</item>
-        <item name="android:colorAccent">@color/colorAccent</item>
-        <item name="android:colorPrimaryDark">#001123</item>
+        <!--<item name="android:colorPrimary">@color/colorPrimary2</item>-->
+        <!--<item name="android:colorAccent">@color/colorAccent</item>-->
+        <!--<item name="android:colorPrimaryDark">#001123</item>-->
         <item name="colorPrimary">@color/colorPrimary2</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorPrimaryDark">#001123</item>
@@ -48,5 +48,6 @@
         <item name="android:background">#bdbdbd</item>
         <item name="android:textSize">14sp</item>
     </style>
+
 
 </resources>
