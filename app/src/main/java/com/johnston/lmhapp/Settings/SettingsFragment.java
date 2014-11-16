@@ -165,13 +165,10 @@ public class SettingsFragment extends Fragment {
 //                Always scroll in from the side.
                 workingView.setTranslationX(workingView.getWidth());
                 final RelativeLayout addView = workingView;
-                System.out.println(addView);
                 if (addView == null) {
-                    System.out.println("Null View.");
                     return;
                 }
                 int workingHeight;
-                System.out.println(addView.getLayoutParams());
                 final AbsListView.LayoutParams lp = (AbsListView.LayoutParams) addView.getLayoutParams();
 
                 if(addView.findViewById(R.id.settingListItemRelativeLayout).getHeight()>addView.findViewById(R.id.widget_frame).getHeight()){
@@ -226,7 +223,6 @@ public class SettingsFragment extends Fragment {
             if (i - listView.getFirstVisiblePosition() > -1) {
                 final View dismissView = listView.getChildAt(i-listView.getFirstVisiblePosition());
                 if (dismissView == null) {
-                    System.out.println("Null View.");
                     return;
                 }
                 dismissView.animate()
