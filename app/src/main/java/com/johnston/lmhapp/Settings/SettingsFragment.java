@@ -182,6 +182,7 @@ public class SettingsFragment extends Fragment {
                 final int originalHeight = workingHeight;
 
                 ValueAnimator animator = ValueAnimator.ofInt(1,originalHeight).setDuration(animationTime);
+//                animator.setStartDelay((i-theFirstPosition)*50);
                 animator.addListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
@@ -232,6 +233,7 @@ public class SettingsFragment extends Fragment {
                         .translationX(dismissView.getWidth())
                         .alpha(0)
                         .setDuration(animationTime)
+//                        .setStartDelay((i-theFirstPosition)*50)
                         .setListener(new AnimatorListenerAdapter() {
                             @Override
                             public void onAnimationEnd(Animator animation) {
@@ -247,14 +249,11 @@ public class SettingsFragment extends Fragment {
 
     public void performDismiss(final View dismissView){
         final ViewGroup.LayoutParams lp = dismissView.getLayoutParams();
-        System.out.println(lp);
-        System.out.println("adada");
         final int originalHeight = dismissView.getHeight();
         ValueAnimator animator = ValueAnimator.ofInt(originalHeight, 1).setDuration(animationTime);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                System.out.println("AnimationUpdate");
                 lp.height = (Integer) valueAnimator.getAnimatedValue();
                 dismissView.setLayoutParams(lp);
             }
