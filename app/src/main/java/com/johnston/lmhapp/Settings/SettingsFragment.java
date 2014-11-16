@@ -15,10 +15,12 @@ import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.johnston.lmhapp.MainActivity;
@@ -36,6 +38,7 @@ public class SettingsFragment extends Fragment {
     MainActivity Main;
     List<String> strings;
     SettingsListAdapter settingsListAdapter;
+    int animationTime=400;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -146,31 +149,93 @@ public class SettingsFragment extends Fragment {
                 SharedPreferences.Editor editor = Notifications.edit();
                 editor.putBoolean("toggle", true);
                 editor.commit();
+                Intent newIntent = new Intent(getActivity(), NotificationsService.class);
+                getActivity().sendBroadcast(newIntent);
+                addPositions(4,9);
             }
         }
     };
 
+    public void addPositions(int theFirstPosition,int theLastPosition){
+        ListView listView = (ListView) view.findViewById(R.id.settingsList);
+        for(int i=theFirstPosition;i<theLastPosition+1;i++) {
+            settingsListAdapter.showView[i] = true;
+            if (i - listView.getFirstVisiblePosition() > -1) {
+                final RelativeLayout workingView = (RelativeLayout) listView.getChildAt(i - listView.getFirstVisiblePosition());
+//                Always scroll in from the side.
+                workingView.setTranslationX(workingView.getWidth());
+                final RelativeLayout addView = workingView;
+                System.out.println(addView);
+                if (addView == null) {
+                    System.out.println("Null View.");
+                    return;
+                }
+                int workingHeight;
+                System.out.println(addView.getLayoutParams());
+                final AbsListView.LayoutParams lp = (AbsListView.LayoutParams) addView.getLayoutParams();
+
+                if(addView.findViewById(R.id.settingListItemRelativeLayout).getHeight()>addView.findViewById(R.id.widget_frame).getHeight()){
+                    workingHeight = addView.findViewById(R.id.settingListItemRelativeLayout).getHeight()+4;
+                }else{
+                    workingHeight = addView.findViewById(R.id.widget_frame).getHeight()+4;
+                }
+                final int originalHeight = workingHeight;
+
+                ValueAnimator animator = ValueAnimator.ofInt(1,originalHeight).setDuration(animationTime);
+                animator.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        performAdd(addView);
+                    }
+                });
+                animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                    @Override
+                    public void onAnimationUpdate(ValueAnimator valueAnimator) {
+//                        System.out.println("AnimationUpdate");
+                        lp.height = (Integer) valueAnimator.getAnimatedValue();
+                        addView.setLayoutParams(lp);
+                    }
+                });
+                animator.start();
+
+            }
+        }
+    }
+
+    public void performAdd(final View addView){
+        addView.animate()
+                .translationX(0)
+                .alpha(1)
+                .setDuration(animationTime)
+//                If I remove this listener it doesn't work. This is problem a bad sign...
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                    }
+                });
+        ;
+
+    }
+
 
     public void dismissPositions(int theFirstPosition, int theLastPosition){
         ListView listView = (ListView) view.findViewById(R.id.settingsList);
-        View dismissView;
         for(int i=theFirstPosition;i<theLastPosition+1;i++) {
             settingsListAdapter.showView[i]=false;
             if (i - listView.getFirstVisiblePosition() > -1) {
-                dismissView = listView.getChildAt(i-listView.getFirstVisiblePosition());
+                final View dismissView = listView.getChildAt(i-listView.getFirstVisiblePosition());
                 if (dismissView == null) {
                     System.out.println("Null View.");
                     return;
                 }
-                final View dismissView2= dismissView;
                 dismissView.animate()
                         .translationX(dismissView.getWidth())
                         .alpha(0)
-                        .setDuration(200)
+                        .setDuration(animationTime)
                         .setListener(new AnimatorListenerAdapter() {
                             @Override
                             public void onAnimationEnd(Animator animation) {
-                                performDismiss(dismissView2);
+                                performDismiss(dismissView);
                             }
                         });
             }else{
@@ -182,8 +247,10 @@ public class SettingsFragment extends Fragment {
 
     public void performDismiss(final View dismissView){
         final ViewGroup.LayoutParams lp = dismissView.getLayoutParams();
+        System.out.println(lp);
+        System.out.println("adada");
         final int originalHeight = dismissView.getHeight();
-        ValueAnimator animator = ValueAnimator.ofInt(originalHeight, 1).setDuration(200);
+        ValueAnimator animator = ValueAnimator.ofInt(originalHeight, 1).setDuration(animationTime);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {
