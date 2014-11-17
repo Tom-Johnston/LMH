@@ -10,6 +10,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Message;
+import android.os.PowerManager;
 import android.support.v4.app.NotificationCompat;
 
 import com.johnston.lmhapp.MainActivity;
@@ -17,6 +20,7 @@ import com.johnston.lmhapp.R;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.ParseException;
@@ -25,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 import java.util.StringTokenizer;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Created by Johnston on 15/09/2014.
@@ -34,54 +37,86 @@ public class NotificationsService extends BroadcastReceiver {
 
     long refreshTime = 2 * 60 * 60 * 1000;
     long notifyTime = 10*60*1000;
+    PowerManager.WakeLock wl;
 
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(final Context context, Intent intent) {
         int nt = context.getSharedPreferences("NotifyTime",0).getInt("NotifyTime",10);
         notifyTime = nt*60*1000;
 
 //        I think alarm manager automatically holds a wakelock for me.
 //        Wakelock so the notification can be sent even when the device is asleep;
-//        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-//        PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE, "LMH NOTIFICATION");
-//        wl.setReferenceCounted(false);
-//        wl.acquire();
+
+//        Now I am splitting this method up the wakelock for onReceive will not cover it. I think.
+        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE, "LMH NOTIFICATION");
+        wl.setReferenceCounted(false);
+        wl.acquire();
         SharedPreferences Notifications = context.getSharedPreferences("Notifications", 0);
         Boolean toggle = Notifications.getBoolean("toggle", false);
         if (!toggle) {
+            wl.release();
             return;
         }
-        WidgetBroadcastReceiver mealMenu = new WidgetBroadcastReceiver();
-//        It is no longer as much of a copy and paste anymore.
-//        This following section is a copy and paste from MealMenuWidgetReceiver.java. I might split up the method in MealMenuWidgetReceiver.java so I am not repeating lots of stuff but this is quicker and easier right now.
-        File file = new File(context.getFilesDir(), "Menu.txt");
+        final File file = new File(context.getFilesDir(), "Menu.txt");
 
+        if (!file.exists()) {
+            final Handler handler = new Handler() {
+                @Override
+                public void handleMessage(Message message) {
+                    part3(file,context);
+                }
+            };
+            new DownloadNewMenuAsync().execute(context, true,handler);
+
+        }else{
+            part2(file,context);
+        }
+    }
+
+    private void part2(final File file,final Context context) {
         try {
-            if (!file.exists()) {
-                DownloadNewMenuAsync task = (DownloadNewMenuAsync) new DownloadNewMenuAsync().execute(context, true);
-                task.get();
-            }
+            WidgetBroadcastReceiver mealMenu = new WidgetBroadcastReceiver();
             BufferedReader br = new BufferedReader(new FileReader(file));
 //            Check the date.
-            String dateString = br.readLine();
+            String dateString = null;
+            dateString = br.readLine();
             Date date = new SimpleDateFormat("dd/MM/yy", Locale.ENGLISH).parse(dateString);
             long time = date.getTime();
             String[] output = mealMenu.constructMenu(br, time, context);
-
             String nextMeal = output[2];
-
-
             if (nextMeal.equals("")) {
 //                We have an old menu.
-                DownloadNewMenuAsync task = (DownloadNewMenuAsync) new DownloadNewMenuAsync().execute(context, true);
-                task.get();
-                br = new BufferedReader(new FileReader(file));
-                dateString = br.readLine();
-                date = new SimpleDateFormat("dd/MM/yy", Locale.ENGLISH).parse(dateString);
-                time = date.getTime();
-                output = mealMenu.constructMenu(br, time, context);
-                nextMeal = output[2];
+                final Handler handler = new Handler() {
+                    @Override
+                    public void handleMessage(Message message) {
+                        part3(file,context);
+                    }
+                };
+                new DownloadNewMenuAsync().execute(context, true,handler);
+            }else{
+                part3(file,context);
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void part3(File file,Context context){
+        try {
+            WidgetBroadcastReceiver mealMenu = new WidgetBroadcastReceiver();
+            BufferedReader br = new BufferedReader(new FileReader(file));
+//            Check the date.
+            String dateString = null;
+            dateString = br.readLine();
+            Date date = new SimpleDateFormat("dd/MM/yy", Locale.ENGLISH).parse(dateString);
+            long time = date.getTime();
+            String[] output = mealMenu.constructMenu(br, time, context);
+            String nextMeal = output[2];
+
             long startOfNextMeal = Long.parseLong(output[4]);
             String Meal = output[1];
             String Times = output[5];
@@ -94,6 +129,7 @@ public class NotificationsService extends BroadcastReceiver {
                 Intent newIntent = new Intent(context, NotificationsService.class);
                 PendingIntent pi = PendingIntent.getBroadcast(context, 0, newIntent, 0);
                 am.set(AlarmManager.RTC_WAKEUP, startOfNextMeal - notifyTime, pi);
+                wl.release();
                 return;
             }
 
@@ -169,15 +205,14 @@ public class NotificationsService extends BroadcastReceiver {
             Intent newIntent = new Intent(context, NotificationsService.class);
             PendingIntent pi = PendingIntent.getBroadcast(context, 0, newIntent, 0);
             am.set(AlarmManager.RTC_WAKEUP, startOfNextMeal - notifyTime, pi);
-
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+            wl.release();
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (ParseException e) {
             e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
+
 }

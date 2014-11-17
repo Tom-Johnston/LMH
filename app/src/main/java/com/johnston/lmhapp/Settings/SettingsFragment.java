@@ -15,6 +15,7 @@ import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.CheckBox;
@@ -84,14 +85,11 @@ public class SettingsFragment extends Fragment {
                     }
                     toggleMealNotification(checkBox,title);
                 }else if(title.equals("Notifications")){
-
                     switchCompat = (SwitchCompat)((LinearLayout)view.findViewById(R.id.widget_frame)).getChildAt(0);
                     if(switchCompat.isChecked()){
                         switchCompat.setChecked(false);
-                        switchAnimationTime = switchCompat.getAnimation().getDuration();
                     }else{
                         switchCompat.setChecked(true);
-                        switchAnimationTime = switchCompat.getAnimation().getDuration();
                     }
                 }else if(title.equals("Vibration")){
                     VibrationDialog newFragment = VibrationDialog.newInstance();
@@ -130,7 +128,6 @@ public class SettingsFragment extends Fragment {
         SharedPreferences mealsToNotifyFor = getActivity().getSharedPreferences("mealsToNotifyFor", 0);
         SharedPreferences.Editor editor = mealsToNotifyFor.edit();
         editor.putBoolean(title, checkBox.isChecked());
-//        Replace an existing notification..
         Intent intent = new Intent(this.getActivity(), NotificationsService.class);
         this.getActivity().sendBroadcast(intent);
         editor.commit();
@@ -146,7 +143,31 @@ public class SettingsFragment extends Fragment {
                 editor.commit();
                 Intent newIntent = new Intent(getActivity(), NotificationsService.class);
                 getActivity().sendBroadcast(newIntent);
-                dismissPositions(4, 9);
+                if(switchCompat==null){
+
+                }else {
+                    if (switchCompat.getAnimation() != null) {
+                        switchCompat.getAnimation().setAnimationListener(new Animation.AnimationListener() {
+                            @Override
+                            public void onAnimationStart(Animation animation) {
+
+                            }
+
+                            @Override
+                            public void onAnimationEnd(Animation animation) {
+                                dismissPositions(4, 9);
+                            }
+
+                            @Override
+                            public void onAnimationRepeat(Animation animation) {
+
+                            }
+                        });
+
+                    } else {
+                    dismissPositions(4,9);
+                    }
+                }
             } else {
                 SharedPreferences Notifications = getActivity().getSharedPreferences("Notifications", 0);
                 SharedPreferences.Editor editor = Notifications.edit();
@@ -154,7 +175,31 @@ public class SettingsFragment extends Fragment {
                 editor.commit();
                 Intent newIntent = new Intent(getActivity(), NotificationsService.class);
                 getActivity().sendBroadcast(newIntent);
-                addPositions(4,9);
+                if(switchCompat==null){
+
+                }else {
+                    if (switchCompat.getAnimation() != null) {
+                        switchCompat.getAnimation().setAnimationListener(new Animation.AnimationListener() {
+                            @Override
+                            public void onAnimationStart(Animation animation) {
+
+                            }
+
+                            @Override
+                            public void onAnimationEnd(Animation animation) {
+                                addPositions(4, 9);
+                            }
+
+                            @Override
+                            public void onAnimationRepeat(Animation animation) {
+
+                            }
+                        });
+
+                    } else {
+                        addPositions(4,9);
+                    }
+                }
             }
         }
     };
@@ -165,39 +210,36 @@ public class SettingsFragment extends Fragment {
             settingsListAdapter.showView[i] = true;
             if (i - listView.getFirstVisiblePosition() > -1) {
                 final RelativeLayout workingView = (RelativeLayout) listView.getChildAt(i - listView.getFirstVisiblePosition());
-//                Always scroll in from the side.
-                workingView.setTranslationX(workingView.getWidth());
-                final RelativeLayout addView = workingView;
-                if (addView == null) {
-                    return;
-                }
-                int workingHeight;
-                final AbsListView.LayoutParams lp = (AbsListView.LayoutParams) addView.getLayoutParams();
+                if (workingView == null) {
+                }else {
+                    workingView.setTranslationX(workingView.getWidth());
+                    final RelativeLayout addView = workingView;
+                    int workingHeight;
+                    final AbsListView.LayoutParams lp = (AbsListView.LayoutParams) addView.getLayoutParams();
 
-                if(addView.findViewById(R.id.settingListItemRelativeLayout).getHeight()>addView.findViewById(R.id.widget_frame).getHeight()){
-                    workingHeight = addView.findViewById(R.id.settingListItemRelativeLayout).getHeight()+4;
-                }else{
-                    workingHeight = addView.findViewById(R.id.widget_frame).getHeight()+4;
+                    if (addView.findViewById(R.id.settingListItemRelativeLayout).getHeight() > addView.findViewById(R.id.widget_frame).getHeight()) {
+                        workingHeight = addView.findViewById(R.id.settingListItemRelativeLayout).getHeight() + 4;
+                    } else {
+                        workingHeight = addView.findViewById(R.id.widget_frame).getHeight() + 4;
+                    }
+                    final int originalHeight = workingHeight;
+                    final ValueAnimator animator = ValueAnimator.ofInt(1, originalHeight).setDuration(250);
+                    animator.addListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            performAdd(addView);
+                        }
+                    });
+                    animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                        @Override
+                        public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                            lp.height = (Integer) valueAnimator.getAnimatedValue();
+                            addView.setLayoutParams(lp);
+                            addView.getLayoutParams();
+                        }
+                    });
+                    animator.start();
                 }
-                final int originalHeight = workingHeight;
-                ValueAnimator animator = ValueAnimator.ofInt(1,originalHeight).setDuration(animationTime);
-                animator.setStartDelay(switchAnimationTime); //Wait for the switch to animate.....
-                animator.addListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        performAdd(addView);
-                    }
-                });
-                animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                    @Override
-                    public void onAnimationUpdate(ValueAnimator valueAnimator) {
-//                        System.out.println("AnimationUpdate");
-                        lp.height = (Integer) valueAnimator.getAnimatedValue();
-                        addView.setLayoutParams(lp);
-                    }
-                });
-                animator.start();
-
             }
         }
     }
@@ -206,7 +248,7 @@ public class SettingsFragment extends Fragment {
         addView.animate()
                 .translationX(0)
                 .alpha(1)
-                .setDuration(animationTime)
+                .setDuration(250)
 //                If I remove this listener it doesn't work. This is problem a bad sign...
                 .setListener(new AnimatorListenerAdapter() {
                     @Override
@@ -225,19 +267,18 @@ public class SettingsFragment extends Fragment {
             if (i - listView.getFirstVisiblePosition() > -1) {
                 final View dismissView = listView.getChildAt(i-listView.getFirstVisiblePosition());
                 if (dismissView == null) {
-                    return;
+                }else {
+                    dismissView.animate()
+                            .translationX(dismissView.getWidth())
+                            .alpha(0)
+                            .setDuration(animationTime)
+                            .setListener(new AnimatorListenerAdapter() {
+                                @Override
+                                public void onAnimationEnd(Animator animation) {
+                                    performDismiss(dismissView);
+                                }
+                            });
                 }
-                dismissView.animate()
-                        .translationX(dismissView.getWidth())
-                        .alpha(0)
-                        .setDuration(animationTime)
-                        .setStartDelay(switchAnimationTime)
-                        .setListener(new AnimatorListenerAdapter() {
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-                                performDismiss(dismissView);
-                            }
-                        });
             }else{
 //                TODO I think this should be handled in getView.
             }
@@ -248,7 +289,7 @@ public class SettingsFragment extends Fragment {
     public void performDismiss(final View dismissView){
         final ViewGroup.LayoutParams lp = dismissView.getLayoutParams();
         final int originalHeight = dismissView.getHeight();
-        ValueAnimator animator = ValueAnimator.ofInt(originalHeight, 1).setDuration(animationTime);
+        ValueAnimator animator = ValueAnimator.ofInt(originalHeight, 1).setDuration(250);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator valueAnimator) {

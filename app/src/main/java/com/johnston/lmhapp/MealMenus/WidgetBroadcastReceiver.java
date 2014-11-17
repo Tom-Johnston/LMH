@@ -8,6 +8,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Message;
 import android.widget.RemoteViews;
 
 import com.johnston.lmhapp.MainActivity;
@@ -23,7 +25,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Created by Tom on 14/08/2014.
@@ -32,16 +33,58 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
 
 
     @Override
-    public void onReceive(Context context, Intent intent) {
-        File file = new File(context.getFilesDir(), "Menu.txt");
+    public void onReceive(final Context context, Intent intent) {
+        final File file = new File(context.getFilesDir(), "Menu.txt");
 
-        try {
             if (!file.exists()) {
-                DownloadNewMenuAsync task = (DownloadNewMenuAsync) new DownloadNewMenuAsync().execute(context, true);
-                task.get();
+                final Handler handler = new Handler() {
+                    @Override
+                    public void handleMessage(Message message) {
+                        part3(file, context);
+                    }
+                };
+                new DownloadNewMenuAsync().execute(context, true, handler);
+
+            } else {
+                part2(file, context);
             }
+    }
+
+
+    public void part2(final File file,final Context context) {
+        try {
+
             BufferedReader br = new BufferedReader(new FileReader(file));
 //            Check the date.
+            String dateString = br.readLine();
+            Date date = new SimpleDateFormat("dd/MM/yy", Locale.ENGLISH).parse(dateString);
+            long time = date.getTime();
+            String[] output = constructMenu(br, time, context);
+            String nextMeal = output[2];
+            if (nextMeal.equals("")) {
+//                We have an old menu.
+                final Handler handler = new Handler() {
+                    @Override
+                    public void handleMessage(Message message) {
+                        part3(file, context);
+                    }
+                };
+                new DownloadNewMenuAsync().execute(context, true, handler);
+            }else{
+                part3(file, context);
+            }
+        } catch (FileNotFoundException e1) {
+            e1.printStackTrace();
+        } catch (ParseException e1) {
+            e1.printStackTrace();
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+    }
+
+    public void part3(File file,Context context) {
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(file));
             String dateString = br.readLine();
             Date date = new SimpleDateFormat("dd/MM/yy", Locale.ENGLISH).parse(dateString);
             long time = date.getTime();
@@ -51,22 +94,6 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
             String Meal = output[1];
             String nextMeal = output[2];
             long TimeOfMeal = Long.parseLong(output[3]);
-
-            if (nextMeal.equals("")) {
-//                We have an old menu.
-                DownloadNewMenuAsync task = (DownloadNewMenuAsync) new DownloadNewMenuAsync().execute(context, true);
-                task.get();
-                br = new BufferedReader(new FileReader(file));
-                dateString = br.readLine();
-                date = new SimpleDateFormat("dd/MM/yy", Locale.ENGLISH).parse(dateString);
-                time = date.getTime();
-                output = constructMenu(br, time, context);
-                Day = output[0];
-                ShortDay = output[7];
-                Meal = output[1];
-                nextMeal = output[2];
-                TimeOfMeal = Long.parseLong(output[3]);
-            }
             if (nextMeal.equals("")) {
 //                Looks like even the new menu is old;
                 Date download_date = new Date(System.currentTimeMillis());
@@ -82,10 +109,10 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
 
             remoteViews.setRemoteAdapter(R.id.Menu, svcIntent);
 
-            int width = context.getSharedPreferences("widgetWidth",0).getInt("width",0);
+            int width = context.getSharedPreferences("widgetWidth", 0).getInt("width", 0);
             if (width > 145) {
                 remoteViews.setTextViewText(R.id.WidgetTitle, Day);
-            }else{
+            } else {
                 remoteViews.setTextViewText(R.id.WidgetTitle, ShortDay);
             }
             remoteViews.setTextViewText(R.id.Day, Meal);
@@ -106,10 +133,6 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ParseException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
             e.printStackTrace();
         }
     }
