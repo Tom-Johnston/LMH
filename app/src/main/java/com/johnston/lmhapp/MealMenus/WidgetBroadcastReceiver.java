@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -178,7 +179,12 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
                 if (record) {
                     Hours = Integer.parseInt(inputLine.substring(0, 2));
                     Minutes = Integer.parseInt(inputLine.substring(3, 5));
-                    startOfNextMeal = time + (day - 2) * 86400000 + Hours * 3600000 + Minutes * 60000;
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTimeInMillis(time);
+                    calendar.roll(Calendar.DAY_OF_WEEK,(day-2));
+                    calendar.set(Calendar.HOUR_OF_DAY,Hours);
+                    calendar.set(Calendar.MINUTE,Minutes);
+                    startOfMeal = calendar.getTimeInMillis();
                     break;
                 } else {
                     Times = inputLine;
@@ -187,7 +193,12 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
                     TimeOfMeal = time + (day - 2) * 86400000 + Hours * 3600000 + Minutes * 60000;
                     Hours = Integer.parseInt(inputLine.substring(0, 2));
                     Minutes = Integer.parseInt(inputLine.substring(3, 5));
-                    startOfMeal = time + (day - 2) * 86400000 + Hours * 3600000 + Minutes * 60000;
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTimeInMillis(time);
+                    calendar.roll(Calendar.DAY_OF_WEEK,(day-2));
+                    calendar.set(Calendar.HOUR_OF_DAY,Hours);
+                    calendar.set(Calendar.MINUTE,Minutes);
+                    startOfMeal = calendar.getTimeInMillis();
 
                     if (currentTime < TimeOfMeal) {
                         record = true;
