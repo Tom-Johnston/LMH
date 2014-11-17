@@ -40,7 +40,6 @@ public class SettingsFragment extends Fragment {
     List<String> strings;
     SettingsListAdapter settingsListAdapter;
     int animationTime=250;
-    long switchAnimationTime=250;
     SwitchCompat switchCompat;
     @Override
     public void onCreate(Bundle savedInstanceState) {
