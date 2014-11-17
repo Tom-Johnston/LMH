@@ -81,7 +81,8 @@
         <item>Lunch</item>
         <item>Dinner</item>
         <item>Notify Time</item>
-        <item>Testing</item>
+        <item>Menu Setting</item>
+        <item>Refresh Time</item>
     </string-array>
     <string name="font_family_subhead_material">sans-serif</string>
     <string name="font_family_body_1_material">sans-serif</string>

@@ -56,7 +56,7 @@ public class SettingsListAdapter extends ArrayAdapter<String> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        if (strings.get(position).equals("SSO Login Details") || strings.get(position).equals("Notification Settings")) {
+        if (strings.get(position).equals("SSO Login Details") || strings.get(position).equals("Notification Settings")||strings.get(position).equals("Menu Setting")) {
             if (convertView == null) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = inflater.inflate(R.layout.settings_header_item, parent, false);
@@ -69,7 +69,6 @@ public class SettingsListAdapter extends ArrayAdapter<String> {
                 ((TextView) convertView.findViewById(R.id.itemTitle)).setText(strings.get(position));
             }
         } else {
-
             if (convertView == null) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = inflater.inflate(R.layout.settings_list_item, parent, false);
@@ -80,6 +79,7 @@ public class SettingsListAdapter extends ArrayAdapter<String> {
                 convertView.setTag("Standard");
             } else {
                 ((LinearLayout) convertView.findViewById(R.id.widget_frame)).removeAllViews();
+                convertView.findViewById(R.id.itemCaption).setVisibility(View.VISIBLE);
             }
             ((TextView) convertView.findViewById(R.id.itemTitle)).setText(strings.get(position));
 
@@ -92,7 +92,9 @@ public class SettingsListAdapter extends ArrayAdapter<String> {
             } else if (strings.get(position).equals("Dinner")) {
                 LinearLayout view = (LinearLayout) convertView.findViewById(R.id.widget_frame);
                 view.addView(CheckBoxViewCreator(position, view));
-            } else if (strings.get(position).equals("Notify Time")) {
+            } else if (strings.get(position).equals("Refresh Time")) {
+                ((TextView)convertView.findViewById(R.id.itemCaption)).setText("Set how often to check for a new menu");
+                ((TextView)convertView.findViewById(R.id.itemCaption)).setVisibility(View.VISIBLE);
             }
 
         }

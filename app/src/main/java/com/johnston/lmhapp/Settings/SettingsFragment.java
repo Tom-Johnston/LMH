@@ -51,12 +51,26 @@ public class SettingsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(null, null, savedInstanceState);
+        switchCompat=null;
+//        Get rid of the old view.
         view = inflater.inflate(R.layout.settings_layout, container, false);
         Main = (MainActivity) getActivity();
         ListView listView = (ListView) view.findViewById(R.id.settingsList);
-        strings = Arrays.asList(getResources().getStringArray(R.array.settings));
-        settingsListAdapter = new SettingsListAdapter(this.getActivity(),R.layout.settings_list_item,strings);
-        settingsListAdapter.switchHandler = switchHandler;
+        if(strings==null) {
+            strings = Arrays.asList(getResources().getStringArray(R.array.settings));
+        }
+        if(settingsListAdapter==null){
+            settingsListAdapter = new SettingsListAdapter(this.getActivity(),R.layout.settings_list_item,strings);
+            settingsListAdapter.switchHandler = switchHandler;
+            SharedPreferences Notifications = getActivity().getSharedPreferences("Notifications", 0);
+            Boolean toggle = Notifications.getBoolean("toggle", false);
+            if(!toggle){
+                for(int i=4;i<10;i++){
+                    settingsListAdapter.showView[i]=false;
+                }
+            }
+        }
+
         listView.setAdapter(settingsListAdapter);
         listView.setOnItemClickListener(itemClickListener);
         SharedPreferences Notifications = this.getActivity().getSharedPreferences("Notifications", 0);
