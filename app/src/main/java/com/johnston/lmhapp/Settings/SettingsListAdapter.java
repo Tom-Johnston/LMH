@@ -38,6 +38,20 @@ public class SettingsListAdapter extends ArrayAdapter<String> {
     }
 
     @Override
+    public int getItemViewType(int position) {
+        if(strings.get(position).equals("SSO Login Details") || strings.get(position).equals("Notification Settings")||strings.get(position).equals("Menu Setting")){
+            return 1;
+        }else{
+            return 0;
+        }
+    }
+
+    @Override
+    public int getViewTypeCount() {
+        return 2;
+    }
+
+    @Override
     public boolean isEnabled(int position) {
         if (strings.get(position).equals("SSO Login Details")) {
             return false;
@@ -79,7 +93,7 @@ public class SettingsListAdapter extends ArrayAdapter<String> {
                 convertView.setTag("Standard");
             } else {
                 ((LinearLayout) convertView.findViewById(R.id.widget_frame)).removeAllViews();
-                convertView.findViewById(R.id.itemCaption).setVisibility(View.VISIBLE);
+                convertView.findViewById(R.id.itemCaption).setVisibility(View.GONE);
             }
             ((TextView) convertView.findViewById(R.id.itemTitle)).setText(strings.get(position));
 
@@ -93,7 +107,7 @@ public class SettingsListAdapter extends ArrayAdapter<String> {
                 LinearLayout view = (LinearLayout) convertView.findViewById(R.id.widget_frame);
                 view.addView(CheckBoxViewCreator(position, view));
             } else if (strings.get(position).equals("Refresh Time")) {
-                ((TextView)convertView.findViewById(R.id.itemCaption)).setText("Set how often to check for a new menu");
+                ((TextView)convertView.findViewById(R.id.itemCaption)).setText("Set how often to check for a new menu.");
                 ((TextView)convertView.findViewById(R.id.itemCaption)).setVisibility(View.VISIBLE);
             }
 
