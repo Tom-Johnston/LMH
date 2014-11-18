@@ -184,16 +184,20 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
                     calendar.roll(Calendar.DAY_OF_WEEK,(day-2));
                     calendar.set(Calendar.HOUR_OF_DAY,Hours);
                     calendar.set(Calendar.MINUTE,Minutes);
-                    startOfMeal = calendar.getTimeInMillis();
+                    startOfNextMeal = calendar.getTimeInMillis();
                     break;
                 } else {
                     Times = inputLine;
                     Hours = Integer.parseInt(inputLine.substring(6, 8));
                     Minutes = Integer.parseInt(inputLine.substring(9, 11));
-                    TimeOfMeal = time + (day - 2) * 86400000 + Hours * 3600000 + Minutes * 60000;
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTimeInMillis(time);
+                    calendar.roll(Calendar.DAY_OF_WEEK,(day-2));
+                    calendar.set(Calendar.HOUR_OF_DAY,Hours);
+                    calendar.set(Calendar.MINUTE,Minutes);
+                    TimeOfMeal = calendar.getTimeInMillis();
                     Hours = Integer.parseInt(inputLine.substring(0, 2));
                     Minutes = Integer.parseInt(inputLine.substring(3, 5));
-                    Calendar calendar = Calendar.getInstance();
                     calendar.setTimeInMillis(time);
                     calendar.roll(Calendar.DAY_OF_WEEK,(day-2));
                     calendar.set(Calendar.HOUR_OF_DAY,Hours);
