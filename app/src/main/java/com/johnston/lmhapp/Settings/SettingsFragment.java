@@ -73,9 +73,6 @@ public class SettingsFragment extends Fragment {
 
         listView.setAdapter(settingsListAdapter);
         listView.setOnItemClickListener(itemClickListener);
-        SharedPreferences Notifications = this.getActivity().getSharedPreferences("Notifications", 0);
-        Boolean toggle = Notifications.getBoolean("toggle", false);
-        switchHandler.obtainMessage(0,toggle).sendToTarget();
         return view;
     }
 
