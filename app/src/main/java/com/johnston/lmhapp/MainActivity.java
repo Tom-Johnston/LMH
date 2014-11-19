@@ -144,7 +144,7 @@ public class MainActivity extends ActionBarActivity {
 //        Make the sizex an even number.
         sizex = (sizex / 2) * 2;
         int sizey = sizex / 2;
-        new ImageGeneratorAsync().execute(username, handler, sizex, sizey, this.getApplicationContext());
+        new ImageGeneratorAsync().execute(username, handler, sizex, sizey, this.getApplicationContext(),false);
         Byte three = 3;
         final Handler nameHandler = new Handler() {
             @Override

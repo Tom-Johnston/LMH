@@ -166,10 +166,10 @@ public class LEDColourDialog extends DialogFragment {
         int onFor = LEDSettings.getInt("onFor", -1);
         int offFor = LEDSettings.getInt("offFor", -1);
         if (onFor > -1) {
-            editText.setText(Integer.toString(onFor));
+            editText.setText(String.valueOf(onFor));
         }
         if (offFor > -1) {
-            editText2.setText(Integer.toString(offFor));
+            editText2.setText(String.valueOf(offFor));
         }
         return builder.create();
     }

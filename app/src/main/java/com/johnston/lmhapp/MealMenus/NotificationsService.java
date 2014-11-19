@@ -49,7 +49,7 @@ public class NotificationsService extends BroadcastReceiver {
 
 //        Now I am splitting this method up the wakelock for onReceive will not cover it. I think.
         PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE, "LMH NOTIFICATION");
+        wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "LMH NOTIFICATION");
         wl.setReferenceCounted(false);
         wl.acquire();
         SharedPreferences Notifications = context.getSharedPreferences("Notifications", 0);

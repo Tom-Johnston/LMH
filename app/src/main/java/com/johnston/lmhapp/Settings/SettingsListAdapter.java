@@ -39,7 +39,7 @@ public class SettingsListAdapter extends ArrayAdapter<String> {
 
     @Override
     public int getItemViewType(int position) {
-        if(strings.get(position).equals("SSO Login Details") || strings.get(position).equals("Notification Settings")||strings.get(position).equals("Menu Setting")){
+        if(strings.get(position).equals("SSO Login Details") || strings.get(position).equals("Notification Settings")||strings.get(position).equals("Other Settings")){
             return 1;
         }else{
             return 0;
@@ -70,7 +70,7 @@ public class SettingsListAdapter extends ArrayAdapter<String> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        if (strings.get(position).equals("SSO Login Details") || strings.get(position).equals("Notification Settings")||strings.get(position).equals("Menu Setting")) {
+        if (strings.get(position).equals("SSO Login Details") || strings.get(position).equals("Notification Settings")||strings.get(position).equals("Other Settings")) {
             if (convertView == null) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = inflater.inflate(R.layout.settings_header_item, parent, false);

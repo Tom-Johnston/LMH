@@ -73,7 +73,7 @@ public class LoginDialog extends DialogFragment {
 //        Make the sizex an even number.
                 sizex = (sizex / 2) * 2;
                 int sizey = sizex / 2;
-                new ImageGeneratorAsync().execute(username, handler, sizex, sizey, getActivity().getApplicationContext());
+                new ImageGeneratorAsync().execute(username, handler, sizex, sizey, getActivity().getApplicationContext(),false);
                 Byte three = 3;
                 editor.putString("Name","");
                 ((TextView) main.findViewById(R.id.name)).setText("");

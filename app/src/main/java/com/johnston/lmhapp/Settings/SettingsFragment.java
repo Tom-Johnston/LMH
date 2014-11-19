@@ -112,6 +112,9 @@ public class SettingsFragment extends Fragment {
                 }else if(title.equals("Notify Time")){
                     NotifyTimeDialog newFragment = NotifyTimeDialog.newInstance();
                     newFragment.show(getFragmentManager(), "notifyTime");
+                }else if(title.equals("Set Wallpaper")){
+                    BackgroundGeneratorDialog newFragment = BackgroundGeneratorDialog.newInstance();
+                    newFragment.show(getFragmentManager(), "backgroundGenerator");
                 }
             }
 
