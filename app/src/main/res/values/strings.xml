@@ -85,6 +85,16 @@
         <item>Refresh Time</item>
         <item>Set Wallpaper</item>
     </string-array>
+    <string-array name="refreshTimeChoices">
+        <item>30 Minutes</item>
+        <item> 1 Hour</item>
+        <item>2 Hours</item>
+        <item>4 Hours</item>
+        <item>6 Hours</item>
+        <item>12 Hours</item>
+        <item> 1 Day</item>
+        <item>Never</item>
+    </string-array>
     <string name="font_family_subhead_material">sans-serif</string>
     <string name="font_family_body_1_material">sans-serif</string>
     <dimen name="text_size_body_1_material">14sp</dimen>

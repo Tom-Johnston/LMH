@@ -7,6 +7,7 @@ import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
@@ -85,6 +86,9 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
 
     public void part3(File file,Context context) {
         try {
+            SharedPreferences refreshTimePreference = context.getSharedPreferences("RefreshTime",0);
+            long  refreshTime = refreshTimePreference.getInt("refreshTime",2);
+
             BufferedReader br = new BufferedReader(new FileReader(file));
             String dateString = br.readLine();
             Date date = new SimpleDateFormat("dd/MM/yy", Locale.ENGLISH).parse(dateString);
@@ -100,7 +104,7 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
                 Date download_date = new Date(System.currentTimeMillis());
                 DateFormat Date_format = DateFormat.getDateTimeInstance();
                 nextMeal = "Old Menu" + "¬" + "Downloaded:" + Date_format.format(download_date);
-                TimeOfMeal = System.currentTimeMillis() + 7200000;
+                TimeOfMeal = System.currentTimeMillis() + refreshTime;
             }
             RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.lmh_widget);
             Intent svcIntent = new Intent(context, WidgetListViewService.class);
@@ -128,7 +132,9 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
             remoteViews.setOnClickPendingIntent(R.id.WidgetTitle, pi2);
             remoteViews.setOnClickPendingIntent(R.id.Day, pi2);
             appWidgetManager.updateAppWidget(widget, remoteViews);
-            am.set(AlarmManager.RTC, TimeOfMeal + 1000, pi);
+            if(TimeOfMeal!=-1){
+                am.set(AlarmManager.RTC, TimeOfMeal + 1000, pi);
+            }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

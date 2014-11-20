@@ -35,12 +35,12 @@ import java.util.StringTokenizer;
  */
 public class NotificationsService extends BroadcastReceiver {
 
-    long refreshTime = 2 * 60 * 60 * 1000;
     long notifyTime = 10*60*1000;
     PowerManager.WakeLock wl;
 
     @Override
     public void onReceive(final Context context, Intent intent) {
+
         int nt = context.getSharedPreferences("NotifyTime",0).getInt("NotifyTime",10);
         notifyTime = nt*60*1000;
 
@@ -107,6 +107,8 @@ public class NotificationsService extends BroadcastReceiver {
 
     public void part3(File file,Context context){
         try {
+            SharedPreferences refreshTimePreference = context.getSharedPreferences("RefreshTime",0);
+            long  refreshTime = refreshTimePreference.getInt("refreshTime",2);
             WidgetBroadcastReceiver mealMenu = new WidgetBroadcastReceiver();
             BufferedReader br = new BufferedReader(new FileReader(file));
 //            Check the date.

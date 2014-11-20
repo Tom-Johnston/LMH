@@ -115,6 +115,9 @@ public class SettingsFragment extends Fragment {
                 }else if(title.equals("Set Wallpaper")){
                     BackgroundGeneratorDialog newFragment = BackgroundGeneratorDialog.newInstance();
                     newFragment.show(getFragmentManager(), "backgroundGenerator");
+                }else if(title.equals("Refresh Time")){
+                    RefreshTimeDialog newFragment = RefreshTimeDialog.newInstance();
+                    newFragment.show(getFragmentManager(), "refreshTimeDialog");
                 }
             }
 

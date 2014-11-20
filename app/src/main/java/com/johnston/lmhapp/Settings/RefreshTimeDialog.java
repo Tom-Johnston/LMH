@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,17 +12,17 @@ import android.widget.NumberPicker;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.johnston.lmhapp.MealMenus.NotificationsService;
 import com.johnston.lmhapp.R;
 
 /**
- * Created by Jake on 15/11/2014.
+ * Created by Tom on 20/11/2014.
  */
-public class NotifyTimeDialog extends DialogFragment {
+public class RefreshTimeDialog extends DialogFragment {
     View view;
+    long[] refreshTimeChoices = {1800000,3600000,7200000,14400000,21600000,43200000,86400000,-1};
 
-    static NotifyTimeDialog newInstance() {
-        NotifyTimeDialog f = new NotifyTimeDialog();
+    static RefreshTimeDialog newInstance() {
+        RefreshTimeDialog f = new RefreshTimeDialog();
         Bundle args = new Bundle();
         f.setArguments(args);
         return f;
@@ -33,22 +32,23 @@ public class NotifyTimeDialog extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        view = inflater.inflate(R.layout.notify_time_layout, null);
+        view = inflater.inflate(R.layout.refresh_time_dialog, null);
         builder.setView(view);
-        builder.setTitle("Notify Time");
+        builder.setTitle("Refresh Time");
         builder.setPositiveButton("Save", new DialogInterface.OnClickListener(){
             @Override
             public void onClick(DialogInterface dialog, int id) {
-                NumberPicker notifyTimePicker = (NumberPicker) view.findViewById(R.id.NotifyTime);
-                SharedPreferences notifyTimePreference = getActivity().getSharedPreferences("NotifyTime",0);
-                SharedPreferences.Editor editor = notifyTimePreference.edit();
-                int notifyTime = notifyTimePicker.getValue();
-                editor.putInt("NotifyTime", notifyTime);
+                NumberPicker refreshTimePicker = (NumberPicker) view.findViewById(R.id.RefreshTime);
+                SharedPreferences refreshTimePreference = getActivity().getSharedPreferences("RefreshTime",0);
+                SharedPreferences.Editor editor = refreshTimePreference.edit();
+                int selection = refreshTimePicker.getValue();
+                editor.putLong("refreshTime", refreshTimeChoices[selection]);
+
                 Toast toast = Toast.makeText(getActivity(), "Time Saved.", Toast.LENGTH_SHORT);
                 toast.show();
                 editor.commit();
-                Intent intent = new Intent(getActivity(), NotificationsService.class);
-                getActivity().sendBroadcast(intent);
+
+
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -57,14 +57,17 @@ public class NotifyTimeDialog extends DialogFragment {
                 dialog.dismiss();
             }
         });
-        NumberPicker notifyTimePicker = (NumberPicker) view.findViewById(R.id.NotifyTime);
-        SharedPreferences notifyTimePreference = getActivity().getSharedPreferences("NotifyTime",0);
-        int current = notifyTimePreference.getInt("NotifyTime",10);
-        notifyTimePicker.setMaxValue(0);
-        notifyTimePicker.setMaxValue(30);
-        notifyTimePicker.setDescendantFocusability(TimePicker.FOCUS_BLOCK_DESCENDANTS);
+        NumberPicker notifyTimePicker = (NumberPicker) view.findViewById(R.id.RefreshTime);
+        SharedPreferences refreshTimePreference = getActivity().getSharedPreferences("RefreshTime",0);
+        int current = refreshTimePreference.getInt("refreshTime",2);
+        String[] choices = getResources().getStringArray(R.array.refreshTimeChoices);
+        notifyTimePicker.setMinValue(0);
+        notifyTimePicker.setMaxValue(choices.length-1);
+        notifyTimePicker.setDisplayedValues(choices);
         notifyTimePicker.setValue(current);
+        notifyTimePicker.setDescendantFocusability(TimePicker.FOCUS_BLOCK_DESCENDANTS);
         final AlertDialog d = builder.create();
         return d;
     }
+
 }
