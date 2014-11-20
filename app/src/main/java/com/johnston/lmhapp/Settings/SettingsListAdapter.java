@@ -57,6 +57,8 @@ public class SettingsListAdapter extends ArrayAdapter<String> {
             return false;
         } else if (strings.get(position).equals("Notification Settings")) {
             return false;
+        } else if (strings.get(position).equals("Other Settings")) {
+            return false;
         } else {
             return true;
         }
@@ -71,23 +73,14 @@ public class SettingsListAdapter extends ArrayAdapter<String> {
     public View getView(int position, View convertView, ViewGroup parent) {
 
         if (strings.get(position).equals("SSO Login Details") || strings.get(position).equals("Notification Settings")||strings.get(position).equals("Other Settings")) {
-            if (convertView == null) {
-                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = inflater.inflate(R.layout.settings_header_item, parent, false);
-                convertView.setTag("Header");
-                ((TextView) convertView.findViewById(R.id.itemTitle)).setText(strings.get(position));
-            } else if (!convertView.getTag().equals("Header")) {
+            if (convertView == null || !convertView.getTag().equals("Header")) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = inflater.inflate(R.layout.settings_header_item, parent, false);
                 convertView.setTag("Header");
                 ((TextView) convertView.findViewById(R.id.itemTitle)).setText(strings.get(position));
             }
         } else {
-            if (convertView == null) {
-                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = inflater.inflate(R.layout.settings_list_item, parent, false);
-                convertView.setTag("Standard");
-            } else if (!convertView.getTag().equals("Standard")) {
+            if (convertView == null || !convertView.getTag().equals("Standard")) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = inflater.inflate(R.layout.settings_list_item, parent, false);
                 convertView.setTag("Standard");
