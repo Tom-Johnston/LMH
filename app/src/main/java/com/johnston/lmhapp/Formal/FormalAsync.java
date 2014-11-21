@@ -16,7 +16,7 @@ import javax.net.ssl.SSLContext;
 /**
  * Created by Tom on 11/11/2014.
  */
-public class Formal extends AsyncTask<Object,String,Void> {
+public class FormalAsync extends AsyncTask<Object,String,Void> {
 
 
     @Override

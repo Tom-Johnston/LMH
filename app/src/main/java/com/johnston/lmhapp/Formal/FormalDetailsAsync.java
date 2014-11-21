@@ -17,7 +17,7 @@ import javax.net.ssl.SSLContext;
 /**
  * Created by Tom on 11/11/2014.
  */
-public class FormalGetDetails extends AsyncTask<Object,Void,Void> {
+public class FormalDetailsAsync extends AsyncTask<Object,Void,Void> {
     @Override
     protected Void doInBackground(Object[] params) {
         SSLContext sslContext = (SSLContext)params[0];

@@ -16,7 +16,6 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -28,16 +27,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.johnston.lmhapp.Battels.BattelsAsync;
 import com.johnston.lmhapp.Battels.BattelsFragment;
 import com.johnston.lmhapp.EPOS.EPOSAsync;
 import com.johnston.lmhapp.EPOS.EPOSFragment;
+import com.johnston.lmhapp.Formal.FormalAsync;
 import com.johnston.lmhapp.Formal.FormalFragment;
 import com.johnston.lmhapp.Home.HomeFragment;
 import com.johnston.lmhapp.LaundryView.LaundryViewFragment;
@@ -104,6 +102,8 @@ public class MainActivity extends ActionBarActivity {
             new BattelsAsync().execute(sslContext, view, handler);
         } else if (Type == 3) {
             new NameGrabberAsync().execute(sslContext, this.getApplicationContext(), handler);
+        } else if(Type==4){
+            new FormalAsync().execute(sslContext,handler);
         }
     }
 
@@ -114,49 +114,6 @@ public class MainActivity extends ActionBarActivity {
         Type = passedType;
         LogInView();
 
-    }
-
-    public void SaveAccount(View v) {
-
-//        Save the account
-        EditText passwordView = (EditText) findViewById(R.id.Password);
-        String password = passwordView.getText().toString();
-        EditText usernameView = (EditText) findViewById(R.id.Username);
-        String username = usernameView.getText().toString();
-        SharedPreferences LogIn = getSharedPreferences("LogIn", 0);
-        SharedPreferences.Editor editor = LogIn.edit();
-        editor.putString("Username", username);
-        editor.putString("Password", password);
-        Toast toast = Toast.makeText(this, "Details Saved.", Toast.LENGTH_SHORT);
-        toast.show();
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-        editor.commit();
-
-//      Create the custom graphic.
-        final Handler handler = new Handler() {
-            @Override
-            public void handleMessage(Message message) {
-                Bitmap bitmap = (Bitmap) message.obj;
-                ((ImageView) findViewById(R.id.graphic)).setImageBitmap(bitmap);
-            }
-        };
-        int sizex = (int) ((findViewById(R.id.graphic)).getWidth() * 1.1);
-//        Make the sizex an even number.
-        sizex = (sizex / 2) * 2;
-        int sizey = sizex / 2;
-        new ImageGeneratorAsync().execute(username, handler, sizex, sizey, this.getApplicationContext(),false);
-        Byte three = 3;
-        final Handler nameHandler = new Handler() {
-            @Override
-            public void handleMessage(Message message) {
-                String name = (String) message.obj;
-                ((TextView) findViewById(R.id.name)).setText(name);
-            }
-        };
-        TextView usernameTextView = (TextView) findViewById(R.id.username);
-        usernameTextView.setText(username);
-        getInfo(null, nameHandler, three);
     }
 
     public void LogInView() {

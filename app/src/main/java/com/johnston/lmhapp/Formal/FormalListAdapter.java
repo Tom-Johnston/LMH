@@ -56,11 +56,12 @@ public class FormalListAdapter extends ArrayAdapter<String> {
             ((TextView)convertView.findViewById(R.id.formalNumberLeft)).setText(objects.get(position + 4));
             int numberGone = Integer.parseInt(objects.get(position+3));
             int numberLeft = Integer.parseInt(objects.get(position+4));
+//            LinearLayout layout = (LinearLayout) convertView.findViewById(R.id.layout);
             int sizex =convertView.getWidth();
             System.out.println(sizex);
-            int sizey = convertView.getHeight();
+            int sizey = convertView.getHeight()/2;
             System.out.println(sizey);
-            ((ImageView)convertView.findViewById(R.id.graphicNumberLeft)).setImageBitmap(generateGraphicNumberLeft(10,numberLeft,400,100));
+            ((ImageView)convertView.findViewById(R.id.graphicNumberLeft)).setImageBitmap(generateGraphicNumberLeft(numberGone,numberLeft,400,100));
             return convertView;
         }
 

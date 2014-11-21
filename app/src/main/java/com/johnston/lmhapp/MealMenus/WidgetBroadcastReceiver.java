@@ -87,7 +87,7 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
     public void part3(File file,Context context) {
         try {
             SharedPreferences refreshTimePreference = context.getSharedPreferences("RefreshTime",0);
-            long  refreshTime = refreshTimePreference.getInt("refreshTime",2);
+            long  refreshTime = refreshTimePreference.getLong("refreshTime",2);
 
             BufferedReader br = new BufferedReader(new FileReader(file));
             String dateString = br.readLine();
