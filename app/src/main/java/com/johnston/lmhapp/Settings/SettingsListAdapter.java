@@ -75,10 +75,12 @@ public class SettingsListAdapter extends ArrayAdapter<String> {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = inflater.inflate(R.layout.settings_header_item, parent, false);
                 convertView.setTag("Header");
+                ((TextView) convertView.findViewById(R.id.itemTitle)).setText(strings.get(position));
             } else if (!convertView.getTag().equals("Header")) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = inflater.inflate(R.layout.settings_header_item, parent, false);
                 convertView.setTag("Header");
+                ((TextView) convertView.findViewById(R.id.itemTitle)).setText(strings.get(position));
             }
         } else {
             if (convertView == null) {
@@ -93,6 +95,7 @@ public class SettingsListAdapter extends ArrayAdapter<String> {
                 ((LinearLayout) convertView.findViewById(R.id.widget_frame)).removeAllViews();
                 convertView.findViewById(R.id.itemCaption).setVisibility(View.GONE);
             }
+            ((TextView) convertView.findViewById(R.id.itemTitle)).setText(strings.get(position));
 
             if (strings.get(position).equals("Notifications")) {
                 LinearLayout view = (LinearLayout) convertView.findViewById(R.id.widget_frame);
@@ -105,11 +108,10 @@ public class SettingsListAdapter extends ArrayAdapter<String> {
                 view.addView(CheckBoxViewCreator(position, view));
             } else if (strings.get(position).equals("Refresh Time")) {
                 ((TextView)convertView.findViewById(R.id.itemCaption)).setText("Set how often to check for a new menu.");
-                (convertView.findViewById(R.id.itemCaption)).setVisibility(View.VISIBLE);
+                ((TextView)convertView.findViewById(R.id.itemCaption)).setVisibility(View.VISIBLE);
             }
 
         }
-        ((TextView) convertView.findViewById(R.id.itemTitle)).setText(strings.get(position));
         if(showView[position]==false){
             ViewGroup.LayoutParams lp = convertView.getLayoutParams();
             lp.height = 1;
