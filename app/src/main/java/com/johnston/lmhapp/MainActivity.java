@@ -36,8 +36,9 @@ import android.widget.Toast;
 
 import com.johnston.lmhapp.Battels.BattelsAsync;
 import com.johnston.lmhapp.Battels.BattelsFragment;
-import com.johnston.lmhapp.EPOS.EPOSFragment;
 import com.johnston.lmhapp.EPOS.EPOSAsync;
+import com.johnston.lmhapp.EPOS.EPOSFragment;
+import com.johnston.lmhapp.Formal.FormalFragment;
 import com.johnston.lmhapp.Home.HomeFragment;
 import com.johnston.lmhapp.LaundryView.LaundryViewFragment;
 import com.johnston.lmhapp.MealMenus.MenuFragment;
@@ -449,20 +450,24 @@ public class MainActivity extends ActionBarActivity {
             } else if (position == 0) {
                 newFragment = new HomeFragment();
                 transaction.addToBackStack(Options[position]);
-            } else if (position == 3) {
-                newFragment = new EPOSFragment();
-                transaction.addToBackStack(Options[position]);
             } else if (position == 1) {
                 newFragment = new LaundryViewFragment();
                 transaction.addToBackStack(Options[position]);
-            } else if (position == 4) {
-                newFragment = new MenuFragment();
-                transaction.addToBackStack(Options[position]);
-            } else if (position == 5) {
-                newFragment = new SettingsFragment();
-                transaction.addToBackStack(Options[position]);
+
             } else if (position == 2) {
                 newFragment = new BattelsFragment();
+                transaction.addToBackStack(Options[position]);
+            } else if (position == 3) {
+                newFragment = new EPOSFragment();
+                transaction.addToBackStack(Options[position]);
+            }else if(position==4){
+                newFragment = new FormalFragment();
+                transaction.addToBackStack(Options[position]);
+            } else if (position == 5) {
+                newFragment = new MenuFragment();
+                transaction.addToBackStack(Options[position]);
+            } else if (position == 6) {
+                newFragment = new SettingsFragment();
                 transaction.addToBackStack(Options[position]);
             }
             newFragment.setRetainInstance(true);

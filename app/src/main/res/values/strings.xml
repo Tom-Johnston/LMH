@@ -42,9 +42,9 @@
         <item>Laundry View</item>
         <item>Battels</item>
         <item>EPOS Account</item>
+        <item>Formal</item>
         <item>Meal Menu</item>
         <item>Settings</item>
-
     </string-array>
     <string-array name="vibrations">
         <item>1 buzz</item>
@@ -64,6 +64,7 @@
         <item>ic_laundry</item>
         <item>ic_coins</item>
         <item>ic_payment</item>
+        <item>ic_formal</item>
         <item>ic_meal_menu</item>
         <item>ic_settings</item>
     </string-array>
