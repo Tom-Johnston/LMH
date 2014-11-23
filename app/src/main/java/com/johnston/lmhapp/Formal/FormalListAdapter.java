@@ -39,7 +39,7 @@ public class FormalListAdapter extends ArrayAdapter<String> {
 
         @Override
         public boolean isEnabled(int position) {
-            return false;
+            return true;
         }
 
 

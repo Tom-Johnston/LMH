@@ -9,8 +9,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.johnston.lmhapp.MainActivity;
 import com.johnston.lmhapp.R;
@@ -18,38 +18,56 @@ import com.johnston.lmhapp.R;
 import java.util.ArrayList;
 
 /**
- * Created by Tom on 11/11/2014.
+ * Created by Tom on 23/11/2014.
  */
-public class FormalFragment extends Fragment {
+public class FormalDetailsFragment extends Fragment {
     View view;
+    String menu;
     ArrayList<String> entries;
     Boolean finished = false;
     final Handler handler = new Handler() {
         @Override
         public void handleMessage(Message message) {
-           if(message.what==0){
-            entries = (ArrayList<String>)message.obj;
-               ListView listView = (ListView)view.findViewById(R.id.battelsListView);
-               listView.setAdapter(new FormalListAdapter(getActivity(),R.layout.formal_list_item,entries));
-               listView.setOnItemClickListener(onItemClickListener);
-           }
+            if(message.what==0){
+                menu = (String)message.obj;
+                ((TextView)view.findViewById(R.id.formalMenu)).setText(menu);
+            }else{
+                entries = (ArrayList<String>)message.obj;
+                System.out.println(entries);
+                ListView listView = (ListView) view.findViewById(R.id.formalListOfPeople);
+                listView.setAdapter(new FormalDetailsListAdapter(getActivity(),R.layout.formal_details_list_item,entries));
+
+            }
         }
     };
 
+    public static FormalDetailsFragment newInstance(String[] info) {
+        FormalDetailsFragment f = new FormalDetailsFragment();
+        Bundle args = new Bundle();
+        args.putStringArray("args",info);
+        f.setArguments(args);
+        return f;
+    }
+
     public void GetTheData() {
         MainActivity main = (MainActivity) this.getActivity();
-        byte b = 4;
+        byte b = 5;
         main.getInfo(view, handler, b);
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.battels, container, false);
+        Bundle args = this.getArguments();
+        String[] info = args.getStringArray("args");
+        view = inflater.inflate(R.layout.formal_details_layout, container, false);
+        ((TextView)view.findViewById(R.id.formalName)).setText(info[1]);
+        ((TextView)view.findViewById(R.id.formalDate)).setText(info[0]);
         GetTheData();
         if (finished) {
-        // No need to get all the info again
+            // No need to get all the info again
+//            TODO
         } else {
+//            TODO
 //            Get all the info.
         }
 
@@ -69,24 +87,4 @@ public class FormalFragment extends Fragment {
         item.setEnabled(false);
         item.setVisible(false);
     }
-
-    AdapterView.OnItemClickListener onItemClickListener =  new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            MainActivity main = (MainActivity)getActivity();
-            String[] info = new String[5];
-            position = position * 6;
-//            Date
-//            Name
-//            Number Gone
-//            Number Left
-//            ID
-            info[0]=entries.get(position);
-            info[1]=entries.get(position+1);
-            info[2]=entries.get(position+3);
-            info[3]=entries.get(position+4);
-            info[4]=entries.get(position+5);
-            main.getDetails(info);
-        }
-    };
 }

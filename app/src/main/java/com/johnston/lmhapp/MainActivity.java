@@ -36,6 +36,8 @@ import com.johnston.lmhapp.Battels.BattelsFragment;
 import com.johnston.lmhapp.EPOS.EPOSAsync;
 import com.johnston.lmhapp.EPOS.EPOSFragment;
 import com.johnston.lmhapp.Formal.FormalAsync;
+import com.johnston.lmhapp.Formal.FormalDetailsAsync;
+import com.johnston.lmhapp.Formal.FormalDetailsFragment;
 import com.johnston.lmhapp.Formal.FormalFragment;
 import com.johnston.lmhapp.Home.HomeFragment;
 import com.johnston.lmhapp.LaundryView.LaundryViewFragment;
@@ -76,6 +78,7 @@ public class MainActivity extends ActionBarActivity {
     DrawerAdapter mDrawerAdapter;
     Bitmap selectedCircle;
     Bitmap unselectedCircle;
+    String initialiseOther;
 
     @Override
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
@@ -104,6 +107,8 @@ public class MainActivity extends ActionBarActivity {
             new NameGrabberAsync().execute(sslContext, this.getApplicationContext(), handler);
         } else if(Type==4){
             new FormalAsync().execute(sslContext,handler);
+        }else if(Type==5){
+            new FormalDetailsAsync().execute(sslContext,initialiseOther,handler);
         }
     }
 
@@ -184,6 +189,14 @@ public class MainActivity extends ActionBarActivity {
             return null;
         }
 
+    }
+
+    public void getDetails(String[] info){
+        initialiseOther = info[4];
+        FormalDetailsFragment newFragment = FormalDetailsFragment.newInstance(info);
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.Frame, newFragment, "FormalDetails");
+        transaction.commit();
     }
 
 
@@ -317,7 +330,7 @@ public class MainActivity extends ActionBarActivity {
         } else if (fragmentType.equals(Options[3])) {
             EPOSFragment fragment = (EPOSFragment) fragment1;
             fragment.GetEpos();
-        } else if (fragmentType.equals(Options[4])) {
+        } else if (fragmentType.equals(Options[5])) {
             MenuFragment fragment = (MenuFragment) fragment1;
             fragment.downloadNewMenu();
         } else if (fragmentType.equals(Options[0])) {
@@ -338,7 +351,12 @@ public class MainActivity extends ActionBarActivity {
         }
         if (lastPosition == 0) {
             this.finish();
-        } else {
+        } else if(lastPosition==-1){
+            mDrawerList.performItemClick(mDrawerList.getAdapter().getView(4, null, null), 4, mDrawerList.getAdapter().getItemId(4));
+            String[] Options = getResources().getStringArray(R.array.options);
+            mTitle = Options[4];
+            getSupportActionBar().setTitle(mTitle);
+        }else{
             mDrawerList.performItemClick(mDrawerList.getAdapter().getView(0, null, null), 0, mDrawerList.getAdapter().getItemId(0));
             String[] Options = getResources().getStringArray(R.array.options);
             mTitle = Options[0];

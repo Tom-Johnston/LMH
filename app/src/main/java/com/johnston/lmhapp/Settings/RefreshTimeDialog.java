@@ -43,7 +43,6 @@ public class RefreshTimeDialog extends DialogFragment {
                 SharedPreferences.Editor editor = refreshTimePreference.edit();
                 int selection = refreshTimePicker.getValue();
                 editor.putLong("refreshTime", refreshTimeChoices[selection]);
-
                 Toast toast = Toast.makeText(getActivity(), "Time Saved.", Toast.LENGTH_SHORT);
                 toast.show();
                 editor.commit();
@@ -59,12 +58,19 @@ public class RefreshTimeDialog extends DialogFragment {
         });
         NumberPicker notifyTimePicker = (NumberPicker) view.findViewById(R.id.RefreshTime);
         SharedPreferences refreshTimePreference = getActivity().getSharedPreferences("RefreshTime",0);
-        int current = refreshTimePreference.getInt("refreshTime",2);
+        Long current = refreshTimePreference.getLong("refreshTime",2);
+        int currentPosition =2;
+        for(int i=0;i<refreshTimeChoices.length;i++){
+            if(current==refreshTimeChoices[i]){
+                currentPosition = i;
+                break;
+            }
+        }
         String[] choices = getResources().getStringArray(R.array.refreshTimeChoices);
         notifyTimePicker.setMinValue(0);
         notifyTimePicker.setMaxValue(choices.length-1);
         notifyTimePicker.setDisplayedValues(choices);
-        notifyTimePicker.setValue(current);
+        notifyTimePicker.setValue(currentPosition);
         notifyTimePicker.setDescendantFocusability(TimePicker.FOCUS_BLOCK_DESCENDANTS);
         final AlertDialog d = builder.create();
         return d;
