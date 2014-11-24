@@ -197,6 +197,7 @@ public class MainActivity extends ActionBarActivity {
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         transaction.replace(R.id.Frame, newFragment, "FormalDetails");
         transaction.commit();
+        lastPosition=-1;
     }
 
 
