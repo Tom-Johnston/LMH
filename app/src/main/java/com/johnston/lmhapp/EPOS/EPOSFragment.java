@@ -1,6 +1,7 @@
 package com.johnston.lmhapp.EPOS;
 
 import android.app.Fragment;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -11,7 +12,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.johnston.lmhapp.MainActivity;
@@ -30,8 +30,10 @@ public class EPOSFragment extends Fragment {
     final Handler handler = new Handler() {
         @Override
         public void handleMessage(Message message) {
-            ListView lv = (ListView) view.findViewById(R.id.transactionsListView);
             (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
+            (view.findViewById(R.id.card_view)).setVisibility(View.VISIBLE);
+            (view.findViewById(R.id.card_view2)).setVisibility(View.VISIBLE);
+            (view.findViewById(R.id.card_view3)).setVisibility(View.VISIBLE);
             transactions = (ArrayList<String>) message.obj;
             addEntriesToList();
             finished = true;
@@ -40,6 +42,9 @@ public class EPOSFragment extends Fragment {
 
     public void GetEpos() {
         (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
+        (view.findViewById(R.id.card_view)).setVisibility(View.GONE);
+        (view.findViewById(R.id.card_view2)).setVisibility(View.GONE);
+        (view.findViewById(R.id.card_view3)).setVisibility(View.GONE);
         finished = false;
         byte b = 1;
         Main.getInfo(view, handler, b);
@@ -59,7 +64,12 @@ public class EPOSFragment extends Fragment {
             } else if (code.equals("02")) {
                 tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
             }
+            View divider = new View(getActivity());
+            divider.setBackgroundColor(Color.parseColor("#1f000000"));
+            divider.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,2));
+
             linearLayout.addView(tv);
+            linearLayout.addView(divider);
         }
     }
 

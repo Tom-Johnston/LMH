@@ -29,7 +29,6 @@
 
 
             <TextView
-
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="left"
@@ -45,15 +44,13 @@
                 android:keepScreenOn="true"
                 android:visibility="gone" />
 
-            <TextView
+            <LinearLayout
+                android:orientation="vertical"
                 android:id="@+id/KatieLee"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="left"
-                android:text="@string/washer"
-                android:textSize="16sp"
-                android:visibility="visible"
-                android:freezesText="true" />
+                android:visibility="visible" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -71,15 +68,13 @@
                 android:keepScreenOn="true"
                 android:visibility="gone" />
 
-            <TextView
+            <LinearLayout
+                android:orientation="vertical"
                 android:id="@+id/NewOldHall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="left"
-                android:text="@string/washer"
-                android:textSize="16sp"
-                android:visibility="visible"
-                android:freezesText="true" />
+                android:visibility="visible" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -97,14 +92,12 @@
                 android:keepScreenOn="true"
                 android:visibility="gone" />
 
-            <TextView
-                android:freezesText="true"
+            <LinearLayout
+                android:orientation="vertical"
                 android:id="@+id/Talbot"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="left"
-                android:text="@string/washer"
-                android:textSize="16sp"
                 android:visibility="visible" />
 
         </LinearLayout>
