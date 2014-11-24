@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.NumberPicker;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.johnston.lmhapp.MealMenus.NotificationsService;
@@ -61,6 +62,7 @@ public class NotifyTimeDialog extends DialogFragment {
         int current = notifyTimePreference.getInt("NotifyTime",10);
         notifyTimePicker.setMaxValue(0);
         notifyTimePicker.setMaxValue(30);
+        notifyTimePicker.setDescendantFocusability(TimePicker.FOCUS_BLOCK_DESCENDANTS);
         notifyTimePicker.setValue(current);
         final AlertDialog d = builder.create();
         return d;

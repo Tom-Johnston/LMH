@@ -16,7 +16,6 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -28,16 +27,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.johnston.lmhapp.Battels.BattelsAsync;
 import com.johnston.lmhapp.Battels.BattelsFragment;
-import com.johnston.lmhapp.EPOS.EPOSFragment;
 import com.johnston.lmhapp.EPOS.EPOSAsync;
+import com.johnston.lmhapp.EPOS.EPOSFragment;
+import com.johnston.lmhapp.Formal.FormalAsync;
+import com.johnston.lmhapp.Formal.FormalDetailsAsync;
+import com.johnston.lmhapp.Formal.FormalDetailsFragment;
+import com.johnston.lmhapp.Formal.FormalFragment;
 import com.johnston.lmhapp.Home.HomeFragment;
 import com.johnston.lmhapp.LaundryView.LaundryViewFragment;
 import com.johnston.lmhapp.MealMenus.MenuFragment;
@@ -77,6 +78,7 @@ public class MainActivity extends ActionBarActivity {
     DrawerAdapter mDrawerAdapter;
     Bitmap selectedCircle;
     Bitmap unselectedCircle;
+    String initialiseOther;
 
     @Override
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
@@ -103,6 +105,10 @@ public class MainActivity extends ActionBarActivity {
             new BattelsAsync().execute(sslContext, view, handler);
         } else if (Type == 3) {
             new NameGrabberAsync().execute(sslContext, this.getApplicationContext(), handler);
+        } else if(Type==4){
+            new FormalAsync().execute(sslContext,handler);
+        }else if(Type==5){
+            new FormalDetailsAsync().execute(sslContext,initialiseOther,handler);
         }
     }
 
@@ -113,49 +119,6 @@ public class MainActivity extends ActionBarActivity {
         Type = passedType;
         LogInView();
 
-    }
-
-    public void SaveAccount(View v) {
-
-//        Save the account
-        EditText passwordView = (EditText) findViewById(R.id.Password);
-        String password = passwordView.getText().toString();
-        EditText usernameView = (EditText) findViewById(R.id.Username);
-        String username = usernameView.getText().toString();
-        SharedPreferences LogIn = getSharedPreferences("LogIn", 0);
-        SharedPreferences.Editor editor = LogIn.edit();
-        editor.putString("Username", username);
-        editor.putString("Password", password);
-        Toast toast = Toast.makeText(this, "Details Saved.", Toast.LENGTH_SHORT);
-        toast.show();
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(v.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-        editor.commit();
-
-//      Create the custom graphic.
-        final Handler handler = new Handler() {
-            @Override
-            public void handleMessage(Message message) {
-                Bitmap bitmap = (Bitmap) message.obj;
-                ((ImageView) findViewById(R.id.graphic)).setImageBitmap(bitmap);
-            }
-        };
-        int sizex = (int) ((findViewById(R.id.graphic)).getWidth() * 1.1);
-//        Make the sizex an even number.
-        sizex = (sizex / 2) * 2;
-        int sizey = sizex / 2;
-        new ImageGeneratorAsync().execute(username, handler, sizex, sizey, this.getApplicationContext());
-        Byte three = 3;
-        final Handler nameHandler = new Handler() {
-            @Override
-            public void handleMessage(Message message) {
-                String name = (String) message.obj;
-                ((TextView) findViewById(R.id.name)).setText(name);
-            }
-        };
-        TextView usernameTextView = (TextView) findViewById(R.id.username);
-        usernameTextView.setText(username);
-        getInfo(null, nameHandler, three);
     }
 
     public void LogInView() {
@@ -226,6 +189,15 @@ public class MainActivity extends ActionBarActivity {
             return null;
         }
 
+    }
+
+    public void getDetails(String[] info){
+        initialiseOther = info[4];
+        FormalDetailsFragment newFragment = FormalDetailsFragment.newInstance(info);
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.replace(R.id.Frame, newFragment, "FormalDetails");
+        transaction.commit();
+        lastPosition=-1;
     }
 
 
@@ -359,7 +331,7 @@ public class MainActivity extends ActionBarActivity {
         } else if (fragmentType.equals(Options[3])) {
             EPOSFragment fragment = (EPOSFragment) fragment1;
             fragment.GetEpos();
-        } else if (fragmentType.equals(Options[4])) {
+        } else if (fragmentType.equals(Options[5])) {
             MenuFragment fragment = (MenuFragment) fragment1;
             fragment.downloadNewMenu();
         } else if (fragmentType.equals(Options[0])) {
@@ -380,7 +352,12 @@ public class MainActivity extends ActionBarActivity {
         }
         if (lastPosition == 0) {
             this.finish();
-        } else {
+        } else if(lastPosition==-1){
+            mDrawerList.performItemClick(mDrawerList.getAdapter().getView(4, null, null), 4, mDrawerList.getAdapter().getItemId(4));
+            String[] Options = getResources().getStringArray(R.array.options);
+            mTitle = Options[4];
+            getSupportActionBar().setTitle(mTitle);
+        }else{
             mDrawerList.performItemClick(mDrawerList.getAdapter().getView(0, null, null), 0, mDrawerList.getAdapter().getItemId(0));
             String[] Options = getResources().getStringArray(R.array.options);
             mTitle = Options[0];
@@ -449,20 +426,24 @@ public class MainActivity extends ActionBarActivity {
             } else if (position == 0) {
                 newFragment = new HomeFragment();
                 transaction.addToBackStack(Options[position]);
-            } else if (position == 3) {
-                newFragment = new EPOSFragment();
-                transaction.addToBackStack(Options[position]);
             } else if (position == 1) {
                 newFragment = new LaundryViewFragment();
                 transaction.addToBackStack(Options[position]);
-            } else if (position == 4) {
-                newFragment = new MenuFragment();
-                transaction.addToBackStack(Options[position]);
-            } else if (position == 5) {
-                newFragment = new SettingsFragment();
-                transaction.addToBackStack(Options[position]);
+
             } else if (position == 2) {
                 newFragment = new BattelsFragment();
+                transaction.addToBackStack(Options[position]);
+            } else if (position == 3) {
+                newFragment = new EPOSFragment();
+                transaction.addToBackStack(Options[position]);
+            }else if(position==4){
+                newFragment = new FormalFragment();
+                transaction.addToBackStack(Options[position]);
+            } else if (position == 5) {
+                newFragment = new MenuFragment();
+                transaction.addToBackStack(Options[position]);
+            } else if (position == 6) {
+                newFragment = new SettingsFragment();
                 transaction.addToBackStack(Options[position]);
             }
             newFragment.setRetainInstance(true);

@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.johnston.lmhapp.R;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -25,12 +26,29 @@ public class SettingsListAdapter extends ArrayAdapter<String> {
     int resourceId;
     List<String> strings;
     public Handler switchHandler;
+    public Boolean[] showView;
 
     public SettingsListAdapter(Context context, int resource, List<String> objects) {
         super(context, resource, objects);
         this.context = context;
         resourceId = resource;
         strings = objects;
+        showView = new Boolean[strings.size()];
+        Arrays.fill(showView, true);
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if(strings.get(position).equals("SSO Login Details") || strings.get(position).equals("Notification Settings")||strings.get(position).equals("Other Settings")){
+            return 1;
+        }else{
+            return 0;
+        }
+    }
+
+    @Override
+    public int getViewTypeCount() {
+        return 2;
     }
 
     @Override
@@ -39,7 +57,9 @@ public class SettingsListAdapter extends ArrayAdapter<String> {
             return false;
         } else if (strings.get(position).equals("Notification Settings")) {
             return false;
-        } else {
+        } else if(strings.get(position).equals("Other Settings")){
+            return false;
+        }else{
             return true;
         }
     }
@@ -52,21 +72,17 @@ public class SettingsListAdapter extends ArrayAdapter<String> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
-        if (strings.get(position).equals("SSO Login Details") || strings.get(position).equals("Notification Settings")) {
+        if (strings.get(position).equals("SSO Login Details") || strings.get(position).equals("Notification Settings")||strings.get(position).equals("Other Settings")) {
             if (convertView == null) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = inflater.inflate(R.layout.settings_header_item, parent, false);
                 convertView.setTag("Header");
-                ((TextView) convertView.findViewById(R.id.itemTitle)).setText(strings.get(position));
             } else if (!convertView.getTag().equals("Header")) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = inflater.inflate(R.layout.settings_header_item, parent, false);
                 convertView.setTag("Header");
-                ((TextView) convertView.findViewById(R.id.itemTitle)).setText(strings.get(position));
             }
         } else {
-
-
             if (convertView == null) {
                 LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = inflater.inflate(R.layout.settings_list_item, parent, false);
@@ -77,8 +93,8 @@ public class SettingsListAdapter extends ArrayAdapter<String> {
                 convertView.setTag("Standard");
             } else {
                 ((LinearLayout) convertView.findViewById(R.id.widget_frame)).removeAllViews();
+                convertView.findViewById(R.id.itemCaption).setVisibility(View.GONE);
             }
-            ((TextView) convertView.findViewById(R.id.itemTitle)).setText(strings.get(position));
 
             if (strings.get(position).equals("Notifications")) {
                 LinearLayout view = (LinearLayout) convertView.findViewById(R.id.widget_frame);
@@ -89,9 +105,17 @@ public class SettingsListAdapter extends ArrayAdapter<String> {
             } else if (strings.get(position).equals("Dinner")) {
                 LinearLayout view = (LinearLayout) convertView.findViewById(R.id.widget_frame);
                 view.addView(CheckBoxViewCreator(position, view));
-            } else if (strings.get(position).equals("Notify Time")) {
+            } else if (strings.get(position).equals("Refresh Time")) {
+                ((TextView)convertView.findViewById(R.id.itemCaption)).setText("Set how often to check for a new menu.");
+                (convertView.findViewById(R.id.itemCaption)).setVisibility(View.VISIBLE);
             }
 
+        }
+        ((TextView) convertView.findViewById(R.id.itemTitle)).setText(strings.get(position));
+        if(showView[position]==false){
+            ViewGroup.LayoutParams lp = convertView.getLayoutParams();
+            lp.height = 1;
+            convertView.setLayoutParams(lp);
         }
         return convertView;
     }

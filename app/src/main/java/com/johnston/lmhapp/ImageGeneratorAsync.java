@@ -22,15 +22,18 @@ import java.util.Random;
  * Created by Tom on 05/11/2014.
  */
 public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
+
     @Override
     protected Void doInBackground(Object... params) {
         Context context = (Context) params[4];
         String username = (String) params[0];
         Handler handler = (Handler) params[1];
+        Boolean background = (Boolean)params[5];
         if (username.length() > 4) {
 //            Get rid of the lady number to make the differences more obvious.
             username = username.substring(4);
         }
+
         int sizex = (Integer) params[2];
         int sizey = (Integer) params[3];
         if (sizex > 2 * sizey) {
@@ -42,6 +45,9 @@ public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
         }
 
         int numberOfIterationsToDo = 3;
+        if(background){
+            numberOfIterationsToDo=5;
+        }
 
         int[] color = new int[9];
         color[0] = (Color.parseColor("#BA68C8"));
@@ -107,70 +113,11 @@ public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
             triangles = NextIteration(triangles);
         }
 
-
-
-        Paint bottomLeftFillPaint1 = new Paint();
-        bottomLeftFillPaint1.setColor(Color.parseColor("#002147"));
-        bottomLeftFillPaint1.setStyle(Paint.Style.FILL);
-        bottomLeftFillPaint1.setAntiAlias(true);
-        Paint bottomLeftFillPaint2 = new Paint();
-        bottomLeftFillPaint2.setColor(Color.parseColor("#001123"));
-        bottomLeftFillPaint2.setStyle(Paint.Style.FILL);
-        Paint bottomLeftStrokePaint = new Paint();
-        bottomLeftStrokePaint.setColor(Color.parseColor("#003D81"));
-        bottomLeftStrokePaint.setStyle(Paint.Style.STROKE);
-        bottomLeftStrokePaint.setAntiAlias(true);
-        bottomLeftStrokePaint.setStrokeWidth(2);
-        Paint strokePaint = new Paint();
-        strokePaint.setColor(Color.BLACK);
-        strokePaint.setStyle(Paint.Style.STROKE);
-        strokePaint.setAntiAlias(true);
-        strokePaint.setStrokeWidth(4);
-        Paint fillPaint = new Paint();
-        fillPaint.setStyle(Paint.Style.FILL);
-        fillPaint.setColor(color[0]);
-        Bitmap.Config conf = Bitmap.Config.ARGB_8888;
-        Bitmap bmp = Bitmap.createBitmap(sizex, sizey, conf);
-        Canvas c = new Canvas(bmp);
-        int i;
-
-        for (i = 0; i < triangles.size() / 2; i++) {
-            triangle = triangles.get(i);
-            Path path = new Path();
-            path.setFillType(Path.FillType.EVEN_ODD);
-            path.moveTo(triangle.x1, triangle.y1);
-            path.lineTo(triangle.x2, triangle.y2);
-            path.lineTo(triangle.x3, triangle.y3);
-//            System.out.println(triangle.x1 + "//" + triangle.y1 + "??" + triangle.x2 + "//" + triangle.y2 + "??" + triangle.x3 + "//" + triangle.y3);
-            path.close();
-
-            if (binary.charAt(i) == '1') {
-                c.drawPath(path, bottomLeftFillPaint2);
-            } else {
-                c.drawPath(path, bottomLeftFillPaint1);
-            }
-            c.drawPath(path, bottomLeftStrokePaint);
-
+        if(background){
+            handler.obtainMessage(0,paintBackground(triangles,binary,sizex,sizey)).sendToTarget();
+            return null;
         }
-
-
-        for (i = triangles.size() / 2; i < triangles.size(); i++) {
-            if (binary.charAt(i) == '1') {
-                fillPaint.setColor(color[i % 9]);
-            }
-
-            triangle = triangles.get(i);
-            Path path = new Path();
-            path.setFillType(Path.FillType.EVEN_ODD);
-            path.moveTo(triangle.x1, triangle.y1);
-            path.lineTo(triangle.x2, triangle.y2);
-            path.lineTo(triangle.x3, triangle.y3);
-//            System.out.println(triangle.x1 + "//" + triangle.y1 + "??" + triangle.x2 + "//" + triangle.y2 + "??" + triangle.x3 + "//" + triangle.y3);
-            path.close();
-
-            c.drawPath(path, fillPaint);
-            c.drawPath(path, strokePaint);
-        }
+        Bitmap bmp = paint(triangles,binary,sizex,sizey,color);
 
 //      Flip the matrix to
 
@@ -191,10 +138,114 @@ public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
         } catch (IOException e) {
 
         }
-
-
         handler.obtainMessage(0, dst).sendToTarget();
         return null;
+    }
+
+    public Bitmap paintBackground(ArrayList<Triangle> triangles,String binary,int sizex,int sizey){
+        Bitmap.Config conf = Bitmap.Config.ARGB_8888;
+        Bitmap bmp = Bitmap.createBitmap(sizex, sizey, conf);
+        Canvas c = new Canvas(bmp);
+
+        Paint bottomLeftFillPaint1 = new Paint();
+        bottomLeftFillPaint1.setColor(Color.parseColor("#002147"));
+        bottomLeftFillPaint1.setStyle(Paint.Style.FILL);
+        bottomLeftFillPaint1.setAntiAlias(true);
+        Paint bottomLeftFillPaint2 = new Paint();
+        bottomLeftFillPaint2.setColor(Color.parseColor("#001123"));
+        bottomLeftFillPaint2.setStyle(Paint.Style.FILL);
+        Paint bottomLeftStrokePaint = new Paint();
+        bottomLeftStrokePaint.setColor(Color.parseColor("#003D81"));
+        bottomLeftStrokePaint.setStyle(Paint.Style.STROKE);
+        bottomLeftStrokePaint.setAntiAlias(true);
+        bottomLeftStrokePaint.setStrokeWidth(2);
+
+        Triangle triangle;
+        int i;
+        for (i = 0; i < triangles.size(); i++) {
+            triangle = triangles.get(i);
+            Path path = new Path();
+            path.setFillType(Path.FillType.EVEN_ODD);
+            path.moveTo(triangle.x1, triangle.y1);
+            path.lineTo(triangle.x2, triangle.y2);
+            path.lineTo(triangle.x3, triangle.y3);
+            path.close();
+
+            if (binary.charAt(i) == '1') {
+                c.drawPath(path, bottomLeftFillPaint2);
+            } else {
+                c.drawPath(path, bottomLeftFillPaint1);
+            }
+            c.drawPath(path, bottomLeftStrokePaint);
+        }
+        return bmp;
+    }
+
+    public Bitmap paint(ArrayList<Triangle> triangles,String binary,int sizex,int sizey,int[] color){
+        Bitmap.Config conf = Bitmap.Config.ARGB_8888;
+        Bitmap bmp = Bitmap.createBitmap(sizex, sizey, conf);
+        Canvas c = new Canvas(bmp);
+
+        Paint bottomLeftFillPaint1 = new Paint();
+        bottomLeftFillPaint1.setColor(Color.parseColor("#002147"));
+        bottomLeftFillPaint1.setStyle(Paint.Style.FILL);
+        bottomLeftFillPaint1.setAntiAlias(true);
+        Paint bottomLeftFillPaint2 = new Paint();
+        bottomLeftFillPaint2.setColor(Color.parseColor("#001123"));
+        bottomLeftFillPaint2.setStyle(Paint.Style.FILL);
+        Paint bottomLeftStrokePaint = new Paint();
+        bottomLeftStrokePaint.setColor(Color.parseColor("#003D81"));
+        bottomLeftStrokePaint.setStyle(Paint.Style.STROKE);
+        bottomLeftStrokePaint.setAntiAlias(true);
+        bottomLeftStrokePaint.setStrokeWidth(2);
+
+        Triangle triangle;
+        int i;
+        for (i = 0; i < triangles.size() / 2; i++) {
+            triangle = triangles.get(i);
+            Path path = new Path();
+            path.setFillType(Path.FillType.EVEN_ODD);
+            path.moveTo(triangle.x1, triangle.y1);
+            path.lineTo(triangle.x2, triangle.y2);
+            path.lineTo(triangle.x3, triangle.y3);
+            path.close();
+
+            if (binary.charAt(i) == '1') {
+                c.drawPath(path, bottomLeftFillPaint2);
+            } else {
+                c.drawPath(path, bottomLeftFillPaint1);
+            }
+            c.drawPath(path, bottomLeftStrokePaint);
+
+        }
+
+        Paint strokePaint = new Paint();
+        strokePaint.setColor(Color.BLACK);
+        strokePaint.setStyle(Paint.Style.STROKE);
+        strokePaint.setAntiAlias(true);
+        strokePaint.setStrokeWidth(4);
+        Paint fillPaint = new Paint();
+        fillPaint.setStyle(Paint.Style.FILL);
+        fillPaint.setColor(color[0]);
+
+        for (i = triangles.size() / 2; i < triangles.size(); i++) {
+            if (binary.charAt(i) == '1') {
+                fillPaint.setColor(color[i % 9]);
+            }
+
+            triangle = triangles.get(i);
+            Path path = new Path();
+            path.setFillType(Path.FillType.EVEN_ODD);
+            path.moveTo(triangle.x1, triangle.y1);
+            path.lineTo(triangle.x2, triangle.y2);
+            path.lineTo(triangle.x3, triangle.y3);
+//            System.out.println(triangle.x1 + "//" + triangle.y1 + "??" + triangle.x2 + "//" + triangle.y2 + "??" + triangle.x3 + "//" + triangle.y3);
+            path.close();
+
+            c.drawPath(path, fillPaint);
+            c.drawPath(path, strokePaint);
+        }
+        return bmp;
     }
 
     public ArrayList<Triangle> NextIteration(ArrayList<Triangle> passedTriangles) {

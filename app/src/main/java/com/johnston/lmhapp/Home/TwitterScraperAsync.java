@@ -29,9 +29,13 @@ public class TwitterScraperAsync extends AsyncTask<Handler, Void, ArrayList<Twee
         ArrayList<Tweet> tweets = new ArrayList<Tweet>();
         ArrayList<String> ProfilePictureURLS = new ArrayList<String>();
         try {
-            URL[] urls = new URL[2];
+            URL[] urls = new URL[6];
             urls[0] = new URL("https://twitter.com/LMHJCR");
             urls[1] = new URL("https://twitter.com/LMHITManager");
+            urls[2] = new URL("https://twitter.com/lmhbursar");
+            urls[3] = new URL("https://twitter.com/UniofOxford");
+            urls[4] = new URL("https://twitter.com/OxfordUnion");
+            urls[5] = new URL("https://twitter.com/OxfordPlayhouse");
             for (int j = 0; j < urls.length; j++) {
                 URL url = urls[j];
                 // Note normal size is 48x48
@@ -129,6 +133,9 @@ public class TwitterScraperAsync extends AsyncTask<Handler, Void, ArrayList<Twee
                     if (inputLine.contains("data-time")) {
                         start = inputLine.indexOf("data-time") + 11;
                         time = 1000 * Long.parseLong(inputLine.substring(start, inputLine.indexOf("\"", start)));
+                        if (System.currentTimeMillis()-time>7*24*60*60*1000){
+                            break;
+                        }
                     }
                     if (inputLine.contains("ProfileTweet-text")) {
                         in.readLine();

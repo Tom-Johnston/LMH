@@ -39,74 +39,78 @@
 
 
 
-    <TextView
-        android:id="@+id/AccountTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="left"
-        android:padding="10dp"
-        android:text="@string/account_balance"
-        android:textSize="24sp" />
-
-    <TextView
-        android:id="@+id/AccountBalance"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/AccountTitle"
-        android:layout_toRightOf="@+id/AccountTitle"
-        android:gravity="left"
-        android:text="@string/pound"
-        android:textSize="20sp"
-        android:freezesText="true"
-        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
+        <TextView
+            android:id="@+id/AccountTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:padding="8dp"
+            android:layout_marginLeft="8dp"
+            android:text="@string/account_balance"
+            android:textSize="24sp" />
 
         <TextView
-        android:id="@+id/TokenTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/AccountBalance"
-        android:gravity="left"
-        android:padding="10dp"
-        android:text="@string/token_balance"
-        android:textSize="24sp" />
+            android:id="@+id/AccountBalance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/AccountTitle"
+            android:layout_toRightOf="@+id/AccountTitle"
+            android:gravity="left"
+            android:text="@string/pound"
+            android:textSize="20sp"
+            android:freezesText="true"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
 
-    <TextView
-        android:id="@+id/TokenBalance"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/AccountBalance"
-        android:layout_below="@+id/TokenTitle"
-        android:gravity="left"
-        android:textSize="20sp"
-        android:freezesText="true"
-        android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
+        <TextView
+            android:id="@+id/TokenTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/AccountBalance"
+            android:gravity="left"
+            android:padding="8dp"
+            android:layout_marginLeft="8dp"
+            android:text="@string/token_balance"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/TokenBalance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/AccountBalance"
+            android:layout_below="@+id/TokenTitle"
+            android:gravity="left"
+            android:textSize="20sp"
+            android:freezesText="true"
+            android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
 
 
         <TextView
-        android:id="@+id/DateTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/TokenBalance"
-        android:gravity="left"
-        android:padding="10dp"
-        android:text="@string/last_updated"
+            android:id="@+id/DateTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/TokenBalance"
+            android:gravity="left"
+            android:padding="8dp"
+            android:layout_marginLeft="8dp"
+            android:text="@string/last_updated"
             android:textSize="20sp"
             android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
 
         <TextView
-        android:id="@+id/DateBalance"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/DateTitle"
-        android:layout_toRightOf="@id/DateTitle"
-        android:gravity="left"
-        android:text="@string/never_updated"
-        android:textSize="16sp"
-        android:textStyle="normal"
+            android:id="@+id/DateBalance"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/DateTitle"
+            android:layout_toRightOf="@id/DateTitle"
+            android:gravity="left"
+            android:text="@string/never_updated"
+            android:textSize="16sp"
+            android:textStyle="normal"
             android:freezesText="true" />
     </RelativeLayout>
 
     <ListView
+        android:paddingLeft="16dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/transactionsListView"

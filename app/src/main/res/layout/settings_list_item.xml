@@ -1,23 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="?android:attr/listPreferredItemHeightSmall"
         android:gravity="center_vertical"
-        android:paddingStart="?android:attr/listPreferredItemPaddingStart"
-        android:paddingLeft="?android:attr/listPreferredItemPaddingLeft"
-        android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
-        android:paddingRight="?android:attr/listPreferredItemPaddingRight"
         android:background="?android:attr/selectableItemBackground"
         android:descendantFocusability="blocksDescendants"
+        android:paddingBottom="2px"
         >
 
 
         <RelativeLayout
+            android:layout_centerVertical="true"
+            android:id="@+id/settingListItemRelativeLayout"
+            android:paddingStart="?android:attr/listPreferredItemPaddingStart"
+            android:paddingLeft="?android:attr/listPreferredItemPaddingLeft"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@+id/widget_frame"
             android:paddingTop="16dip"
             android:paddingBottom="16dip"
             >
@@ -50,13 +51,22 @@
         </RelativeLayout>
 
     <LinearLayout
+        android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
+        android:paddingRight="?android:attr/listPreferredItemPaddingRight"
+        android:layout_alignParentRight="true"
         android:theme="@style/AppTheme"
         android:id="@+id/widget_frame"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:gravity="center_vertical"
+        android:layout_centerVertical="true"
         android:orientation="vertical" />
 
+    <View
+        android:layout_alignParentBottom="true"
+        android:layout_height="2px"
+        android:layout_width="match_parent"
+        android:background="#1f000000"/>
 
 
-</LinearLayout>
+</RelativeLayout>
