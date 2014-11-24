@@ -66,7 +66,6 @@ public class MenuListAdapter extends ArrayAdapter<String> {
 //            body.setTypeface(Typeface.create(body.getTypeface(), Typeface.BOLD));
             body.setTextAppearance(context, R.style.currentMenuTitle);
         } else if (code.equals("12")) {
-//
             body.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
         } else if (code.equals("02")) {
             body.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);

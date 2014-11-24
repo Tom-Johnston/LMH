@@ -257,9 +257,11 @@ public class EPOSAsync extends AsyncTask<Object, String, String[]> {
             TextView AccountBalance = (TextView) view.findViewById(R.id.AccountBalance);
             TextView TokenBalance = (TextView) view.findViewById(R.id.TokenBalance);
             TextView DateBalance = (TextView) view.findViewById(R.id.DateBalance);
+            TextView DateBalance2 = (TextView) view.findViewById(R.id.DateBalance2);
             AccountBalance.setText(strings[0]);
             TokenBalance.setText(strings[1]);
             DateBalance.setText(strings[2]);
+            DateBalance2.setText(strings[2]);
         }
 
         Status.postDelayed(new Runnable() {

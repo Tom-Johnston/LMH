@@ -1,19 +1,20 @@
 package com.johnston.lmhapp.EPOS;
 
 import android.app.Fragment;
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.johnston.lmhapp.MainActivity;
-import com.johnston.lmhapp.MealMenus.MenuListAdapter;
 import com.johnston.lmhapp.R;
 
 import java.util.ArrayList;
@@ -31,10 +32,8 @@ public class EPOSFragment extends Fragment {
         public void handleMessage(Message message) {
             ListView lv = (ListView) view.findViewById(R.id.transactionsListView);
             (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
-            Context context = getActivity().getBaseContext();
             transactions = (ArrayList<String>) message.obj;
-            MenuListAdapter adapter = new MenuListAdapter(context, R.layout.listview, transactions);
-            lv.setAdapter(adapter);
+            addEntriesToList();
             finished = true;
         }
     };
@@ -47,6 +46,23 @@ public class EPOSFragment extends Fragment {
     }
 
 
+    public void addEntriesToList(){
+        LinearLayout linearLayout = (LinearLayout)view.findViewById(R.id.transactionList);
+        for(int i=0;i<transactions.size();i++){
+            String data = transactions.get(i);
+            String code = data.substring(0, 2);
+            String message = data.substring(2);
+            TextView tv = new TextView(getActivity());
+            tv.setText(message);
+            if (code.equals("12")) {
+                tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+            } else if (code.equals("02")) {
+                tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
+            }
+            linearLayout.addView(tv);
+        }
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,13 +72,10 @@ public class EPOSFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(null, null, savedInstanceState);
-        view = inflater.inflate(R.layout.epos_layout, container, false);
+        view = inflater.inflate(R.layout.new_epos_layout, container, false);
         Main = (MainActivity) getActivity();
         if (finished) {
-            ListView lv = (ListView) view.findViewById(R.id.transactionsListView);
-            Context context = getActivity().getBaseContext();
-            MenuListAdapter adapter = new MenuListAdapter(context, R.layout.listview, transactions);
-            lv.setAdapter(adapter);
+            addEntriesToList();
         } else {
             GetEpos();
         }

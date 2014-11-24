@@ -29,9 +29,10 @@ public class TwitterScraperAsync extends AsyncTask<Handler, Void, ArrayList<Twee
         ArrayList<Tweet> tweets = new ArrayList<Tweet>();
         ArrayList<String> ProfilePictureURLS = new ArrayList<String>();
         try {
-            URL[] urls = new URL[2];
+            URL[] urls = new URL[3];
             urls[0] = new URL("https://twitter.com/LMHJCR");
             urls[1] = new URL("https://twitter.com/LMHITManager");
+            urls[2] = new URL("https://twitter.com/lmhbursar");
             for (int j = 0; j < urls.length; j++) {
                 URL url = urls[j];
                 // Note normal size is 48x48
