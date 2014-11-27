@@ -273,7 +273,7 @@ public class MainActivity extends ActionBarActivity {
         Intent intent = getIntent();
         Boolean LaunchMenu = intent.getBooleanExtra("Launch", false);
         if (LaunchMenu && savedInstanceState == null) {
-            mDrawerList.performItemClick(mDrawerList.getAdapter().getView(4, null, null), 4, mDrawerList.getAdapter().getItemId(4));
+            mDrawerList.performItemClick(mDrawerList.getAdapter().getView(5, null, null), 5, mDrawerList.getAdapter().getItemId(5));
         } else if (savedInstanceState == null) {
             mDrawerList.performItemClick(mDrawerList.getAdapter().getView(0, null, null), 0, mDrawerList.getAdapter().getItemId(0));
         } else {
