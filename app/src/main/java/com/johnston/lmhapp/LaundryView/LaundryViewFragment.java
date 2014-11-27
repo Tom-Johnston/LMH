@@ -1,6 +1,7 @@
 package com.johnston.lmhapp.LaundryView;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,6 +11,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -33,6 +37,27 @@ public class LaundryViewFragment extends Fragment {
     final Handler handler = new Handler() {
         @Override
         public void handleMessage(Message message) {
+            if(actionRefresh.getActionView()!=null){
+                actionRefresh.getActionView().getAnimation().setRepeatCount(0);
+                actionRefresh.getActionView().getAnimation().setAnimationListener( new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+//                        actionRefresh.getActionView().clearAnimation();
+                        actionRefresh.setActionView(null);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+
+            }
             if(message.what==0){
                 startTime = (Long) message.obj;
                 Loaded = true;
@@ -71,12 +96,12 @@ public class LaundryViewFragment extends Fragment {
     }
 
     public void LoadStatus() {
-//        View actionRefreshView = actionRefresh.getActionView();
-//        RotateAnimation an = new RotateAnimation(0.0f, 360.0f, actionRefreshView.getWidth()/2, actionRefreshView.getHeight()/2);
-//        an.setDuration(250);
-//        an.setRepeatMode(Animation.INFINITE);
-//        an.setFillAfter(true);
-//        actionRefreshView.setAnimation(an);
+        LayoutInflater inflater = (LayoutInflater) getActivity().getApplication().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        ImageView actionRefreshView = (ImageView) inflater.inflate(R.layout.action_refresh,null);
+        Animation an = AnimationUtils.loadAnimation(getActivity().getApplication(), R.anim.rotate_animation);
+        an.setRepeatCount(Animation.INFINITE);
+        actionRefreshView.setAnimation(an);
+        actionRefresh.setActionView(actionRefreshView);
         handler.removeCallbacksAndMessages(null);
         (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.card_view)).setVisibility(View.GONE);
@@ -105,7 +130,14 @@ public class LaundryViewFragment extends Fragment {
             view = inflater.inflate(R.layout.new_laundry_view, container, false);
         }
         if (!Loaded) {
-            LoadStatus();
+            Handler startHandler = new Handler();
+            Runnable startRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    LoadStatus();
+                }
+            };
+            startHandler.post(startRunnable);
         } else {
             final TextView timerView = (TextView) view.findViewById(R.id.LastUpdate);
             Runnable updateTime = new Runnable() {
@@ -129,6 +161,7 @@ public class LaundryViewFragment extends Fragment {
         super.onDestroy();
         handler.removeCallbacksAndMessages(null);
     }
+
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {

@@ -10,6 +10,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
@@ -29,6 +32,7 @@ public class MenuFragment extends Fragment {
     private Context context;
     private ArrayList<String> meals = new ArrayList<String>();
     private MenuListAdapter adapter;
+    MenuItem actionRefresh;
 
     public void downloadNewMenu() {
         ListView lv = (ListView) view.findViewById(R.id.mealList);
@@ -39,6 +43,12 @@ public class MenuFragment extends Fragment {
     }
 
     void startMenu() {
+        LayoutInflater inflater = (LayoutInflater) getActivity().getApplication().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        ImageView actionRefreshView = (ImageView) inflater.inflate(R.layout.action_refresh,null);
+        Animation an = AnimationUtils.loadAnimation(getActivity().getApplication(), R.anim.rotate_animation);
+        an.setRepeatCount(Animation.INFINITE);
+        actionRefreshView.setAnimation(an);
+        actionRefresh.setActionView(actionRefreshView);
         ListView lv = (ListView) view.findViewById(R.id.mealList);
         ProgressBar pb = (ProgressBar) view.findViewById(R.id.PM1);
         lv.setVisibility(View.GONE);
@@ -57,6 +67,27 @@ public class MenuFragment extends Fragment {
 
     public void showMenu() {
 //        0 for old
+        if(actionRefresh.getActionView()!=null){
+            actionRefresh.getActionView().getAnimation().setRepeatCount(0);
+            actionRefresh.getActionView().getAnimation().setAnimationListener( new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+//                        actionRefresh.getActionView().clearAnimation();
+                    actionRefresh.setActionView(null);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+
+        }
         ListView lv = (ListView) view.findViewById(R.id.mealList);
         ProgressBar pb = (ProgressBar) view.findViewById(R.id.PM1);
         lv.setVisibility(View.VISIBLE);
@@ -75,7 +106,15 @@ public class MenuFragment extends Fragment {
         context = this.getActivity().getApplicationContext();
         view = inflater.inflate(R.layout.menu_layout, container, false);
         if (meals.size() == 0) {
-            startMenu();
+            Handler startHandler = new Handler();
+            Runnable startRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    startMenu();
+                }
+            };
+            startHandler.post(startRunnable);
+
         } else {
             ListView lv = (ListView) view.findViewById(R.id.mealList);
             lv.setVisibility(View.VISIBLE);
@@ -92,9 +131,9 @@ public class MenuFragment extends Fragment {
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        MenuItem item = menu.findItem(R.id.action_refresh);
-        item.setEnabled(true);
-        item.setVisible(true);
+        actionRefresh = menu.findItem(R.id.action_refresh);
+        actionRefresh.setEnabled(true);
+        actionRefresh.setVisible(true);
     }
 
     final Handler handler = new Handler() {

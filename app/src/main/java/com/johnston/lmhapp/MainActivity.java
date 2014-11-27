@@ -203,7 +203,7 @@ public class MainActivity extends ActionBarActivity {
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         mTitle = getResources().getString(R.string.title);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -271,16 +271,31 @@ public class MainActivity extends ActionBarActivity {
 
 //        Start Menu Fragment if clicked through from widget
         Intent intent = getIntent();
-        Boolean LaunchMenu = intent.getBooleanExtra("Launch", false);
-        if (LaunchMenu && savedInstanceState == null) {
-            mDrawerList.performItemClick(mDrawerList.getAdapter().getView(5, null, null), 5, mDrawerList.getAdapter().getItemId(5));
-        } else if (savedInstanceState == null) {
-            mDrawerList.performItemClick(mDrawerList.getAdapter().getView(0, null, null), 0, mDrawerList.getAdapter().getItemId(0));
-        } else {
-            mTitle = savedInstanceState.getString("mTitle");
-        }
-
-
+        final Boolean LaunchMenu = intent.getBooleanExtra("Launch", false);
+        Handler startHandler = new Handler();
+        Runnable startRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (LaunchMenu && savedInstanceState == null) {
+                    mDrawerList.smoothScrollToPosition(5);
+                    View layout = mDrawerList.getChildAt(5 - mDrawerList.getFirstVisiblePosition());
+                    mDrawerList.performItemClick(layout, 5, mDrawerList.getAdapter().getItemId(5));
+                    String[] Options = getResources().getStringArray(R.array.options);
+                    mTitle = Options[5];
+                    getSupportActionBar().setTitle(mTitle);
+                } else if (savedInstanceState == null) {
+                    mDrawerList.smoothScrollToPosition(0);
+                    View layout = mDrawerList.getChildAt(0 - mDrawerList.getFirstVisiblePosition());
+                    mDrawerList.performItemClick(layout, 0, mDrawerList.getAdapter().getItemId(0));
+                    String[] Options = getResources().getStringArray(R.array.options);
+                    mTitle = Options[0];
+                    getSupportActionBar().setTitle(mTitle);
+                } else {
+                    mTitle = savedInstanceState.getString("mTitle");
+                }
+            }
+        };
+        startHandler.post(startRunnable);
     }
 
     @Override

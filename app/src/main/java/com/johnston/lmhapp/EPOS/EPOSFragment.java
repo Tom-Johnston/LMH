@@ -1,6 +1,7 @@
 package com.johnston.lmhapp.EPOS;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,6 +12,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -27,6 +31,7 @@ public class EPOSFragment extends Fragment {
     View view;
     MainActivity Main;
     ArrayList<String> transactions;
+    MenuItem actionRefresh;
     final Handler handler = new Handler() {
         @Override
         public void handleMessage(Message message) {
@@ -37,10 +42,37 @@ public class EPOSFragment extends Fragment {
             transactions = (ArrayList<String>) message.obj;
             addEntriesToList();
             finished = true;
+            if(actionRefresh.getActionView()!=null){
+                actionRefresh.getActionView().getAnimation().setRepeatCount(0);
+                actionRefresh.getActionView().getAnimation().setAnimationListener( new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+//                        actionRefresh.getActionView().clearAnimation();
+                        actionRefresh.setActionView(null);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+
+            }
         }
     };
 
     public void GetEpos() {
+        LayoutInflater inflater = (LayoutInflater) getActivity().getApplication().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        ImageView actionRefreshView = (ImageView) inflater.inflate(R.layout.action_refresh,null);
+        Animation an = AnimationUtils.loadAnimation(getActivity().getApplication(), R.anim.rotate_animation);
+        an.setRepeatCount(Animation.INFINITE);
+        actionRefreshView.setAnimation(an);
+        actionRefresh.setActionView(actionRefreshView);
         (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.card_view)).setVisibility(View.GONE);
         (view.findViewById(R.id.card_view2)).setVisibility(View.GONE);
@@ -87,7 +119,14 @@ public class EPOSFragment extends Fragment {
         if (finished) {
             addEntriesToList();
         } else {
-            GetEpos();
+            Handler startHandler = new Handler();
+            Runnable startRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    GetEpos();
+                }
+            };
+            startHandler.post(startRunnable);
         }
         return view;
     }
@@ -96,8 +135,8 @@ public class EPOSFragment extends Fragment {
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        MenuItem item = menu.findItem(R.id.action_refresh);
-        item.setEnabled(true);
-        item.setVisible(true);
+        actionRefresh = menu.findItem(R.id.action_refresh);
+        actionRefresh.setEnabled(true);
+        actionRefresh.setVisible(true);
     }
 }
