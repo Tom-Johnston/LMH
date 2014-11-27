@@ -27,6 +27,7 @@ public class FormalFragment extends Fragment {
     final Handler handler = new Handler() {
         @Override
         public void handleMessage(Message message) {
+            (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
            if(message.what==0){
             entries = (ArrayList<String>)message.obj;
                ListView listView = (ListView)view.findViewById(R.id.battelsListView);
@@ -37,6 +38,7 @@ public class FormalFragment extends Fragment {
     };
 
     public void GetTheData() {
+        (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
         MainActivity main = (MainActivity) this.getActivity();
         byte b = 4;
         main.getInfo(view, handler, b);
