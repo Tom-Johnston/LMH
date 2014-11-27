@@ -134,12 +134,14 @@ public class BattelsAsync extends AsyncTask<Object, String, Void> {
 
     @Override
     protected void onPostExecute(Void v) {
-        Status.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Status.setText("");
-            }
-        },3000);
+        if (Status.getText().toString().equals("Finished")) {
+            Status.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Status.setText("");
+                }
+            }, 3000);
+        }
     }
 
 }

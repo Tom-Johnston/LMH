@@ -106,9 +106,9 @@ public class MainActivity extends ActionBarActivity {
         } else if (Type == 3) {
             new NameGrabberAsync().execute(sslContext, this.getApplicationContext(), handler);
         } else if(Type==4){
-            new FormalAsync().execute(sslContext,handler);
+            new FormalAsync().execute(sslContext,handler,view);
         }else if(Type==5){
-            new FormalDetailsAsync().execute(sslContext,initialiseOther,handler);
+            new FormalDetailsAsync().execute(sslContext,initialiseOther,handler,view);
         }
     }
 

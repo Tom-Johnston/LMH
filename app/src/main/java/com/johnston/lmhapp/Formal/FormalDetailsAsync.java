@@ -2,6 +2,9 @@ package com.johnston.lmhapp.Formal;
 
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.view.View;
+import android.widget.TextView;
+import com.johnston.lmhapp.R;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,17 +21,17 @@ import javax.net.ssl.SSLContext;
 /**
  * Created by Tom on 11/11/2014.
  */
-public class FormalDetailsAsync extends AsyncTask<Object,Void,Void> {
+public class FormalDetailsAsync extends AsyncTask<Object,String,Void> {
+    TextView Status;
     @Override
     protected Void doInBackground(Object[] params) {
         SSLContext sslContext = (SSLContext)params[0];
         Handler handler = (Handler)params[2];
-
+        Status = (TextView) ((View) params[3]).findViewById(R.id.Status);
         try {
             params[1]= URLEncoder.encode((String)params[1], "UTF-8");
             String post="mealbookingState=viewattendees&book="+params[1];
             post = post.replaceAll(" ","+");
-            System.out.println(post);
             URL url =  new URL("https://intranet.lmh.ox.ac.uk/mealbookings.asp");
             HttpsURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
             urlConnection.setSSLSocketFactory(sslContext.getSocketFactory());
@@ -51,7 +54,6 @@ public class FormalDetailsAsync extends AsyncTask<Object,Void,Void> {
                 if(inputLine==null){
                     break;
                 }
-                System.out.println(inputLine);
                     a.append(inputLine);
             }
             String meals="";
@@ -82,7 +84,6 @@ public class FormalDetailsAsync extends AsyncTask<Object,Void,Void> {
 //            Ignore the first line of the list/table;
             while(true){
 
-                System.out.println(start);
                 if(start<0||endOfTable<start){
                   break;
                  }
@@ -104,15 +105,31 @@ public class FormalDetailsAsync extends AsyncTask<Object,Void,Void> {
 //                Not that they have ever been used...
 
             }
-            System.out.println("meals"+meals);
-            System.out.println("listOfName"+listOfNames);
             handler.obtainMessage(0,meals).sendToTarget();
             handler.obtainMessage(1,listOfNames).sendToTarget();
+            publishProgress("Finished");
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    protected void onProgressUpdate(String... values) {
+        Status.setText(values[0]);
+    }
+
+    @Override
+    protected void onPostExecute(Void v) {
+        if (Status.getText().toString().equals("Finished")) {
+            Status.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    Status.setText("");
+                }
+            }, 3000);
+        }
     }
 }
