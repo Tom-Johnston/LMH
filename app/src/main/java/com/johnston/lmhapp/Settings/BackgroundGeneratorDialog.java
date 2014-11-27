@@ -60,7 +60,6 @@ public class BackgroundGeneratorDialog extends DialogFragment {
                              height = display.getHeight();
                         }
                         final Activity activity = getActivity();
-                        System.out.println(activity);
                         Handler handler = new Handler() {
                             @Override
                             public void handleMessage(Message message) {

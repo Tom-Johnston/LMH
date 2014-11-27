@@ -58,9 +58,7 @@ public class FormalListAdapter extends ArrayAdapter<String> {
             int numberLeft = Integer.parseInt(objects.get(position+4));
 //            LinearLayout layout = (LinearLayout) convertView.findViewById(R.id.layout);
             int sizex =convertView.getWidth();
-            System.out.println(sizex);
             int sizey = convertView.getHeight()/2;
-            System.out.println(sizey);
             ((ImageView)convertView.findViewById(R.id.graphicNumberLeft)).setImageBitmap(generateGraphicNumberLeft(numberGone,numberLeft,400,100));
             return convertView;
         }
@@ -73,7 +71,6 @@ public class FormalListAdapter extends ArrayAdapter<String> {
         paint.setColor(Color.parseColor("#001123"));
         paint.setStyle(Paint.Style.FILL);
         double proportionGone = numberGone/(double)(numberGone+numberLeft);
-        System.out.println(proportionGone);
         int numberOFSquares = 5;
         int sizeOfEachSquare = sizex/(numberOFSquares+1);
         int sizeOfGap = sizeOfEachSquare/(numberOFSquares-1);
@@ -88,13 +85,10 @@ public class FormalListAdapter extends ArrayAdapter<String> {
         paint.setColor(Color.parseColor("#757575"));
         for(int i =0;i<numberOFSquares;i++){
             proportionOfSquare = numberOFSquares*proportionGone-(i);
-            System.out.println(proportionOfSquare);
             if(proportionOfSquare>=1){
-                System.out.println(i*sizeOfEachSquare+i*sizeOfGap+","+0+","+(float)((i+1)*sizeOfEachSquare+i*sizeOfGap)+","+sizey);
                 c.drawRect(i*sizeOfEachSquare+i*sizeOfGap,0,(i+1)*sizeOfEachSquare+i*sizeOfGap,sizey,paint);
 
             }else if(0<proportionOfSquare){
-                System.out.println(i*sizeOfEachSquare+i*sizeOfGap+","+0+","+(float)((i)*sizeOfEachSquare+i*sizeOfGap+proportionOfSquare*sizeOfEachSquare)+","+sizey);
                 c.drawRect(i*sizeOfEachSquare+i*sizeOfGap,0,(float)((i)*sizeOfEachSquare+i*sizeOfGap+proportionOfSquare*sizeOfEachSquare),sizey,paint);
             }else{
 

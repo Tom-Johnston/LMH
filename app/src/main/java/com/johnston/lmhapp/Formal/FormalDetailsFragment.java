@@ -33,7 +33,6 @@ public class FormalDetailsFragment extends Fragment {
                 ((TextView)view.findViewById(R.id.formalMenu)).setText(menu);
             }else{
                 entries = (ArrayList<String>)message.obj;
-                System.out.println(entries);
                 ListView listView = (ListView) view.findViewById(R.id.formalListOfPeople);
                 listView.setAdapter(new FormalDetailsListAdapter(getActivity(),R.layout.formal_details_list_item,entries));
 
