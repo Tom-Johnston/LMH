@@ -29,6 +29,7 @@ public class LaundryViewFragment extends Fragment {
     ArrayList<String> KatieLee;
     ArrayList<String> NewOldHall;
     ArrayList<String> Talbot;
+    MenuItem actionRefresh;
     final Handler handler = new Handler() {
         @Override
         public void handleMessage(Message message) {
@@ -70,6 +71,12 @@ public class LaundryViewFragment extends Fragment {
     }
 
     public void LoadStatus() {
+//        View actionRefreshView = actionRefresh.getActionView();
+//        RotateAnimation an = new RotateAnimation(0.0f, 360.0f, actionRefreshView.getWidth()/2, actionRefreshView.getHeight()/2);
+//        an.setDuration(250);
+//        an.setRepeatMode(Animation.INFINITE);
+//        an.setFillAfter(true);
+//        actionRefreshView.setAnimation(an);
         handler.removeCallbacksAndMessages(null);
         (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.card_view)).setVisibility(View.GONE);
@@ -126,8 +133,9 @@ public class LaundryViewFragment extends Fragment {
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        MenuItem item = menu.findItem(R.id.action_refresh);
-        item.setEnabled(true);
-        item.setVisible(true);
+        actionRefresh = menu.findItem(R.id.action_refresh);
+        actionRefresh.setEnabled(true);
+        actionRefresh.setVisible(true);
+
     }
 }
