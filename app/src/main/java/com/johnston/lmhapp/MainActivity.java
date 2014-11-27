@@ -73,7 +73,7 @@ public class MainActivity extends ActionBarActivity {
     CookieManager manager;
     byte Type;
     View view;
-    int lastPosition = -1;
+    int lastPosition = -99;
     SSLContext sslContext = null;
     DrawerAdapter mDrawerAdapter;
     Bitmap selectedCircle;
@@ -353,12 +353,17 @@ public class MainActivity extends ActionBarActivity {
         if (lastPosition == 0) {
             this.finish();
         } else if(lastPosition==-1){
-            mDrawerList.performItemClick(mDrawerList.getAdapter().getView(4, null, null), 4, mDrawerList.getAdapter().getItemId(4));
+            mDrawerList.smoothScrollToPosition(4);
+            View layout = mDrawerList.getChildAt(4 - mDrawerList.getFirstVisiblePosition());
+            mDrawerList.performItemClick(layout, 4, mDrawerList.getAdapter().getItemId(4));
             String[] Options = getResources().getStringArray(R.array.options);
             mTitle = Options[4];
             getSupportActionBar().setTitle(mTitle);
         }else{
-            mDrawerList.performItemClick(mDrawerList.getAdapter().getView(0, null, null), 0, mDrawerList.getAdapter().getItemId(0));
+            mDrawerList.smoothScrollToPosition(0);
+            System.out.println(mDrawerList.getFirstVisiblePosition());
+            View layout = mDrawerList.getChildAt(0 - mDrawerList.getFirstVisiblePosition());
+            mDrawerList.performItemClick(layout, 0, mDrawerList.getAdapter().getItemId(0));
             String[] Options = getResources().getStringArray(R.array.options);
             mTitle = Options[0];
             getSupportActionBar().setTitle(mTitle);
@@ -392,8 +397,10 @@ public class MainActivity extends ActionBarActivity {
                 return;
             }
             String[] iconNames = getResources().getStringArray(R.array.iconNames);
-            if (lastPosition >= parent.getFirstVisiblePosition()) {
+
+            if (lastPosition == -1){lastPosition = 4;}
                 View layout = parent.getChildAt(lastPosition - parent.getFirstVisiblePosition());
+            if(layout!=null){
                 ((TextView) layout.findViewById(R.id.text1)).setTextColor(Color.parseColor("#de000000"));
                 ImageView imageView = (ImageView) layout.findViewById(R.id.imageView);
                 if (iconNames[lastPosition].equals("Circle")) {
@@ -404,16 +411,18 @@ public class MainActivity extends ActionBarActivity {
                     imageView.setImageDrawable(getResources().getDrawable(drawableId));
                 }
             }
-            TextView tv = (TextView) view.findViewById(R.id.text1);
-            ImageView imgv = (ImageView) view.findViewById(R.id.imageView);
-            if (iconNames[position].equals("Circle")) {
-                imgv.setImageBitmap(selectedCircle);
-            } else {
+            if (view != null) {
+                TextView tv = (TextView) view.findViewById(R.id.text1);
+                ImageView imgv = (ImageView) view.findViewById(R.id.imageView);
+                if (iconNames[position].equals("Circle")) {
+                    imgv.setImageBitmap(selectedCircle);
+                } else {
 
-                int drawableId = getResources().getIdentifier(iconNames[position] + "_blue", "drawable", "com.johnston.lmhapp");
-                imgv.setImageDrawable(getResources().getDrawable(drawableId));
+                    int drawableId = getResources().getIdentifier(iconNames[position] + "_blue", "drawable", "com.johnston.lmhapp");
+                    imgv.setImageDrawable(getResources().getDrawable(drawableId));
+                }
+                tv.setTextColor(getResources().getColor(R.color.colorAccent));
             }
-            tv.setTextColor(getResources().getColor(R.color.colorAccent));
             lastPosition = position;
             mDrawerAdapter.selected = position;
             String[] Options = getResources().getStringArray(R.array.options);

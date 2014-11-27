@@ -133,7 +133,7 @@ public class TwitterScraperAsync extends AsyncTask<Handler, Void, ArrayList<Twee
                     if (inputLine.contains("data-time")) {
                         start = inputLine.indexOf("data-time") + 11;
                         time = 1000 * Long.parseLong(inputLine.substring(start, inputLine.indexOf("\"", start)));
-                        if (System.currentTimeMillis()-time>7*24*60*60*1000){
+                        if (System.currentTimeMillis()-time>3*24*60*60*1000){
                             break;
                         }
                     }
