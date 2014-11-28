@@ -4,13 +4,14 @@ import android.app.Fragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ListView;
 
 import com.johnston.lmhapp.MainActivity;
 import com.johnston.lmhapp.R;
@@ -30,9 +31,11 @@ public class FormalFragment extends Fragment {
             (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
            if(message.what==0){
             entries = (ArrayList<String>)message.obj;
-               ListView listView = (ListView)view.findViewById(R.id.battelsListView);
-               listView.setAdapter(new FormalListAdapter(getActivity(),R.layout.formal_list_item,entries));
-               listView.setOnItemClickListener(onItemClickListener);
+               RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
+               LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+               recyclerView.setLayoutManager(layoutManager);
+               FormalRecyclerAdapter formalRecyclerAdapter = new FormalRecyclerAdapter(entries);
+               recyclerView.setAdapter(formalRecyclerAdapter);
            }
         }
     };
@@ -47,7 +50,10 @@ public class FormalFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.battels, container, false);
+        view = inflater.inflate(R.layout.formal_layout, container, false);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(layoutManager);
         GetTheData();
         if (finished) {
         // No need to get all the info again
