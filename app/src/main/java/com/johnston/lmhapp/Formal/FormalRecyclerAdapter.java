@@ -20,9 +20,11 @@ import java.util.ArrayList;
  */
 public class FormalRecyclerAdapter extends RecyclerView.Adapter<FormalRecyclerAdapter.ViewHolder> {
     public ArrayList<String> entries;
+    public ArrayList<String> listOfMeals;
 
-    public FormalRecyclerAdapter(ArrayList<String> initialEntries) {
+    public FormalRecyclerAdapter(ArrayList<String> initialEntries, ArrayList<String> listOfMeals) {
         entries = initialEntries;
+        this.listOfMeals = listOfMeals;
     }
 
 
@@ -56,6 +58,7 @@ public class FormalRecyclerAdapter extends RecyclerView.Adapter<FormalRecyclerAd
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
+        viewHolder.formalMenu.setText(listOfMeals.get(position));
         position = position * 6;
         final int numberGone = Integer.parseInt(entries.get(position + 3));
         final int numberLeft = Integer.parseInt(entries.get(position + 4));

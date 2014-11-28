@@ -45,6 +45,7 @@
 
 
         <LinearLayout
+            android:id="@+id/formalNumberLeftLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/formalName"
@@ -76,6 +77,8 @@
         </LinearLayout>
 
         <TextView
+            android:gravity="center_horizontal"
+            android:layout_below="@+id/formalNumberLeftLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/formalMenu" />

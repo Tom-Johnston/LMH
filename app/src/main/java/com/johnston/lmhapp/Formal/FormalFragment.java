@@ -24,19 +24,26 @@ import java.util.ArrayList;
 public class FormalFragment extends Fragment {
     View view;
     ArrayList<String> entries;
+    ArrayList<String> listOfMeals;
+    ArrayList<ArrayList<String>> listOfListsOfPeople;
     Boolean finished = false;
     final Handler handler = new Handler() {
         @Override
         public void handleMessage(Message message) {
             (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
-           if(message.what==0){
-            entries = (ArrayList<String>)message.obj;
-               RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
-               LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-               recyclerView.setLayoutManager(layoutManager);
-               FormalRecyclerAdapter formalRecyclerAdapter = new FormalRecyclerAdapter(entries);
-               recyclerView.setAdapter(formalRecyclerAdapter);
-           }
+            if(message.what==0){
+                entries = (ArrayList<String>)message.obj;
+
+            }else if(message.what==1){
+                listOfMeals = (ArrayList<String>) message.obj;
+            }else if(message.what==2){
+                listOfListsOfPeople = (ArrayList<ArrayList<String>>) message.obj;
+                RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
+                LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+                recyclerView.setLayoutManager(layoutManager);
+                FormalRecyclerAdapter formalRecyclerAdapter = new FormalRecyclerAdapter(entries,listOfMeals);
+                recyclerView.setAdapter(formalRecyclerAdapter);
+            }
         }
     };
 
@@ -56,7 +63,7 @@ public class FormalFragment extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         GetTheData();
         if (finished) {
-        // No need to get all the info again
+            // No need to get all the info again
         } else {
 //            Get all the info.
         }
