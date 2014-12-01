@@ -98,6 +98,10 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
+    public void formalButtonClick(View v){
+        ((FormalFragment)getFragmentManager().findFragmentById(R.id.Frame)).showListofPeopleGoing(Integer.parseInt(v.getTag().toString()));
+    }
+
     public void Initialise() {
         if (Type == 1) {
             new EPOSAsync().execute(manager, view, handler);

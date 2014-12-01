@@ -83,6 +83,15 @@
             android:layout_height="wrap_content"
             android:id="@+id/formalMenu" />
 
+        <Button
+            android:id="@+id/formalButton"
+            android:onClick="formalButtonClick"
+            android:textColor="@color/colorAccent"
+            android:layout_below="@+id/formalMenu"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="Show the people going"/>
+
     </RelativeLayout>
 
 </android.support.v7.widget.CardView>

@@ -5,11 +5,18 @@
         <item name="android:textColor">#de000000</item>
         <item name="android:colorPrimary">@color/colorPrimary2</item>
         <item name="android:colorAccent">@color/colorAccent</item>
-        <item name="android:colorPrimaryDark">#001123</item>
+        <item name="android:colorPrimaryDark">@color/colorDark</item>
         <item name="colorPrimary">@color/colorPrimary2</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="colorPrimaryDark">#001123</item>
+        <item name="colorPrimaryDark">@color/colorDark</item>
+        <item name="android:colorButtonNormal">#ffffff</item>
+        <item name="android:alertDialogTheme">@style/DialogStyle</item>
+    </style>
 
+    <style name="DialogStyle" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorPrimary">@color/colorPrimary2</item>
+        <item name="colorPrimaryDark">@color/colorDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
     </style>
 
     <style name="toolBarTheme" parent="Base.ThemeOverlay.AppCompat.Dark.ActionBar">

@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -36,6 +37,7 @@ public class FormalRecyclerAdapter extends RecyclerView.Adapter<FormalRecyclerAd
         public TextView formalNumberLeft;
         public TextView formalNumberGone;
         public ImageView graphicNumberLeft;
+        public Button formalButton;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -45,6 +47,7 @@ public class FormalRecyclerAdapter extends RecyclerView.Adapter<FormalRecyclerAd
             formalNumberLeft = (TextView) itemView.findViewById(R.id.formalNumberLeft);
             formalNumberGone = (TextView) itemView.findViewById(R.id.formalNumberGone);
             graphicNumberLeft = (ImageView) itemView.findViewById(R.id.graphicNumberLeft);
+            formalButton = (Button)itemView.findViewById(R.id.formalButton);
         }
     }
 
@@ -59,6 +62,7 @@ public class FormalRecyclerAdapter extends RecyclerView.Adapter<FormalRecyclerAd
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
         viewHolder.formalMenu.setText(listOfMeals.get(position));
+        viewHolder.formalButton.setTag(position);
         position = position * 6;
         final int numberGone = Integer.parseInt(entries.get(position + 3));
         final int numberLeft = Integer.parseInt(entries.get(position + 4));

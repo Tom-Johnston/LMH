@@ -54,6 +54,10 @@ public class FormalFragment extends Fragment {
         main.getInfo(view, handler, b);
     }
 
+    public void showListofPeopleGoing(int position){
+    FormalDetailsDialog dialog = FormalDetailsDialog.newInstance(listOfListsOfPeople.get(position));
+    dialog.show(getFragmentManager(), "details");
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
