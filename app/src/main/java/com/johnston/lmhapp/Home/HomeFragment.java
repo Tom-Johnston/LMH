@@ -70,14 +70,7 @@ public class HomeFragment extends Fragment {
             progressBar.setVisibility(View.GONE);
             listView.setAdapter(new TweetListAdapter(this.getActivity(), R.layout.tweet_item, tweets, profilePictures));
         } else {
-            Handler startHandler = new Handler();
-            Runnable startRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    loadTweeterFeed();
-                }
-            };
-            startHandler.post(startRunnable);
+        loadTweeterFeed();
         }
 
         return view;

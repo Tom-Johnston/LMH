@@ -105,14 +105,7 @@ public class LaundryViewFragment extends Fragment {
             view = inflater.inflate(R.layout.new_laundry_view, container, false);
         }
         if (!Loaded) {
-            Handler startHandler = new Handler();
-            Runnable startRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    LoadStatus();
-                }
-            };
-            startHandler.post(startRunnable);
+            LoadStatus();
         } else {
             final TextView timerView = (TextView) view.findViewById(R.id.LastUpdate);
             Runnable updateTime = new Runnable() {

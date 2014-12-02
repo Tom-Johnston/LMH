@@ -94,14 +94,7 @@ public class EPOSFragment extends Fragment {
         if (finished) {
             addEntriesToList();
         } else {
-            Handler startHandler = new Handler();
-            Runnable startRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    GetEpos();
-                }
-            };
-            startHandler.post(startRunnable);
+            GetEpos();
         }
         return view;
     }

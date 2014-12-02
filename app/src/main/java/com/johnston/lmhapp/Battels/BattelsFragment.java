@@ -62,15 +62,7 @@ public class BattelsFragment extends Fragment {
             BattelsListAdapter adapter = new BattelsListAdapter(context, R.layout.battels_list_item, entries);
             lv.setAdapter(adapter);
         } else {
-            Handler startHandler = new Handler();
-            Runnable startRunnable = new Runnable() {
-                @Override
-                public void run() {
                     LoadBattels();
-                }
-            };
-            startHandler.post(startRunnable);
-
         }
 
 

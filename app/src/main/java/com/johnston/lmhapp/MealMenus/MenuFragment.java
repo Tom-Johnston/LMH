@@ -81,14 +81,7 @@ public class MenuFragment extends Fragment {
         context = this.getActivity().getApplicationContext();
         view = inflater.inflate(R.layout.menu_layout, container, false);
         if (meals.size() == 0) {
-            Handler startHandler = new Handler();
-            Runnable startRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    startMenu();
-                }
-            };
-            startHandler.post(startRunnable);
+            startMenu();
 
         } else {
             ListView lv = (ListView) view.findViewById(R.id.mealList);
