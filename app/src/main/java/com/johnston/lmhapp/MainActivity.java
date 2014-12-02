@@ -22,9 +22,12 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -79,6 +82,45 @@ public class MainActivity extends ActionBarActivity {
     Bitmap selectedCircle;
     Bitmap unselectedCircle;
     String initialiseOther;
+    MenuItem item;
+    Boolean refreshSpinning=false;
+    int refreshSpinRequestFragment = 0;
+
+    public void startRefresh(int i ){
+        refreshSpinRequestFragment = i;
+        if(!refreshSpinning){
+            LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            ImageView actionRefreshView = (ImageView) inflater.inflate(R.layout.action_refresh,null);
+            Animation an = AnimationUtils.loadAnimation(this, R.anim.rotate_animation);
+            an.setRepeatCount(Animation.INFINITE);
+            actionRefreshView.setAnimation(an);
+            item.setActionView(actionRefreshView);
+        }
+    }
+
+    public void stopRefresh(int i ){
+        if(refreshSpinRequestFragment==i){
+            item.getActionView().getAnimation().setRepeatCount(0);
+            item.getActionView().getAnimation().setAnimationListener( new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    item.setActionView(null);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+
+        }
+    }
+
 
     @Override
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
@@ -337,6 +379,7 @@ public class MainActivity extends ActionBarActivity {
 
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+        item = menu.getItem(0);
         return true;
     }
 
@@ -418,7 +461,7 @@ public class MainActivity extends ActionBarActivity {
             String[] iconNames = getResources().getStringArray(R.array.iconNames);
 
             if (lastPosition == -1){lastPosition = 4;}
-                View layout = parent.getChildAt(lastPosition - parent.getFirstVisiblePosition());
+            View layout = parent.getChildAt(lastPosition - parent.getFirstVisiblePosition());
             if(layout!=null){
                 ((TextView) layout.findViewById(R.id.text1)).setTextColor(Color.parseColor("#de000000"));
                 ImageView imageView = (ImageView) layout.findViewById(R.id.imageView);

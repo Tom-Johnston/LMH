@@ -10,9 +10,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.johnston.lmhapp.MainActivity;
@@ -39,43 +36,21 @@ public class BattelsFragment extends Fragment {
             BattelsListAdapter adapter = new BattelsListAdapter(context, R.layout.battels_list_item, entries);
             lv.setAdapter(adapter);
             finished = true;
-            if(actionRefresh.getActionView()!=null){
-                actionRefresh.getActionView().getAnimation().setRepeatCount(0);
-                actionRefresh.getActionView().getAnimation().setAnimationListener( new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-//                        actionRefresh.getActionView().clearAnimation();
-                        actionRefresh.setActionView(null);
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
-
-                    }
-                });
-
-            }
+            MainActivity main = (MainActivity) getActivity();
+            main.stopRefresh(2);
 
         }
     };
 
     public void LoadBattels() {
-        LayoutInflater inflater = (LayoutInflater) getActivity().getApplication().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        ImageView actionRefreshView = (ImageView) inflater.inflate(R.layout.action_refresh,null);
-        Animation an = AnimationUtils.loadAnimation(getActivity().getApplication(), R.anim.rotate_animation);
-        an.setRepeatCount(Animation.INFINITE);
-        actionRefreshView.setAnimation(an);
-        actionRefresh.setActionView(actionRefreshView);
+
         (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.battelsListView)).setVisibility(View.GONE);
         MainActivity main = (MainActivity) this.getActivity();
+        main.startRefresh(2);
         byte b = 2;
         main.getInfo(view, handler, b);
+
     }
 
     @Override

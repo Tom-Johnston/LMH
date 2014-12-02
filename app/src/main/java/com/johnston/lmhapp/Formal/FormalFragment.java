@@ -65,10 +65,12 @@ public class FormalFragment extends Fragment {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
-        GetTheData();
         if (finished) {
+            FormalRecyclerAdapter formalRecyclerAdapter = new FormalRecyclerAdapter(entries,listOfMeals);
+            recyclerView.setAdapter(formalRecyclerAdapter);
             // No need to get all the info again
         } else {
+            GetTheData();
 //            Get all the info.
         }
 

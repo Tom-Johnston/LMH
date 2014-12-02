@@ -1,7 +1,6 @@
 package com.johnston.lmhapp.LaundryView;
 
 import android.app.Fragment;
-import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,12 +10,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.johnston.lmhapp.MainActivity;
 import com.johnston.lmhapp.R;
 
 import java.net.MalformedURLException;
@@ -37,27 +34,7 @@ public class LaundryViewFragment extends Fragment {
     final Handler handler = new Handler() {
         @Override
         public void handleMessage(Message message) {
-            if(actionRefresh.getActionView()!=null){
-                actionRefresh.getActionView().getAnimation().setRepeatCount(0);
-                actionRefresh.getActionView().getAnimation().setAnimationListener( new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {
 
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-//                        actionRefresh.getActionView().clearAnimation();
-                        actionRefresh.setActionView(null);
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
-
-                    }
-                });
-
-            }
             if(message.what==0){
                 startTime = (Long) message.obj;
                 Loaded = true;
@@ -68,6 +45,8 @@ public class LaundryViewFragment extends Fragment {
                 NewOldHall = (ArrayList<String>) message.obj;
                 addEntriesToList(R.id.NewOldHall,NewOldHall);
             }else if(message.what==3){
+                MainActivity main = (MainActivity) getActivity();
+                main.stopRefresh(1);
                 Talbot = (ArrayList<String>) message.obj;
                 addEntriesToList(R.id.Talbot,Talbot);
                 (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
@@ -96,12 +75,8 @@ public class LaundryViewFragment extends Fragment {
     }
 
     public void LoadStatus() {
-        LayoutInflater inflater = (LayoutInflater) getActivity().getApplication().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        ImageView actionRefreshView = (ImageView) inflater.inflate(R.layout.action_refresh,null);
-        Animation an = AnimationUtils.loadAnimation(getActivity().getApplication(), R.anim.rotate_animation);
-        an.setRepeatCount(Animation.INFINITE);
-        actionRefreshView.setAnimation(an);
-        actionRefresh.setActionView(actionRefreshView);
+        MainActivity main = (MainActivity) getActivity();
+        main.startRefresh(1);
         handler.removeCallbacksAndMessages(null);
         (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.card_view)).setVisibility(View.GONE);

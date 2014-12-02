@@ -10,12 +10,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
+import com.johnston.lmhapp.MainActivity;
 import com.johnston.lmhapp.R;
 
 import java.io.File;
@@ -43,12 +41,8 @@ public class MenuFragment extends Fragment {
     }
 
     void startMenu() {
-        LayoutInflater inflater = (LayoutInflater) getActivity().getApplication().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        ImageView actionRefreshView = (ImageView) inflater.inflate(R.layout.action_refresh,null);
-        Animation an = AnimationUtils.loadAnimation(getActivity().getApplication(), R.anim.rotate_animation);
-        an.setRepeatCount(Animation.INFINITE);
-        actionRefreshView.setAnimation(an);
-        actionRefresh.setActionView(actionRefreshView);
+        MainActivity main = (MainActivity) getActivity();
+        main.startRefresh(5);
         ListView lv = (ListView) view.findViewById(R.id.mealList);
         ProgressBar pb = (ProgressBar) view.findViewById(R.id.PM1);
         lv.setVisibility(View.GONE);
@@ -67,27 +61,8 @@ public class MenuFragment extends Fragment {
 
     public void showMenu() {
 //        0 for old
-        if(actionRefresh.getActionView()!=null){
-            actionRefresh.getActionView().getAnimation().setRepeatCount(0);
-            actionRefresh.getActionView().getAnimation().setAnimationListener( new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-//                        actionRefresh.getActionView().clearAnimation();
-                    actionRefresh.setActionView(null);
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
-            });
-
-        }
+        MainActivity main = (MainActivity) getActivity();
+        main.stopRefresh(5);
         ListView lv = (ListView) view.findViewById(R.id.mealList);
         ProgressBar pb = (ProgressBar) view.findViewById(R.id.PM1);
         lv.setVisibility(View.VISIBLE);

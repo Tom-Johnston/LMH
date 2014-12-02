@@ -58,7 +58,6 @@ public class DrawerAdapter extends ArrayAdapter<String> {
             }
 
             body.setTextColor(context.getResources().getColor(R.color.colorAccent));
-            //TODO change the above line.
         } else {
             if (iconNames[position].equals("Circle")) {
                 circle.setImageBitmap(unselectedCircle);
@@ -68,7 +67,6 @@ public class DrawerAdapter extends ArrayAdapter<String> {
             }
             body.setTextColor(Color.parseColor("#de000000"));
         }
-
 
         return convertView;
     }
