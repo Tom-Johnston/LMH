@@ -71,8 +71,6 @@ public class MenuFragment extends Fragment {
         adapter = new MenuListAdapter(context, R.layout.listview, meals);
         lv.setAdapter(adapter);
         lv.setSelection(startat);
-
-
     }
 
     @Override

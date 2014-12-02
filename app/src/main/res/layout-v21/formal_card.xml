@@ -86,6 +86,7 @@
         <Button
             android:id="@+id/formalButton"
             android:onClick="formalButtonClick"
+            android:textColor="@color/colorAccent"
             android:layout_below="@+id/formalMenu"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
