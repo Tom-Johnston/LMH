@@ -79,27 +79,38 @@ public class MainActivity extends ActionBarActivity {
     DrawerAdapter mDrawerAdapter;
     Bitmap selectedCircle;
     Bitmap unselectedCircle;
-    String initialiseOther;
     MenuItem item;
-    Boolean refreshSpinning=false;
+    Animation an;
     int refreshSpinRequestFragment = 0;
+    ImageView actionRefreshView;
 
     public void startRefresh(int i ){
         refreshSpinRequestFragment = i;
-        if(!refreshSpinning){
-            LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            ImageView actionRefreshView = (ImageView) inflater.inflate(R.layout.action_refresh,null);
-            Animation an = AnimationUtils.loadAnimation(this, R.anim.rotate_animation);
-            an.setRepeatCount(Animation.INFINITE);
-            actionRefreshView.setAnimation(an);
-            item.setActionView(actionRefreshView);
-        }
+        Handler startHandler = new Handler();
+        Runnable startRunnable = new Runnable() {
+
+            @Override
+            public void run() {
+                if (actionRefreshView == null) {
+                    LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    actionRefreshView = (ImageView) inflater.inflate(R.layout.action_refresh, null);
+                } else {
+                    actionRefreshView.setVisibility(View.VISIBLE);
+                }
+                an.setRepeatCount(Animation.INFINITE);
+                an.setDuration(1000);
+                actionRefreshView.setAnimation(an);
+                item.setActionView(actionRefreshView);
+            }
+        };
+        startHandler.post(startRunnable);
     }
 
-    public void stopRefresh(int i ){
-        if(refreshSpinRequestFragment==i){
-            item.getActionView().getAnimation().setRepeatCount(0);
-            item.getActionView().getAnimation().setAnimationListener( new Animation.AnimationListener() {
+
+    public void stopRefresh(final int i) {
+        final View actionRefreshView2 = this.actionRefreshView;
+        if (refreshSpinRequestFragment == i || i == -1 && item != null && item.getActionView() != null && item.getActionView().getAnimation() != null) {
+            item.getActionView().getAnimation().setAnimationListener(new Animation.AnimationListener() {
                 @Override
                 public void onAnimationStart(Animation animation) {
 
@@ -108,14 +119,18 @@ public class MainActivity extends ActionBarActivity {
                 @Override
                 public void onAnimationEnd(Animation animation) {
                     item.setActionView(null);
+                    actionRefreshView2.setVisibility(View.GONE);
+
                 }
 
                 @Override
                 public void onAnimationRepeat(Animation animation) {
-
                 }
             });
-
+            if (i == -1) {
+                item.getActionView().getAnimation().setDuration(0);
+            }
+            item.getActionView().getAnimation().setRepeatCount(0);
         }
     }
 
@@ -234,12 +249,17 @@ public class MainActivity extends ActionBarActivity {
     }
 
 
-
+//    @Override
+//    protected void onPause(){
+//        item.getActionView().clearAnimation();
+//        item.setActionView(null);
+//    }
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         mTitle = getResources().getString(R.string.title);
         super.onCreate(savedInstanceState);
+        an = AnimationUtils.loadAnimation(this, R.anim.rotate_animation);
         setContentView(R.layout.activity_main);
         if (savedInstanceState!=null) {
             lastPosition = savedInstanceState.getInt("lastPosition");
@@ -505,6 +525,7 @@ public class MainActivity extends ActionBarActivity {
                 newFragment = new SettingsFragment();
                 transaction.addToBackStack(Options[position]);
             }
+            stopRefresh(-1);
             newFragment.setRetainInstance(true);
             transaction.replace(R.id.Frame, newFragment, Options[position]);
             transaction.commit();
