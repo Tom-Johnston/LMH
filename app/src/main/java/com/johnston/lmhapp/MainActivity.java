@@ -39,8 +39,6 @@ import com.johnston.lmhapp.Battels.BattelsFragment;
 import com.johnston.lmhapp.EPOS.EPOSAsync;
 import com.johnston.lmhapp.EPOS.EPOSFragment;
 import com.johnston.lmhapp.Formal.FormalAsync;
-import com.johnston.lmhapp.Formal.FormalDetailsAsync;
-import com.johnston.lmhapp.Formal.FormalDetailsFragment;
 import com.johnston.lmhapp.Formal.FormalFragment;
 import com.johnston.lmhapp.Home.HomeFragment;
 import com.johnston.lmhapp.LaundryView.LaundryViewFragment;
@@ -153,8 +151,6 @@ public class MainActivity extends ActionBarActivity {
             new NameGrabberAsync().execute(sslContext, this.getApplicationContext(), handler);
         } else if(Type==4){
             new FormalAsync().execute(sslContext,handler,view);
-        }else if(Type==5){
-            new FormalDetailsAsync().execute(sslContext,initialiseOther,handler,view);
         }
     }
 
@@ -237,14 +233,6 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
-    public void getDetails(String[] info){
-        initialiseOther = info[4];
-        FormalDetailsFragment newFragment = FormalDetailsFragment.newInstance(info);
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.Frame, newFragment, "FormalDetails");
-        transaction.commit();
-        lastPosition=-1;
-    }
 
 
 

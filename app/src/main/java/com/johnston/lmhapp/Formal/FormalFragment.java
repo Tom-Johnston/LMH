@@ -11,7 +11,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 
 import com.johnston.lmhapp.MainActivity;
 import com.johnston.lmhapp.R;
@@ -90,24 +89,4 @@ public class FormalFragment extends Fragment {
         item.setEnabled(false);
         item.setVisible(false);
     }
-
-    AdapterView.OnItemClickListener onItemClickListener =  new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            MainActivity main = (MainActivity)getActivity();
-            String[] info = new String[5];
-            position = position * 6;
-//            Date
-//            Name
-//            Number Gone
-//            Number Left
-//            ID
-            info[0]=entries.get(position);
-            info[1]=entries.get(position+1);
-            info[2]=entries.get(position+3);
-            info[3]=entries.get(position+4);
-            info[4]=entries.get(position+5);
-            main.getDetails(info);
-        }
-    };
 }
