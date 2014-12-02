@@ -36,6 +36,8 @@ public class FormalFragment extends Fragment {
             }else if(message.what==1){
                 listOfMeals = (ArrayList<String>) message.obj;
             }else if(message.what==2){
+                MainActivity main = (MainActivity) getActivity();
+                main.stopRefresh(4);
                 listOfListsOfPeople = (ArrayList<ArrayList<String>>) message.obj;
                 RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
                 LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -50,6 +52,7 @@ public class FormalFragment extends Fragment {
         (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
         MainActivity main = (MainActivity) this.getActivity();
         byte b = 4;
+        main.startRefresh(4);
         main.getInfo(view, handler, b);
     }
 
@@ -86,7 +89,7 @@ public class FormalFragment extends Fragment {
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         MenuItem item = menu.findItem(R.id.action_refresh);
-        item.setEnabled(false);
-        item.setVisible(false);
+        item.setEnabled(true);
+        item.setVisible(true);
     }
 }

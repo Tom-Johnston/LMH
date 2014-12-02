@@ -410,6 +410,9 @@ public class MainActivity extends ActionBarActivity {
         }else if(fragmentType.equals(Options[2])){
             BattelsFragment fragment = (BattelsFragment) fragment1;
             fragment.LoadBattels();
+        }else if(fragmentType.equals(Options[4])){
+            FormalFragment fragment = (FormalFragment) fragment1;
+            fragment.GetTheData();
         }
 
     }
