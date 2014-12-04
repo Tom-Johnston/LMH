@@ -5,12 +5,13 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 
 import com.johnston.lmhapp.MainActivity;
@@ -23,7 +24,6 @@ import java.util.ArrayList;
  * Created by Johnston on 10/09/2014.
  */
 public class MenuFragment extends Fragment {
-    int firstVisibleItem;
     Boolean starting;
     int startat = -1;
     private View view;
@@ -33,9 +33,9 @@ public class MenuFragment extends Fragment {
     MenuItem actionRefresh;
 
     public void downloadNewMenu() {
-        ListView lv = (ListView) view.findViewById(R.id.mealList);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
+        recyclerView.setVisibility(View.INVISIBLE);
         ProgressBar pb = (ProgressBar) view.findViewById(R.id.PM1);
-        lv.setVisibility(View.GONE);
         pb.setVisibility(View.VISIBLE);
         new DownloadNewMenuAsync().execute(context, false, handler);
     }
@@ -43,9 +43,7 @@ public class MenuFragment extends Fragment {
     void startMenu() {
         MainActivity main = (MainActivity) getActivity();
         main.startRefresh(5);
-        ListView lv = (ListView) view.findViewById(R.id.mealList);
         ProgressBar pb = (ProgressBar) view.findViewById(R.id.PM1);
-        lv.setVisibility(View.GONE);
         pb.setVisibility(View.VISIBLE);
         File file = new File(context.getFilesDir(), "Menu.txt");
         if (!file.exists()) {
@@ -61,16 +59,17 @@ public class MenuFragment extends Fragment {
 
     public void showMenu() {
 //        0 for old
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(layoutManager);
+        MenuRecyclerAdapter formalRecyclerAdapter = new MenuRecyclerAdapter(meals);
+        recyclerView.setAdapter(formalRecyclerAdapter);
+
         MainActivity main = (MainActivity) getActivity();
         main.stopRefresh(5);
-        ListView lv = (ListView) view.findViewById(R.id.mealList);
         ProgressBar pb = (ProgressBar) view.findViewById(R.id.PM1);
-        lv.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.VISIBLE);
         pb.setVisibility(View.GONE);
-        Context context = this.getActivity().getBaseContext();
-        adapter = new MenuListAdapter(context, R.layout.listview, meals);
-        lv.setAdapter(adapter);
-        lv.setSelection(startat);
     }
 
     @Override
@@ -78,16 +77,14 @@ public class MenuFragment extends Fragment {
         super.onCreateView(null, null, savedInstanceState);
         context = this.getActivity().getApplicationContext();
         view = inflater.inflate(R.layout.menu_layout, container, false);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(layoutManager);
         if (meals.size() == 0) {
             startMenu();
-
         } else {
-            ListView lv = (ListView) view.findViewById(R.id.mealList);
-            lv.setVisibility(View.VISIBLE);
-            Context context = this.getActivity().getBaseContext();
-            adapter = new MenuListAdapter(context, R.layout.listview, meals);
-            lv.setAdapter(adapter);
-            lv.setSelection(startat);
+            MenuRecyclerAdapter formalRecyclerAdapter = new MenuRecyclerAdapter(meals);
+            recyclerView.setAdapter(formalRecyclerAdapter);
         }
 
         setHasOptionsMenu(true);
@@ -106,12 +103,9 @@ public class MenuFragment extends Fragment {
         @Override
         public void handleMessage(Message message) {
             if (message.what == 0) {
-                Object[] objects = (Object[]) message.obj;
-                startat = (Integer) objects[1];
-                meals = (ArrayList<String>) objects[0];
+                meals = (ArrayList<String>) message.obj;
                 if (starting) {
-                    String lastEntry = meals.get(meals.size() - 1);
-                    if (lastEntry.equals("00") || lastEntry.equals("10")) {
+                    if (meals.size()==0) {
                         new DownloadNewMenuAsync().execute(context, false, handler);
                     } else {
                         showMenu();
