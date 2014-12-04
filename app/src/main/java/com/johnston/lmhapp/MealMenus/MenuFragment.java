@@ -62,8 +62,8 @@ public class MenuFragment extends Fragment {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
-        MenuRecyclerAdapter formalRecyclerAdapter = new MenuRecyclerAdapter(meals);
-        recyclerView.setAdapter(formalRecyclerAdapter);
+        MenuRecyclerAdapter menuRecyclerAdapter = new MenuRecyclerAdapter(meals);
+        recyclerView.setAdapter(menuRecyclerAdapter);
 
         MainActivity main = (MainActivity) getActivity();
         main.stopRefresh(5);
@@ -84,8 +84,8 @@ public class MenuFragment extends Fragment {
         if (!finished) {
             startMenu();
         } else {
-            MenuRecyclerAdapter formalRecyclerAdapter = new MenuRecyclerAdapter(meals);
-            recyclerView.setAdapter(formalRecyclerAdapter);
+            MenuRecyclerAdapter menuRecyclerAdapter = new MenuRecyclerAdapter(meals);
+            recyclerView.setAdapter(menuRecyclerAdapter);
         }
 
         setHasOptionsMenu(true);
