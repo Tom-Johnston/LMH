@@ -46,7 +46,9 @@ public class LaundryViewFragment extends Fragment {
                 addEntriesToList(R.id.NewOldHall,NewOldHall);
             }else if(message.what==3){
                 MainActivity main = (MainActivity) getActivity();
-                main.stopRefresh(1);
+                if(main!=null) {
+                    main.stopRefresh(1);
+                }
                 Talbot = (ArrayList<String>) message.obj;
                 addEntriesToList(R.id.Talbot,Talbot);
                 (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);

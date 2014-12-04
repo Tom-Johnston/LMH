@@ -39,7 +39,9 @@ public class BattelsFragment extends Fragment {
             recyclerView.setVisibility(View.VISIBLE);
             finished = true;
             MainActivity main = (MainActivity) getActivity();
+            if(main!=null){
             main.stopRefresh(2);
+            }
 
         }
     };

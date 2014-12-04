@@ -39,7 +39,9 @@ public class EPOSFragment extends Fragment {
             addEntriesToList();
             finished = true;
             MainActivity main = (MainActivity) getActivity();
-            main.stopRefresh(3);
+            if(main!=null) {
+                main.stopRefresh(3);
+            }
         }
 
 

@@ -182,6 +182,7 @@ TextView Status;
 
     @Override
     protected void onPostExecute(Void v) {
+        Status.setVisibility(View.GONE);
         if (Status.getText().toString().equals("Finished")) {
             Status.postDelayed(new Runnable() {
                 @Override

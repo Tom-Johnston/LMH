@@ -4,9 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp">
-
+>
     <ProgressBar
         android:id="@+id/PM1"
         android:layout_width="match_parent"
@@ -21,10 +19,6 @@
         android:scrollbars="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="2dp"
-        android:layout_marginLeft="2dp"
-        android:layout_marginRight="2dp"
-        android:layout_marginTop="2dp"
         android:layout_alignParentTop="true"/>
 
 </RelativeLayout>

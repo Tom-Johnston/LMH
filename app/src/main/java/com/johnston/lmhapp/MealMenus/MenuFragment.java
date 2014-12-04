@@ -66,7 +66,9 @@ public class MenuFragment extends Fragment {
         recyclerView.setAdapter(menuRecyclerAdapter);
 
         MainActivity main = (MainActivity) getActivity();
-        main.stopRefresh(5);
+        if(main!=null) {
+            main.stopRefresh(5);
+        }
         ProgressBar pb = (ProgressBar) view.findViewById(R.id.PM1);
         recyclerView.setVisibility(View.VISIBLE);
         pb.setVisibility(View.GONE);

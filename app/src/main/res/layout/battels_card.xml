@@ -8,6 +8,8 @@
     card_view:cardCornerRadius="2dp"
     android:layout_marginTop="4dp"
     android:layout_marginBottom="4dp"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
     >
 
     <RelativeLayout

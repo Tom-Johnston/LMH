@@ -40,7 +40,9 @@ public class HomeFragment extends Fragment {
             @Override
             public void handleMessage(Message message) {
                 MainActivity main = (MainActivity) getActivity();
-                main.stopRefresh(0);
+                if(main!=null) {
+                    main.stopRefresh(0);
+                }
                 Object[] objects = (Object[]) message.obj;
                 tweets = (ArrayList<Tweet>) objects[0];
                 profilePictures = (Bitmap[]) objects[1];

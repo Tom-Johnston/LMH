@@ -37,7 +37,9 @@ public class FormalFragment extends Fragment {
                 listOfMeals = (ArrayList<String>) message.obj;
             }else if(message.what==2){
                 MainActivity main = (MainActivity) getActivity();
-                main.stopRefresh(4);
+                if(main!=null) {
+                    main.stopRefresh(4);
+                }
                 listOfListsOfPeople = (ArrayList<ArrayList<String>>) message.obj;
                 RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
                 LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -49,6 +51,7 @@ public class FormalFragment extends Fragment {
     };
 
     public void GetTheData() {
+        (view.findViewById(R.id.Status)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
         MainActivity main = (MainActivity) this.getActivity();
         byte b = 4;
@@ -68,6 +71,7 @@ public class FormalFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         if (finished) {
+            (view.findViewById(R.id.Status)).setVisibility(View.GONE);
             FormalRecyclerAdapter formalRecyclerAdapter = new FormalRecyclerAdapter(entries,listOfMeals);
             recyclerView.setAdapter(formalRecyclerAdapter);
             // No need to get all the info again

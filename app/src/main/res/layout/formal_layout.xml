@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
-    android:paddingLeft="8dp"
-    android:paddingRight="8dp">
+>
 
     <TextView
         android:id="@+id/Status"
@@ -19,6 +18,8 @@
         android:freezesText="true" />
 
     <RelativeLayout
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
         android:id="@+id/progressBar"
         android:visibility="gone"
         android:layout_width="match_parent"
