@@ -40,7 +40,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/mealTitle"
             android:gravity="left"
-            android:textSize="20sp"
-            android:freezesText="true"/>
+            />
     </RelativeLayout>
 </android.support.v7.widget.CardView>
