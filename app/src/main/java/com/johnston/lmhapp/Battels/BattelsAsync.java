@@ -136,12 +136,16 @@ public class BattelsAsync extends AsyncTask<Object, String, Void> {
     @Override
     protected void onPostExecute(Void v) {
         if (Status.getText().toString().equals("Finished")) {
+            Status.setVisibility(View.GONE);
+//            TODO Sort out this. Maybe an animation to hide it but it should scroll with the list.
             Status.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     Status.setText("");
+
                 }
             }, 3000);
+
         }
     }
 

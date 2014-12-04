@@ -45,7 +45,7 @@ public class BattelsFragment extends Fragment {
     };
 
     public void LoadBattels() {
-
+        (view.findViewById(R.id.Status)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.my_recycler_view)).setVisibility(View.GONE);
         MainActivity main = (MainActivity) this.getActivity();
