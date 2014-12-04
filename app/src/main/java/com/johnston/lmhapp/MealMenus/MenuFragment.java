@@ -25,12 +25,11 @@ import java.util.ArrayList;
  */
 public class MenuFragment extends Fragment {
     Boolean starting;
-    int startat = -1;
     private View view;
     private Context context;
     private ArrayList<String> meals = new ArrayList<String>();
-    private MenuListAdapter adapter;
     MenuItem actionRefresh;
+    Boolean finished=false;
 
     public void downloadNewMenu() {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
@@ -41,6 +40,7 @@ public class MenuFragment extends Fragment {
     }
 
     void startMenu() {
+        finished=false;
         MainActivity main = (MainActivity) getActivity();
         main.startRefresh(5);
         ProgressBar pb = (ProgressBar) view.findViewById(R.id.PM1);
@@ -70,6 +70,7 @@ public class MenuFragment extends Fragment {
         ProgressBar pb = (ProgressBar) view.findViewById(R.id.PM1);
         recyclerView.setVisibility(View.VISIBLE);
         pb.setVisibility(View.GONE);
+        finished=true;
     }
 
     @Override
@@ -80,7 +81,7 @@ public class MenuFragment extends Fragment {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
-        if (meals.size() == 0) {
+        if (!finished) {
             startMenu();
         } else {
             MenuRecyclerAdapter formalRecyclerAdapter = new MenuRecyclerAdapter(meals);
