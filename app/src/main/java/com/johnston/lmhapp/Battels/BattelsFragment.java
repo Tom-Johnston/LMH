@@ -62,6 +62,7 @@ public class BattelsFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         if (finished) {
+            (view.findViewById(R.id.Status)).setVisibility(View.GONE);
             BattelsRecyclerAdapter battelsRecyclerAdapter = new BattelsRecyclerAdapter(entries);
             recyclerView.setAdapter(battelsRecyclerAdapter);
         } else {
