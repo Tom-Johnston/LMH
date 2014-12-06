@@ -81,7 +81,7 @@ public class MainActivity extends ActionBarActivity {
     Bitmap unselectedCircle;
     MenuItem item;
     Animation an;
-    int refreshSpinRequestFragment = 0;
+    int refreshSpinRequestFragment = -99;
     ImageView actionRefreshView;
 
     public void startRefresh(int i ){
@@ -100,7 +100,9 @@ public class MainActivity extends ActionBarActivity {
                 an.setRepeatCount(Animation.INFINITE);
                 an.setDuration(1000);
                 actionRefreshView.setAnimation(an);
-                item.setActionView(actionRefreshView);
+                if (item != null){
+                    item.setActionView(actionRefreshView);
+            }
             }
         };
         startHandler.post(startRunnable);
@@ -109,7 +111,8 @@ public class MainActivity extends ActionBarActivity {
 
     public void stopRefresh(final int i) {
         final View actionRefreshView2 = this.actionRefreshView;
-        if (refreshSpinRequestFragment == i || i == -1 && item != null && item.getActionView() != null && item.getActionView().getAnimation() != null) {
+        if ((refreshSpinRequestFragment == i || i == -1) && item != null && item.getActionView() != null && item.getActionView().getAnimation() != null) {
+            refreshSpinRequestFragment=-99;
             item.getActionView().getAnimation().setAnimationListener(new Animation.AnimationListener() {
                 @Override
                 public void onAnimationStart(Animation animation) {
@@ -381,13 +384,20 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu){
+        item = menu.getItem(0);
+        if(refreshSpinRequestFragment!=-99){
+            startRefresh(refreshSpinRequestFragment);
+        }
+        return true;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
-        item = menu.getItem(0);
         return true;
     }
 

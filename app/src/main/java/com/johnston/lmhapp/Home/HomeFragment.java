@@ -27,8 +27,10 @@ public class HomeFragment extends Fragment {
     private ArrayList<Tweet> tweets;
     private Bitmap[] profilePictures;
     MenuItem actionRefresh;
+    Boolean finished=false;
 
     public void loadTweeterFeed() {
+        finished=false;
         MainActivity main = (MainActivity) getActivity();
         main.startRefresh(0);
         final ListView listView = (ListView) view.findViewById(R.id.tweetList);
@@ -39,6 +41,7 @@ public class HomeFragment extends Fragment {
         Handler handler = new Handler() {
             @Override
             public void handleMessage(Message message) {
+                finished=true;
                 MainActivity main = (MainActivity) getActivity();
                 if(main!=null) {
                     main.stopRefresh(0);
@@ -66,7 +69,7 @@ public class HomeFragment extends Fragment {
     public android.view.View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(null, null, savedInstanceState);
         view = inflater.inflate(R.layout.home_fragment, container, false);
-        if (tweets != null) {
+        if (finished) {
             final ListView listView = (ListView) view.findViewById(R.id.tweetList);
             final ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.PM1);
             progressBar.setVisibility(View.GONE);

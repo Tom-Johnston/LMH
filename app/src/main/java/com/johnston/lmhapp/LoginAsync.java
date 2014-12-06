@@ -3,8 +3,6 @@ package com.johnston.lmhapp;
 import android.os.AsyncTask;
 import android.widget.TextView;
 
-import com.johnston.lmhapp.MainActivity;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -43,6 +41,7 @@ public class LoginAsync extends AsyncTask<Object, String, Boolean> {
                 publishProgress("Already Logged In");
                 return true;
             } else {
+                manager.getCookieStore().removeAll();
                 publishProgress("Redirected");
                 URL regUrl = new URL("https://webauth.ox.ac.uk/login");
 
