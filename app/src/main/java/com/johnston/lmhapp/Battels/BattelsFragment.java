@@ -24,6 +24,7 @@ public class BattelsFragment extends Fragment {
     View view;
     ArrayList<String> entries;
     Boolean finished = false;
+    Boolean refreshing=false;
     MenuItem actionRefresh;
     final Handler handler = new Handler() {
         @Override
@@ -38,6 +39,7 @@ public class BattelsFragment extends Fragment {
             (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
             finished = true;
+            refreshing=false;
             MainActivity main = (MainActivity) getActivity();
             if(main!=null){
             main.stopRefresh(2);
@@ -47,6 +49,7 @@ public class BattelsFragment extends Fragment {
     };
 
     public void LoadBattels() {
+        refreshing=true;
         (view.findViewById(R.id.Status)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.my_recycler_view)).setVisibility(View.GONE);
@@ -63,7 +66,13 @@ public class BattelsFragment extends Fragment {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
-        if (finished) {
+        if(refreshing){
+            MainActivity main = (MainActivity) this.getActivity();
+            main.startRefresh(2);
+            (view.findViewById(R.id.Status)).setVisibility(View.VISIBLE);
+            (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
+            (view.findViewById(R.id.my_recycler_view)).setVisibility(View.GONE);
+        }else if (finished) {
             (view.findViewById(R.id.Status)).setVisibility(View.GONE);
             BattelsRecyclerAdapter battelsRecyclerAdapter = new BattelsRecyclerAdapter(entries);
             recyclerView.setAdapter(battelsRecyclerAdapter);

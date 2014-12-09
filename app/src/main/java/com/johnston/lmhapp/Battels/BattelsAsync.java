@@ -30,8 +30,9 @@ public class BattelsAsync extends AsyncTask<Object, String, Void> {
         try {
             SSLContext sslContext = (SSLContext) objects[0];
             Status = (TextView) ((View) objects[1]).findViewById(R.id.Status);
-            publishProgress("Getting Account Information");
             Handler handler = (Handler) objects[2];
+
+            publishProgress("Getting Account Information");
             URL battelsURL = new URL("https://intranet.lmh.ox.ac.uk/navbilling.asp");
             HttpsURLConnection battelsConn = (HttpsURLConnection) battelsURL.openConnection();
             battelsConn.setSSLSocketFactory(sslContext.getSocketFactory());

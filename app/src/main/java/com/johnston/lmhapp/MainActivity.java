@@ -99,13 +99,16 @@ public class MainActivity extends ActionBarActivity {
                 }
                 an.setRepeatCount(Animation.INFINITE);
                 an.setDuration(1000);
+                an.start();
                 actionRefreshView.setAnimation(an);
+                actionRefreshView.getAnimation().setAnimationListener(null);
                 if (item != null){
                     item.setActionView(actionRefreshView);
             }
             }
         };
         startHandler.post(startRunnable);
+
     }
 
 
@@ -116,11 +119,12 @@ public class MainActivity extends ActionBarActivity {
             item.getActionView().getAnimation().setAnimationListener(new Animation.AnimationListener() {
                 @Override
                 public void onAnimationStart(Animation animation) {
-
+                System.out.println("Start");
                 }
 
                 @Override
                 public void onAnimationEnd(Animation animation) {
+                    System.out.println("End");
                     item.setActionView(null);
                     actionRefreshView2.setVisibility(View.GONE);
 
@@ -128,12 +132,14 @@ public class MainActivity extends ActionBarActivity {
 
                 @Override
                 public void onAnimationRepeat(Animation animation) {
+                    System.out.println("Repeat");
                 }
             });
             if (i == -1) {
                 item.getActionView().getAnimation().setDuration(0);
             }
             item.getActionView().getAnimation().setRepeatCount(0);
+            System.out.println(item.getActionView().getAnimation().hasEnded());
         }
     }
 
@@ -272,14 +278,15 @@ public class MainActivity extends ActionBarActivity {
 //
 //
         File file = new File(getFilesDir(), "CustomGraphic.png");
-        if (file != null) {
+        if (file.exists()) {
             ((ImageView) findViewById(R.id.graphic)).setImageBitmap(BitmapFactory.decodeFile(file.getAbsolutePath()));
+            TextView username = (TextView) findViewById(R.id.username);
+            TextView name = (TextView) findViewById(R.id.name);
+            SharedPreferences LogIn = getSharedPreferences("LogIn", 0);
+            username.setText(LogIn.getString("Username", ""));
+            name.setText(LogIn.getString("Name", ""));
         }
-        TextView username = (TextView) findViewById(R.id.username);
-        TextView name = (TextView) findViewById(R.id.name);
-        SharedPreferences LogIn = getSharedPreferences("LogIn", 0);
-        username.setText(LogIn.getString("Username", ""));
-        name.setText(LogIn.getString("Name", ""));
+
 
 
         selectedCircle = drawCircle(getResources().getColor(R.color.colorPrimary2));
@@ -288,7 +295,10 @@ public class MainActivity extends ActionBarActivity {
 
 //      Cookie Manager
 
-        manager = new CookieManager();
+        manager = (CookieManager) CookieHandler.getDefault();
+        if(manager==null){
+            manager = new CookieManager();
+        }
         manager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
         CookieHandler.setDefault(manager);
 //       Drawer/ActionBar

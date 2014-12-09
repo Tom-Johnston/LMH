@@ -42,6 +42,10 @@ public class LoginAsync extends AsyncTask<Object, String, Boolean> {
                 return true;
             } else {
                 manager.getCookieStore().removeAll();
+                urlc = (HttpsURLConnection) url.openConnection();
+                urlc.setSSLSocketFactory(context.getSocketFactory());
+                urlc.getResponseCode();
+
                 publishProgress("Redirected");
                 URL regUrl = new URL("https://webauth.ox.ac.uk/login");
 

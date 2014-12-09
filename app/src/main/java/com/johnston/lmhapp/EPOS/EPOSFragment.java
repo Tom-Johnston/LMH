@@ -24,8 +24,8 @@ import java.util.ArrayList;
  */
 public class EPOSFragment extends Fragment {
     Boolean finished = false;
+    Boolean refreshing=false;
     View view;
-    MainActivity Main;
     ArrayList<String> transactions;
     MenuItem actionRefresh;
     final Handler handler = new Handler() {
@@ -38,6 +38,7 @@ public class EPOSFragment extends Fragment {
             transactions = (ArrayList<String>) message.obj;
             addEntriesToList();
             finished = true;
+            refreshing=false;
             MainActivity main = (MainActivity) getActivity();
             if(main!=null) {
                 main.stopRefresh(3);
@@ -48,15 +49,15 @@ public class EPOSFragment extends Fragment {
     };
 
     public void GetEpos() {
+        refreshing=true;
         MainActivity main = (MainActivity) getActivity();
         main.startRefresh(3);
         (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.card_view)).setVisibility(View.GONE);
         (view.findViewById(R.id.card_view2)).setVisibility(View.GONE);
         (view.findViewById(R.id.card_view3)).setVisibility(View.GONE);
-        finished = false;
         byte b = 1;
-        Main.getInfo(view, handler, b);
+        main.getInfo(view, handler, b);
     }
 
 
@@ -92,8 +93,14 @@ public class EPOSFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(null, null, savedInstanceState);
         view = inflater.inflate(R.layout.new_epos_layout, container, false);
-        Main = (MainActivity) getActivity();
-        if (finished) {
+        if(refreshing){
+            MainActivity main = (MainActivity) getActivity();
+            main.startRefresh(3);
+            (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
+            (view.findViewById(R.id.card_view)).setVisibility(View.GONE);
+            (view.findViewById(R.id.card_view2)).setVisibility(View.GONE);
+            (view.findViewById(R.id.card_view3)).setVisibility(View.GONE);
+        }else if (finished) {
             addEntriesToList();
         } else {
             GetEpos();

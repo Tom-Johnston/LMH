@@ -26,6 +26,7 @@ public class FormalFragment extends Fragment {
     ArrayList<String> listOfMeals;
     ArrayList<ArrayList<String>> listOfListsOfPeople;
     Boolean finished = false;
+    Boolean refreshing=false;
     final Handler handler = new Handler() {
         @Override
         public void handleMessage(Message message) {
@@ -46,11 +47,14 @@ public class FormalFragment extends Fragment {
                 recyclerView.setLayoutManager(layoutManager);
                 FormalRecyclerAdapter formalRecyclerAdapter = new FormalRecyclerAdapter(entries,listOfMeals);
                 recyclerView.setAdapter(formalRecyclerAdapter);
+                finished=true;
+                refreshing=false;
             }
         }
     };
 
     public void GetTheData() {
+        refreshing=true;
         (view.findViewById(R.id.Status)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
         MainActivity main = (MainActivity) this.getActivity();
@@ -70,6 +74,12 @@ public class FormalFragment extends Fragment {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
+        if(refreshing){
+            MainActivity main = (MainActivity) this.getActivity();
+            main.startRefresh(4);
+            (view.findViewById(R.id.Status)).setVisibility(View.VISIBLE);
+            (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
+        }
         if (finished) {
             (view.findViewById(R.id.Status)).setVisibility(View.GONE);
             FormalRecyclerAdapter formalRecyclerAdapter = new FormalRecyclerAdapter(entries,listOfMeals);

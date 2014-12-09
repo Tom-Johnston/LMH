@@ -24,7 +24,8 @@ import java.util.ArrayList;
  * Created by Tom on 02/06/2014.
  */
 public class LaundryViewFragment extends Fragment {
-    Boolean Loaded = false;
+    Boolean finished = false;
+    Boolean refreshing=false;
     View view;
     long startTime = 0;
     ArrayList<String> KatieLee;
@@ -37,7 +38,8 @@ public class LaundryViewFragment extends Fragment {
 
             if(message.what==0){
                 startTime = (Long) message.obj;
-                Loaded = true;
+                finished = true;
+                refreshing=false;
             }else if(message.what==1){
                 KatieLee = (ArrayList<String>) message.obj;
                 addEntriesToList(R.id.KatieLee,KatieLee);
@@ -77,6 +79,7 @@ public class LaundryViewFragment extends Fragment {
     }
 
     public void LoadStatus() {
+        refreshing=true;
         MainActivity main = (MainActivity) getActivity();
         main.startRefresh(1);
         handler.removeCallbacksAndMessages(null);
@@ -106,7 +109,15 @@ public class LaundryViewFragment extends Fragment {
         if (view == null) {
             view = inflater.inflate(R.layout.new_laundry_view, container, false);
         }
-        if (!Loaded) {
+        if(refreshing){
+            MainActivity main = (MainActivity) getActivity();
+            main.startRefresh(1);
+            (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
+            (view.findViewById(R.id.card_view)).setVisibility(View.GONE);
+            (view.findViewById(R.id.card_view2)).setVisibility(View.GONE);
+            (view.findViewById(R.id.card_view3)).setVisibility(View.GONE);
+        }else
+        if (!finished) {
             LoadStatus();
         } else {
             final TextView timerView = (TextView) view.findViewById(R.id.LastUpdate);
