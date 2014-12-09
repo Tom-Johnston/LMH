@@ -60,31 +60,31 @@ public class MenuAsync extends AsyncTask<Object, Void, Void> {
                 } else if ((inputLine.equals("Sunday") || inputLine.equals("Sunday,"))) {
                     day = 8;
                 } else if (inputLine.contains(":")) {
-                    if(!outputLine.equals("")){
+                    if (!outputLine.equals("")) {
                         meals.add(outputLine);
                         outputLine = "";
                     }
                     Hours = Integer.parseInt(inputLine.substring(6, 8));
                     Minutes = Integer.parseInt(inputLine.substring(9, 11));
                     mealTime = time + (day - 2) * 86400000 + Hours * 3600000 + Minutes * 60000;
-                    if (mealTime > currentTime){
+                    if (mealTime > currentTime) {
                         old = false;
                         outputLine = outputLine + br.readLine() + " on " + new SimpleDateFormat("EEEE d MMMM").format(new Date(mealTime));
                         meals.add(outputLine);
                         outputLine = "";
                     }
                 } else {
-                    if (!old&&!inputLine.equals("")) {
-                        if(!outputLine.equals("")){
-                            outputLine = outputLine+"\n";
+                    if (!old && !inputLine.equals("")) {
+                        if (!outputLine.equals("")) {
+                            outputLine = outputLine + "\n";
                         }
                         outputLine = outputLine + inputLine;
                     }
                 }
 
-                }
-            if(!outputLine.equals("")){
-                    meals.add(outputLine);
+            }
+            if (!outputLine.equals("")) {
+                meals.add(outputLine);
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();

@@ -35,14 +35,14 @@ import java.util.StringTokenizer;
  */
 public class NotificationsService extends BroadcastReceiver {
 
-    long notifyTime = 10*60*1000;
+    long notifyTime = 10 * 60 * 1000;
     PowerManager.WakeLock wl;
 
     @Override
     public void onReceive(final Context context, Intent intent) {
 
-        int nt = context.getSharedPreferences("NotifyTime",0).getInt("NotifyTime",10);
-        notifyTime = nt*60*1000;
+        int nt = context.getSharedPreferences("NotifyTime", 0).getInt("NotifyTime", 10);
+        notifyTime = nt * 60 * 1000;
 
 //        I think alarm manager automatically holds a wakelock for me.
 //        Wakelock so the notification can be sent even when the device is asleep;
@@ -64,17 +64,17 @@ public class NotificationsService extends BroadcastReceiver {
             final Handler handler = new Handler() {
                 @Override
                 public void handleMessage(Message message) {
-                    part3(file,context);
+                    part3(file, context);
                 }
             };
-            new DownloadNewMenuAsync().execute(context, true,handler);
+            new DownloadNewMenuAsync().execute(context, true, handler);
 
-        }else{
-            part2(file,context);
+        } else {
+            part2(file, context);
         }
     }
 
-    private void part2(final File file,final Context context) {
+    private void part2(final File file, final Context context) {
         try {
             WidgetBroadcastReceiver mealMenu = new WidgetBroadcastReceiver();
             BufferedReader br = new BufferedReader(new FileReader(file));
@@ -90,12 +90,12 @@ public class NotificationsService extends BroadcastReceiver {
                 final Handler handler = new Handler() {
                     @Override
                     public void handleMessage(Message message) {
-                        part3(file,context);
+                        part3(file, context);
                     }
                 };
-                new DownloadNewMenuAsync().execute(context, true,handler);
-            }else{
-                part3(file,context);
+                new DownloadNewMenuAsync().execute(context, true, handler);
+            } else {
+                part3(file, context);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -105,10 +105,10 @@ public class NotificationsService extends BroadcastReceiver {
     }
 
 
-    public void part3(File file,Context context){
+    public void part3(File file, Context context) {
         try {
-            SharedPreferences refreshTimePreference = context.getSharedPreferences("RefreshTime",0);
-            long  refreshTime = refreshTimePreference.getLong("refreshTime",2*60*60*1000);
+            SharedPreferences refreshTimePreference = context.getSharedPreferences("RefreshTime", 0);
+            long refreshTime = refreshTimePreference.getLong("refreshTime", 2 * 60 * 60 * 1000);
             WidgetBroadcastReceiver mealMenu = new WidgetBroadcastReceiver();
             BufferedReader br = new BufferedReader(new FileReader(file));
 //            Check the date.

@@ -13,12 +13,12 @@ import android.os.Bundle;
 public class WidgetProvider extends AppWidgetProvider {
 
     @Override
-    public void onAppWidgetOptionsChanged (Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle newOptions){
+    public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle newOptions) {
         int width = newOptions.getInt(appWidgetManager.OPTION_APPWIDGET_MIN_WIDTH);
 
-        SharedPreferences widgetWidth = context.getSharedPreferences("widgetWidth",0);
+        SharedPreferences widgetWidth = context.getSharedPreferences("widgetWidth", 0);
         SharedPreferences.Editor editor = widgetWidth.edit();
-        editor.putInt("width",width);
+        editor.putInt("width", width);
         editor.commit();
         Intent intent = new Intent(context, WidgetBroadcastReceiver.class);
         context.sendBroadcast(intent);

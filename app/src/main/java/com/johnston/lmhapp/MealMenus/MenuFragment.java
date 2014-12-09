@@ -25,12 +25,12 @@ import java.util.ArrayList;
  */
 public class MenuFragment extends Fragment {
     Boolean starting;
+    MenuItem actionRefresh;
+    Boolean finished = false;
+    Boolean refreshing = true;
     private View view;
     private Context context;
     private ArrayList<String> meals = new ArrayList<String>();
-    MenuItem actionRefresh;
-    Boolean finished=false;
-    Boolean refreshing=true;
 
     public void downloadNewMenu() {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
@@ -41,7 +41,7 @@ public class MenuFragment extends Fragment {
     }
 
     void startMenu() {
-        refreshing=true;
+        refreshing = true;
         MainActivity main = (MainActivity) getActivity();
         main.startRefresh(5);
         ProgressBar pb = (ProgressBar) view.findViewById(R.id.PM1);
@@ -67,14 +67,14 @@ public class MenuFragment extends Fragment {
         recyclerView.setAdapter(menuRecyclerAdapter);
 
         MainActivity main = (MainActivity) getActivity();
-        if(main!=null) {
+        if (main != null) {
             main.stopRefresh(5);
         }
         ProgressBar pb = (ProgressBar) view.findViewById(R.id.PM1);
         recyclerView.setVisibility(View.VISIBLE);
         pb.setVisibility(View.GONE);
-        finished=true;
-        refreshing=false;
+        finished = true;
+        refreshing = false;
     }
 
     @Override
@@ -85,13 +85,12 @@ public class MenuFragment extends Fragment {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
-        if(refreshing){
+        if (refreshing) {
             MainActivity main = (MainActivity) getActivity();
             main.startRefresh(5);
             ProgressBar pb = (ProgressBar) view.findViewById(R.id.PM1);
             pb.setVisibility(View.VISIBLE);
-        }else
-        if (!finished) {
+        } else if (!finished) {
             startMenu();
         } else {
             MenuRecyclerAdapter menuRecyclerAdapter = new MenuRecyclerAdapter(meals);
@@ -116,7 +115,7 @@ public class MenuFragment extends Fragment {
             if (message.what == 0) {
                 meals = (ArrayList<String>) message.obj;
                 if (starting) {
-                    if (meals.size()==0) {
+                    if (meals.size() == 0) {
                         new DownloadNewMenuAsync().execute(context, false, handler);
                     } else {
                         showMenu();
