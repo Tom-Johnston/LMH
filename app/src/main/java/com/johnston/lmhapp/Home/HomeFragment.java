@@ -13,9 +13,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.johnston.lmhapp.MainActivity;
 import com.johnston.lmhapp.R;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -37,6 +40,7 @@ public class HomeFragment extends Fragment {
         final ListView listView = (ListView) view.findViewById(R.id.tweetList);
         listView.setVisibility(View.GONE);
         final ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.PM1);
+        final TextView nothingToSHow = (TextView)view.findViewById(R.id.nothingToShow);
         progressBar.setVisibility(View.VISIBLE);
         final Context context = this.getActivity();
         Handler handler = new Handler() {
@@ -51,10 +55,17 @@ public class HomeFragment extends Fragment {
                 Object[] objects = (Object[]) message.obj;
                 tweets = (ArrayList<Tweet>) objects[0];
                 profilePictures = (Bitmap[]) objects[1];
+                if(tweets.size()>0){
+                    listView.setAdapter(new TweetListAdapter(context, R.layout.tweet_item, tweets, profilePictures));
+                    listView.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+                    nothingToSHow.setVisibility(View.GONE);
+                }else{
+                    progressBar.setVisibility(View.GONE);
+                    nothingToSHow.setVisibility(View.VISIBLE);
+                }
 
-                listView.setAdapter(new TweetListAdapter(context, R.layout.tweet_item, tweets, profilePictures));
-                listView.setVisibility(View.VISIBLE);
-                progressBar.setVisibility(View.GONE);
+
             }
         };
         new TwitterScraperAsync().execute(handler);
@@ -76,14 +87,23 @@ public class HomeFragment extends Fragment {
             listView.setVisibility(View.GONE);
             final ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.PM1);
             progressBar.setVisibility(View.VISIBLE);
-        } else
-        if (finished) {
+            final TextView nothingToSHow = (TextView)view.findViewById(R.id.nothingToShow);
+            nothingToSHow.setVisibility(View.VISIBLE);
+        } else if (finished) {
             MainActivity main = (MainActivity) getActivity();
             main.startRefresh(0);
             final ListView listView = (ListView) view.findViewById(R.id.tweetList);
             final ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.PM1);
-            progressBar.setVisibility(View.GONE);
-            listView.setAdapter(new TweetListAdapter(this.getActivity(), R.layout.tweet_item, tweets, profilePictures));
+            final TextView nothingToSHow = (TextView)view.findViewById(R.id.nothingToShow);
+            if(tweets.size()>0){
+                listView.setAdapter(new TweetListAdapter(this.getActivity(), R.layout.tweet_item, tweets, profilePictures));
+                listView.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
+                nothingToSHow.setVisibility(View.GONE);
+            }else{
+                progressBar.setVisibility(View.GONE);
+                nothingToSHow.setVisibility(View.VISIBLE);
+            }
         } else {
         loadTweeterFeed();
         }

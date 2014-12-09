@@ -30,7 +30,7 @@ public class FormalFragment extends Fragment {
     final Handler handler = new Handler() {
         @Override
         public void handleMessage(Message message) {
-            (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
+
             if(message.what==0){
                 entries = (ArrayList<String>)message.obj;
 
@@ -43,10 +43,15 @@ public class FormalFragment extends Fragment {
                 }
                 listOfListsOfPeople = (ArrayList<ArrayList<String>>) message.obj;
                 RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
-                LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-                recyclerView.setLayoutManager(layoutManager);
-                FormalRecyclerAdapter formalRecyclerAdapter = new FormalRecyclerAdapter(entries,listOfMeals);
-                recyclerView.setAdapter(formalRecyclerAdapter);
+                if(entries.size()>0){
+                    FormalRecyclerAdapter formalRecyclerAdapter = new FormalRecyclerAdapter(entries,listOfMeals);
+                    recyclerView.setAdapter(formalRecyclerAdapter);
+                    (view.findViewById(R.id.progressBarContainer)).setVisibility(View.GONE);
+                }else{
+                    (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
+                    (view.findViewById(R.id.nothingToShow)).setVisibility(View.VISIBLE);
+                }
+
                 finished=true;
                 refreshing=false;
             }
@@ -56,7 +61,10 @@ public class FormalFragment extends Fragment {
     public void GetTheData() {
         refreshing=true;
         (view.findViewById(R.id.Status)).setVisibility(View.VISIBLE);
+        (view.findViewById(R.id.progressBarContainer)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
+        (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
+
         MainActivity main = (MainActivity) this.getActivity();
         byte b = 4;
         main.startRefresh(4);
@@ -79,7 +87,9 @@ public class FormalFragment extends Fragment {
             main.startRefresh(4);
             main.Status= (android.widget.TextView) view.findViewById(R.id.Status);
             (view.findViewById(R.id.Status)).setVisibility(View.VISIBLE);
+            (view.findViewById(R.id.progressBarContainer)).setVisibility(View.VISIBLE);
             (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
+            (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
         }
         if (finished) {
             (view.findViewById(R.id.Status)).setVisibility(View.GONE);

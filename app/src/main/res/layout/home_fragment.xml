@@ -10,6 +10,12 @@
         android:id="@+id/tweetList"
             >
     </ListView>
+    <TextView
+        android:id="@+id/nothingToShow"
+        android:layout_margin="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <ProgressBar
         android:id="@+id/PM1"
         android:layout_width="match_parent"

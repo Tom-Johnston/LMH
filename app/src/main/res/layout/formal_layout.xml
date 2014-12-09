@@ -18,16 +18,23 @@
         android:freezesText="true" />
 
     <RelativeLayout
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
-        android:id="@+id/progressBar"
+        android:id="@+id/progressBarContainer"
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center">
 
+        <TextView
+            android:id="@+id/nothingToShow"
+            android:textSize="24dp"
+            android:layout_margin="16dp"
+            android:text="There isn't anything to display."
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
         <ProgressBar
+            android:id="@+id/progressBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:indeterminate="true"

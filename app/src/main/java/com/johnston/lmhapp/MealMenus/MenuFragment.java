@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.johnston.lmhapp.MainActivity;
 import com.johnston.lmhapp.R;
@@ -34,9 +35,11 @@ public class MenuFragment extends Fragment {
 
     public void downloadNewMenu() {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
-        recyclerView.setVisibility(View.INVISIBLE);
+        recyclerView.setVisibility(View.GONE);
         ProgressBar pb = (ProgressBar) view.findViewById(R.id.PM1);
         pb.setVisibility(View.VISIBLE);
+        TextView nothingToShow = (TextView) view.findViewById(R.id.nothingToShow);
+        nothingToShow.setVisibility(View.GONE);
         new DownloadNewMenuAsync().execute(context, false, handler);
     }
 
@@ -44,8 +47,12 @@ public class MenuFragment extends Fragment {
         refreshing = true;
         MainActivity main = (MainActivity) getActivity();
         main.startRefresh(5);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
+        recyclerView.setVisibility(View.GONE);
         ProgressBar pb = (ProgressBar) view.findViewById(R.id.PM1);
         pb.setVisibility(View.VISIBLE);
+        TextView nothingToShow = (TextView) view.findViewById(R.id.nothingToShow);
+        nothingToShow.setVisibility(View.GONE);
         File file = new File(context.getFilesDir(), "Menu.txt");
         if (!file.exists()) {
 //                No menu. Get a new menu();
@@ -70,9 +77,20 @@ public class MenuFragment extends Fragment {
         if (main != null) {
             main.stopRefresh(5);
         }
-        ProgressBar pb = (ProgressBar) view.findViewById(R.id.PM1);
-        recyclerView.setVisibility(View.VISIBLE);
-        pb.setVisibility(View.GONE);
+        if(meals.size()>0){
+            recyclerView.setVisibility(View.VISIBLE);
+            ProgressBar pb = (ProgressBar) view.findViewById(R.id.PM1);
+            pb.setVisibility(View.GONE);
+            TextView nothingToShow = (TextView) view.findViewById(R.id.nothingToShow);
+            nothingToShow.setVisibility(View.GONE);
+        }else{
+            recyclerView.setVisibility(View.GONE);
+            ProgressBar pb = (ProgressBar) view.findViewById(R.id.PM1);
+            pb.setVisibility(View.GONE);
+            TextView nothingToShow = (TextView) view.findViewById(R.id.nothingToShow);
+            nothingToShow.setVisibility(View.VISIBLE);
+        }
+
         finished = true;
         refreshing = false;
     }
@@ -88,7 +106,7 @@ public class MenuFragment extends Fragment {
         if (refreshing) {
             MainActivity main = (MainActivity) getActivity();
             main.startRefresh(5);
-            main.Status= (android.widget.TextView) view.findViewById(R.id.Status);
+            main.Status = (android.widget.TextView) view.findViewById(R.id.Status);
             ProgressBar pb = (ProgressBar) view.findViewById(R.id.PM1);
             pb.setVisibility(View.VISIBLE);
         } else if (!finished) {
