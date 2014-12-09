@@ -88,6 +88,7 @@ public class MenuFragment extends Fragment {
         if (refreshing) {
             MainActivity main = (MainActivity) getActivity();
             main.startRefresh(5);
+            main.Status= (android.widget.TextView) view.findViewById(R.id.Status);
             ProgressBar pb = (ProgressBar) view.findViewById(R.id.PM1);
             pb.setVisibility(View.VISIBLE);
         } else if (!finished) {
@@ -96,7 +97,6 @@ public class MenuFragment extends Fragment {
             MenuRecyclerAdapter menuRecyclerAdapter = new MenuRecyclerAdapter(meals);
             recyclerView.setAdapter(menuRecyclerAdapter);
         }
-
         setHasOptionsMenu(true);
         return view;
     }

@@ -31,15 +31,14 @@ import javax.net.ssl.HttpsURLConnection;
 public class EPOSAsync extends AsyncTask<Object, String, String[]> {
     final String UserAgent = "Mozilla/5.0 (Linux; Android 4.1.1; Nexus 7 Build/JRO03D) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.166  Safari/535.19";
     View view;
-    TextView Status;
+    Handler statusHandler;
     Handler handler;
 
     @Override
     protected String[] doInBackground(Object[] Objects) {
         String[] Amounts = new String[3];
         String GetCookie;
-        view = (View) Objects[1];
-        Status = (TextView) view.findViewById(R.id.Status);
+        statusHandler = (Handler) Objects[1];
         handler = (Handler) Objects[2];
         try {
             String inputLine;
@@ -234,6 +233,7 @@ public class EPOSAsync extends AsyncTask<Object, String, String[]> {
 
             }
             handler.obtainMessage(0, transactions).sendToTarget();
+            handler.obtainMessage(1,Amounts).sendToTarget();
             publishProgress("Finished");
 
         } catch (MalformedURLException e) {
@@ -248,31 +248,9 @@ public class EPOSAsync extends AsyncTask<Object, String, String[]> {
 
     @Override
     protected void onProgressUpdate(String... values) {
-        Status.setText(values[0]);
+        statusHandler.obtainMessage(1,values[0]).sendToTarget();
     }
 
-    @Override
-    protected void onPostExecute(String[] strings) {
-        if (!isCancelled()) {
-            TextView AccountBalance = (TextView) view.findViewById(R.id.AccountBalance);
-            TextView TokenBalance = (TextView) view.findViewById(R.id.TokenBalance);
-            TextView DateBalance = (TextView) view.findViewById(R.id.DateBalance);
-            TextView DateBalance2 = (TextView) view.findViewById(R.id.DateBalance2);
-            AccountBalance.setText(strings[0]);
-            TokenBalance.setText(strings[1]);
-            DateBalance.setText(strings[2]);
-            DateBalance2.setText(strings[2]);
-        }
-
-        Status.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Status.setText("");
-            }
-        }, 3000);
-
-
-    }
 
 
 }

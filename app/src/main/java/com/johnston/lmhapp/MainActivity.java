@@ -16,6 +16,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -30,6 +31,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -73,7 +75,7 @@ public class MainActivity extends ActionBarActivity {
     DrawerLayout mDrawerLayout;
     CookieManager manager;
     byte Type;
-    View view;
+    public static TextView Status=null;
     int lastPosition = -99;
     SSLContext sslContext = null;
     DrawerAdapter mDrawerAdapter;
@@ -83,6 +85,16 @@ public class MainActivity extends ActionBarActivity {
     Animation an;
     int refreshSpinRequestFragment = -99;
     ImageView actionRefreshView;
+    Handler statusHandler =  new Handler(){
+        @Override
+        public void handleMessage(Message message){
+            System.out.println(message.obj);
+            String update = (String) message.obj;
+            if(Status!=null){
+                Status.setText(update);
+            }
+        }
+    };
 
     public void startRefresh(int i ){
         refreshSpinRequestFragment = i;
@@ -168,20 +180,23 @@ public class MainActivity extends ActionBarActivity {
 
     public void Initialise() {
         if (Type == 1) {
-            new EPOSAsync().execute(manager, view, handler);
+            new EPOSAsync().execute(manager, statusHandler, handler);
         } else if (Type == 2) {
-            new BattelsAsync().execute(sslContext, view, handler);
+            new BattelsAsync().execute(sslContext, statusHandler, handler);
         } else if (Type == 3) {
             new NameGrabberAsync().execute(sslContext, this.getApplicationContext(), handler);
         } else if(Type==4){
-            new FormalAsync().execute(sslContext,handler,view);
+            new FormalAsync().execute(sslContext,handler,statusHandler);
         }
     }
 
-
     public void getInfo(View v, Handler passedHandler, byte passedType) {
         handler = passedHandler;
-        view = v;
+        if(v!=null){
+            Status= (TextView) v.findViewById(R.id.Status);
+        }else{
+            Status=null;
+        }
         Type = passedType;
         LogInView();
 
@@ -189,15 +204,11 @@ public class MainActivity extends ActionBarActivity {
 
     public void LogInView() {
         SharedPreferences LogIn = getSharedPreferences("LogIn", 0);
-        TextView Status = null;
-        if (view != null) {
-            Status = (TextView) view.findViewById(R.id.Status);
-        }
         if (LogIn.contains("Username") && LogIn.contains("Password")) {
             String username = LogIn.getString("Username", "Fail");
             String password = LogIn.getString("Password", "Fail");
             SSLContext context = createTrustManager();
-            new LoginAsync().execute(context, username, password, Status, this, manager);
+            new LoginAsync().execute(context, username, password, statusHandler, this, manager);
         } else {
             Status.setText("Please input username and password");
         }
@@ -274,7 +285,7 @@ public class MainActivity extends ActionBarActivity {
             lastPosition = savedInstanceState.getInt("lastPosition");
         }
 
-
+        Status=null;
 //
 //
         File file = new File(getFilesDir(), "CustomGraphic.png");

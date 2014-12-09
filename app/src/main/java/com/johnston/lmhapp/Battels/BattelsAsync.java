@@ -21,7 +21,7 @@ import javax.net.ssl.SSLContext;
  * Created by Tom on 27/10/2014.
  */
 public class BattelsAsync extends AsyncTask<Object, String, Void> {
-    TextView Status;
+    Handler statusHandler;
 
     @Override
     protected Void doInBackground(Object[] objects) {
@@ -29,7 +29,7 @@ public class BattelsAsync extends AsyncTask<Object, String, Void> {
 
         try {
             SSLContext sslContext = (SSLContext) objects[0];
-            Status = (TextView) ((View) objects[1]).findViewById(R.id.Status);
+            statusHandler = (Handler) objects[1];
             Handler handler = (Handler) objects[2];
 
             publishProgress("Getting Account Information");
@@ -131,23 +131,8 @@ public class BattelsAsync extends AsyncTask<Object, String, Void> {
 
     @Override
     protected void onProgressUpdate(String... values) {
-        Status.setText(values[0]);
+    statusHandler.obtainMessage(0,values[0]).sendToTarget();
     }
 
-    @Override
-    protected void onPostExecute(Void v) {
-        if (Status.getText().toString().equals("Finished")) {
-            Status.setVisibility(View.GONE);
-//            TODO Sort out this. Maybe an animation to hide it but it should scroll with the list.
-            Status.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    Status.setText("");
-
-                }
-            }, 3000);
-
-        }
-    }
 
 }

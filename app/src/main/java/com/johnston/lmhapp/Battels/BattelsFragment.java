@@ -69,6 +69,7 @@ public class BattelsFragment extends Fragment {
         if(refreshing){
             MainActivity main = (MainActivity) this.getActivity();
             main.startRefresh(2);
+            main.Status= (android.widget.TextView) view.findViewById(R.id.Status);
             (view.findViewById(R.id.Status)).setVisibility(View.VISIBLE);
             (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
             (view.findViewById(R.id.my_recycler_view)).setVisibility(View.GONE);

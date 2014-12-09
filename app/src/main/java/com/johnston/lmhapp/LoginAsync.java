@@ -1,6 +1,7 @@
 package com.johnston.lmhapp;
 
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.widget.TextView;
 
 import java.io.BufferedReader;
@@ -21,12 +22,12 @@ import javax.net.ssl.SSLContext;
  * Created by Tom on 28/05/2014.
  */
 public class LoginAsync extends AsyncTask<Object, String, Boolean> {
-    TextView Status;
+    Handler statusHandler;
     MainActivity Main;
 
     @Override
     protected Boolean doInBackground(Object[] Objects) {
-        Status = (TextView) Objects[3];
+        statusHandler = (Handler) Objects[3];
         SSLContext context = (SSLContext) Objects[0];
         String args = (String) Objects[1];
         String args2 = (String) Objects[2];
@@ -119,9 +120,7 @@ public class LoginAsync extends AsyncTask<Object, String, Boolean> {
 
     @Override
     protected void onProgressUpdate(String... values) {
-        if (Status != null) {
-        Status.setText(values[0]);
-        }
+        statusHandler.obtainMessage(0,values[0]).sendToTarget();
     }
 
     @Override

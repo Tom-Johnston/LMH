@@ -77,6 +77,7 @@ public class FormalFragment extends Fragment {
         if(refreshing){
             MainActivity main = (MainActivity) this.getActivity();
             main.startRefresh(4);
+            main.Status= (android.widget.TextView) view.findViewById(R.id.Status);
             (view.findViewById(R.id.Status)).setVisibility(View.VISIBLE);
             (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
         }

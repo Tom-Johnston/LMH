@@ -22,14 +22,14 @@ import javax.net.ssl.SSLContext;
  * Created by Tom on 11/11/2014.
  */
 public class FormalAsync extends AsyncTask<Object,String,Void> {
-TextView Status;
+Handler statusHandler;
 
     @Override
     protected Void doInBackground(Object[] params) {
         try {
             SSLContext sslContext = (SSLContext)params[0];
             Handler handler = (Handler)params[1];
-            Status = (TextView) ((View) params[2]).findViewById(R.id.Status);
+            statusHandler = (Handler) params[2];
             ArrayList<String> entries =new ArrayList<String>();
             URL formalHome = new URL("https://intranet.lmh.ox.ac.uk/mealbookings.asp");
             HttpsURLConnection formalHomec = (HttpsURLConnection) formalHome.openConnection();
@@ -177,19 +177,10 @@ TextView Status;
 
     @Override
     protected void onProgressUpdate(String... values) {
-        Status.setText(values[0]);
+        statusHandler.obtainMessage(0,values[0]).sendToTarget();
     }
 
     @Override
     protected void onPostExecute(Void v) {
-        Status.setVisibility(View.GONE);
-        if (Status.getText().toString().equals("Finished")) {
-            Status.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    Status.setText("");
-                }
-            }, 3000);
-        }
     }
 }
