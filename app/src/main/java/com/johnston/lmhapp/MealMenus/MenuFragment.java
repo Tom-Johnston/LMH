@@ -28,7 +28,7 @@ public class MenuFragment extends Fragment {
     Boolean starting;
     MenuItem actionRefresh;
     Boolean finished = false;
-    Boolean refreshing = true;
+    Boolean refreshing = false;
     private View view;
     private Context context;
     private ArrayList<String> meals = new ArrayList<String>();
@@ -107,13 +107,15 @@ public class MenuFragment extends Fragment {
             MainActivity main = (MainActivity) getActivity();
             main.startRefresh(5);
             main.Status = (android.widget.TextView) view.findViewById(R.id.Status);
+            recyclerView.setVisibility(View.GONE);
             ProgressBar pb = (ProgressBar) view.findViewById(R.id.PM1);
             pb.setVisibility(View.VISIBLE);
+            TextView nothingToShow = (TextView) view.findViewById(R.id.nothingToShow);
+            nothingToShow.setVisibility(View.GONE);
         } else if (!finished) {
             startMenu();
         } else {
-            MenuRecyclerAdapter menuRecyclerAdapter = new MenuRecyclerAdapter(meals);
-            recyclerView.setAdapter(menuRecyclerAdapter);
+            showMenu();
         }
         setHasOptionsMenu(true);
         return view;
