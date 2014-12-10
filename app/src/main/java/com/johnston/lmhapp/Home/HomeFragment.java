@@ -18,49 +18,47 @@ import android.widget.TextView;
 import com.johnston.lmhapp.MainActivity;
 import com.johnston.lmhapp.R;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 
 /**
  * Created by Johnston on 29/09/2014.
  */
 public class HomeFragment extends Fragment {
+    MenuItem actionRefresh;
+    Boolean finished = false;
+    Boolean refreshing = false;
     private View view;
     private ArrayList<Tweet> tweets;
     private Bitmap[] profilePictures;
-    MenuItem actionRefresh;
-    Boolean finished=false;
-    Boolean refreshing=false;
 
     public void loadTweeterFeed() {
-        refreshing=true;
+        refreshing = true;
         MainActivity main = (MainActivity) getActivity();
         main.startRefresh(0);
         final ListView listView = (ListView) view.findViewById(R.id.tweetList);
         listView.setVisibility(View.GONE);
         final ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.PM1);
-        final TextView nothingToSHow = (TextView)view.findViewById(R.id.nothingToShow);
+        final TextView nothingToSHow = (TextView) view.findViewById(R.id.nothingToShow);
         progressBar.setVisibility(View.VISIBLE);
         final Context context = this.getActivity();
         Handler handler = new Handler() {
             @Override
             public void handleMessage(Message message) {
-                finished=true;
-                refreshing=false;
+                finished = true;
+                refreshing = false;
                 MainActivity main = (MainActivity) getActivity();
-                if(main!=null) {
+                if (main != null) {
                     main.stopRefresh(0);
                 }
                 Object[] objects = (Object[]) message.obj;
                 tweets = (ArrayList<Tweet>) objects[0];
                 profilePictures = (Bitmap[]) objects[1];
-                if(tweets.size()>0){
+                if (tweets.size() > 0) {
                     listView.setAdapter(new TweetListAdapter(context, R.layout.tweet_item, tweets, profilePictures));
                     listView.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
                     nothingToSHow.setVisibility(View.GONE);
-                }else{
+                } else {
                     progressBar.setVisibility(View.GONE);
                     nothingToSHow.setVisibility(View.VISIBLE);
                 }
@@ -82,30 +80,30 @@ public class HomeFragment extends Fragment {
     public android.view.View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(null, null, savedInstanceState);
         view = inflater.inflate(R.layout.home_fragment, container, false);
-        if(refreshing){
+        if (refreshing) {
             final ListView listView = (ListView) view.findViewById(R.id.tweetList);
             listView.setVisibility(View.GONE);
             final ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.PM1);
             progressBar.setVisibility(View.VISIBLE);
-            final TextView nothingToSHow = (TextView)view.findViewById(R.id.nothingToShow);
+            final TextView nothingToSHow = (TextView) view.findViewById(R.id.nothingToShow);
             nothingToSHow.setVisibility(View.VISIBLE);
         } else if (finished) {
             MainActivity main = (MainActivity) getActivity();
             main.startRefresh(0);
             final ListView listView = (ListView) view.findViewById(R.id.tweetList);
             final ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.PM1);
-            final TextView nothingToSHow = (TextView)view.findViewById(R.id.nothingToShow);
-            if(tweets.size()>0){
+            final TextView nothingToSHow = (TextView) view.findViewById(R.id.nothingToShow);
+            if (tweets.size() > 0) {
                 listView.setAdapter(new TweetListAdapter(this.getActivity(), R.layout.tweet_item, tweets, profilePictures));
                 listView.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.GONE);
                 nothingToSHow.setVisibility(View.GONE);
-            }else{
+            } else {
                 progressBar.setVisibility(View.GONE);
                 nothingToSHow.setVisibility(View.VISIBLE);
             }
         } else {
-        loadTweeterFeed();
+            loadTweeterFeed();
         }
 
         return view;

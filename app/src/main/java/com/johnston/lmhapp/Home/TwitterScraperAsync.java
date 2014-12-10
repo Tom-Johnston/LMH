@@ -29,13 +29,14 @@ public class TwitterScraperAsync extends AsyncTask<Handler, Void, ArrayList<Twee
         ArrayList<Tweet> tweets = new ArrayList<Tweet>();
         ArrayList<String> ProfilePictureURLS = new ArrayList<String>();
         try {
-            URL[] urls = new URL[6];
+            URL[] urls = new URL[5];
             urls[0] = new URL("https://twitter.com/LMHJCR");
             urls[1] = new URL("https://twitter.com/LMHITManager");
             urls[2] = new URL("https://twitter.com/lmhbursar");
             urls[3] = new URL("https://twitter.com/UniofOxford");
             urls[4] = new URL("https://twitter.com/OxfordUnion");
-            urls[5] = new URL("https://twitter.com/OxfordPlayhouse");
+
+            long cutOffTime = 0;
             for (int j = 0; j < urls.length; j++) {
                 URL url = urls[j];
                 // Note normal size is 48x48
@@ -51,6 +52,7 @@ public class TwitterScraperAsync extends AsyncTask<Handler, Void, ArrayList<Twee
                 String retweeter = null;
                 String body = "";
                 long time = 0;
+                int numberOfTweets = 0;
                 int bodyStart;
                 int bodyEnd;
                 int start;
@@ -62,6 +64,11 @@ public class TwitterScraperAsync extends AsyncTask<Handler, Void, ArrayList<Twee
                     if (inputLine == null) {
                         break;
                     }
+                    if (inputLine.contains("data-nav=\"tweets\"")) {
+                        start = inputLine.indexOf("title=") + 7;
+                        numberOfTweets = Integer.parseInt((inputLine.substring(start, inputLine.indexOf(" Tweets"))).replaceAll(",", ""));
+                    }
+
                     if (inputLine.contains("Icon Icon--retweet\"") && id != null) {
                         // Send previous Tweet to system.
                         Tweet tweet = new Tweet();
@@ -70,11 +77,16 @@ public class TwitterScraperAsync extends AsyncTask<Handler, Void, ArrayList<Twee
                         tweet.retweet = retweeted;
                         if (retweeted) {
                             tweet.retweeter = retweeter;
+                        } else if (time < cutOffTime) {
+//                             No point catching tweets we will discard.
+//                            It has been moved here as retweeting an old tweet could discard a load of new tweets.
+                            break;
                         }
 
                         tweet.pictureIndex = pictureIndex;
                         tweet.time = time;
                         tweet.Text = body;
+                        tweet.id = Long.parseLong(id);
 
                         tweets.add(tweet);
                         if (picture != null) {
@@ -99,6 +111,12 @@ public class TwitterScraperAsync extends AsyncTask<Handler, Void, ArrayList<Twee
                         id = inputLine.substring(start,
                                 inputLine.indexOf("\"", start));
                     }
+
+                    if (inputLine.contains("data-retweet-id=")) {
+                        start = inputLine.indexOf("data-retweet-id=") + 17;
+                        id = inputLine.substring(start, inputLine.indexOf("\"", start));
+                    }
+
                     if (inputLine.contains("<img class=\"avatar js-action-profile-avatar\"") || inputLine.contains("<img class=\"ProfileTweet-avatar js-action-profile-avatar\"")) {
                         start = inputLine.indexOf("src=\"") + 5;
                         pictureString = inputLine.substring(start, inputLine.indexOf("\"", start));
@@ -133,10 +151,9 @@ public class TwitterScraperAsync extends AsyncTask<Handler, Void, ArrayList<Twee
                     if (inputLine.contains("data-time")) {
                         start = inputLine.indexOf("data-time") + 11;
                         time = 1000 * Long.parseLong(inputLine.substring(start, inputLine.indexOf("\"", start)));
-                        if (System.currentTimeMillis()-time>3*24*60*60*1000){
-                            break;
-                        }
+
                     }
+
                     if (inputLine.contains("ProfileTweet-text")) {
                         in.readLine();
                         in.readLine();
@@ -155,11 +172,23 @@ public class TwitterScraperAsync extends AsyncTask<Handler, Void, ArrayList<Twee
                             body = body.replace(bodySegment, "");
                         }
                     }
+                }
 
+                if (time > cutOffTime && numberOfTweets > 18) {
+                    cutOffTime = time;
                 }
             }
             Comparator<Tweet> tweetComparator = new TweetComparator();
             Collections.sort(tweets, tweetComparator);
+            for (int i = tweets.size() - 1; i > -1; i--) {
+                if (tweets.get(i).time < cutOffTime) {
+                    tweets.remove(i);
+                } else {
+                    break;
+                }
+            }
+            System.out.println(tweets.size());
+
 //            Get the pictures;
             profilePictures = new Bitmap[ProfilePictureURLS.size()];
             for (int i = 0; i < ProfilePictureURLS.size(); i++) {
@@ -177,10 +206,8 @@ public class TwitterScraperAsync extends AsyncTask<Handler, Void, ArrayList<Twee
             objects[1] = profilePictures;
             handler.obtainMessage(0, objects).sendToTarget();
         } catch (MalformedURLException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         return tweets;

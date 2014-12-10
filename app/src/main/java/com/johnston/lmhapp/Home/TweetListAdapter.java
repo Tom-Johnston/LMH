@@ -75,7 +75,7 @@ public class TweetListAdapter extends ArrayAdapter<Tweet> {
             timeString = "Less than a minute ago";
         }
         time.setText(timeString);
-        ScreenName.setText(tweet.screenName);
+        ScreenName.setText(Html.fromHtml(tweet.screenName));
         handle.setText(tweet.handle);
         TweetText.setText(Html.fromHtml(tweet.Text));
         TweetText.setMovementMethod(LinkMovementMethod.getInstance());

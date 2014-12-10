@@ -1,7 +1,5 @@
 package com.johnston.lmhapp.Home;
 
-import com.johnston.lmhapp.Home.Tweet;
-
 import java.util.Comparator;
 
 /**
@@ -10,8 +8,8 @@ import java.util.Comparator;
 public class TweetComparator implements Comparator<Tweet> {
     @Override
     public int compare(Tweet tweet, Tweet tweet2) {
-        Long time = tweet.time;
-        Long time2 = tweet2.time;
+        Long time = tweet.id;
+        Long time2 = tweet2.id;
         return time2.compareTo(time);
     }
 }

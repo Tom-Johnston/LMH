@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
  * Created by Johnston on 29/09/2014.
  */
 public class Tweet {
+    public long id = 0;
     public String Text = "not empty";
     public Boolean retweet = false;
     public String retweeter;
