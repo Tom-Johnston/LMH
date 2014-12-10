@@ -39,7 +39,7 @@ public class LaundryViewAsync extends AsyncTask<Object, Void, Boolean> {
                     a.append(inputLine);
                 in.close();
                 int Start = 0;
-                ArrayList<String> stringArrayList = new ArrayList<String>();
+                ArrayList<String> stringArrayList = new ArrayList<>();
                 while (a.indexOf("\"stat\">", Start) > 0) {
                     Start = a.indexOf("\"stat\">", Start) + 7;
                     int end = a.indexOf("<", Start);

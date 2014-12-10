@@ -23,7 +23,6 @@ import java.util.List;
  */
 public class SettingsListAdapter extends ArrayAdapter<String> {
     Context context;
-    int resourceId;
     List<String> strings;
     public Handler switchHandler;
     public Boolean[] showView;
@@ -31,7 +30,6 @@ public class SettingsListAdapter extends ArrayAdapter<String> {
     public SettingsListAdapter(Context context, int resource, List<String> objects) {
         super(context, resource, objects);
         this.context = context;
-        resourceId = resource;
         strings = objects;
         showView = new Boolean[strings.size()];
         Arrays.fill(showView, true);

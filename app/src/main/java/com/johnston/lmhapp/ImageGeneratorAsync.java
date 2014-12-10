@@ -88,7 +88,7 @@ public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
 
 
 //        Starting bottom triangle
-        ArrayList<Triangle> triangles = new ArrayList<Triangle>();
+        ArrayList<Triangle> triangles = new ArrayList<>();
         Triangle triangle = new Triangle();
         triangle.x1 = 0;
         triangle.y1 = 0;
@@ -249,7 +249,7 @@ public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
     }
 
     public ArrayList<Triangle> NextIteration(ArrayList<Triangle> passedTriangles) {
-        ArrayList<Triangle> triangles = new ArrayList<Triangle>();
+        ArrayList<Triangle> triangles = new ArrayList<>();
         float oneOverSquareRoot5 = 0.4472135955f;
         Triangle newTriangle;
         int numberOfTriangles = passedTriangles.size();

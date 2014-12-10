@@ -112,8 +112,6 @@ public class FormalRecyclerAdapter extends RecyclerView.Adapter<FormalRecyclerAd
 
             } else if (0 < proportionOfSquare) {
                 c.drawRect(i * sizeOfEachSquare + i * sizeOfGap, 0, (float) ((i) * sizeOfEachSquare + i * sizeOfGap + proportionOfSquare * sizeOfEachSquare), sizey, paint);
-            } else {
-
             }
         }
 

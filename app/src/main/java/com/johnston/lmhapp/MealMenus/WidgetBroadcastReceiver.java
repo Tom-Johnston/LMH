@@ -61,7 +61,7 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
             String dateString = br.readLine();
             Date date = new SimpleDateFormat("dd/MM/yy", Locale.ENGLISH).parse(dateString);
             long time = date.getTime();
-            String[] output = constructMenu(br, time, context);
+            String[] output = constructMenu(br, time);
             String nextMeal = output[2];
             if (nextMeal.equals("")) {
 //                We have an old menu.
@@ -93,7 +93,7 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
             String dateString = br.readLine();
             Date date = new SimpleDateFormat("dd/MM/yy", Locale.ENGLISH).parse(dateString);
             long time = date.getTime();
-            String[] output = constructMenu(br, time, context);
+            String[] output = constructMenu(br, time);
             String Day = output[0];
             String ShortDay = output[7];
             String Meal = output[1];
@@ -145,7 +145,7 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
     }
 
 
-    public String[] constructMenu(BufferedReader br, long time, Context context) throws IOException {
+    public String[] constructMenu(BufferedReader br, long time) throws IOException {
 
         String inputLine;
         int day = 0;

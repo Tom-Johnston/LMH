@@ -2,7 +2,6 @@ package com.johnston.lmhapp;
 
 import android.os.AsyncTask;
 import android.os.Handler;
-import android.widget.TextView;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -17,6 +17,7 @@
         android:layout_alignStart="@+id/textView" />
 
     <ImageView
+        android:contentDescription="@string/profile_picture"
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -69,6 +70,7 @@
         android:textSize="14sp" />
 
     <ImageView
+        android:contentDescription="@string/tweeted_image"
         android:id="@+id/tweetImage"
         android:visibility="gone"
         android:layout_width="0dp"

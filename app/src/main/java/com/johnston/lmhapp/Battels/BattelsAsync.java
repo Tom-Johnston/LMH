@@ -2,11 +2,6 @@ package com.johnston.lmhapp.Battels;
 
 import android.os.AsyncTask;
 import android.os.Handler;
-import android.view.View;
-import android.widget.TextView;
-
-import com.johnston.lmhapp.R;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -43,7 +38,7 @@ public class BattelsAsync extends AsyncTask<Object, String, Void> {
             int start;
             int end;
             byte column = 0;
-            ArrayList<String> Entries = new ArrayList<String>();
+            ArrayList<String> Entries = new ArrayList<>();
             Boolean inTable = false;
             while (true) {
                 inputLine = in.readLine();

@@ -6,7 +6,6 @@
 
     <TextView
         android:paddingLeft="8dp"
-        android:text="Johnston,Tom"
         android:id="@+id/name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

@@ -31,7 +31,7 @@ public class MenuFragment extends Fragment {
     Boolean refreshing = false;
     private View view;
     private Context context;
-    private ArrayList<String> meals = new ArrayList<String>();
+    private ArrayList<String> meals = new ArrayList<>();
 
     public void downloadNewMenu() {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
@@ -77,13 +77,13 @@ public class MenuFragment extends Fragment {
         if (main != null) {
             main.stopRefresh(5);
         }
-        if(meals.size()>0){
+        if (meals.size() > 0) {
             recyclerView.setVisibility(View.VISIBLE);
             ProgressBar pb = (ProgressBar) view.findViewById(R.id.PM1);
             pb.setVisibility(View.GONE);
             TextView nothingToShow = (TextView) view.findViewById(R.id.nothingToShow);
             nothingToShow.setVisibility(View.GONE);
-        }else{
+        } else {
             recyclerView.setVisibility(View.GONE);
             ProgressBar pb = (ProgressBar) view.findViewById(R.id.PM1);
             pb.setVisibility(View.GONE);

@@ -36,7 +36,6 @@ import java.util.List;
  */
 public class SettingsFragment extends Fragment {
     View view;
-    MainActivity Main;
     List<String> strings;
     SettingsListAdapter settingsListAdapter;
     int animationTime=250;
@@ -54,7 +53,6 @@ public class SettingsFragment extends Fragment {
         switchCompat=null;
 //        Get rid of the old view.
         view = inflater.inflate(R.layout.settings_layout, container, false);
-        Main = (MainActivity) getActivity();
         ListView listView = (ListView) view.findViewById(R.id.settingsList);
         if(strings==null) {
             strings = Arrays.asList(getResources().getStringArray(R.array.settings));
@@ -83,41 +81,58 @@ public class SettingsFragment extends Fragment {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             if (view.getTag().equals("Standard")){
                 String title = ((TextView)view.findViewById(R.id.itemTitle)).getText().toString();
-                if (title.equals("LED Colour")){
-                    LEDColourDialog newFragment = LEDColourDialog.newInstance();
-                    newFragment.show(getFragmentManager(), "missiles");
-                }else if(title.equals("Lunch")||title.equals("Dinner")){
-                    CheckBox checkBox = (CheckBox)((LinearLayout)view.findViewById(R.id.widget_frame)).getChildAt(0);
-                    if(checkBox.isChecked()){
-                        checkBox.setChecked(false);
-                    }else{
-                        checkBox.setChecked(true);
+                switch (title) {
+                    case "LED Colour": {
+                        LEDColourDialog newFragment = LEDColourDialog.newInstance();
+                        newFragment.show(getFragmentManager(), "missiles");
+                        break;
                     }
-                    toggleMealNotification(checkBox,title);
-                }else if(title.equals("Notifications")){
-                    switchCompat = (SwitchCompat)((LinearLayout)view.findViewById(R.id.widget_frame)).getChildAt(0);
-                    if(switchCompat.isChecked()){
-                        switchCompat.setChecked(false);
-                    }else{
-                        switchCompat.setChecked(true);
+                    case "Lunch":
+                    case "Dinner":
+                        CheckBox checkBox = (CheckBox) ((LinearLayout) view.findViewById(R.id.widget_frame)).getChildAt(0);
+                        if (checkBox.isChecked()) {
+                            checkBox.setChecked(false);
+                        } else {
+                            checkBox.setChecked(true);
+                        }
+                        toggleMealNotification(checkBox, title);
+                        break;
+                    case "Notifications":
+                        switchCompat = (SwitchCompat) ((LinearLayout) view.findViewById(R.id.widget_frame)).getChildAt(0);
+                        if (switchCompat.isChecked()) {
+                            switchCompat.setChecked(false);
+                        } else {
+                            switchCompat.setChecked(true);
+                        }
+                        break;
+                    case "Vibration": {
+                        VibrationDialog newFragment = VibrationDialog.newInstance();
+                        newFragment.show(getFragmentManager(), "vibrations");
+                        break;
                     }
-                }else if(title.equals("Vibration")){
-                    VibrationDialog newFragment = VibrationDialog.newInstance();
-                    newFragment.show(getFragmentManager(), "vibrations");
-                }else if(title.equals("Notification Sound")){
-                    notificationSound();
-                }else if(title.equals("Login Details")){
-                    LoginDialog newFragment = LoginDialog.newInstance();
-                    newFragment.show(getFragmentManager(), "logIn");
-                }else if(title.equals("Notify Time")){
-                    NotifyTimeDialog newFragment = NotifyTimeDialog.newInstance();
-                    newFragment.show(getFragmentManager(), "notifyTime");
-                }else if(title.equals("Set Wallpaper")){
-                    BackgroundGeneratorDialog newFragment = BackgroundGeneratorDialog.newInstance();
-                    newFragment.show(getFragmentManager(), "backgroundGenerator");
-                }else if(title.equals("Refresh Time")){
-                    RefreshTimeDialog newFragment = RefreshTimeDialog.newInstance();
-                    newFragment.show(getFragmentManager(), "refreshTimeDialog");
+                    case "Notification Sound":
+                        notificationSound();
+                        break;
+                    case "Login Details": {
+                        LoginDialog newFragment = LoginDialog.newInstance();
+                        newFragment.show(getFragmentManager(), "logIn");
+                        break;
+                    }
+                    case "Notify Time": {
+                        NotifyTimeDialog newFragment = NotifyTimeDialog.newInstance();
+                        newFragment.show(getFragmentManager(), "notifyTime");
+                        break;
+                    }
+                    case "Set Wallpaper": {
+                        BackgroundGeneratorDialog newFragment = BackgroundGeneratorDialog.newInstance();
+                        newFragment.show(getFragmentManager(), "backgroundGenerator");
+                        break;
+                    }
+                    case "Refresh Time": {
+                        RefreshTimeDialog newFragment = RefreshTimeDialog.newInstance();
+                        newFragment.show(getFragmentManager(), "refreshTimeDialog");
+                        break;
+                    }
                 }
             }
 
@@ -296,7 +311,6 @@ public class SettingsFragment extends Fragment {
                             });
                 }
             }else{
-//                TODO I think this should be handled in getView.
             }
         }
 

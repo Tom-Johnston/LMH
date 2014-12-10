@@ -61,6 +61,7 @@
                 android:text="190" />
 
             <ImageView
+                android:contentDescription="@string/proportion_left"
                 android:id="@+id/graphicNumberLeft"
                 android:layout_width="0dp"
                 android:layout_weight="1"

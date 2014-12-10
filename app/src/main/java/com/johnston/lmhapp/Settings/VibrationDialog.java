@@ -137,7 +137,7 @@ public class VibrationDialog extends DialogFragment {
         }
         StringTokenizer stringTokenizer = new StringTokenizer(pattern, ",");
         Boolean parse = true;
-        ArrayList<Long> vibratePatternList = new ArrayList<Long>();
+        ArrayList<Long> vibratePatternList = new ArrayList<>();
         while (stringTokenizer.hasMoreElements()) {
             try {
                 vibratePatternList.add(Long.parseLong(stringTokenizer.nextToken()));

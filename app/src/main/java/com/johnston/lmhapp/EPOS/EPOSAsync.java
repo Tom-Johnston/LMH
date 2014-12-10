@@ -3,9 +3,6 @@ package com.johnston.lmhapp.EPOS;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.view.View;
-import android.widget.TextView;
-
-import com.johnston.lmhapp.R;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -30,7 +27,6 @@ import javax.net.ssl.HttpsURLConnection;
  */
 public class EPOSAsync extends AsyncTask<Object, String, String[]> {
     final String UserAgent = "Mozilla/5.0 (Linux; Android 4.1.1; Nexus 7 Build/JRO03D) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.166  Safari/535.19";
-    View view;
     Handler statusHandler;
     Handler handler;
 
@@ -140,7 +136,6 @@ public class EPOSAsync extends AsyncTask<Object, String, String[]> {
                             myCookie.setPath("/");
                             myCookie.setMaxAge(890000);
 //                            890,000 is 14 minutes 50 seconds. I believe the cookie should be suitable for 15 minutes.
-                            cookieValue = myCookie.toString();
                             CookieManager cookieManager = (CookieManager) Objects[0];
                             CookieHandler.setDefault(cookieManager);
                             CookieStore CookieJar = cookieManager.getCookieStore();
@@ -197,7 +192,7 @@ public class EPOSAsync extends AsyncTask<Object, String, String[]> {
             String lastTime = "null";
             String meal = "null";
             Boolean sameMeal = true;
-            ArrayList<String> transactions = new ArrayList<String>();
+            ArrayList<String> transactions = new ArrayList<>();
             while (true) {
                 inputLine = transactionReader.readLine();
                 if (inputLine == null) {

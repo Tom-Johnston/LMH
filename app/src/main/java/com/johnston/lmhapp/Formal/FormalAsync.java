@@ -2,9 +2,6 @@ package com.johnston.lmhapp.Formal;
 
 import android.os.AsyncTask;
 import android.os.Handler;
-import android.view.View;
-import android.widget.TextView;
-import com.johnston.lmhapp.R;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -30,7 +27,7 @@ Handler statusHandler;
             SSLContext sslContext = (SSLContext)params[0];
             Handler handler = (Handler)params[1];
             statusHandler = (Handler) params[2];
-            ArrayList<String> entries =new ArrayList<String>();
+            ArrayList<String> entries =new ArrayList<>();
             URL formalHome = new URL("https://intranet.lmh.ox.ac.uk/mealbookings.asp");
             HttpsURLConnection formalHomec = (HttpsURLConnection) formalHome.openConnection();
             formalHomec.setSSLSocketFactory(sslContext.getSocketFactory());
@@ -80,8 +77,8 @@ Handler statusHandler;
             }
             publishProgress("Getting Formal Details");
 
-            ArrayList<String> listOfMeals= new ArrayList<String>();
-            ArrayList<ArrayList<String>> listOfListsOfPeople = new ArrayList<ArrayList<String>>();
+            ArrayList<String> listOfMeals= new ArrayList<>();
+            ArrayList<ArrayList<String>> listOfListsOfPeople = new ArrayList<>();
             for(int i=5;i<entries.size();i+=6) {
                 String post = "mealbookingState=viewattendees&book=" + URLEncoder.encode(entries.get(i), "UTF-8");
                 post = post.replaceAll(" ", "+");
@@ -129,7 +126,7 @@ Handler statusHandler;
                     }
                 }
                 meals = meals.substring(1);
-                ArrayList<String> listOfNames = new ArrayList<String>();
+                ArrayList<String> listOfNames = new ArrayList<>();
                 start = result.indexOf("<tr>", startOfTable);
                 start = result.indexOf("<tr>", start + 1);
                 int endOfTable = result.indexOf("</table", startOfTable);

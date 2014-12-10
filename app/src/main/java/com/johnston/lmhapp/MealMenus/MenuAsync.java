@@ -24,7 +24,7 @@ public class MenuAsync extends AsyncTask<Object, Void, Void> {
     protected Void doInBackground(Object[] objects) {
         Context context = (Context) objects[0];
         Handler handler = (Handler) objects[1];
-        ArrayList<String> meals = new ArrayList<String>();
+        ArrayList<String> meals = new ArrayList<>();
         File file = new File(context.getFilesDir(), "Menu.txt");
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));

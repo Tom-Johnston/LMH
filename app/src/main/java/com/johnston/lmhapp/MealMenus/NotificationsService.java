@@ -79,11 +79,11 @@ public class NotificationsService extends BroadcastReceiver {
             WidgetBroadcastReceiver mealMenu = new WidgetBroadcastReceiver();
             BufferedReader br = new BufferedReader(new FileReader(file));
 //            Check the date.
-            String dateString = null;
+            String dateString;
             dateString = br.readLine();
             Date date = new SimpleDateFormat("dd/MM/yy", Locale.ENGLISH).parse(dateString);
             long time = date.getTime();
-            String[] output = mealMenu.constructMenu(br, time, context);
+            String[] output = mealMenu.constructMenu(br, time);
             String nextMeal = output[2];
             if (nextMeal.equals("")) {
 //                We have an old menu.
@@ -112,11 +112,11 @@ public class NotificationsService extends BroadcastReceiver {
             WidgetBroadcastReceiver mealMenu = new WidgetBroadcastReceiver();
             BufferedReader br = new BufferedReader(new FileReader(file));
 //            Check the date.
-            String dateString = null;
+            String dateString;
             dateString = br.readLine();
             Date date = new SimpleDateFormat("dd/MM/yy", Locale.ENGLISH).parse(dateString);
             long time = date.getTime();
-            String[] output = mealMenu.constructMenu(br, time, context);
+            String[] output = mealMenu.constructMenu(br, time);
             String nextMeal = output[2];
 
             long startOfNextMeal = Long.parseLong(output[4]);
@@ -168,7 +168,7 @@ public class NotificationsService extends BroadcastReceiver {
                 if (vibratePattern.contains("vibratePattern")) {
                     String pattern = vibratePattern.getString("vibratePattern", "null");
                     StringTokenizer stringTokenizer = new StringTokenizer(pattern, ",");
-                    ArrayList<Long> vibratePatternList = new ArrayList<Long>();
+                    ArrayList<Long> vibratePatternList = new ArrayList<>();
                     while (stringTokenizer.hasMoreElements()) {
                         vibratePatternList.add(Long.parseLong(stringTokenizer.nextToken()));
                     }

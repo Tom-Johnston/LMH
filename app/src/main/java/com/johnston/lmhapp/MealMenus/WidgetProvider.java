@@ -14,7 +14,7 @@ public class WidgetProvider extends AppWidgetProvider {
 
     @Override
     public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle newOptions) {
-        int width = newOptions.getInt(appWidgetManager.OPTION_APPWIDGET_MIN_WIDTH);
+        int width = newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH);
 
         SharedPreferences widgetWidth = context.getSharedPreferences("widgetWidth", 0);
         SharedPreferences.Editor editor = widgetWidth.edit();

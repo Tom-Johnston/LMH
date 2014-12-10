@@ -14,7 +14,7 @@
         android:id="@+id/formal_details_listView"
         android:layout_width="match_parent"
         android:layout_weight="1"
-        android:layout_height="0dp"></ListView>
+        android:layout_height="0dp"/>
 
     <View
         android:layout_width="match_parent"

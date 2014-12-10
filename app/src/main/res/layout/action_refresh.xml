@@ -4,5 +4,6 @@
     android:layout_height="32dp"
     android:paddingStart="8dp"
     android:paddingEnd="8dp"
+    android:contentDescription="@string/refresh"
     android:src="@drawable/ic_action_refresh"/>
 

@@ -32,7 +32,6 @@ public class NameGrabberAsync extends AsyncTask<Object, Void, Void> {
             BufferedReader in = new BufferedReader(new InputStreamReader(nameConn.getInputStream(), "UTF-8"));
             String inputLine;
             String name = "";
-            String nameSegment;
             int end;
             while (true) {
                 inputLine = in.readLine();

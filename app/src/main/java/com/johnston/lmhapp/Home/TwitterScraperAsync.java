@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Handler;
-import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -40,7 +39,7 @@ public class TwitterScraperAsync extends AsyncTask<Object, Void, ArrayList<Tweet
         ArrayList<Long> pictureIDs = new ArrayList<>();
         ArrayList<Boolean> pictureUsed = new ArrayList<>();
         String workingLine;
-        for(int i=0;i<previousSize-1;i++){
+        for(int i=0;i<previousSize;i++){
             workingLine = pictureList.getString(Integer.toString(i),"null");
             pictureURLs.add(workingLine.substring(0,workingLine.indexOf("¬")));
             pictureIDs.add(Long.parseLong(workingLine.substring(workingLine.indexOf("¬")+1)));
@@ -49,8 +48,8 @@ public class TwitterScraperAsync extends AsyncTask<Object, Void, ArrayList<Tweet
 
 
         Bitmap[] profilePictures;
-        ArrayList<Tweet> tweets = new ArrayList<Tweet>();
-        ArrayList<String> ProfilePictureURLS = new ArrayList<String>();
+        ArrayList<Tweet> tweets = new ArrayList<>();
+        ArrayList<String> ProfilePictureURLS = new ArrayList<>();
         try {
             URL[] urls = new URL[5];
             urls[0] = new URL("https://twitter.com/UniofOxford");
@@ -285,15 +284,15 @@ public class TwitterScraperAsync extends AsyncTask<Object, Void, ArrayList<Tweet
             int size = pictureIDs.size();
             for(int i=0;i<size;i++){
                if(pictureUsed.get(i)){
-                   editor.putString(Integer.toString(number),pictureURLs.get(i)+"¬"+Long.toString(pictureIDs.get(i)));
+                   editor.putString(Integer.toString(number), pictureURLs.get(i) + "¬" + Long.toString(pictureIDs.get(i)));
                    number++;
                }else{
                    File file = new File(context.getFilesDir(),Long.toString(pictureIDs.get(i)));
                    file.delete();
                }
             }
-            editor.putInt("previousSize",number+1);
-            editor.putLong("previousNumber",previousNumber);
+            editor.putInt("previousSize", number);
+            editor.putLong("previousNumber", previousNumber);
             editor.commit();
 
             Object[] objects = new Object[2];
