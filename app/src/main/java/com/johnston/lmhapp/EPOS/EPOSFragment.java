@@ -75,6 +75,7 @@ public class EPOSFragment extends Fragment {
 
     public void addEntriesToList(){
         LinearLayout linearLayout = (LinearLayout)view.findViewById(R.id.transactionList);
+        linearLayout.removeAllViews();
         for(int i=0;i<transactions.size();i++){
             String data = transactions.get(i);
             String code = data.substring(0, 2);

@@ -199,7 +199,7 @@
             >
 
             <LinearLayout
-                android:id="@+id/transactionList"
+
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -221,6 +221,12 @@
                     android:layout_marginRight="4dp"
                     android:layout_marginLeft="4dp"
                     android:layout_marginBottom="2dp"/>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:id="@+id/transactionList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
 
             </LinearLayout>
 
