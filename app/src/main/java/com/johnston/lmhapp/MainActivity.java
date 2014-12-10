@@ -88,7 +88,6 @@ public class MainActivity extends ActionBarActivity {
     Handler statusHandler =  new Handler(){
         @Override
         public void handleMessage(Message message){
-            System.out.println(message.obj);
             String update = (String) message.obj;
             if(Status!=null){
                 Status.setText(update);
@@ -131,12 +130,10 @@ public class MainActivity extends ActionBarActivity {
             item.getActionView().getAnimation().setAnimationListener(new Animation.AnimationListener() {
                 @Override
                 public void onAnimationStart(Animation animation) {
-                System.out.println("Start");
                 }
 
                 @Override
                 public void onAnimationEnd(Animation animation) {
-                    System.out.println("End");
                     item.setActionView(null);
                     actionRefreshView2.setVisibility(View.GONE);
 
@@ -144,14 +141,12 @@ public class MainActivity extends ActionBarActivity {
 
                 @Override
                 public void onAnimationRepeat(Animation animation) {
-                    System.out.println("Repeat");
                 }
             });
             if (i == -1) {
                 item.getActionView().getAnimation().setDuration(0);
             }
             item.getActionView().getAnimation().setRepeatCount(0);
-            System.out.println(item.getActionView().getAnimation().hasEnded());
         }
     }
 
@@ -465,7 +460,6 @@ public class MainActivity extends ActionBarActivity {
             getSupportActionBar().setTitle(mTitle);
         }else{
             mDrawerList.smoothScrollToPosition(0);
-            System.out.println(mDrawerList.getFirstVisiblePosition());
             View layout = mDrawerList.getChildAt(0 - mDrawerList.getFirstVisiblePosition());
             mDrawerList.performItemClick(layout, 0, mDrawerList.getAdapter().getItemId(0));
             String[] Options = getResources().getStringArray(R.array.options);

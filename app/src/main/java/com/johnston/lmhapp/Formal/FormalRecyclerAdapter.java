@@ -75,7 +75,6 @@ public class FormalRecyclerAdapter extends RecyclerView.Adapter<FormalRecyclerAd
             public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
 //                v.removeOnLayoutChangeListener(this);
                 int sizex = v.getWidth();
-                System.out.println(sizex);
                 int sizey = v.getHeight() / 2;
                 ((ImageView) v).setImageBitmap(generateGraphicNumberLeft(numberGone, numberLeft, sizex, sizey));
             }

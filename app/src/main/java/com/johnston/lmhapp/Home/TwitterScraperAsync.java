@@ -1,5 +1,7 @@
 package com.johnston.lmhapp.Home;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -7,6 +9,9 @@ import android.os.Handler;
 import android.util.Log;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -19,21 +24,39 @@ import java.util.Comparator;
 import javax.net.ssl.HttpsURLConnection;
 
 
-public class TwitterScraperAsync extends AsyncTask<Handler, Void, ArrayList<Tweet>> {
+public class TwitterScraperAsync extends AsyncTask<Object, Void, ArrayList<Tweet>> {
 
 
     @Override
-    protected ArrayList<Tweet> doInBackground(Handler... handlers) {
-        Handler handler = handlers[0];
+    protected ArrayList<Tweet> doInBackground(Object... params) {
+        Handler handler = (Handler) params[0];
+        Context context = (Context) params[1];
+
+//        Get the previously saved pictures.
+        SharedPreferences pictureList = context.getSharedPreferences("PictureList", 0);
+        int previousSize = pictureList.getInt("previousSize", 0);
+        Long previousNumber = pictureList.getLong("previousNumber", 0);
+        ArrayList<String> pictureURLs = new ArrayList<>();
+        ArrayList<Long> pictureIDs = new ArrayList<>();
+        ArrayList<Boolean> pictureUsed = new ArrayList<>();
+        String workingLine;
+        for(int i=0;i<previousSize-1;i++){
+            workingLine = pictureList.getString(Integer.toString(i),"null");
+            pictureURLs.add(workingLine.substring(0,workingLine.indexOf("¬")));
+            pictureIDs.add(Long.parseLong(workingLine.substring(workingLine.indexOf("¬")+1)));
+            pictureUsed.add(false);
+        }
+
+
         Bitmap[] profilePictures;
         ArrayList<Tweet> tweets = new ArrayList<Tweet>();
         ArrayList<String> ProfilePictureURLS = new ArrayList<String>();
         try {
             URL[] urls = new URL[5];
-            urls[0] = new URL("https://twitter.com/LMHJCR");
-            urls[1] = new URL("https://twitter.com/LMHITManager");
-            urls[2] = new URL("https://twitter.com/lmhbursar");
-            urls[3] = new URL("https://twitter.com/UniofOxford");
+            urls[0] = new URL("https://twitter.com/UniofOxford");
+            urls[1] = new URL("https://twitter.com/LMHJCR");
+            urls[2] = new URL("https://twitter.com/LMHITManager");
+            urls[3] = new URL("https://twitter.com/lmhbursar");
             urls[4] = new URL("https://twitter.com/OxfordUnion");
 
             long cutOffTime = 0;
@@ -102,8 +125,35 @@ public class TwitterScraperAsync extends AsyncTask<Handler, Void, ArrayList<Twee
                         inputLine = in.readLine();
                         start = inputLine.indexOf("src=\"") + 5;
                         String photoUrl = inputLine.substring(start, inputLine.indexOf("\"", start));
-                        InputStream in2 = new java.net.URL(photoUrl).openStream();
-                        picture = BitmapFactory.decodeStream(in2);
+                        for(int i=0;i<previousSize;i++){
+                            if(photoUrl.equals(pictureURLs.get(i))){
+                                pictureUsed.set(i,true);
+                                File file = new File(context.getFilesDir(),Long.toString(pictureIDs.get(i)));
+                                InputStream in2 = new FileInputStream(file);
+                                picture = BitmapFactory.decodeStream(in2);
+                                break;
+                            }
+                        }
+                        if(picture==null){
+                            InputStream in2 = new java.net.URL(photoUrl).openStream();
+                            previousNumber++;
+                            File file = new File(context.getFilesDir(),Long.toString(previousNumber));
+                            FileOutputStream fos = new FileOutputStream(file);
+                            int length;
+                            byte[] buffer = new byte[1024];
+                            while ((length = in2.read(buffer)) > -1) {
+                                fos.write(buffer, 0, length);
+                            }
+                            fos.close();
+
+                            in2 = new FileInputStream(file);
+                            picture = BitmapFactory.decodeStream(in2);
+
+                            pictureIDs.add(previousNumber);
+                            pictureURLs.add(photoUrl);
+                            pictureUsed.add(true);
+                        }
+
                     }
 
                     if (inputLine.contains("data-tweet-id")) {
@@ -187,20 +237,65 @@ public class TwitterScraperAsync extends AsyncTask<Handler, Void, ArrayList<Twee
                     break;
                 }
             }
-            System.out.println(tweets.size());
 
 //            Get the pictures;
+
             profilePictures = new Bitmap[ProfilePictureURLS.size()];
             for (int i = 0; i < ProfilePictureURLS.size(); i++) {
                 try {
-                    InputStream in2 = new java.net.URL(ProfilePictureURLS.get(i)).openStream();
-                    profilePictures[i] = BitmapFactory.decodeStream(in2);
+                    String url = ProfilePictureURLS.get(i);
+                    for(int j=0;j<previousSize;j++){
+                        if(url.equals(pictureURLs.get(j))){
+                            pictureUsed.set(j,true);
+                            File file = new File(context.getFilesDir(),Long.toString(pictureIDs.get(j)));
+                            InputStream in2 = new FileInputStream(file);
+                            profilePictures[i] = BitmapFactory.decodeStream(in2);
+                            break;
+                        }
+                    }
+                    if(profilePictures[i]==null){
+                        InputStream in2 = new java.net.URL(url).openStream();
+
+                        previousNumber++;
+                        File file = new File(context.getFilesDir(),Long.toString(previousNumber));
+                        FileOutputStream fos = new FileOutputStream(file);
+                        int length;
+                        byte[] buffer = new byte[1024];
+                        while ((length = in2.read(buffer)) > -1) {
+                            fos.write(buffer, 0, length);
+                        }
+                        fos.close();
+
+                        in2 = new FileInputStream(file);
+                        profilePictures[i] = BitmapFactory.decodeStream(in2);
+
+                        pictureIDs.add(previousNumber);
+                        pictureURLs.add(url);
+                        pictureUsed.add(true);
+                    }
                 } catch (Exception e) {
-                    Log.e("Error", e.getMessage());
                     e.printStackTrace();
                 }
 
             }
+//            Save the new stuff.
+            SharedPreferences.Editor editor = pictureList.edit();
+
+            int number=0;
+            int size = pictureIDs.size();
+            for(int i=0;i<size;i++){
+               if(pictureUsed.get(i)){
+                   editor.putString(Integer.toString(number),pictureURLs.get(i)+"¬"+Long.toString(pictureIDs.get(i)));
+                   number++;
+               }else{
+                   File file = new File(context.getFilesDir(),Long.toString(pictureIDs.get(i)));
+                   file.delete();
+               }
+            }
+            editor.putInt("previousSize",number+1);
+            editor.putLong("previousNumber",previousNumber);
+            editor.commit();
+
             Object[] objects = new Object[2];
             objects[0] = tweets;
             objects[1] = profilePictures;

@@ -66,7 +66,7 @@ public class HomeFragment extends Fragment {
 
             }
         };
-        new TwitterScraperAsync().execute(handler);
+        new TwitterScraperAsync().execute(handler,getActivity());
     }
 
 
@@ -81,6 +81,8 @@ public class HomeFragment extends Fragment {
         super.onCreateView(null, null, savedInstanceState);
         view = inflater.inflate(R.layout.home_fragment, container, false);
         if (refreshing) {
+            MainActivity main = (MainActivity) getActivity();
+            main.startRefresh(0);
             final ListView listView = (ListView) view.findViewById(R.id.tweetList);
             listView.setVisibility(View.GONE);
             final ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.PM1);
@@ -88,8 +90,6 @@ public class HomeFragment extends Fragment {
             final TextView nothingToSHow = (TextView) view.findViewById(R.id.nothingToShow);
             nothingToSHow.setVisibility(View.VISIBLE);
         } else if (finished) {
-            MainActivity main = (MainActivity) getActivity();
-            main.startRefresh(0);
             final ListView listView = (ListView) view.findViewById(R.id.tweetList);
             final ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.PM1);
             final TextView nothingToSHow = (TextView) view.findViewById(R.id.nothingToShow);
