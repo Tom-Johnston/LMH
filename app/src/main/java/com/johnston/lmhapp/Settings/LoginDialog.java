@@ -81,8 +81,10 @@ public class LoginDialog extends DialogFragment {
                 final Handler nameHandler = new Handler() {
                     @Override
                     public void handleMessage(Message message) {
-                        String name = (String) message.obj;
-                        ((TextView) main.findViewById(R.id.name)).setText(name);
+                        if(message.what!=-1){
+                            String name = (String) message.obj;
+                            ((TextView) main.findViewById(R.id.name)).setText(name);
+                        }
                     }
                 };
                 TextView usernameTextView = (TextView) main.findViewById(R.id.username);

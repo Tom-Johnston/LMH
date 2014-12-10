@@ -23,11 +23,11 @@ import java.util.Comparator;
 import javax.net.ssl.HttpsURLConnection;
 
 
-public class TwitterScraperAsync extends AsyncTask<Object, Void, ArrayList<Tweet>> {
+public class TwitterScraperAsync extends AsyncTask<Object, Void, Void> {
 
 
     @Override
-    protected ArrayList<Tweet> doInBackground(Object... params) {
+    protected Void doInBackground(Object... params) {
         Handler handler = (Handler) params[0];
         Context context = (Context) params[1];
 
@@ -300,17 +300,13 @@ public class TwitterScraperAsync extends AsyncTask<Object, Void, ArrayList<Tweet
             objects[1] = profilePictures;
             handler.obtainMessage(0, objects).sendToTarget();
         } catch (MalformedURLException e) {
+            handler.obtainMessage(-1).sendToTarget();
             e.printStackTrace();
         } catch (IOException e) {
+            handler.obtainMessage(-1).sendToTarget();
             e.printStackTrace();
         }
-        return tweets;
-    }
-
-    @Override
-    protected void onPostExecute(ArrayList<Tweet> tweets) {
-
-
+        return null;
     }
 
 }

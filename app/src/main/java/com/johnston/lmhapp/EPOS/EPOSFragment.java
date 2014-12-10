@@ -31,7 +31,15 @@ public class EPOSFragment extends Fragment {
     final Handler handler = new Handler() {
         @Override
         public void handleMessage(Message message) {
-            if(message.what==0) {
+            if(message.what==-1){
+                (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
+                finished = true;
+                refreshing = false;
+                MainActivity main = (MainActivity) getActivity();
+                if (main != null) {
+                    main.stopRefresh(3);
+                }
+            }else if(message.what==0) {
                 (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
                 (view.findViewById(R.id.card_view)).setVisibility(View.VISIBLE);
                 (view.findViewById(R.id.card_view2)).setVisibility(View.VISIBLE);

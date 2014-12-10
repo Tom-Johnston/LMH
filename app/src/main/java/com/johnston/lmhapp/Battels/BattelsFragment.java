@@ -22,16 +22,28 @@ import java.util.ArrayList;
  */
 public class BattelsFragment extends Fragment {
     View view;
-    ArrayList<String> entries;
+    ArrayList<String> entries =  new ArrayList<>();
     Boolean finished = false;
     Boolean refreshing=false;
     MenuItem actionRefresh;
     final Handler handler = new Handler() {
         @Override
         public void handleMessage(Message message) {
+            (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
+            finished = true;
+            refreshing=false;
+            MainActivity main = (MainActivity) getActivity();
+            if(main!=null){
+                main.stopRefresh(2);
+            }
+            if(message.what==-1){
+                return;
+            }
+
             entries = (ArrayList<String>) message.obj;
 
             RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
+
             if(entries.size()>0) {
                 BattelsRecyclerAdapter battelsRecyclerAdapter = new BattelsRecyclerAdapter(entries);
                 recyclerView.setAdapter(battelsRecyclerAdapter);
@@ -41,14 +53,7 @@ public class BattelsFragment extends Fragment {
                 (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
                 (view.findViewById(R.id.nothingToShow)).setVisibility(View.VISIBLE);
             }
-            finished = true;
-            refreshing=false;
-            MainActivity main = (MainActivity) getActivity();
-            if(main!=null){
-            main.stopRefresh(2);
-            }
-
-        }
+                    }
     };
 
     public void LoadBattels() {

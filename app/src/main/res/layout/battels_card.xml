@@ -59,16 +59,17 @@
             />
 
         <TextView
-            android:padding="4dp"
+            android:layout_alignBaseline="@+id/battelsDescription"
+            android:paddingLeft="4dp"
             android:id="@+id/battelsDescriptionTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/battelsDateTitle"
             android:text="Description: "
             android:textStyle="bold"/>
 
         <TextView
-            android:layout_alignBaseline="@+id/battelsDescriptionTitle"
+            android:padding="4dp"
+            android:layout_below="@+id/battelsDateTitle"
             android:layout_toRightOf="@+id/battelsDescriptionTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -77,12 +78,12 @@
 
         <TextView
             android:padding="4dp"
+            android:layout_below="@id/battelsDescription"
             android:id="@+id/battelsAmountTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/battelsDescriptionTitle"
             android:text="Amount: "
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
         <TextView
             android:layout_alignBaseline="@+id/battelsAmountTitle"

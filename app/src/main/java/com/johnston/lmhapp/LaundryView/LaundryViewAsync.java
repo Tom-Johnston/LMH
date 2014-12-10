@@ -61,10 +61,12 @@ public class LaundryViewAsync extends AsyncTask<Object, Void, Boolean> {
             return true;
         } catch (MalformedURLException e) {
             Error = "Error.Malformed URL.I have no idea why.";
+            handler.obtainMessage(-1).sendToTarget();
             e.printStackTrace();
             return false;
         } catch (IOException e) {
             Error = "Error.IO Exception. Check internet connection.";
+            handler.obtainMessage(-1).sendToTarget();
             e.printStackTrace();
             return false;
         }

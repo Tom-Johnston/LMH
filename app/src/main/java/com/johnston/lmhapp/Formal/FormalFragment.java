@@ -22,7 +22,7 @@ import java.util.ArrayList;
  */
 public class FormalFragment extends Fragment {
     View view;
-    ArrayList<String> entries;
+    ArrayList<String> entries =  new ArrayList<>();
     ArrayList<String> listOfMeals;
     ArrayList<ArrayList<String>> listOfListsOfPeople;
     Boolean finished = false;
@@ -31,7 +31,15 @@ public class FormalFragment extends Fragment {
         @Override
         public void handleMessage(Message message) {
 
-            if(message.what==0){
+            if(message.what==-1){
+                (view.findViewById(R.id.progressBarContainer)).setVisibility(View.GONE);
+                MainActivity main = (MainActivity) getActivity();
+                if(main!=null) {
+                    main.stopRefresh(4);
+                }
+                finished=true;
+                refreshing=false;
+            } else if(message.what==0){
                 entries = (ArrayList<String>)message.obj;
 
             }else if(message.what==1){
@@ -90,12 +98,15 @@ public class FormalFragment extends Fragment {
             (view.findViewById(R.id.progressBarContainer)).setVisibility(View.VISIBLE);
             (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
             (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
-        }
-        if (finished) {
-            (view.findViewById(R.id.Status)).setVisibility(View.GONE);
-            FormalRecyclerAdapter formalRecyclerAdapter = new FormalRecyclerAdapter(entries,listOfMeals);
-            recyclerView.setAdapter(formalRecyclerAdapter);
-            // No need to get all the info again
+        }else if (finished) {
+            if(entries.size()>0){
+                FormalRecyclerAdapter formalRecyclerAdapter = new FormalRecyclerAdapter(entries,listOfMeals);
+                recyclerView.setAdapter(formalRecyclerAdapter);
+                (view.findViewById(R.id.progressBarContainer)).setVisibility(View.GONE);
+            }else{
+                (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
+                (view.findViewById(R.id.nothingToShow)).setVisibility(View.VISIBLE);
+            }
         } else {
             GetTheData();
 //            Get all the info.

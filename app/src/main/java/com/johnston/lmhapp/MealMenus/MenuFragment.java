@@ -132,7 +132,16 @@ public class MenuFragment extends Fragment {
     final Handler handler = new Handler() {
         @Override
         public void handleMessage(Message message) {
-            if (message.what == 0) {
+            if(message.what==-1){
+                MainActivity main = (MainActivity) getActivity();
+                if (main != null) {
+                    main.stopRefresh(5);
+                }
+                ProgressBar pb = (ProgressBar) view.findViewById(R.id.PM1);
+                pb.setVisibility(View.GONE);
+                finished = true;
+                refreshing = false;
+            }else if (message.what == 0) {
                 meals = (ArrayList<String>) message.obj;
                 if (starting) {
                     if (meals.size() == 0) {

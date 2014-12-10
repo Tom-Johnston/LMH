@@ -36,7 +36,13 @@ public class LaundryViewFragment extends Fragment {
         @Override
         public void handleMessage(Message message) {
 
-            if(message.what==0){
+            if(message.what==-1){
+                MainActivity main = (MainActivity) getActivity();
+                if(main!=null) {
+                    main.stopRefresh(1);
+                }
+                (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
+            }else if(message.what==0){
                 startTime = (Long) message.obj;
                 finished = true;
                 refreshing=false;

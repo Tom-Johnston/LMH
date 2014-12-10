@@ -28,7 +28,7 @@ public class HomeFragment extends Fragment {
     Boolean finished = false;
     Boolean refreshing = false;
     private View view;
-    private ArrayList<Tweet> tweets;
+    private ArrayList<Tweet> tweets = new ArrayList<>();
     private Bitmap[] profilePictures;
 
     public void loadTweeterFeed() {
@@ -44,22 +44,26 @@ public class HomeFragment extends Fragment {
         Handler handler = new Handler() {
             @Override
             public void handleMessage(Message message) {
+                progressBar.setVisibility(View.GONE);
                 finished = true;
                 refreshing = false;
                 MainActivity main = (MainActivity) getActivity();
                 if (main != null) {
                     main.stopRefresh(0);
                 }
+
+                if(message.what==-1){
+                    return;
+                }
+
                 Object[] objects = (Object[]) message.obj;
                 tweets = (ArrayList<Tweet>) objects[0];
                 profilePictures = (Bitmap[]) objects[1];
                 if (tweets.size() > 0) {
                     listView.setAdapter(new TweetListAdapter(context, R.layout.tweet_item, tweets, profilePictures));
                     listView.setVisibility(View.VISIBLE);
-                    progressBar.setVisibility(View.GONE);
                     nothingToSHow.setVisibility(View.GONE);
                 } else {
-                    progressBar.setVisibility(View.GONE);
                     nothingToSHow.setVisibility(View.VISIBLE);
                 }
 

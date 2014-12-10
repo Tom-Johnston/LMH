@@ -163,8 +163,10 @@ Handler statusHandler;
             handler.obtainMessage(2, listOfListsOfPeople).sendToTarget();
             publishProgress("Finished");
         } catch (MalformedURLException e) {
+            statusHandler.obtainMessage(-1).sendToTarget();
             e.printStackTrace();
         } catch (IOException e) {
+            statusHandler.obtainMessage(-1).sendToTarget();
             e.printStackTrace();
         }
 
@@ -175,9 +177,5 @@ Handler statusHandler;
     @Override
     protected void onProgressUpdate(String... values) {
         statusHandler.obtainMessage(0,values[0]).sendToTarget();
-    }
-
-    @Override
-    protected void onPostExecute(Void v) {
     }
 }

@@ -87,6 +87,10 @@ public class MainActivity extends ActionBarActivity {
     Handler statusHandler =  new Handler(){
         @Override
         public void handleMessage(Message message){
+            if(message.what==-1){
+                handler.obtainMessage(-1).sendToTarget();
+                return;
+            }
             String update = (String) message.obj;
             if(Status!=null){
                 Status.setText(update);

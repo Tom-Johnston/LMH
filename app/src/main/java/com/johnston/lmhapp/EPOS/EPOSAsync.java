@@ -17,6 +17,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -25,13 +26,13 @@ import javax.net.ssl.HttpsURLConnection;
 /**
  * Created by Tom on 05/06/2014.
  */
-public class EPOSAsync extends AsyncTask<Object, String, String[]> {
+public class EPOSAsync extends AsyncTask<Object, String, Void> {
     final String UserAgent = "Mozilla/5.0 (Linux; Android 4.1.1; Nexus 7 Build/JRO03D) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.166  Safari/535.19";
     Handler statusHandler;
     Handler handler;
 
     @Override
-    protected String[] doInBackground(Object[] Objects) {
+    protected Void doInBackground(Object[] Objects) {
         String[] Amounts = new String[3];
         String GetCookie;
         statusHandler = (Handler) Objects[1];
@@ -232,13 +233,16 @@ public class EPOSAsync extends AsyncTask<Object, String, String[]> {
             publishProgress("Finished");
 
         } catch (MalformedURLException e) {
+            statusHandler.obtainMessage(-1).sendToTarget();
             e.printStackTrace();
         } catch (IOException e) {
+            statusHandler.obtainMessage(-1).sendToTarget();
             e.printStackTrace();
         } catch (URISyntaxException e) {
+            statusHandler.obtainMessage(-1).sendToTarget();
             e.printStackTrace();
         }
-        return Amounts;
+        return null;
     }
 
     @Override
