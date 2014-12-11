@@ -266,12 +266,9 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
-
-//    @Override
-//    protected void onPause(){
-//        item.getActionView().clearAnimation();
-//        item.setActionView(null);
-//    }
+    public void itemClicked(View v){
+        ((SettingsFragment) getFragmentManager().findFragmentById(R.id.Frame)).itemClicked(v);
+    }
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {

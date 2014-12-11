@@ -11,6 +11,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +31,7 @@ import com.johnston.lmhapp.MainActivity;
 import com.johnston.lmhapp.MealMenus.NotificationsService;
 import com.johnston.lmhapp.R;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,10 +40,11 @@ import java.util.List;
  */
 public class SettingsFragment extends Fragment {
     View view;
-    List<String> strings;
-    SettingsListAdapter settingsListAdapter;
-    int animationTime=250;
+    ArrayList<String> strings;
+    SettingsRecyclerAdapter settingsRecyclerAdapter;
     SwitchCompat switchCompat;
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,33 +58,30 @@ public class SettingsFragment extends Fragment {
         switchCompat=null;
 //        Get rid of the old view.
         view = inflater.inflate(R.layout.settings_layout, container, false);
-        ListView listView = (ListView) view.findViewById(R.id.settingsList);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
         if(strings==null) {
-            strings = Arrays.asList(getResources().getStringArray(R.array.settings));
-        }
-        if(settingsListAdapter==null){
-            settingsListAdapter = new SettingsListAdapter(this.getActivity(),R.layout.settings_list_item,strings);
-            settingsListAdapter.switchHandler = switchHandler;
+            strings = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.settings)));
             SharedPreferences Notifications = getActivity().getSharedPreferences("Notifications", 0);
             Boolean toggle = Notifications.getBoolean("toggle", false);
-            if(!toggle){
+            if(toggle==false){
                 for(int i=4;i<10;i++){
-                    settingsListAdapter.showView[i]=false;
+                    strings.remove(4);
                 }
             }
         }
+        if(settingsRecyclerAdapter==null){
+            settingsRecyclerAdapter = new SettingsRecyclerAdapter(this.getActivity(),strings);
+            settingsRecyclerAdapter.switchHandler = switchHandler;
+        }
 
-        listView.setAdapter(settingsListAdapter);
-        listView.setOnItemClickListener(itemClickListener);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(settingsRecyclerAdapter);
+        recyclerView.setItemAnimator(new SettingsAnimator());
         return view;
     }
 
-
-
-    AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            if (view.getTag().equals("Standard")){
+        public void itemClicked( View view) {
                 String title = ((TextView)view.findViewById(R.id.itemTitle)).getText().toString();
                 switch (title) {
                     case "LED Colour": {
@@ -136,8 +138,7 @@ public class SettingsFragment extends Fragment {
                 }
             }
 
-        }
-    };
+
 
 
     public void notificationSound() {
@@ -174,31 +175,11 @@ public class SettingsFragment extends Fragment {
                 editor.commit();
                 Intent newIntent = new Intent(getActivity(), NotificationsService.class);
                 getActivity().sendBroadcast(newIntent);
-                if(switchCompat==null){
-
-                }else {
-                    if (switchCompat.getAnimation() != null) {
-                        switchCompat.getAnimation().setAnimationListener(new Animation.AnimationListener() {
-                            @Override
-                            public void onAnimationStart(Animation animation) {
-
-                            }
-
-                            @Override
-                            public void onAnimationEnd(Animation animation) {
-                                dismissPositions(4, 9);
-                            }
-
-                            @Override
-                            public void onAnimationRepeat(Animation animation) {
-
-                            }
-                        });
-
-                    } else {
-                    dismissPositions(4,9);
-                    }
+                for(int i=4;i<10;i++){
+                    strings.remove(4);
                 }
+                settingsRecyclerAdapter.notifyItemRangeRemoved(4,6);
+
             } else {
                 SharedPreferences Notifications = getActivity().getSharedPreferences("Notifications", 0);
                 SharedPreferences.Editor editor = Notifications.edit();
@@ -206,128 +187,14 @@ public class SettingsFragment extends Fragment {
                 editor.commit();
                 Intent newIntent = new Intent(getActivity(), NotificationsService.class);
                 getActivity().sendBroadcast(newIntent);
-                if(switchCompat==null){
-
-                }else {
-                    if (switchCompat.getAnimation() != null) {
-                        switchCompat.getAnimation().setAnimationListener(new Animation.AnimationListener() {
-                            @Override
-                            public void onAnimationStart(Animation animation) {
-
-                            }
-
-                            @Override
-                            public void onAnimationEnd(Animation animation) {
-                                addPositions(4, 9);
-                            }
-
-                            @Override
-                            public void onAnimationRepeat(Animation animation) {
-
-                            }
-                        });
-
-                    } else {
-                        addPositions(4,9);
-                    }
+                String[] stringArray = getResources().getStringArray(R.array.settings);
+                for(int i=9;i>=4;i--){
+                    strings.add(4,stringArray[i]);
+                    settingsRecyclerAdapter.notifyItemInserted(4);
                 }
+
             }
         }
     };
-
-    public void addPositions(int theFirstPosition,int theLastPosition){
-        ListView listView = (ListView) view.findViewById(R.id.settingsList);
-        for(int i=theFirstPosition;i<theLastPosition+1;i++) {
-            settingsListAdapter.showView[i] = true;
-            if (i - listView.getFirstVisiblePosition() > -1) {
-                final RelativeLayout workingView = (RelativeLayout) listView.getChildAt(i - listView.getFirstVisiblePosition());
-                if (workingView == null) {
-                }else {
-                    workingView.setTranslationX(workingView.getWidth());
-                    final RelativeLayout addView = workingView;
-                    int workingHeight;
-                    final AbsListView.LayoutParams lp = (AbsListView.LayoutParams) addView.getLayoutParams();
-
-                    if (addView.findViewById(R.id.settingListItemRelativeLayout).getHeight() > addView.findViewById(R.id.widget_frame).getHeight()) {
-                        workingHeight = addView.findViewById(R.id.settingListItemRelativeLayout).getHeight() + 4;
-                    } else {
-                        workingHeight = addView.findViewById(R.id.widget_frame).getHeight() + 4;
-                    }
-                    final int originalHeight = workingHeight;
-                    final ValueAnimator animator = ValueAnimator.ofInt(1, originalHeight).setDuration(250);
-                    animator.addListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            performAdd(addView);
-                        }
-                    });
-                    animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                        @Override
-                        public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                            lp.height = (Integer) valueAnimator.getAnimatedValue();
-                            addView.setLayoutParams(lp);
-                            addView.getLayoutParams();
-                        }
-                    });
-                    animator.start();
-                }
-            }
-        }
-    }
-
-    public void performAdd(final View addView){
-        addView.animate()
-                .translationX(0)
-                .alpha(1)
-                .setDuration(250)
-//                If I remove this listener it doesn't work. This is problem a bad sign...
-                .setListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                    }
-                });
-        ;
-
-    }
-
-
-    public void dismissPositions(int theFirstPosition, int theLastPosition){
-        ListView listView = (ListView) view.findViewById(R.id.settingsList);
-        for(int i=theFirstPosition;i<theLastPosition+1;i++) {
-            settingsListAdapter.showView[i]=false;
-            if (i - listView.getFirstVisiblePosition() > -1) {
-                final View dismissView = listView.getChildAt(i-listView.getFirstVisiblePosition());
-                if (dismissView == null) {
-                }else {
-                    dismissView.animate()
-                            .translationX(dismissView.getWidth())
-                            .alpha(0)
-                            .setDuration(animationTime)
-                            .setListener(new AnimatorListenerAdapter() {
-                                @Override
-                                public void onAnimationEnd(Animator animation) {
-                                    performDismiss(dismissView);
-                                }
-                            });
-                }
-            }else{
-            }
-        }
-
-    }
-
-    public void performDismiss(final View dismissView){
-        final ViewGroup.LayoutParams lp = dismissView.getLayoutParams();
-        final int originalHeight = dismissView.getHeight();
-        ValueAnimator animator = ValueAnimator.ofInt(originalHeight, 1).setDuration(250);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                lp.height = (Integer) valueAnimator.getAnimatedValue();
-                dismissView.setLayoutParams(lp);
-            }
-        });
-        animator.start();
-    }
 
 }

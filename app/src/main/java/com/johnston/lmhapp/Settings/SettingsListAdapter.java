@@ -27,6 +27,8 @@ public class SettingsListAdapter extends ArrayAdapter<String> {
     public Handler switchHandler;
     public Boolean[] showView;
 
+
+
     public SettingsListAdapter(Context context, int resource, List<String> objects) {
         super(context, resource, objects);
         this.context = context;
