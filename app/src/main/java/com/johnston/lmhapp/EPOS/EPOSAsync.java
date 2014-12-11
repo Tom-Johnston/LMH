@@ -2,7 +2,6 @@ package com.johnston.lmhapp.EPOS;
 
 import android.os.AsyncTask;
 import android.os.Handler;
-import android.view.View;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,11 +16,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.regex.Pattern;
 
 import javax.net.ssl.HttpsURLConnection;
-//import javax.net.ssl.HttpsURLConnection;
 
 /**
  * Created by Tom on 05/06/2014.

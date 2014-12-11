@@ -106,7 +106,7 @@ public class MenuFragment extends Fragment {
         if (refreshing) {
             MainActivity main = (MainActivity) getActivity();
             main.startRefresh(5);
-            main.Status = (android.widget.TextView) view.findViewById(R.id.Status);
+            MainActivity.Status = (android.widget.TextView) view.findViewById(R.id.Status);
             recyclerView.setVisibility(View.GONE);
             ProgressBar pb = (ProgressBar) view.findViewById(R.id.PM1);
             pb.setVisibility(View.VISIBLE);
@@ -137,8 +137,9 @@ public class MenuFragment extends Fragment {
                 if (main != null) {
                     main.stopRefresh(5);
                 }
-                ProgressBar pb = (ProgressBar) view.findViewById(R.id.PM1);
-                pb.setVisibility(View.GONE);
+                if(view!=null){
+                    view.findViewById(R.id.PM1).setVisibility(View.GONE);
+                }
                 finished = true;
                 refreshing = false;
             }else if (message.what == 0) {
@@ -146,10 +147,10 @@ public class MenuFragment extends Fragment {
                 if (starting) {
                     if (meals.size() == 0) {
                         new DownloadNewMenuAsync().execute(context, false, handler);
-                    } else {
+                    } else if(view!=null){
                         showMenu();
                     }
-                } else {
+                } else if(view!=null){
                     showMenu();
                 }
             } else {

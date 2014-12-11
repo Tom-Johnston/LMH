@@ -49,7 +49,7 @@ public class NameGrabberAsync extends AsyncTask<Object, Void, Void> {
             SharedPreferences LogIn = context.getSharedPreferences("LogIn", 0);
             SharedPreferences.Editor editor = LogIn.edit();
             editor.putString("Name", name.trim());
-            editor.commit();
+            editor.apply();
             handler.obtainMessage(0, name.trim()).sendToTarget();
         } catch (MalformedURLException e) {
             e.printStackTrace();

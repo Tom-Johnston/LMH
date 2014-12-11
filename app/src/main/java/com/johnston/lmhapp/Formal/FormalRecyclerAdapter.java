@@ -19,7 +19,7 @@ import java.util.ArrayList;
 /**
  * Created by Tom on 28/11/2014.
  */
-public class FormalRecyclerAdapter extends RecyclerView.Adapter<FormalRecyclerAdapter.ViewHolder> {
+public class FormalRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public ArrayList<String> entries;
     public ArrayList<String> listOfMeals;
 
@@ -28,8 +28,14 @@ public class FormalRecyclerAdapter extends RecyclerView.Adapter<FormalRecyclerAd
         this.listOfMeals = listOfMeals;
     }
 
+    public static class StatusHolder extends RecyclerView.ViewHolder {
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+        public StatusHolder(View itemView) {
+            super(itemView);
+        }
+    }
+
+    public static class FormalHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
         public TextView formalName;
         public TextView formalDate;
@@ -39,7 +45,8 @@ public class FormalRecyclerAdapter extends RecyclerView.Adapter<FormalRecyclerAd
         public ImageView graphicNumberLeft;
         public Button formalButton;
 
-        public ViewHolder(View itemView) {
+
+        public FormalHolder(View itemView) {
             super(itemView);
             formalName = (TextView) itemView.findViewById(R.id.formalName);
             formalDate = (TextView) itemView.findViewById(R.id.formalDate);
@@ -52,36 +59,43 @@ public class FormalRecyclerAdapter extends RecyclerView.Adapter<FormalRecyclerAd
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        View v = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.formal_card, viewGroup, false);
-        ViewHolder vh = new ViewHolder(v);
-        return vh;
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
+        if(i==0){
+            View v = LayoutInflater.from(viewGroup.getContext())
+                    .inflate(R.layout.status, viewGroup, false);
+            return new StatusHolder(v);
+        }else{
+            View v = LayoutInflater.from(viewGroup.getContext())
+                    .inflate(R.layout.formal_card, viewGroup, false);
+            return new FormalHolder(v);
+        }
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, int position) {
-        viewHolder.formalMenu.setText(listOfMeals.get(position));
-        viewHolder.formalButton.setTag(position);
-        position = position * 6;
-        final int numberGone = Integer.parseInt(entries.get(position + 3));
-        final int numberLeft = Integer.parseInt(entries.get(position + 4));
-        viewHolder.formalDate.setText(entries.get(position));
-        viewHolder.formalName.setText(entries.get(position + 1));
-        viewHolder.formalNumberGone.setText(entries.get(position + 3));
-        viewHolder.formalNumberLeft.setText(entries.get(position + 4));
-        viewHolder.graphicNumberLeft.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-            @Override
-            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+    public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
+        if(position==0){
+            ((TextView)viewHolder.itemView).setText("Finished");
+        }else{
+            FormalHolder formalHolder = (FormalHolder) viewHolder;
+            formalHolder.formalMenu.setText(listOfMeals.get(position));
+            formalHolder.formalButton.setTag(position);
+            position = (position-1) * 6;
+            final int numberGone = Integer.parseInt(entries.get(position + 3));
+            final int numberLeft = Integer.parseInt(entries.get(position + 4));
+            formalHolder.formalDate.setText(entries.get(position));
+            formalHolder.formalName.setText(entries.get(position + 1));
+            formalHolder.formalNumberGone.setText(entries.get(position + 3));
+            formalHolder.formalNumberLeft.setText(entries.get(position + 4));
+            formalHolder.graphicNumberLeft.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+                @Override
+                public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
 //                v.removeOnLayoutChangeListener(this);
-                int sizex = v.getWidth();
-                int sizey = v.getHeight() / 2;
-                ((ImageView) v).setImageBitmap(generateGraphicNumberLeft(numberGone, numberLeft, sizex, sizey));
-            }
-        });
-        System.out.println(viewHolder.formalDate.getHeight());
-        System.out.println(viewHolder.formalDate.getMeasuredHeight());
-
+                    int sizex = v.getWidth();
+                    int sizey = v.getHeight() / 2;
+                    ((ImageView) v).setImageBitmap(generateGraphicNumberLeft(numberGone, numberLeft, sizex, sizey));
+                }
+            });
+        }
 
     }
 
@@ -119,9 +133,17 @@ public class FormalRecyclerAdapter extends RecyclerView.Adapter<FormalRecyclerAd
         return bmp;
     }
 
+    @Override
+    public int getItemViewType(int position){
+        if(position==0){
+            return 0;
+        }else{
+            return 1;
+        }
+    }
 
     @Override
     public int getItemCount() {
-        return entries.size() / 6;
+        return entries.size() / 6 +1;
     }
 }

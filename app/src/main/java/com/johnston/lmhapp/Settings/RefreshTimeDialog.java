@@ -45,7 +45,7 @@ public class RefreshTimeDialog extends DialogFragment {
                 editor.putLong("refreshTime", refreshTimeChoices[selection]);
                 Toast toast = Toast.makeText(getActivity(), "Time Saved.", Toast.LENGTH_SHORT);
                 toast.show();
-                editor.commit();
+                editor.apply();
 
 
             }
@@ -72,8 +72,7 @@ public class RefreshTimeDialog extends DialogFragment {
         notifyTimePicker.setDisplayedValues(choices);
         notifyTimePicker.setValue(currentPosition);
         notifyTimePicker.setDescendantFocusability(TimePicker.FOCUS_BLOCK_DESCENDANTS);
-        final AlertDialog d = builder.create();
-        return d;
+        return builder.create();
     }
 
 }

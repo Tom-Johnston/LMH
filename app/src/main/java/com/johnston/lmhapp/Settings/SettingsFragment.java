@@ -35,7 +35,7 @@ public class SettingsFragment extends Fragment {
                 SharedPreferences Notifications = getActivity().getSharedPreferences("Notifications", 0);
                 SharedPreferences.Editor editor = Notifications.edit();
                 editor.putBoolean("toggle", false);
-                editor.commit();
+                editor.apply();
                 Intent newIntent = new Intent(getActivity(), NotificationsService.class);
                 getActivity().sendBroadcast(newIntent);
                 for (int i = 4; i < 10; i++) {
@@ -47,7 +47,7 @@ public class SettingsFragment extends Fragment {
                 SharedPreferences Notifications = getActivity().getSharedPreferences("Notifications", 0);
                 SharedPreferences.Editor editor = Notifications.edit();
                 editor.putBoolean("toggle", true);
-                editor.commit();
+                editor.apply();
                 Intent newIntent = new Intent(getActivity(), NotificationsService.class);
                 getActivity().sendBroadcast(newIntent);
                 String[] stringArray = getResources().getStringArray(R.array.settings);
@@ -82,7 +82,7 @@ public class SettingsFragment extends Fragment {
             strings = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.settings)));
             SharedPreferences Notifications = getActivity().getSharedPreferences("Notifications", 0);
             Boolean toggle = Notifications.getBoolean("toggle", false);
-            if (toggle == false) {
+            if (!toggle) {
                 for (int i = 4; i < 10; i++) {
                     strings.remove(4);
                 }
@@ -178,7 +178,7 @@ public class SettingsFragment extends Fragment {
         editor.putBoolean(title, checkBox.isChecked());
         Intent intent = new Intent(this.getActivity(), NotificationsService.class);
         this.getActivity().sendBroadcast(intent);
-        editor.commit();
+        editor.apply();
     }
 
 }

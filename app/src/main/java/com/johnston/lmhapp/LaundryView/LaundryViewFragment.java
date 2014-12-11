@@ -41,28 +41,38 @@ public class LaundryViewFragment extends Fragment {
                 if(main!=null) {
                     main.stopRefresh(1);
                 }
-                (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
+                if(view!=null){
+                    (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
+                }
+
             }else if(message.what==0){
                 startTime = (Long) message.obj;
                 finished = true;
                 refreshing=false;
             }else if(message.what==1){
                 KatieLee = (ArrayList<String>) message.obj;
-                addEntriesToList(R.id.KatieLee,KatieLee);
+                if(view!=null){
+                    addEntriesToList(R.id.KatieLee,KatieLee);
+                }
             }else if(message.what==2){
                 NewOldHall = (ArrayList<String>) message.obj;
-                addEntriesToList(R.id.NewOldHall,NewOldHall);
+                if(view!=null){
+                    addEntriesToList(R.id.NewOldHall,NewOldHall);
+                }
+
             }else if(message.what==3){
                 MainActivity main = (MainActivity) getActivity();
                 if(main!=null) {
                     main.stopRefresh(1);
                 }
                 Talbot = (ArrayList<String>) message.obj;
-                addEntriesToList(R.id.Talbot,Talbot);
-                (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
-                (view.findViewById(R.id.card_view)).setVisibility(View.VISIBLE);
-                (view.findViewById(R.id.card_view2)).setVisibility(View.VISIBLE);
-                (view.findViewById(R.id.card_view3)).setVisibility(View.VISIBLE);
+                if(view!=null){
+                    addEntriesToList(R.id.Talbot,Talbot);
+                    (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
+                    (view.findViewById(R.id.card_view)).setVisibility(View.VISIBLE);
+                    (view.findViewById(R.id.card_view2)).setVisibility(View.VISIBLE);
+                    (view.findViewById(R.id.card_view3)).setVisibility(View.VISIBLE);
+                }
             }
         }
     };

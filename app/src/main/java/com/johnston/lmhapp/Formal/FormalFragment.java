@@ -32,7 +32,10 @@ public class FormalFragment extends Fragment {
         public void handleMessage(Message message) {
 
             if(message.what==-1){
-                (view.findViewById(R.id.progressBarContainer)).setVisibility(View.GONE);
+                if(view!=null){
+                    (view.findViewById(R.id.progressBarContainer)).setVisibility(View.GONE);
+                }
+
                 MainActivity main = (MainActivity) getActivity();
                 if(main!=null) {
                     main.stopRefresh(4);
@@ -49,7 +52,12 @@ public class FormalFragment extends Fragment {
                 if(main!=null) {
                     main.stopRefresh(4);
                 }
+                finished=true;
+                refreshing=false;
                 listOfListsOfPeople = (ArrayList<ArrayList<String>>) message.obj;
+                if(view==null){
+                    return;
+                }
                 RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
                 if(entries.size()>0){
                     FormalRecyclerAdapter formalRecyclerAdapter = new FormalRecyclerAdapter(entries,listOfMeals);
@@ -60,8 +68,6 @@ public class FormalFragment extends Fragment {
                     (view.findViewById(R.id.nothingToShow)).setVisibility(View.VISIBLE);
                 }
 
-                finished=true;
-                refreshing=false;
             }
         }
     };
@@ -93,7 +99,7 @@ public class FormalFragment extends Fragment {
         if(refreshing){
             MainActivity main = (MainActivity) this.getActivity();
             main.startRefresh(4);
-            main.Status= (android.widget.TextView) view.findViewById(R.id.Status);
+            MainActivity.Status = (android.widget.TextView) view.findViewById(R.id.Status);
             (view.findViewById(R.id.Status)).setVisibility(View.VISIBLE);
             (view.findViewById(R.id.progressBarContainer)).setVisibility(View.VISIBLE);
             (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
@@ -118,7 +124,7 @@ public class FormalFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(false);
+        setHasOptionsMenu(true);
     }
 
     @Override

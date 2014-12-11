@@ -47,7 +47,7 @@ public class SettingsAnimator extends RecyclerView.ItemAnimator {
         mPendingRemovals.clear();
         // Next, move stuff
         if (movesPending) {
-            final ArrayList<MoveInfo> moves = new ArrayList<MoveInfo>();
+            final ArrayList<MoveInfo> moves = new ArrayList<>();
             moves.addAll(mPendingMoves);
             mMovesList.add(moves);
             mPendingMoves.clear();
@@ -71,7 +71,7 @@ public class SettingsAnimator extends RecyclerView.ItemAnimator {
         }
         // Next, change stuff, to run in parallel with move animations
         if (changesPending) {
-            final ArrayList<ChangeInfo> changes = new ArrayList<ChangeInfo>();
+            final ArrayList<ChangeInfo> changes = new ArrayList<>();
             changes.addAll(mPendingChanges);
             mChangesList.add(changes);
             mPendingChanges.clear();
@@ -94,7 +94,7 @@ public class SettingsAnimator extends RecyclerView.ItemAnimator {
         }
         // Next, add stuff
         if (additionsPending) {
-            final ArrayList<RecyclerView.ViewHolder> additions = new ArrayList<RecyclerView.ViewHolder>();
+            final ArrayList<RecyclerView.ViewHolder> additions = new ArrayList<>();
             additions.addAll(mPendingAdditions);
             mAdditionsList.add(additions);
             mPendingAdditions.clear();
@@ -180,7 +180,6 @@ public class SettingsAnimator extends RecyclerView.ItemAnimator {
                         dispatchFinishedWhenDone();
                     }
                 });
-        ;
 
 
         final View view = holder.itemView;
@@ -618,5 +617,4 @@ public class SettingsAnimator extends RecyclerView.ItemAnimator {
         }
     }
 
-    ;
 }

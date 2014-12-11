@@ -162,12 +162,12 @@ public class MainActivity extends ActionBarActivity {
                 SharedPreferences NotificationSound = getSharedPreferences("NotificationSound", 0);
                 SharedPreferences.Editor editor = NotificationSound.edit();
                 editor.putString("SoundURI", uri.toString());
-                editor.commit();
+                editor.apply();
             } else {
                 SharedPreferences NotificationSound = getSharedPreferences("NotificationSound", 0);
                 SharedPreferences.Editor editor = NotificationSound.edit();
                 editor.putString("SoundURI", "None");
-                editor.commit();
+                editor.apply();
             }
         }
     }
@@ -500,7 +500,7 @@ public class MainActivity extends ActionBarActivity {
             View layout = parent.getChildAt(lastPosition - parent.getFirstVisiblePosition());
             if(layout!=null){
                 ((TextView) layout.findViewById(R.id.text1)).setTextColor(Color.parseColor("#de000000"));
-                ImageView imageView = (ImageView) layout.findViewById(R.id.imageView);
+                ImageView imageView = (ImageView) layout.findViewById(R.id.profilePicture);
                 if (iconNames[lastPosition].equals("Circle")) {
                     imageView.setImageBitmap(unselectedCircle);
                 } else {
@@ -511,7 +511,7 @@ public class MainActivity extends ActionBarActivity {
             }
             if (view != null) {
                 TextView tv = (TextView) view.findViewById(R.id.text1);
-                ImageView imgv = (ImageView) view.findViewById(R.id.imageView);
+                ImageView imgv = (ImageView) view.findViewById(R.id.profilePicture);
                 if (iconNames[position].equals("Circle")) {
                     imgv.setImageBitmap(selectedCircle);
                 } else {

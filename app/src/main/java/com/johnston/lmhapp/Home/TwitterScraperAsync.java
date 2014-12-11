@@ -293,7 +293,7 @@ public class TwitterScraperAsync extends AsyncTask<Object, Void, Void> {
             }
             editor.putInt("previousSize", number);
             editor.putLong("previousNumber", previousNumber);
-            editor.commit();
+            editor.apply();
 
             Object[] objects = new Object[2];
             objects[0] = tweets;

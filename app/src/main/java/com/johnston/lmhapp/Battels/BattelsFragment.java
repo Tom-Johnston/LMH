@@ -29,19 +29,27 @@ public class BattelsFragment extends Fragment {
     final Handler handler = new Handler() {
         @Override
         public void handleMessage(Message message) {
-            (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
+
+
             finished = true;
             refreshing=false;
             MainActivity main = (MainActivity) getActivity();
             if(main!=null){
                 main.stopRefresh(2);
             }
+            if(view!=null){
+                (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
+            }
+
             if(message.what==-1){
                 return;
             }
 
             entries = (ArrayList<String>) message.obj;
 
+            if(view==null){
+                return;
+            }
             RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
 
             if(entries.size()>0) {
@@ -49,11 +57,12 @@ public class BattelsFragment extends Fragment {
                 recyclerView.setAdapter(battelsRecyclerAdapter);
                 (view.findViewById(R.id.progressBarContainer)).setVisibility(View.GONE);
                 recyclerView.setVisibility(View.VISIBLE);
+                view.findViewById(R.id.Status).setVisibility(View.GONE);
             }else{
                 (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
                 (view.findViewById(R.id.nothingToShow)).setVisibility(View.VISIBLE);
             }
-                    }
+        }
     };
 
     public void LoadBattels() {
@@ -79,7 +88,7 @@ public class BattelsFragment extends Fragment {
         if(refreshing){
             MainActivity main = (MainActivity) this.getActivity();
             main.startRefresh(2);
-            main.Status= (android.widget.TextView) view.findViewById(R.id.Status);
+            MainActivity.Status = (android.widget.TextView) view.findViewById(R.id.Status);
             (view.findViewById(R.id.Status)).setVisibility(View.VISIBLE);
             (view.findViewById(R.id.progressBarContainer)).setVisibility(View.VISIBLE);
             (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
@@ -91,12 +100,13 @@ public class BattelsFragment extends Fragment {
                 recyclerView.setAdapter(battelsRecyclerAdapter);
                 (view.findViewById(R.id.progressBarContainer)).setVisibility(View.GONE);
                 recyclerView.setVisibility(View.VISIBLE);
+                view.findViewById(R.id.Status).setVisibility(View.GONE);
             }else{
                 (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
                 (view.findViewById(R.id.nothingToShow)).setVisibility(View.VISIBLE);
             }
         } else {
-                    LoadBattels();
+            LoadBattels();
         }
 
 

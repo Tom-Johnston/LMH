@@ -116,7 +116,7 @@ public class VibrationDialog extends DialogFragment {
                             editor.putString("vibratePattern", pattern);
                             Toast toast = Toast.makeText(getActivity(), "Vibrate Pattern Saved.", Toast.LENGTH_SHORT);
                             toast.show();
-                            editor.commit();
+                            editor.apply();
                             d.dismiss();
                         }
                     }

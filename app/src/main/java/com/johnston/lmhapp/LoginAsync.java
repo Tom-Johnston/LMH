@@ -26,6 +26,7 @@ public class LoginAsync extends AsyncTask<Object, String, Boolean> {
 
     @Override
     protected Boolean doInBackground(Object[] Objects) {
+        publishProgress("Started");
         statusHandler = (Handler) Objects[3];
         SSLContext context = (SSLContext) Objects[0];
         String args = (String) Objects[1];

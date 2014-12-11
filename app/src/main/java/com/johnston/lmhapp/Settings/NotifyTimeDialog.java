@@ -46,7 +46,7 @@ public class NotifyTimeDialog extends DialogFragment {
                 editor.putInt("NotifyTime", notifyTime);
                 Toast toast = Toast.makeText(getActivity(), "Time Saved.", Toast.LENGTH_SHORT);
                 toast.show();
-                editor.commit();
+                editor.apply();
                 Intent intent = new Intent(getActivity(), NotificationsService.class);
                 getActivity().sendBroadcast(intent);
             }
@@ -64,7 +64,6 @@ public class NotifyTimeDialog extends DialogFragment {
         notifyTimePicker.setMaxValue(30);
         notifyTimePicker.setDescendantFocusability(TimePicker.FOCUS_BLOCK_DESCENDANTS);
         notifyTimePicker.setValue(current);
-        final AlertDialog d = builder.create();
-        return d;
+        return builder.create();
     }
 }

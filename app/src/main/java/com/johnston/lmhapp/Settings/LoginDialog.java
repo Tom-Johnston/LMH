@@ -60,7 +60,7 @@ public class LoginDialog extends DialogFragment {
                 toast.show();
                 InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(view.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-                editor.commit();
+                editor.apply();
                 final MainActivity main = (MainActivity) getActivity();
                 final Handler handler = new Handler() {
                     @Override
@@ -77,7 +77,7 @@ public class LoginDialog extends DialogFragment {
                 Byte three = 3;
                 editor.putString("Name", "");
                 ((TextView) main.findViewById(R.id.name)).setText("");
-                editor.commit();
+                editor.apply();
                 final Handler nameHandler = new Handler() {
                     @Override
                     public void handleMessage(Message message) {
@@ -114,8 +114,7 @@ public class LoginDialog extends DialogFragment {
                 }
             }
         });
-        final AlertDialog d = builder.create();
-        return d;
+        return builder.create();
     }
 
 }

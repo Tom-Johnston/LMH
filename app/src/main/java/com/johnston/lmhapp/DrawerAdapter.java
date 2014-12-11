@@ -44,7 +44,7 @@ public class DrawerAdapter extends ArrayAdapter<String> {
             convertView = inflater.inflate(resource, parent, false);
         }
         TextView body = (TextView) convertView.findViewById(R.id.text1);
-        ImageView circle = (ImageView) convertView.findViewById(R.id.imageView);
+        ImageView circle = (ImageView) convertView.findViewById(R.id.profilePicture);
         body.setText(data);
 
         int id;

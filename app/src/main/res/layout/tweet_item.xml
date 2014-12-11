@@ -13,12 +13,12 @@
         android:layout_height="wrap_content"
         android:id="@+id/retweet"
         android:layout_alignParentTop="true"
-        android:layout_alignLeft="@+id/textView"
-        android:layout_alignStart="@+id/textView" />
+        android:layout_alignLeft="@+id/screenName"
+        android:layout_alignStart="@+id/screenName" />
 
     <ImageView
         android:contentDescription="@string/profile_picture"
-        android:id="@+id/imageView"
+        android:id="@+id/profilePicture"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -29,24 +29,24 @@
         android:minWidth="48px" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/screenName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/retweet"
         android:layout_marginLeft="5dp"
-        android:layout_toRightOf="@+id/imageView"
+        android:layout_toRightOf="@+id/profilePicture"
         android:textSize="20sp"
         android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/handle"
         android:singleLine="true"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/textView"
+        android:layout_alignBaseline="@+id/screenName"
         android:layout_marginLeft="5dp"
         android:layout_toLeftOf="@+id/time"
-        android:layout_toRightOf="@+id/textView"
+        android:layout_toRightOf="@+id/screenName"
         android:textColor="#8a000000"
         android:textSize="12sp" />
 
@@ -54,18 +54,18 @@
         android:id="@+id/time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/textView"
+        android:layout_alignBaseline="@+id/screenName"
         android:layout_alignParentRight="true"
         android:layout_marginRight="5dp"
         android:textColor="#8a000000"
         android:textSize="12sp" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/tweetText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/retweet"
-        android:layout_below="@+id/textView"
+        android:layout_below="@+id/screenName"
         android:layout_margin="5dp"
         android:textSize="14sp" />
 
@@ -75,8 +75,8 @@
         android:visibility="gone"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/textView"
-        android:layout_below="@+id/textView3"
+        android:layout_alignLeft="@+id/screenName"
+        android:layout_below="@+id/tweetText"
         android:layout_alignRight="@+id/time"
         android:layout_marginBottom="5dp" />
 

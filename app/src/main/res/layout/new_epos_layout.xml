@@ -20,7 +20,8 @@
             android:gravity="center"
             android:text="@string/started"
             android:textColor="@color/abc_search_url_text_holo"
-            android:freezesText="true"/>
+            android:freezesText="true"
+            android:layout_marginBottom="5dp" />
 
         <RelativeLayout
             android:id="@+id/progressBar"

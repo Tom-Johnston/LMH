@@ -15,10 +15,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:id="@+id/LastUpdate"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
             android:textColor="@color/abc_search_url_text_holo"
             android:freezesText="true"
-            android:elevation="1dp" />
+            android:elevation="1dp"
+            android:layout_marginBottom="4dp" />
 
         <RelativeLayout
             android:id="@+id/progressBar"

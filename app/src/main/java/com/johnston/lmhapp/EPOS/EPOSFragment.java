@@ -32,7 +32,9 @@ public class EPOSFragment extends Fragment {
         @Override
         public void handleMessage(Message message) {
             if(message.what==-1){
-                (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
+                if(view!=null){
+                    (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
+                }
                 finished = true;
                 refreshing = false;
                 MainActivity main = (MainActivity) getActivity();
@@ -40,20 +42,28 @@ public class EPOSFragment extends Fragment {
                     main.stopRefresh(3);
                 }
             }else if(message.what==0) {
-                (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
-                (view.findViewById(R.id.card_view)).setVisibility(View.VISIBLE);
-                (view.findViewById(R.id.card_view2)).setVisibility(View.VISIBLE);
-                (view.findViewById(R.id.card_view3)).setVisibility(View.VISIBLE);
                 transactions = (ArrayList<String>) message.obj;
-                addEntriesToList();
                 finished = true;
                 refreshing = false;
                 MainActivity main = (MainActivity) getActivity();
                 if (main != null) {
                     main.stopRefresh(3);
                 }
+                if(view==null){
+                    return;
+                }
+                (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
+                (view.findViewById(R.id.card_view)).setVisibility(View.VISIBLE);
+                (view.findViewById(R.id.card_view2)).setVisibility(View.VISIBLE);
+                (view.findViewById(R.id.card_view3)).setVisibility(View.VISIBLE);
+
+                addEntriesToList();
+
             }else{
                 String[] strings = (String[])message.obj;
+                if(view==null){
+                    return;
+                }
                 TextView AccountBalance = (TextView) view.findViewById(R.id.AccountBalance);
                 TextView TokenBalance = (TextView) view.findViewById(R.id.TokenBalance);
                 TextView DateBalance = (TextView) view.findViewById(R.id.DateBalance);
@@ -117,7 +127,7 @@ public class EPOSFragment extends Fragment {
         if(refreshing){
             MainActivity main = (MainActivity) getActivity();
             main.startRefresh(3);
-            main.Status= (android.widget.TextView) view.findViewById(R.id.Status);
+            MainActivity.Status = (android.widget.TextView) view.findViewById(R.id.Status);
             (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
             (view.findViewById(R.id.card_view)).setVisibility(View.GONE);
             (view.findViewById(R.id.card_view2)).setVisibility(View.GONE);
