@@ -1,11 +1,8 @@
 package com.johnston.lmhapp.Settings;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.media.audiofx.BassBoost;
 import android.os.Handler;
-import android.preference.PreferenceActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
@@ -13,14 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.johnston.lmhapp.R;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -28,36 +23,13 @@ import java.util.List;
  */
 public class SettingsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    public Handler switchHandler;
     Context context;
     List<String> strings;
-    public Handler switchHandler;
 
     public SettingsRecyclerAdapter(Context context, List<String> objects) {
         this.context = context;
         strings = objects;
-    }
-
-    public static class HeaderHolder extends RecyclerView.ViewHolder {
-        public TextView itemTitle;
-        public HeaderHolder(View itemView) {
-            super(itemView);
-            itemTitle = (TextView) itemView;
-        }
-    }
-
-    public static class EntryHolder extends RecyclerView.ViewHolder{
-        public TextView itemTitle;
-        public TextView itemCaption;
-        public LinearLayout widgetFrame;
-        public RelativeLayout settingsListItemRelativeLayout;
-
-        public EntryHolder(View itemView) {
-            super(itemView);
-            itemTitle = (TextView) itemView.findViewById(R.id.itemTitle);
-            itemCaption = (TextView) itemView.findViewById(R.id.itemCaption);
-            widgetFrame = (LinearLayout) itemView.findViewById(R.id.widget_frame);
-            settingsListItemRelativeLayout = (RelativeLayout)itemView.findViewById(R.id.settingListItemRelativeLayout);
-        }
     }
 
     @Override
@@ -69,28 +41,28 @@ public class SettingsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
     }
 
-        @Override
+    @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-            View v;
-            if(viewType==0){
-                v = LayoutInflater.from(viewGroup.getContext())
-                        .inflate(R.layout.settings_header_item, viewGroup, false);
-                return new HeaderHolder(v);
-            }else{
-                v = LayoutInflater.from(viewGroup.getContext())
-                        .inflate(R.layout.settings_list_item, viewGroup, false);
+        View v;
+        if (viewType == 0) {
+            v = LayoutInflater.from(viewGroup.getContext())
+                    .inflate(R.layout.settings_header_item, viewGroup, false);
+            return new HeaderHolder(v);
+        } else {
+            v = LayoutInflater.from(viewGroup.getContext())
+                    .inflate(R.layout.settings_list_item, viewGroup, false);
 
-                return new EntryHolder(v);
-            }
+            return new EntryHolder(v);
+        }
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
-        if(getItemViewType(position)==0){
-            ((HeaderHolder)holder).itemTitle.setText(strings.get(position));
-        }else{
-            EntryHolder entryHolder = (EntryHolder)holder;
+        if (getItemViewType(position) == 0) {
+            ((HeaderHolder) holder).itemTitle.setText(strings.get(position));
+        } else {
+            EntryHolder entryHolder = (EntryHolder) holder;
             entryHolder.itemTitle.setText(strings.get(position));
 
             entryHolder.widgetFrame.removeAllViews();
@@ -108,15 +80,13 @@ public class SettingsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
         }
     }
 
-
-
     private View CheckBoxViewCreator(int position, View parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         CheckBox checkBox = (CheckBox) inflater.inflate(R.layout.checkbox, (ViewGroup) parent, false);
         SharedPreferences mealsToNotifyFor = context.getSharedPreferences("mealsToNotifyFor", 0);
-        if(mealsToNotifyFor.getBoolean(strings.get(position),true)){
+        if (mealsToNotifyFor.getBoolean(strings.get(position), true)) {
             checkBox.setChecked(true);
-        }else{
+        } else {
             checkBox.setChecked(false);
         }
         return checkBox;
@@ -144,6 +114,30 @@ public class SettingsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
     @Override
     public int getItemCount() {
         return strings.size();
+    }
+
+    public static class HeaderHolder extends RecyclerView.ViewHolder {
+        public TextView itemTitle;
+
+        public HeaderHolder(View itemView) {
+            super(itemView);
+            itemTitle = (TextView) itemView;
+        }
+    }
+
+    public static class EntryHolder extends RecyclerView.ViewHolder {
+        public TextView itemTitle;
+        public TextView itemCaption;
+        public LinearLayout widgetFrame;
+        public RelativeLayout settingsListItemRelativeLayout;
+
+        public EntryHolder(View itemView) {
+            super(itemView);
+            itemTitle = (TextView) itemView.findViewById(R.id.itemTitle);
+            itemCaption = (TextView) itemView.findViewById(R.id.itemCaption);
+            widgetFrame = (LinearLayout) itemView.findViewById(R.id.widget_frame);
+            settingsListItemRelativeLayout = (RelativeLayout) itemView.findViewById(R.id.settingListItemRelativeLayout);
+        }
     }
 
 

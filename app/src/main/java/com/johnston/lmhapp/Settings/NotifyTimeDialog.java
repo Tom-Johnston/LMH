@@ -36,11 +36,11 @@ public class NotifyTimeDialog extends DialogFragment {
         view = inflater.inflate(R.layout.notify_time_layout, null);
         builder.setView(view);
         builder.setTitle("Notify Time");
-        builder.setPositiveButton("Save", new DialogInterface.OnClickListener(){
+        builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {
                 NumberPicker notifyTimePicker = (NumberPicker) view.findViewById(R.id.NotifyTime);
-                SharedPreferences notifyTimePreference = getActivity().getSharedPreferences("NotifyTime",0);
+                SharedPreferences notifyTimePreference = getActivity().getSharedPreferences("NotifyTime", 0);
                 SharedPreferences.Editor editor = notifyTimePreference.edit();
                 int notifyTime = notifyTimePicker.getValue();
                 editor.putInt("NotifyTime", notifyTime);
@@ -58,8 +58,8 @@ public class NotifyTimeDialog extends DialogFragment {
             }
         });
         NumberPicker notifyTimePicker = (NumberPicker) view.findViewById(R.id.NotifyTime);
-        SharedPreferences notifyTimePreference = getActivity().getSharedPreferences("NotifyTime",0);
-        int current = notifyTimePreference.getInt("NotifyTime",10);
+        SharedPreferences notifyTimePreference = getActivity().getSharedPreferences("NotifyTime", 0);
+        int current = notifyTimePreference.getInt("NotifyTime", 10);
         notifyTimePicker.setMaxValue(0);
         notifyTimePicker.setMaxValue(30);
         notifyTimePicker.setDescendantFocusability(TimePicker.FOCUS_BLOCK_DESCENDANTS);
