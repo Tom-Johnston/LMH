@@ -89,7 +89,7 @@ public class LEDColourDialog extends DialogFragment {
                         editor.putInt("greenValue", g);
                         editor.putInt("blueValue", b);
 
-                        editor.commit();
+                        editor.apply();
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

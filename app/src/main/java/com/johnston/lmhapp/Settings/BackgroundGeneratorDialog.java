@@ -55,17 +55,16 @@ public class BackgroundGeneratorDialog extends DialogFragment {
                         if (android.os.Build.VERSION.SDK_INT >= 13) {
                             Point size = new Point();
                             display.getSize(size);
-                             height = size.y;
+                            height = size.y;
                         } else {
-                             height = display.getHeight();
+                            height = display.getHeight();
                         }
                         final Activity activity = getActivity();
-                        System.out.println(activity);
                         Handler handler = new Handler() {
                             @Override
                             public void handleMessage(Message message) {
                                 Bitmap bmp = (Bitmap) message.obj;
-                                WallpaperManager wallpaperManager= WallpaperManager.getInstance(activity.getApplicationContext());
+                                WallpaperManager wallpaperManager = WallpaperManager.getInstance(activity.getApplicationContext());
                                 try {
                                     wallpaperManager.setBitmap(bmp);
                                     Toast toast = Toast.makeText(activity.getApplicationContext(), "Wallpaper Set.", Toast.LENGTH_SHORT);
@@ -78,10 +77,10 @@ public class BackgroundGeneratorDialog extends DialogFragment {
                                 }
                             }
                         };
-                        width=height*2;
+                        width = height * 2;
                         SharedPreferences LogIn = getActivity().getSharedPreferences("LogIn", 0);
                         String username = LogIn.getString("Username", "Fail");
-                        new ImageGeneratorAsync().execute(username, handler, width, height, getActivity().getApplicationContext(),true);
+                        new ImageGeneratorAsync().execute(username, handler, width, height, getActivity().getApplicationContext(), true);
 
 
                     }

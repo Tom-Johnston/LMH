@@ -16,15 +16,19 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -36,8 +40,6 @@ import com.johnston.lmhapp.Battels.BattelsFragment;
 import com.johnston.lmhapp.EPOS.EPOSAsync;
 import com.johnston.lmhapp.EPOS.EPOSFragment;
 import com.johnston.lmhapp.Formal.FormalAsync;
-import com.johnston.lmhapp.Formal.FormalDetailsAsync;
-import com.johnston.lmhapp.Formal.FormalDetailsFragment;
 import com.johnston.lmhapp.Formal.FormalFragment;
 import com.johnston.lmhapp.Home.HomeFragment;
 import com.johnston.lmhapp.LaundryView.LaundryViewFragment;
@@ -72,13 +74,85 @@ public class MainActivity extends ActionBarActivity {
     DrawerLayout mDrawerLayout;
     CookieManager manager;
     byte Type;
-    View view;
-    int lastPosition = -1;
+    public static TextView Status=null;
+    int lastPosition = -99;
     SSLContext sslContext = null;
     DrawerAdapter mDrawerAdapter;
     Bitmap selectedCircle;
     Bitmap unselectedCircle;
-    String initialiseOther;
+    MenuItem item;
+    Animation an;
+    int refreshSpinRequestFragment = -99;
+    ImageView actionRefreshView;
+    Handler statusHandler =  new Handler(){
+        @Override
+        public void handleMessage(Message message){
+            if(message.what==-1){
+                handler.obtainMessage(-1).sendToTarget();
+                return;
+            }
+            String update = (String) message.obj;
+            if(Status!=null){
+                Status.setText(update);
+            }
+        }
+    };
+
+    public void startRefresh(int i ){
+        refreshSpinRequestFragment = i;
+        Handler startHandler = new Handler();
+        Runnable startRunnable = new Runnable() {
+
+            @Override
+            public void run() {
+                if (actionRefreshView == null) {
+                    LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    actionRefreshView = (ImageView) inflater.inflate(R.layout.action_refresh, null);
+                } else {
+                    actionRefreshView.setVisibility(View.VISIBLE);
+                }
+                an.setRepeatCount(Animation.INFINITE);
+                an.setDuration(1000);
+                an.start();
+                actionRefreshView.setAnimation(an);
+                actionRefreshView.getAnimation().setAnimationListener(null);
+                if (item != null){
+                    item.setActionView(actionRefreshView);
+            }
+            }
+        };
+        startHandler.post(startRunnable);
+
+    }
+
+
+    public void stopRefresh(final int i) {
+        final View actionRefreshView2 = this.actionRefreshView;
+        if ((refreshSpinRequestFragment == i || i == -1) && item != null && item.getActionView() != null && item.getActionView().getAnimation() != null) {
+            refreshSpinRequestFragment=-99;
+            item.getActionView().getAnimation().setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    item.setActionView(null);
+                    actionRefreshView2.setVisibility(View.GONE);
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+                }
+            });
+            if (i == -1) {
+                item.getActionView().getAnimation().setDuration(0);
+            }
+            item.getActionView().getAnimation().setRepeatCount(0);
+        }
+    }
+
 
     @Override
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
@@ -88,34 +162,39 @@ public class MainActivity extends ActionBarActivity {
                 SharedPreferences NotificationSound = getSharedPreferences("NotificationSound", 0);
                 SharedPreferences.Editor editor = NotificationSound.edit();
                 editor.putString("SoundURI", uri.toString());
-                editor.commit();
+                editor.apply();
             } else {
                 SharedPreferences NotificationSound = getSharedPreferences("NotificationSound", 0);
                 SharedPreferences.Editor editor = NotificationSound.edit();
                 editor.putString("SoundURI", "None");
-                editor.commit();
+                editor.apply();
             }
         }
     }
 
+    public void formalButtonClick(View v){
+        ((FormalFragment)getFragmentManager().findFragmentById(R.id.Frame)).showListofPeopleGoing(Integer.parseInt(v.getTag().toString()));
+    }
+
     public void Initialise() {
         if (Type == 1) {
-            new EPOSAsync().execute(manager, view, handler);
+            new EPOSAsync().execute(manager, statusHandler, handler);
         } else if (Type == 2) {
-            new BattelsAsync().execute(sslContext, view, handler);
+            new BattelsAsync().execute(sslContext, statusHandler, handler);
         } else if (Type == 3) {
             new NameGrabberAsync().execute(sslContext, this.getApplicationContext(), handler);
         } else if(Type==4){
-            new FormalAsync().execute(sslContext,handler);
-        }else if(Type==5){
-            new FormalDetailsAsync().execute(sslContext,initialiseOther,handler);
+            new FormalAsync().execute(sslContext,handler,statusHandler);
         }
     }
 
-
     public void getInfo(View v, Handler passedHandler, byte passedType) {
         handler = passedHandler;
-        view = v;
+        if(v!=null){
+            Status= (TextView) v.findViewById(R.id.Status);
+        }else{
+            Status=null;
+        }
         Type = passedType;
         LogInView();
 
@@ -123,15 +202,11 @@ public class MainActivity extends ActionBarActivity {
 
     public void LogInView() {
         SharedPreferences LogIn = getSharedPreferences("LogIn", 0);
-        TextView Status = null;
-        if (view != null) {
-            Status = (TextView) view.findViewById(R.id.Status);
-        }
         if (LogIn.contains("Username") && LogIn.contains("Password")) {
             String username = LogIn.getString("Username", "Fail");
             String password = LogIn.getString("Password", "Fail");
             SSLContext context = createTrustManager();
-            new LoginAsync().execute(context, username, password, Status, this, manager);
+            new LoginAsync().execute(context, username, password, statusHandler, this, manager);
         } else {
             Status.setText("Please input username and password");
         }
@@ -191,38 +266,33 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
-    public void getDetails(String[] info){
-        initialiseOther = info[4];
-        FormalDetailsFragment newFragment = FormalDetailsFragment.newInstance(info);
-        FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.Frame, newFragment, "FormalDetails");
-        transaction.commit();
-        lastPosition=-1;
+    public void itemClicked(View v){
+        ((SettingsFragment) getFragmentManager().findFragmentById(R.id.Frame)).itemClicked(v);
     }
 
-
-
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         mTitle = getResources().getString(R.string.title);
         super.onCreate(savedInstanceState);
+        an = AnimationUtils.loadAnimation(this, R.anim.rotate_animation);
         setContentView(R.layout.activity_main);
         if (savedInstanceState!=null) {
             lastPosition = savedInstanceState.getInt("lastPosition");
         }
 
-
+        Status=null;
 //
 //
         File file = new File(getFilesDir(), "CustomGraphic.png");
-        if (file != null) {
+        if (file.exists()) {
             ((ImageView) findViewById(R.id.graphic)).setImageBitmap(BitmapFactory.decodeFile(file.getAbsolutePath()));
+            TextView username = (TextView) findViewById(R.id.username);
+            TextView name = (TextView) findViewById(R.id.name);
+            SharedPreferences LogIn = getSharedPreferences("LogIn", 0);
+            username.setText(LogIn.getString("Username", ""));
+            name.setText(LogIn.getString("Name", ""));
         }
-        TextView username = (TextView) findViewById(R.id.username);
-        TextView name = (TextView) findViewById(R.id.name);
-        SharedPreferences LogIn = getSharedPreferences("LogIn", 0);
-        username.setText(LogIn.getString("Username", ""));
-        name.setText(LogIn.getString("Name", ""));
+
 
 
         selectedCircle = drawCircle(getResources().getColor(R.color.colorPrimary2));
@@ -231,7 +301,10 @@ public class MainActivity extends ActionBarActivity {
 
 //      Cookie Manager
 
-        manager = new CookieManager();
+        manager = (CookieManager) CookieHandler.getDefault();
+        if(manager==null){
+            manager = new CookieManager();
+        }
         manager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
         CookieHandler.setDefault(manager);
 //       Drawer/ActionBar
@@ -271,16 +344,31 @@ public class MainActivity extends ActionBarActivity {
 
 //        Start Menu Fragment if clicked through from widget
         Intent intent = getIntent();
-        Boolean LaunchMenu = intent.getBooleanExtra("Launch", false);
-        if (LaunchMenu && savedInstanceState == null) {
-            mDrawerList.performItemClick(mDrawerList.getAdapter().getView(4, null, null), 4, mDrawerList.getAdapter().getItemId(4));
-        } else if (savedInstanceState == null) {
-            mDrawerList.performItemClick(mDrawerList.getAdapter().getView(0, null, null), 0, mDrawerList.getAdapter().getItemId(0));
-        } else {
-            mTitle = savedInstanceState.getString("mTitle");
-        }
-
-
+        final Boolean LaunchMenu = intent.getBooleanExtra("Launch", false);
+        Handler startHandler = new Handler();
+        Runnable startRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (LaunchMenu && savedInstanceState == null) {
+                    mDrawerList.smoothScrollToPosition(5);
+                    View layout = mDrawerList.getChildAt(5 - mDrawerList.getFirstVisiblePosition());
+                    mDrawerList.performItemClick(layout, 5, mDrawerList.getAdapter().getItemId(5));
+                    String[] Options = getResources().getStringArray(R.array.options);
+                    mTitle = Options[5];
+                    getSupportActionBar().setTitle(mTitle);
+                } else if (savedInstanceState == null) {
+                    mDrawerList.smoothScrollToPosition(0);
+                    View layout = mDrawerList.getChildAt(0 - mDrawerList.getFirstVisiblePosition());
+                    mDrawerList.performItemClick(layout, 0, mDrawerList.getAdapter().getItemId(0));
+                    String[] Options = getResources().getStringArray(R.array.options);
+                    mTitle = Options[0];
+                    getSupportActionBar().setTitle(mTitle);
+                } else {
+                    mTitle = savedInstanceState.getString("mTitle");
+                }
+            }
+        };
+        startHandler.post(startRunnable);
     }
 
     @Override
@@ -312,6 +400,14 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu){
+        item = menu.getItem(0);
+        if(refreshSpinRequestFragment!=-99){
+            startRefresh(refreshSpinRequestFragment);
+        }
+        return true;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -340,6 +436,9 @@ public class MainActivity extends ActionBarActivity {
         }else if(fragmentType.equals(Options[2])){
             BattelsFragment fragment = (BattelsFragment) fragment1;
             fragment.LoadBattels();
+        }else if(fragmentType.equals(Options[4])){
+            FormalFragment fragment = (FormalFragment) fragment1;
+            fragment.GetTheData();
         }
 
     }
@@ -353,12 +452,16 @@ public class MainActivity extends ActionBarActivity {
         if (lastPosition == 0) {
             this.finish();
         } else if(lastPosition==-1){
-            mDrawerList.performItemClick(mDrawerList.getAdapter().getView(4, null, null), 4, mDrawerList.getAdapter().getItemId(4));
+            mDrawerList.smoothScrollToPosition(4);
+            View layout = mDrawerList.getChildAt(4 - mDrawerList.getFirstVisiblePosition());
+            mDrawerList.performItemClick(layout, 4, mDrawerList.getAdapter().getItemId(4));
             String[] Options = getResources().getStringArray(R.array.options);
             mTitle = Options[4];
             getSupportActionBar().setTitle(mTitle);
         }else{
-            mDrawerList.performItemClick(mDrawerList.getAdapter().getView(0, null, null), 0, mDrawerList.getAdapter().getItemId(0));
+            mDrawerList.smoothScrollToPosition(0);
+            View layout = mDrawerList.getChildAt(0 - mDrawerList.getFirstVisiblePosition());
+            mDrawerList.performItemClick(layout, 0, mDrawerList.getAdapter().getItemId(0));
             String[] Options = getResources().getStringArray(R.array.options);
             mTitle = Options[0];
             getSupportActionBar().setTitle(mTitle);
@@ -392,10 +495,12 @@ public class MainActivity extends ActionBarActivity {
                 return;
             }
             String[] iconNames = getResources().getStringArray(R.array.iconNames);
-            if (lastPosition >= parent.getFirstVisiblePosition()) {
-                View layout = parent.getChildAt(lastPosition - parent.getFirstVisiblePosition());
+
+            if (lastPosition == -1){lastPosition = 4;}
+            View layout = parent.getChildAt(lastPosition - parent.getFirstVisiblePosition());
+            if(layout!=null){
                 ((TextView) layout.findViewById(R.id.text1)).setTextColor(Color.parseColor("#de000000"));
-                ImageView imageView = (ImageView) layout.findViewById(R.id.imageView);
+                ImageView imageView = (ImageView) layout.findViewById(R.id.profilePicture);
                 if (iconNames[lastPosition].equals("Circle")) {
                     imageView.setImageBitmap(unselectedCircle);
                 } else {
@@ -404,16 +509,18 @@ public class MainActivity extends ActionBarActivity {
                     imageView.setImageDrawable(getResources().getDrawable(drawableId));
                 }
             }
-            TextView tv = (TextView) view.findViewById(R.id.text1);
-            ImageView imgv = (ImageView) view.findViewById(R.id.imageView);
-            if (iconNames[position].equals("Circle")) {
-                imgv.setImageBitmap(selectedCircle);
-            } else {
+            if (view != null) {
+                TextView tv = (TextView) view.findViewById(R.id.text1);
+                ImageView imgv = (ImageView) view.findViewById(R.id.profilePicture);
+                if (iconNames[position].equals("Circle")) {
+                    imgv.setImageBitmap(selectedCircle);
+                } else {
 
-                int drawableId = getResources().getIdentifier(iconNames[position] + "_blue", "drawable", "com.johnston.lmhapp");
-                imgv.setImageDrawable(getResources().getDrawable(drawableId));
+                    int drawableId = getResources().getIdentifier(iconNames[position] + "_blue", "drawable", "com.johnston.lmhapp");
+                    imgv.setImageDrawable(getResources().getDrawable(drawableId));
+                }
+                tv.setTextColor(getResources().getColor(R.color.colorAccent));
             }
-            tv.setTextColor(getResources().getColor(R.color.colorAccent));
             lastPosition = position;
             mDrawerAdapter.selected = position;
             String[] Options = getResources().getStringArray(R.array.options);
@@ -446,6 +553,7 @@ public class MainActivity extends ActionBarActivity {
                 newFragment = new SettingsFragment();
                 transaction.addToBackStack(Options[position]);
             }
+            stopRefresh(-1);
             newFragment.setRetainInstance(true);
             transaction.replace(R.id.Frame, newFragment, Options[position]);
             transaction.commit();

@@ -6,7 +6,7 @@
     android:background="@drawable/selectable_background_">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/profilePicture"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginLeft="16dp"

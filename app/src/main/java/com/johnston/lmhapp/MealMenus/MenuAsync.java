@@ -24,9 +24,8 @@ public class MenuAsync extends AsyncTask<Object, Void, Void> {
     protected Void doInBackground(Object[] objects) {
         Context context = (Context) objects[0];
         Handler handler = (Handler) objects[1];
-        ArrayList<String> meals = new ArrayList<String>();
+        ArrayList<String> meals = new ArrayList<>();
         File file = new File(context.getFilesDir(), "Menu.txt");
-        int startat = -1;
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
             String dateString = br.readLine();
@@ -38,8 +37,8 @@ public class MenuAsync extends AsyncTask<Object, Void, Void> {
             long mealTime;
             long currentTime = System.currentTimeMillis();
             String inputLine;
-            String outputLine = "00";
-            Boolean old = false;
+            String outputLine = "";
+            Boolean old = true;
 
             while (true) {
                 inputLine = br.readLine();
@@ -61,32 +60,31 @@ public class MenuAsync extends AsyncTask<Object, Void, Void> {
                 } else if ((inputLine.equals("Sunday") || inputLine.equals("Sunday,"))) {
                     day = 8;
                 } else if (inputLine.contains(":")) {
+                    if (!outputLine.equals("")) {
+                        meals.add(outputLine);
+                        outputLine = "";
+                    }
                     Hours = Integer.parseInt(inputLine.substring(6, 8));
                     Minutes = Integer.parseInt(inputLine.substring(9, 11));
                     mealTime = time + (day - 2) * 86400000 + Hours * 3600000 + Minutes * 60000;
-                    if (mealTime < currentTime) {
-                        old = true;
-                        outputLine = "10";
-                    } else {
+                    if (mealTime > currentTime) {
                         old = false;
-                        if (startat == -1) {
-                            startat = meals.size();
-                        }
-                        outputLine = "11";
-                    }
-                    outputLine = outputLine + br.readLine() + " on " + new SimpleDateFormat("EEEE d MMMM").format(new Date(mealTime));
-                    meals.add(outputLine);
-                } else {
-                    if (old) {
-                        outputLine = "00";
-                    } else {
-                        outputLine = "01";
-                    }
-                    if (!inputLine.equals("")) {
-                        outputLine = outputLine + inputLine;
+                        outputLine = outputLine + br.readLine() + " on " + new SimpleDateFormat("EEEE d MMMM").format(new Date(mealTime));
                         meals.add(outputLine);
+                        outputLine = "";
+                    }
+                } else {
+                    if (!old && !inputLine.equals("")) {
+                        if (!outputLine.equals("")) {
+                            outputLine = outputLine + "\n";
+                        }
+                        outputLine = outputLine + inputLine;
                     }
                 }
+
+            }
+            if (!outputLine.equals("")) {
+                meals.add(outputLine);
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -95,11 +93,7 @@ public class MenuAsync extends AsyncTask<Object, Void, Void> {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        Object[] newObjects = new Object[2];
-        newObjects[0] = meals;
-        newObjects[1] = startat;
-        handler.obtainMessage(0, newObjects).sendToTarget();
+        handler.obtainMessage(0, meals).sendToTarget();
         return null;
     }
 }

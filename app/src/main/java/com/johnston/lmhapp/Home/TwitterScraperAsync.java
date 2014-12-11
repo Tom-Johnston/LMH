@@ -1,12 +1,16 @@
 package com.johnston.lmhapp.Home;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Handler;
-import android.util.Log;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -19,23 +23,42 @@ import java.util.Comparator;
 import javax.net.ssl.HttpsURLConnection;
 
 
-public class TwitterScraperAsync extends AsyncTask<Handler, Void, ArrayList<Tweet>> {
+public class TwitterScraperAsync extends AsyncTask<Object, Void, Void> {
 
 
     @Override
-    protected ArrayList<Tweet> doInBackground(Handler... handlers) {
-        Handler handler = handlers[0];
+    protected Void doInBackground(Object... params) {
+        Handler handler = (Handler) params[0];
+        Context context = (Context) params[1];
+
+//        Get the previously saved pictures.
+        SharedPreferences pictureList = context.getSharedPreferences("PictureList", 0);
+        int previousSize = pictureList.getInt("previousSize", 0);
+        Long previousNumber = pictureList.getLong("previousNumber", 0);
+        ArrayList<String> pictureURLs = new ArrayList<>();
+        ArrayList<Long> pictureIDs = new ArrayList<>();
+        ArrayList<Boolean> pictureUsed = new ArrayList<>();
+        String workingLine;
+        for(int i=0;i<previousSize;i++){
+            workingLine = pictureList.getString(Integer.toString(i),"null");
+            pictureURLs.add(workingLine.substring(0,workingLine.indexOf("¬")));
+            pictureIDs.add(Long.parseLong(workingLine.substring(workingLine.indexOf("¬")+1)));
+            pictureUsed.add(false);
+        }
+
+
         Bitmap[] profilePictures;
-        ArrayList<Tweet> tweets = new ArrayList<Tweet>();
-        ArrayList<String> ProfilePictureURLS = new ArrayList<String>();
+        ArrayList<Tweet> tweets = new ArrayList<>();
+        ArrayList<String> ProfilePictureURLS = new ArrayList<>();
         try {
-            URL[] urls = new URL[6];
-            urls[0] = new URL("https://twitter.com/LMHJCR");
-            urls[1] = new URL("https://twitter.com/LMHITManager");
-            urls[2] = new URL("https://twitter.com/lmhbursar");
-            urls[3] = new URL("https://twitter.com/UniofOxford");
+            URL[] urls = new URL[5];
+            urls[0] = new URL("https://twitter.com/UniofOxford");
+            urls[1] = new URL("https://twitter.com/LMHJCR");
+            urls[2] = new URL("https://twitter.com/LMHITManager");
+            urls[3] = new URL("https://twitter.com/lmhbursar");
             urls[4] = new URL("https://twitter.com/OxfordUnion");
-            urls[5] = new URL("https://twitter.com/OxfordPlayhouse");
+
+            long cutOffTime = 0;
             for (int j = 0; j < urls.length; j++) {
                 URL url = urls[j];
                 // Note normal size is 48x48
@@ -51,6 +74,7 @@ public class TwitterScraperAsync extends AsyncTask<Handler, Void, ArrayList<Twee
                 String retweeter = null;
                 String body = "";
                 long time = 0;
+                int numberOfTweets = 0;
                 int bodyStart;
                 int bodyEnd;
                 int start;
@@ -62,6 +86,11 @@ public class TwitterScraperAsync extends AsyncTask<Handler, Void, ArrayList<Twee
                     if (inputLine == null) {
                         break;
                     }
+                    if (inputLine.contains("data-nav=\"tweets\"")) {
+                        start = inputLine.indexOf("title=") + 7;
+                        numberOfTweets = Integer.parseInt((inputLine.substring(start, inputLine.indexOf(" Tweets"))).replaceAll(",", ""));
+                    }
+
                     if (inputLine.contains("Icon Icon--retweet\"") && id != null) {
                         // Send previous Tweet to system.
                         Tweet tweet = new Tweet();
@@ -70,11 +99,16 @@ public class TwitterScraperAsync extends AsyncTask<Handler, Void, ArrayList<Twee
                         tweet.retweet = retweeted;
                         if (retweeted) {
                             tweet.retweeter = retweeter;
+                        } else if (time < cutOffTime) {
+//                             No point catching tweets we will discard.
+//                            It has been moved here as retweeting an old tweet could discard a load of new tweets.
+                            break;
                         }
 
                         tweet.pictureIndex = pictureIndex;
                         tweet.time = time;
                         tweet.Text = body;
+                        tweet.id = Long.parseLong(id);
 
                         tweets.add(tweet);
                         if (picture != null) {
@@ -90,8 +124,35 @@ public class TwitterScraperAsync extends AsyncTask<Handler, Void, ArrayList<Twee
                         inputLine = in.readLine();
                         start = inputLine.indexOf("src=\"") + 5;
                         String photoUrl = inputLine.substring(start, inputLine.indexOf("\"", start));
-                        InputStream in2 = new java.net.URL(photoUrl).openStream();
-                        picture = BitmapFactory.decodeStream(in2);
+                        for(int i=0;i<previousSize;i++){
+                            if(photoUrl.equals(pictureURLs.get(i))){
+                                pictureUsed.set(i,true);
+                                File file = new File(context.getFilesDir(),Long.toString(pictureIDs.get(i)));
+                                InputStream in2 = new FileInputStream(file);
+                                picture = BitmapFactory.decodeStream(in2);
+                                break;
+                            }
+                        }
+                        if(picture==null){
+                            InputStream in2 = new java.net.URL(photoUrl).openStream();
+                            previousNumber++;
+                            File file = new File(context.getFilesDir(),Long.toString(previousNumber));
+                            FileOutputStream fos = new FileOutputStream(file);
+                            int length;
+                            byte[] buffer = new byte[1024];
+                            while ((length = in2.read(buffer)) > -1) {
+                                fos.write(buffer, 0, length);
+                            }
+                            fos.close();
+
+                            in2 = new FileInputStream(file);
+                            picture = BitmapFactory.decodeStream(in2);
+
+                            pictureIDs.add(previousNumber);
+                            pictureURLs.add(photoUrl);
+                            pictureUsed.add(true);
+                        }
+
                     }
 
                     if (inputLine.contains("data-tweet-id")) {
@@ -99,6 +160,12 @@ public class TwitterScraperAsync extends AsyncTask<Handler, Void, ArrayList<Twee
                         id = inputLine.substring(start,
                                 inputLine.indexOf("\"", start));
                     }
+
+                    if (inputLine.contains("data-retweet-id=")) {
+                        start = inputLine.indexOf("data-retweet-id=") + 17;
+                        id = inputLine.substring(start, inputLine.indexOf("\"", start));
+                    }
+
                     if (inputLine.contains("<img class=\"avatar js-action-profile-avatar\"") || inputLine.contains("<img class=\"ProfileTweet-avatar js-action-profile-avatar\"")) {
                         start = inputLine.indexOf("src=\"") + 5;
                         pictureString = inputLine.substring(start, inputLine.indexOf("\"", start));
@@ -133,10 +200,9 @@ public class TwitterScraperAsync extends AsyncTask<Handler, Void, ArrayList<Twee
                     if (inputLine.contains("data-time")) {
                         start = inputLine.indexOf("data-time") + 11;
                         time = 1000 * Long.parseLong(inputLine.substring(start, inputLine.indexOf("\"", start)));
-                        if (System.currentTimeMillis()-time>7*24*60*60*1000){
-                            break;
-                        }
+
                     }
+
                     if (inputLine.contains("ProfileTweet-text")) {
                         in.readLine();
                         in.readLine();
@@ -155,41 +221,92 @@ public class TwitterScraperAsync extends AsyncTask<Handler, Void, ArrayList<Twee
                             body = body.replace(bodySegment, "");
                         }
                     }
+                }
 
+                if (time > cutOffTime && numberOfTweets > 18) {
+                    cutOffTime = time;
                 }
             }
             Comparator<Tweet> tweetComparator = new TweetComparator();
             Collections.sort(tweets, tweetComparator);
+            for (int i = tweets.size() - 1; i > -1; i--) {
+                if (tweets.get(i).time < cutOffTime) {
+                    tweets.remove(i);
+                } else {
+                    break;
+                }
+            }
+
 //            Get the pictures;
+
             profilePictures = new Bitmap[ProfilePictureURLS.size()];
             for (int i = 0; i < ProfilePictureURLS.size(); i++) {
                 try {
-                    InputStream in2 = new java.net.URL(ProfilePictureURLS.get(i)).openStream();
-                    profilePictures[i] = BitmapFactory.decodeStream(in2);
+                    String url = ProfilePictureURLS.get(i);
+                    for(int j=0;j<previousSize;j++){
+                        if(url.equals(pictureURLs.get(j))){
+                            pictureUsed.set(j,true);
+                            File file = new File(context.getFilesDir(),Long.toString(pictureIDs.get(j)));
+                            InputStream in2 = new FileInputStream(file);
+                            profilePictures[i] = BitmapFactory.decodeStream(in2);
+                            break;
+                        }
+                    }
+                    if(profilePictures[i]==null){
+                        InputStream in2 = new java.net.URL(url).openStream();
+
+                        previousNumber++;
+                        File file = new File(context.getFilesDir(),Long.toString(previousNumber));
+                        FileOutputStream fos = new FileOutputStream(file);
+                        int length;
+                        byte[] buffer = new byte[1024];
+                        while ((length = in2.read(buffer)) > -1) {
+                            fos.write(buffer, 0, length);
+                        }
+                        fos.close();
+
+                        in2 = new FileInputStream(file);
+                        profilePictures[i] = BitmapFactory.decodeStream(in2);
+
+                        pictureIDs.add(previousNumber);
+                        pictureURLs.add(url);
+                        pictureUsed.add(true);
+                    }
                 } catch (Exception e) {
-                    Log.e("Error", e.getMessage());
                     e.printStackTrace();
                 }
 
             }
+//            Save the new stuff.
+            SharedPreferences.Editor editor = pictureList.edit();
+
+            int number=0;
+            int size = pictureIDs.size();
+            for(int i=0;i<size;i++){
+               if(pictureUsed.get(i)){
+                   editor.putString(Integer.toString(number), pictureURLs.get(i) + "¬" + Long.toString(pictureIDs.get(i)));
+                   number++;
+               }else{
+                   File file = new File(context.getFilesDir(),Long.toString(pictureIDs.get(i)));
+                   file.delete();
+               }
+            }
+            editor.putInt("previousSize", number);
+            editor.putLong("previousNumber", previousNumber);
+            editor.apply();
+
             Object[] objects = new Object[2];
             objects[0] = tweets;
             objects[1] = profilePictures;
             handler.obtainMessage(0, objects).sendToTarget();
         } catch (MalformedURLException e) {
-            // TODO Auto-generated catch block
+            handler.obtainMessage(-1).sendToTarget();
             e.printStackTrace();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
+            handler.obtainMessage(-1).sendToTarget();
             e.printStackTrace();
         }
-        return tweets;
-    }
-
-    @Override
-    protected void onPostExecute(ArrayList<Tweet> tweets) {
-
-
+        return null;
     }
 
 }

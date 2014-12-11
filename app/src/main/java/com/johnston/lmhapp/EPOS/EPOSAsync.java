@@ -2,10 +2,6 @@ package com.johnston.lmhapp.EPOS;
 
 import android.os.AsyncTask;
 import android.os.Handler;
-import android.view.View;
-import android.widget.TextView;
-
-import com.johnston.lmhapp.R;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -23,23 +19,20 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 import javax.net.ssl.HttpsURLConnection;
-//import javax.net.ssl.HttpsURLConnection;
 
 /**
  * Created by Tom on 05/06/2014.
  */
-public class EPOSAsync extends AsyncTask<Object, String, String[]> {
+public class EPOSAsync extends AsyncTask<Object, String, Void> {
     final String UserAgent = "Mozilla/5.0 (Linux; Android 4.1.1; Nexus 7 Build/JRO03D) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.166  Safari/535.19";
-    View view;
-    TextView Status;
+    Handler statusHandler;
     Handler handler;
 
     @Override
-    protected String[] doInBackground(Object[] Objects) {
+    protected Void doInBackground(Object[] Objects) {
         String[] Amounts = new String[3];
         String GetCookie;
-        view = (View) Objects[1];
-        Status = (TextView) view.findViewById(R.id.Status);
+        statusHandler = (Handler) Objects[1];
         handler = (Handler) Objects[2];
         try {
             String inputLine;
@@ -141,7 +134,6 @@ public class EPOSAsync extends AsyncTask<Object, String, String[]> {
                             myCookie.setPath("/");
                             myCookie.setMaxAge(890000);
 //                            890,000 is 14 minutes 50 seconds. I believe the cookie should be suitable for 15 minutes.
-                            cookieValue = myCookie.toString();
                             CookieManager cookieManager = (CookieManager) Objects[0];
                             CookieHandler.setDefault(cookieManager);
                             CookieStore CookieJar = cookieManager.getCookieStore();
@@ -198,7 +190,7 @@ public class EPOSAsync extends AsyncTask<Object, String, String[]> {
             String lastTime = "null";
             String meal = "null";
             Boolean sameMeal = true;
-            ArrayList<String> transactions = new ArrayList<String>();
+            ArrayList<String> transactions = new ArrayList<>();
             while (true) {
                 inputLine = transactionReader.readLine();
                 if (inputLine == null) {
@@ -234,43 +226,27 @@ public class EPOSAsync extends AsyncTask<Object, String, String[]> {
 
             }
             handler.obtainMessage(0, transactions).sendToTarget();
+            handler.obtainMessage(1,Amounts).sendToTarget();
             publishProgress("Finished");
 
         } catch (MalformedURLException e) {
+            statusHandler.obtainMessage(-1).sendToTarget();
             e.printStackTrace();
         } catch (IOException e) {
+            statusHandler.obtainMessage(-1).sendToTarget();
             e.printStackTrace();
         } catch (URISyntaxException e) {
+            statusHandler.obtainMessage(-1).sendToTarget();
             e.printStackTrace();
         }
-        return Amounts;
+        return null;
     }
 
     @Override
     protected void onProgressUpdate(String... values) {
-        Status.setText(values[0]);
+        statusHandler.obtainMessage(1,values[0]).sendToTarget();
     }
 
-    @Override
-    protected void onPostExecute(String[] strings) {
-        if (!isCancelled()) {
-            TextView AccountBalance = (TextView) view.findViewById(R.id.AccountBalance);
-            TextView TokenBalance = (TextView) view.findViewById(R.id.TokenBalance);
-            TextView DateBalance = (TextView) view.findViewById(R.id.DateBalance);
-            AccountBalance.setText(strings[0]);
-            TokenBalance.setText(strings[1]);
-            DateBalance.setText(strings[2]);
-        }
-
-        Status.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Status.setText("");
-            }
-        }, 3000);
-
-
-    }
 
 
 }

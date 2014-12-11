@@ -19,7 +19,7 @@ import com.johnston.lmhapp.R;
  */
 public class RefreshTimeDialog extends DialogFragment {
     View view;
-    long[] refreshTimeChoices = {1800000,3600000,7200000,14400000,21600000,43200000,86400000,-1};
+    long[] refreshTimeChoices = {1800000, 3600000, 7200000, 14400000, 21600000, 43200000, 86400000, -1};
 
     static RefreshTimeDialog newInstance() {
         RefreshTimeDialog f = new RefreshTimeDialog();
@@ -35,17 +35,17 @@ public class RefreshTimeDialog extends DialogFragment {
         view = inflater.inflate(R.layout.refresh_time_dialog, null);
         builder.setView(view);
         builder.setTitle("Refresh Time");
-        builder.setPositiveButton("Save", new DialogInterface.OnClickListener(){
+        builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {
                 NumberPicker refreshTimePicker = (NumberPicker) view.findViewById(R.id.RefreshTime);
-                SharedPreferences refreshTimePreference = getActivity().getSharedPreferences("RefreshTime",0);
+                SharedPreferences refreshTimePreference = getActivity().getSharedPreferences("RefreshTime", 0);
                 SharedPreferences.Editor editor = refreshTimePreference.edit();
                 int selection = refreshTimePicker.getValue();
                 editor.putLong("refreshTime", refreshTimeChoices[selection]);
                 Toast toast = Toast.makeText(getActivity(), "Time Saved.", Toast.LENGTH_SHORT);
                 toast.show();
-                editor.commit();
+                editor.apply();
 
 
             }
@@ -57,23 +57,22 @@ public class RefreshTimeDialog extends DialogFragment {
             }
         });
         NumberPicker notifyTimePicker = (NumberPicker) view.findViewById(R.id.RefreshTime);
-        SharedPreferences refreshTimePreference = getActivity().getSharedPreferences("RefreshTime",0);
-        Long current = refreshTimePreference.getLong("refreshTime",2);
-        int currentPosition =2;
-        for(int i=0;i<refreshTimeChoices.length;i++){
-            if(current==refreshTimeChoices[i]){
+        SharedPreferences refreshTimePreference = getActivity().getSharedPreferences("RefreshTime", 0);
+        Long current = refreshTimePreference.getLong("refreshTime", 2);
+        int currentPosition = 2;
+        for (int i = 0; i < refreshTimeChoices.length; i++) {
+            if (current == refreshTimeChoices[i]) {
                 currentPosition = i;
                 break;
             }
         }
         String[] choices = getResources().getStringArray(R.array.refreshTimeChoices);
         notifyTimePicker.setMinValue(0);
-        notifyTimePicker.setMaxValue(choices.length-1);
+        notifyTimePicker.setMaxValue(choices.length - 1);
         notifyTimePicker.setDisplayedValues(choices);
         notifyTimePicker.setValue(currentPosition);
         notifyTimePicker.setDescendantFocusability(TimePicker.FOCUS_BLOCK_DESCENDANTS);
-        final AlertDialog d = builder.create();
-        return d;
+        return builder.create();
     }
 
 }

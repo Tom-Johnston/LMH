@@ -1,6 +1,7 @@
 package com.johnston.lmhapp.LaundryView;
 
 import android.app.Fragment;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -9,45 +10,99 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.johnston.lmhapp.MainActivity;
 import com.johnston.lmhapp.R;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 
 /**
  * Created by Tom on 02/06/2014.
  */
 public class LaundryViewFragment extends Fragment {
-    Boolean Loaded = false;
+    Boolean finished = false;
+    Boolean refreshing=false;
     View view;
     long startTime = 0;
+    ArrayList<String> KatieLee;
+    ArrayList<String> NewOldHall;
+    ArrayList<String> Talbot;
+    MenuItem actionRefresh;
     final Handler handler = new Handler() {
         @Override
         public void handleMessage(Message message) {
-            startTime = (Long) message.obj;
-            Loaded = true;
+
+            if(message.what==-1){
+                MainActivity main = (MainActivity) getActivity();
+                if(main!=null) {
+                    main.stopRefresh(1);
+                }
+                if(view!=null){
+                    (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
+                }
+
+            }else if(message.what==0){
+                startTime = (Long) message.obj;
+                finished = true;
+                refreshing=false;
+            }else if(message.what==1){
+                KatieLee = (ArrayList<String>) message.obj;
+                if(view!=null){
+                    addEntriesToList(R.id.KatieLee,KatieLee);
+                }
+            }else if(message.what==2){
+                NewOldHall = (ArrayList<String>) message.obj;
+                if(view!=null){
+                    addEntriesToList(R.id.NewOldHall,NewOldHall);
+                }
+
+            }else if(message.what==3){
+                MainActivity main = (MainActivity) getActivity();
+                if(main!=null) {
+                    main.stopRefresh(1);
+                }
+                Talbot = (ArrayList<String>) message.obj;
+                if(view!=null){
+                    addEntriesToList(R.id.Talbot,Talbot);
+                    (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
+                    (view.findViewById(R.id.card_view)).setVisibility(View.VISIBLE);
+                    (view.findViewById(R.id.card_view2)).setVisibility(View.VISIBLE);
+                    (view.findViewById(R.id.card_view3)).setVisibility(View.VISIBLE);
+                }
+            }
         }
     };
 
+
+    public void addEntriesToList(int resource,ArrayList<String> entries ){
+        LinearLayout linearLayout = (LinearLayout)view.findViewById(resource);
+        linearLayout.removeAllViews();
+        for(int i=0;i<entries.size();i++){
+            TextView tv = new TextView(getActivity());
+            tv.setText(entries.get(i));
+
+            View divider = new View(getActivity());
+            divider.setBackgroundColor(Color.parseColor("#1f000000"));
+            divider.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,2));
+
+            linearLayout.addView(tv);
+            linearLayout.addView(divider);
+        }
+    }
+
     public void LoadStatus() {
+        refreshing=true;
+        MainActivity main = (MainActivity) getActivity();
+        main.startRefresh(1);
         handler.removeCallbacksAndMessages(null);
-        TextView timer = (TextView) view.findViewById(R.id.LastUpdate);
-        timer.setText("");
-        TextView tv1 = (TextView) view.findViewById(R.id.KatieLee);
-        TextView tv2 = (TextView) view.findViewById(R.id.NewOldHall);
-        TextView tv3 = (TextView) view.findViewById(R.id.Talbot);
-        tv1.setVisibility(View.GONE);
-        tv2.setVisibility(View.GONE);
-        tv3.setVisibility(View.GONE);
-        ProgressBar P1 = (ProgressBar) view.findViewById(R.id.P1);
-        ProgressBar P2 = (ProgressBar) view.findViewById(R.id.P2);
-        ProgressBar P3 = (ProgressBar) view.findViewById(R.id.P3);
-        P1.setVisibility(View.VISIBLE);
-        P2.setVisibility(View.VISIBLE);
-        P3.setVisibility(View.VISIBLE);
+        (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
+        (view.findViewById(R.id.card_view)).setVisibility(View.GONE);
+        (view.findViewById(R.id.card_view2)).setVisibility(View.GONE);
+        (view.findViewById(R.id.card_view3)).setVisibility(View.GONE);
         try {
             URL KatieLee = new URL("http://classic.laundryview.com/laundry_room.php?lr=870043400887");
             URL NewOldHall = new URL("http://classic.laundryview.com/laundry_room.php?lr=870043400853");
@@ -56,8 +111,6 @@ public class LaundryViewFragment extends Fragment {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-
-
     }
 
     @Override
@@ -70,9 +123,17 @@ public class LaundryViewFragment extends Fragment {
     public android.view.View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
         super.onCreateView(null, null, savedInstanceState);
         if (view == null) {
-            view = inflater.inflate(R.layout.laundry_view, container, false);
+            view = inflater.inflate(R.layout.new_laundry_view, container, false);
         }
-        if (!Loaded) {
+        if(refreshing){
+            MainActivity main = (MainActivity) getActivity();
+            main.startRefresh(1);
+            (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
+            (view.findViewById(R.id.card_view)).setVisibility(View.GONE);
+            (view.findViewById(R.id.card_view2)).setVisibility(View.GONE);
+            (view.findViewById(R.id.card_view3)).setVisibility(View.GONE);
+        }else
+        if (!finished) {
             LoadStatus();
         } else {
             final TextView timerView = (TextView) view.findViewById(R.id.LastUpdate);
@@ -89,7 +150,6 @@ public class LaundryViewFragment extends Fragment {
             };
             handler.post(updateTime);
         }
-
         return view;
     }
 
@@ -99,11 +159,13 @@ public class LaundryViewFragment extends Fragment {
         handler.removeCallbacksAndMessages(null);
     }
 
+
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        MenuItem item = menu.findItem(R.id.action_refresh);
-        item.setEnabled(true);
-        item.setVisible(true);
+        actionRefresh = menu.findItem(R.id.action_refresh);
+        actionRefresh.setEnabled(true);
+        actionRefresh.setVisible(true);
+
     }
 }

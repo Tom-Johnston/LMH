@@ -1,10 +1,12 @@
 package com.johnston.lmhapp.MealMenus;
 
+import android.annotation.TargetApi;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 
 /**
@@ -13,13 +15,14 @@ import android.os.Bundle;
 public class WidgetProvider extends AppWidgetProvider {
 
     @Override
-    public void onAppWidgetOptionsChanged (Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle newOptions){
-        int width = newOptions.getInt(appWidgetManager.OPTION_APPWIDGET_MIN_WIDTH);
+    public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager, int appWidgetId, Bundle newOptions) {
 
-        SharedPreferences widgetWidth = context.getSharedPreferences("widgetWidth",0);
+        int width = newOptions.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH);
+
+        SharedPreferences widgetWidth = context.getSharedPreferences("widgetWidth", 0);
         SharedPreferences.Editor editor = widgetWidth.edit();
-        editor.putInt("width",width);
-        editor.commit();
+        editor.putInt("width", width);
+        editor.apply();
         Intent intent = new Intent(context, WidgetBroadcastReceiver.class);
         context.sendBroadcast(intent);
 
@@ -31,7 +34,7 @@ public class WidgetProvider extends AppWidgetProvider {
         SharedPreferences widgetEnabled = context.getSharedPreferences("widgetEnabled", 0);
         SharedPreferences.Editor editor = widgetEnabled.edit();
         editor.putBoolean("widgetEnabled", true);
-        editor.commit();
+        editor.apply();
     }
 
     @Override
@@ -40,7 +43,7 @@ public class WidgetProvider extends AppWidgetProvider {
         SharedPreferences widgetEnabled = context.getSharedPreferences("widgetEnabled", 0);
         SharedPreferences.Editor editor = widgetEnabled.edit();
         editor.putBoolean("widgetEnabled", false);
-        editor.commit();
+        editor.apply();
     }
 
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {

@@ -32,7 +32,6 @@ public class NameGrabberAsync extends AsyncTask<Object, Void, Void> {
             BufferedReader in = new BufferedReader(new InputStreamReader(nameConn.getInputStream(), "UTF-8"));
             String inputLine;
             String name = "";
-            String nameSegment;
             int end;
             while (true) {
                 inputLine = in.readLine();
@@ -50,7 +49,7 @@ public class NameGrabberAsync extends AsyncTask<Object, Void, Void> {
             SharedPreferences LogIn = context.getSharedPreferences("LogIn", 0);
             SharedPreferences.Editor editor = LogIn.edit();
             editor.putString("Name", name.trim());
-            editor.commit();
+            editor.apply();
             handler.obtainMessage(0, name.trim()).sendToTarget();
         } catch (MalformedURLException e) {
             e.printStackTrace();

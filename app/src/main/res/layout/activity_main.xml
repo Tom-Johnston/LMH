@@ -22,7 +22,7 @@
         <FrameLayout
             android:id="@+id/Frame"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"></FrameLayout>
+            android:layout_height="match_parent"/>
 
 
     </LinearLayout>
@@ -35,6 +35,7 @@
         android:fitsSystemWindows="true">
 
         <ImageView
+            android:contentDescription="@string/user_graphic"
             android:adjustViewBounds="true"
             android:id="@+id/graphic"
             android:layout_height="wrap_content"

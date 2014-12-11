@@ -15,7 +15,7 @@ import java.util.StringTokenizer;
  * Created by Tom on 08/09/2014.
  */
 public class WidgetListProvider implements RemoteViewsService.RemoteViewsFactory {
-    final public List<String> Options = new ArrayList<String>();
+    final public List<String> Options = new ArrayList<>();
     private Context context = null;
 //    private int appWidgetId;
 

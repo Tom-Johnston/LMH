@@ -2,11 +2,6 @@ package com.johnston.lmhapp.Battels;
 
 import android.os.AsyncTask;
 import android.os.Handler;
-import android.view.View;
-import android.widget.TextView;
-
-import com.johnston.lmhapp.R;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -21,7 +16,7 @@ import javax.net.ssl.SSLContext;
  * Created by Tom on 27/10/2014.
  */
 public class BattelsAsync extends AsyncTask<Object, String, Void> {
-    TextView Status;
+    Handler statusHandler;
 
     @Override
     protected Void doInBackground(Object[] objects) {
@@ -29,9 +24,10 @@ public class BattelsAsync extends AsyncTask<Object, String, Void> {
 
         try {
             SSLContext sslContext = (SSLContext) objects[0];
-            Status = (TextView) ((View) objects[1]).findViewById(R.id.Status);
-            publishProgress("Getting Account Information");
+            statusHandler = (Handler) objects[1];
             Handler handler = (Handler) objects[2];
+
+            publishProgress("Getting Account Information");
             URL battelsURL = new URL("https://intranet.lmh.ox.ac.uk/navbilling.asp");
             HttpsURLConnection battelsConn = (HttpsURLConnection) battelsURL.openConnection();
             battelsConn.setSSLSocketFactory(sslContext.getSocketFactory());
@@ -42,7 +38,7 @@ public class BattelsAsync extends AsyncTask<Object, String, Void> {
             int start;
             int end;
             byte column = 0;
-            ArrayList<String> Entries = new ArrayList<String>();
+            ArrayList<String> Entries = new ArrayList<>();
             Boolean inTable = false;
             while (true) {
                 inputLine = in.readLine();
@@ -89,7 +85,8 @@ public class BattelsAsync extends AsyncTask<Object, String, Void> {
             publishProgress("Getting Better Descriptions");
             for (int i = 1; i < Entries.size(); i += 4) {
                 if (Entries.get(i).contains("¬")) {
-                    URL infoURL = new URL("https://intranet.lmh.ox.ac.uk/navbillingdetail.asp?invno=" + Entries.get(i).substring(1));
+                    Entries.set(i,Entries.get(i).substring(1));
+                    URL infoURL = new URL("https://intranet.lmh.ox.ac.uk/navbillingdetail.asp?invno=" + Entries.get(i));
                     HttpsURLConnection infoConn = (HttpsURLConnection) infoURL.openConnection();
                     infoConn.setSSLSocketFactory(sslContext.getSocketFactory());
                     infoConn.setInstanceFollowRedirects(true);
@@ -113,33 +110,26 @@ public class BattelsAsync extends AsyncTask<Object, String, Void> {
 
             }
 
-            Entries.add("Total");
             Entries.add("");
+            Entries.add("Total");
             Entries.add("");
             Entries.add(Total);
             publishProgress("Finished");
             handler.obtainMessage(0, Entries).sendToTarget();
         } catch (MalformedURLException e) {
             e.printStackTrace();
+            statusHandler.obtainMessage(-1).sendToTarget();
         } catch (IOException e) {
             e.printStackTrace();
+            statusHandler.obtainMessage(-1).sendToTarget();
         }
         return null;
     }
 
     @Override
     protected void onProgressUpdate(String... values) {
-        Status.setText(values[0]);
+    statusHandler.obtainMessage(0,values[0]).sendToTarget();
     }
 
-    @Override
-    protected void onPostExecute(Void v) {
-        Status.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Status.setText("");
-            }
-        },3000);
-    }
 
 }

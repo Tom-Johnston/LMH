@@ -3,7 +3,6 @@ package com.johnston.lmhapp.LaundryView;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.johnston.lmhapp.R;
@@ -14,20 +13,19 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.StringTokenizer;
+import java.util.ArrayList;
 
 /**
  * Created by Tom on 03/06/2014.
  */
-public class LaundryViewAsync extends AsyncTask<Object, Void, String> {
+public class LaundryViewAsync extends AsyncTask<Object, Void, Boolean> {
     View view;
     Handler handler;
-
+    String Error;
     @Override
-    protected String doInBackground(Object[] objects) {
+    protected Boolean doInBackground(Object[] objects) {
         view = (View) objects[0];
         handler = (Handler) objects[1];
-        StringBuilder PassBack = new StringBuilder();
 
         try {
             for (int i = 2; i < 5; i++) {
@@ -41,7 +39,7 @@ public class LaundryViewAsync extends AsyncTask<Object, Void, String> {
                     a.append(inputLine);
                 in.close();
                 int Start = 0;
-
+                ArrayList<String> stringArrayList = new ArrayList<>();
                 while (a.indexOf("\"stat\">", Start) > 0) {
                     Start = a.indexOf("\"stat\">", Start) + 7;
                     int end = a.indexOf("<", Start);
@@ -55,30 +53,35 @@ public class LaundryViewAsync extends AsyncTask<Object, Void, String> {
                     } else {
                         Type = "Unknown";
                     }
-                    PassBack.append(Type + Result + "\n");
+                    stringArrayList.add(Type + Result);
 
                 }
-                PassBack.append("%%%");
+                handler.obtainMessage(i-1,stringArrayList).sendToTarget();
             }
-            return PassBack.toString();
+            return true;
         } catch (MalformedURLException e) {
-            String Error = "Error.Malformed URL.I have no idea why.";
+            Error = "Error.Malformed URL.I have no idea why.";
+            handler.obtainMessage(-1).sendToTarget();
             e.printStackTrace();
-            return Error;
+            return false;
         } catch (IOException e) {
-            String Error = "Error.IO Exception. Check internet connection.";
+            Error = "Error.IO Exception. Check internet connection.";
+            handler.obtainMessage(-1).sendToTarget();
             e.printStackTrace();
-            return Error;
-
+            return false;
         }
 
     }
 
 
     @Override
-    protected void onPostExecute(String s) {
-        super.onPostExecute(s);
+    protected void onPostExecute(Boolean v) {
         final TextView timerView = (TextView) view.findViewById(R.id.LastUpdate);
+        if(!v){
+            timerView.setText(Error);
+            return;
+
+        }
         final long startTime = System.currentTimeMillis();
         Runnable updateTime = new Runnable() {
 
@@ -93,26 +96,5 @@ public class LaundryViewAsync extends AsyncTask<Object, Void, String> {
         };
         handler.obtainMessage(0, startTime).sendToTarget();
         handler.post(updateTime);
-        StringTokenizer st = new StringTokenizer(s, "%%%");
-        ProgressBar P1 = (ProgressBar) view.findViewById(R.id.P1);
-        ProgressBar P2 = (ProgressBar) view.findViewById(R.id.P2);
-        ProgressBar P3 = (ProgressBar) view.findViewById(R.id.P3);
-        P1.setVisibility(View.GONE);
-        P2.setVisibility(View.GONE);
-        P3.setVisibility(View.GONE);
-        try {
-            TextView KatieLee = (TextView) view.findViewById(R.id.KatieLee);
-            TextView NewOldHall = (TextView) view.findViewById(R.id.NewOldHall);
-            TextView Talbot = (TextView) view.findViewById(R.id.Talbot);
-            KatieLee.setVisibility(View.VISIBLE);
-            NewOldHall.setVisibility(View.VISIBLE);
-            Talbot.setVisibility(View.VISIBLE);
-            KatieLee.setText(st.nextToken());
-            NewOldHall.setText(st.nextToken());
-            Talbot.setText(st.nextToken());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
     }
 }

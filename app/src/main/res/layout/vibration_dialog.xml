@@ -10,28 +10,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="1 Buzz"
-            android:onClick="onVibrateChanged"
             android:id="@+id/OneBuzz"
             android:textSize="16sp"/>
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="2 Buzz"
-            android:onClick="onVibrateChanged"
             android:id="@+id/TwoBuzz"
             android:textSize="16sp"/>
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="3 Buzz"
-            android:onClick="onVibrateChanged"
             android:id="@+id/ThreeBuzz"
             android:textSize="16sp"/>
         <RadioButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Custom"
-            android:onClick="onVibrateChanged"
             android:id="@+id/CustomBuzz"
             android:textSize="16sp"/>
         </RadioGroup>

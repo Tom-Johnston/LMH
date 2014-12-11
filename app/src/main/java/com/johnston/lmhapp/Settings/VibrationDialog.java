@@ -25,6 +25,24 @@ import java.util.StringTokenizer;
  */
 public class VibrationDialog extends DialogFragment {
     View view;
+    View.OnClickListener radioListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            EditText pattern = (EditText) view.findViewById(R.id.Pattern);
+            if (v.getId() == R.id.OneBuzz) {
+                pattern.setText(getResources().getString(R.string.buzz1));
+                pattern.setEnabled(false);
+            } else if (v.getId() == R.id.TwoBuzz) {
+                pattern.setText(getResources().getString(R.string.buzz2));
+                pattern.setEnabled(false);
+            } else if (v.getId() == R.id.ThreeBuzz) {
+                pattern.setText(getResources().getString(R.string.buzz3));
+                pattern.setEnabled(false);
+            } else {
+                pattern.setEnabled(true);
+            }
+        }
+    };
 
     static VibrationDialog newInstance() {
         VibrationDialog f = new VibrationDialog();
@@ -41,7 +59,7 @@ public class VibrationDialog extends DialogFragment {
         builder.setView(view);
         builder.setTitle("Vibration Settings");
         builder.setPositiveButton("Save", null);
-        builder.setNeutralButton("Test",null);
+        builder.setNeutralButton("Test", null);
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {
@@ -58,16 +76,16 @@ public class VibrationDialog extends DialogFragment {
         buzz3.setOnClickListener(radioListener);
         buzzCustom.setOnClickListener(radioListener);
         EditText patternText = (EditText) view.findViewById(R.id.Pattern);
-        SharedPreferences vibratePreference = getActivity().getSharedPreferences("vibratePattern",0);
-        patternText.setText(vibratePreference.getString("vibratePattern","0,600"));
+        SharedPreferences vibratePreference = getActivity().getSharedPreferences("vibratePattern", 0);
+        patternText.setText(vibratePreference.getString("vibratePattern", "0,600"));
         patternText.setEnabled(false);
-        if (vibratePreference.getString("vibratePattern","0,600").equals(getResources().getString(R.string.buzz1))){
+        if (vibratePreference.getString("vibratePattern", "0,600").equals(getResources().getString(R.string.buzz1))) {
             buzz1.setChecked(true);
-        }else if (vibratePreference.getString("vibratePattern","0,600").equals(getResources().getString(R.string.buzz2))){
+        } else if (vibratePreference.getString("vibratePattern", "0,600").equals(getResources().getString(R.string.buzz2))) {
             buzz2.setChecked(true);
-        }else if (vibratePreference.getString("vibratePattern","0,600").equals(getResources().getString(R.string.buzz3))){
+        } else if (vibratePreference.getString("vibratePattern", "0,600").equals(getResources().getString(R.string.buzz3))) {
             buzz3.setChecked(true);
-        }else{
+        } else {
             buzzCustom.setChecked(true);
             patternText.setEnabled(true);
         }
@@ -77,7 +95,7 @@ public class VibrationDialog extends DialogFragment {
             @Override
             public void onShow(DialogInterface dialog) {
 
-                  Button b2 = d.getButton(AlertDialog.BUTTON_NEUTRAL);
+                Button b2 = d.getButton(AlertDialog.BUTTON_NEUTRAL);
                 b2.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View useless) {
@@ -92,13 +110,13 @@ public class VibrationDialog extends DialogFragment {
                     public void onClick(View v) {
                         EditText editText = (EditText) view.findViewById(R.id.Pattern);
                         String pattern = editText.getText().toString();
-                        if(TestString(false)) {
+                        if (TestString(false)) {
                             SharedPreferences vibratePreference = getActivity().getSharedPreferences("vibratePattern", 0);
                             SharedPreferences.Editor editor = vibratePreference.edit();
                             editor.putString("vibratePattern", pattern);
                             Toast toast = Toast.makeText(getActivity(), "Vibrate Pattern Saved.", Toast.LENGTH_SHORT);
                             toast.show();
-                            editor.commit();
+                            editor.apply();
                             d.dismiss();
                         }
                     }
@@ -108,27 +126,7 @@ public class VibrationDialog extends DialogFragment {
         return d;
     }
 
-
-    View.OnClickListener radioListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            EditText pattern = (EditText) view.findViewById(R.id.Pattern);
-            if(v.getId()==R.id.OneBuzz){
-                pattern.setText(getResources().getString(R.string.buzz1));
-                pattern.setEnabled(false);
-            }else if(v.getId()==R.id.TwoBuzz){
-                pattern.setText(getResources().getString(R.string.buzz2));
-                pattern.setEnabled(false);
-            }else if(v.getId()==R.id.ThreeBuzz){
-                pattern.setText(getResources().getString(R.string.buzz3));
-                pattern.setEnabled(false);
-            }else{
-                pattern.setEnabled(true);
-            }
-        }
-    };
-
-    public boolean TestString(Boolean vibrate){
+    public boolean TestString(Boolean vibrate) {
         // Tests for a valid string. If vibrate is true, will vibrate on valid string.
         EditText editText = (EditText) view.findViewById(R.id.Pattern);
         String pattern = editText.getText().toString();
@@ -137,7 +135,7 @@ public class VibrationDialog extends DialogFragment {
         }
         StringTokenizer stringTokenizer = new StringTokenizer(pattern, ",");
         Boolean parse = true;
-        ArrayList<Long> vibratePatternList = new ArrayList<Long>();
+        ArrayList<Long> vibratePatternList = new ArrayList<>();
         while (stringTokenizer.hasMoreElements()) {
             try {
                 vibratePatternList.add(Long.parseLong(stringTokenizer.nextToken()));
@@ -151,7 +149,7 @@ public class VibrationDialog extends DialogFragment {
             toast.show();
             return false;
         } else {
-            if (vibrate){
+            if (vibrate) {
                 Vibrate(vibratePatternList);
             }
             return true;
@@ -159,11 +157,11 @@ public class VibrationDialog extends DialogFragment {
     }
 
     public void Vibrate(ArrayList<Long> vibratePatternList) {
-            Vibrator v = (Vibrator) getActivity().getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
-            long[] vibrateArray = new long[vibratePatternList.size()];
-            for (int i = 0; i < vibratePatternList.size(); i++) {
-                vibrateArray[i] = vibratePatternList.get(i);
-            }
-            v.vibrate(vibrateArray, -1);
+        Vibrator v = (Vibrator) getActivity().getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
+        long[] vibrateArray = new long[vibratePatternList.size()];
+        for (int i = 0; i < vibratePatternList.size(); i++) {
+            vibrateArray[i] = vibratePatternList.get(i);
+        }
+        v.vibrate(vibrateArray, -1);
     }
 }

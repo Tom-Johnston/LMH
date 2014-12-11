@@ -21,10 +21,10 @@ public class DownloadNewMenuAsync extends AsyncTask<Object, Void, Void> {
     @Override
     protected Void doInBackground(Object[] contexts) {
         Boolean widget;
+        Context context = (Context) contexts[0];
+        widget = (Boolean) contexts[1];
+        Handler handler = (Handler) contexts[2];
         try {
-            Context context = (Context) contexts[0];
-            widget = (Boolean) contexts[1];
-            Handler handler = (Handler)contexts[2];
             File file = new File(context.getFilesDir(), "Menu.txt");
             URL url = new URL("https://drive.google.com/uc?id=0Bzygl0tJta6ZZmdRdnZyb2Iyb0k&export=download");
             InputStream menus = url.openStream();
@@ -44,12 +44,18 @@ public class DownloadNewMenuAsync extends AsyncTask<Object, Void, Void> {
                     Intent updateWidget = new Intent(context, WidgetBroadcastReceiver.class);
                     context.sendBroadcast(updateWidget);
                 }
-            }else{
+            } else {
                 handler.sendEmptyMessage(0);
             }
         } catch (MalformedURLException e) {
+            if(!widget){
+                handler.obtainMessage(-1).sendToTarget();
+            }
             e.printStackTrace();
         } catch (IOException e) {
+            if(!widget){
+                handler.obtainMessage(-1).sendToTarget();
+            }
             e.printStackTrace();
         }
 

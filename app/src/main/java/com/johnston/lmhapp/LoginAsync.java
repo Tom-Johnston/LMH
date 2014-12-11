@@ -1,9 +1,7 @@
 package com.johnston.lmhapp;
 
 import android.os.AsyncTask;
-import android.widget.TextView;
-
-import com.johnston.lmhapp.MainActivity;
+import android.os.Handler;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -23,12 +21,13 @@ import javax.net.ssl.SSLContext;
  * Created by Tom on 28/05/2014.
  */
 public class LoginAsync extends AsyncTask<Object, String, Boolean> {
-    TextView Status;
+    Handler statusHandler;
     MainActivity Main;
 
     @Override
     protected Boolean doInBackground(Object[] Objects) {
-        Status = (TextView) Objects[3];
+        publishProgress("Started");
+        statusHandler = (Handler) Objects[3];
         SSLContext context = (SSLContext) Objects[0];
         String args = (String) Objects[1];
         String args2 = (String) Objects[2];
@@ -43,6 +42,11 @@ public class LoginAsync extends AsyncTask<Object, String, Boolean> {
                 publishProgress("Already Logged In");
                 return true;
             } else {
+                manager.getCookieStore().removeAll();
+                urlc = (HttpsURLConnection) url.openConnection();
+                urlc.setSSLSocketFactory(context.getSocketFactory());
+                urlc.getResponseCode();
+
                 publishProgress("Redirected");
                 URL regUrl = new URL("https://webauth.ox.ac.uk/login");
 
@@ -78,6 +82,7 @@ public class LoginAsync extends AsyncTask<Object, String, Boolean> {
                 if (a.indexOf("Error") > 0) {
                     publishProgress("Error");
                     manager.getCookieStore().removeAll();
+                    statusHandler.obtainMessage(-1).sendToTarget();
                     return false;
                 }
                 publishProgress("Successful Login");
@@ -96,17 +101,21 @@ public class LoginAsync extends AsyncTask<Object, String, Boolean> {
         } catch (MalformedURLException e) {
             e.printStackTrace();
             publishProgress("Error logging in: MalformedURLException");
+            statusHandler.obtainMessage(-1).sendToTarget();
             return false;
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
             publishProgress("Error logging in: UnsupportedEncodingException");
+            statusHandler.obtainMessage(-1).sendToTarget();
             return false;
         } catch (ProtocolException e) {
             e.printStackTrace();
             publishProgress("Error logging in: ProtocolException");
+            statusHandler.obtainMessage(-1).sendToTarget();
             return false;
         } catch (IOException e) {
             publishProgress("Error logging in: IOExeption. Check your network connection");
+            statusHandler.obtainMessage(-1).sendToTarget();
             e.printStackTrace();
             return false;
         }
@@ -116,9 +125,7 @@ public class LoginAsync extends AsyncTask<Object, String, Boolean> {
 
     @Override
     protected void onProgressUpdate(String... values) {
-        if (Status != null) {
-        Status.setText(values[0]);
-        }
+        statusHandler.obtainMessage(0,values[0]).sendToTarget();
     }
 
     @Override

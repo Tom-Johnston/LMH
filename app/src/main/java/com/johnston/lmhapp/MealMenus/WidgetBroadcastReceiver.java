@@ -38,22 +38,22 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
     public void onReceive(final Context context, Intent intent) {
         final File file = new File(context.getFilesDir(), "Menu.txt");
 
-            if (!file.exists()) {
-                final Handler handler = new Handler() {
-                    @Override
-                    public void handleMessage(Message message) {
-                        part3(file, context);
-                    }
-                };
-                new DownloadNewMenuAsync().execute(context, true, handler);
+        if (!file.exists()) {
+            final Handler handler = new Handler() {
+                @Override
+                public void handleMessage(Message message) {
+                    part3(file, context);
+                }
+            };
+            new DownloadNewMenuAsync().execute(context, true, handler);
 
-            } else {
-                part2(file, context);
-            }
+        } else {
+            part2(file, context);
+        }
     }
 
 
-    public void part2(final File file,final Context context) {
+    public void part2(final File file, final Context context) {
         try {
 
             BufferedReader br = new BufferedReader(new FileReader(file));
@@ -61,7 +61,7 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
             String dateString = br.readLine();
             Date date = new SimpleDateFormat("dd/MM/yy", Locale.ENGLISH).parse(dateString);
             long time = date.getTime();
-            String[] output = constructMenu(br, time, context);
+            String[] output = constructMenu(br, time);
             String nextMeal = output[2];
             if (nextMeal.equals("")) {
 //                We have an old menu.
@@ -72,7 +72,7 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
                     }
                 };
                 new DownloadNewMenuAsync().execute(context, true, handler);
-            }else{
+            } else {
                 part3(file, context);
             }
         } catch (FileNotFoundException e1) {
@@ -84,16 +84,16 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
         }
     }
 
-    public void part3(File file,Context context) {
+    public void part3(File file, Context context) {
         try {
-            SharedPreferences refreshTimePreference = context.getSharedPreferences("RefreshTime",0);
-            long  refreshTime = refreshTimePreference.getLong("refreshTime",2*60*60*1000);
+            SharedPreferences refreshTimePreference = context.getSharedPreferences("RefreshTime", 0);
+            long refreshTime = refreshTimePreference.getLong("refreshTime", 2 * 60 * 60 * 1000);
 
             BufferedReader br = new BufferedReader(new FileReader(file));
             String dateString = br.readLine();
             Date date = new SimpleDateFormat("dd/MM/yy", Locale.ENGLISH).parse(dateString);
             long time = date.getTime();
-            String[] output = constructMenu(br, time, context);
+            String[] output = constructMenu(br, time);
             String Day = output[0];
             String ShortDay = output[7];
             String Meal = output[1];
@@ -132,7 +132,7 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
             remoteViews.setOnClickPendingIntent(R.id.WidgetTitle, pi2);
             remoteViews.setOnClickPendingIntent(R.id.Day, pi2);
             appWidgetManager.updateAppWidget(widget, remoteViews);
-            if(TimeOfMeal!=-1){
+            if (TimeOfMeal != -1) {
                 am.set(AlarmManager.RTC, TimeOfMeal + 1000, pi);
             }
         } catch (FileNotFoundException e) {
@@ -145,7 +145,7 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
     }
 
 
-    public String[] constructMenu(BufferedReader br, long time, Context context) throws IOException {
+    public String[] constructMenu(BufferedReader br, long time) throws IOException {
 
         String inputLine;
         int day = 0;
@@ -187,9 +187,9 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
                     Minutes = Integer.parseInt(inputLine.substring(3, 5));
                     Calendar calendar = Calendar.getInstance();
                     calendar.setTimeInMillis(time);
-                    calendar.roll(Calendar.DAY_OF_WEEK,(day-2));
-                    calendar.set(Calendar.HOUR_OF_DAY,Hours);
-                    calendar.set(Calendar.MINUTE,Minutes);
+                    calendar.roll(Calendar.DAY_OF_WEEK, (day - 2));
+                    calendar.set(Calendar.HOUR_OF_DAY, Hours);
+                    calendar.set(Calendar.MINUTE, Minutes);
                     startOfNextMeal = calendar.getTimeInMillis();
                     break;
                 } else {
@@ -198,16 +198,16 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
                     Minutes = Integer.parseInt(inputLine.substring(9, 11));
                     Calendar calendar = Calendar.getInstance();
                     calendar.setTimeInMillis(time);
-                    calendar.roll(Calendar.DAY_OF_WEEK,(day-2));
-                    calendar.set(Calendar.HOUR_OF_DAY,Hours);
-                    calendar.set(Calendar.MINUTE,Minutes);
+                    calendar.roll(Calendar.DAY_OF_WEEK, (day - 2));
+                    calendar.set(Calendar.HOUR_OF_DAY, Hours);
+                    calendar.set(Calendar.MINUTE, Minutes);
                     TimeOfMeal = calendar.getTimeInMillis();
                     Hours = Integer.parseInt(inputLine.substring(0, 2));
                     Minutes = Integer.parseInt(inputLine.substring(3, 5));
                     calendar.setTimeInMillis(time);
-                    calendar.roll(Calendar.DAY_OF_WEEK,(day-2));
-                    calendar.set(Calendar.HOUR_OF_DAY,Hours);
-                    calendar.set(Calendar.MINUTE,Minutes);
+                    calendar.roll(Calendar.DAY_OF_WEEK, (day - 2));
+                    calendar.set(Calendar.HOUR_OF_DAY, Hours);
+                    calendar.set(Calendar.MINUTE, Minutes);
                     startOfMeal = calendar.getTimeInMillis();
 
                     if (currentTime < TimeOfMeal) {

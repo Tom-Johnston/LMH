@@ -45,7 +45,7 @@ public class LoginDialog extends DialogFragment {
         view = inflater.inflate(R.layout.login_dialog, null);
         builder.setView(view);
         builder.setTitle("Input Login Details");
-        builder.setPositiveButton("Save", new DialogInterface.OnClickListener(){
+        builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {
                 EditText passwordView = (EditText) view.findViewById(R.id.Password);
@@ -60,8 +60,8 @@ public class LoginDialog extends DialogFragment {
                 toast.show();
                 InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(view.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-                editor.commit();
-                final MainActivity main = (MainActivity)getActivity();
+                editor.apply();
+                final MainActivity main = (MainActivity) getActivity();
                 final Handler handler = new Handler() {
                     @Override
                     public void handleMessage(Message message) {
@@ -73,16 +73,18 @@ public class LoginDialog extends DialogFragment {
 //        Make the sizex an even number.
                 sizex = (sizex / 2) * 2;
                 int sizey = sizex / 2;
-                new ImageGeneratorAsync().execute(username, handler, sizex, sizey, getActivity().getApplicationContext(),false);
+                new ImageGeneratorAsync().execute(username, handler, sizex, sizey, getActivity().getApplicationContext(), false);
                 Byte three = 3;
-                editor.putString("Name","");
+                editor.putString("Name", "");
                 ((TextView) main.findViewById(R.id.name)).setText("");
-                editor.commit();
+                editor.apply();
                 final Handler nameHandler = new Handler() {
                     @Override
                     public void handleMessage(Message message) {
-                        String name = (String) message.obj;
-                        ((TextView) main.findViewById(R.id.name)).setText(name);
+                        if (message.what != -1) {
+                            String name = (String) message.obj;
+                            ((TextView) main.findViewById(R.id.name)).setText(name);
+                        }
                     }
                 };
                 TextView usernameTextView = (TextView) main.findViewById(R.id.username);
@@ -97,11 +99,11 @@ public class LoginDialog extends DialogFragment {
             }
         });
         SharedPreferences LogIn = getActivity().getSharedPreferences("LogIn", 0);
-            EditText Username = (EditText) view.findViewById(R.id.Username);
-            EditText Password = (EditText) view.findViewById(R.id.Password);
-            Username.setText(LogIn.getString("Username", ""));
-            Password.setText(LogIn.getString("Password", ""));
-        ((CheckBox)view.findViewById(R.id.checkBox)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        EditText Username = (EditText) view.findViewById(R.id.Username);
+        EditText Password = (EditText) view.findViewById(R.id.Password);
+        Username.setText(LogIn.getString("Username", ""));
+        Password.setText(LogIn.getString("Password", ""));
+        ((CheckBox) view.findViewById(R.id.checkBox)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 EditText Password = (EditText) view.findViewById(R.id.Password);
@@ -112,8 +114,7 @@ public class LoginDialog extends DialogFragment {
                 }
             }
         });
-        final AlertDialog d = builder.create();
-        return d;
+        return builder.create();
     }
 
 }
