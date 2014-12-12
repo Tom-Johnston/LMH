@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/retweet"
-        android:layout_margin="5dp"
+        android:layout_margin="4dp"
         android:background="#193658"
         android:minHeight="48px"
         android:minWidth="48px" />
@@ -33,7 +33,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/retweet"
-        android:layout_marginLeft="5dp"
+        android:layout_marginLeft="4dp"
         android:layout_toRightOf="@+id/profilePicture"
         android:textSize="20sp"
         android:textAppearance="@android:style/TextAppearance.DeviceDefault.Medium" />
@@ -44,7 +44,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/screenName"
-        android:layout_marginLeft="5dp"
+        android:layout_marginLeft="4dp"
         android:layout_toLeftOf="@+id/time"
         android:layout_toRightOf="@+id/screenName"
         android:textColor="#8a000000"
@@ -56,7 +56,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@+id/screenName"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="5dp"
+        android:layout_marginRight="4dp"
         android:textColor="#8a000000"
         android:textSize="12sp" />
 
@@ -66,7 +66,7 @@
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/retweet"
         android:layout_below="@+id/screenName"
-        android:layout_margin="5dp"
+        android:layout_margin="4dp"
         android:textSize="14sp" />
 
     <ImageView
@@ -78,6 +78,14 @@
         android:layout_alignLeft="@+id/screenName"
         android:layout_below="@+id/tweetText"
         android:layout_alignRight="@+id/time"
-        android:layout_marginBottom="5dp" />
+        android:layout_marginBottom="4dp" />
+
+    <View
+        android:layout_marginTop="2dp"
+        android:layout_below="@+id/tweetImage"
+        android:background="#1f000000"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="2dp" />
 
 </RelativeLayout>
