@@ -6,6 +6,7 @@
     android:orientation="vertical"
 >
     <TextView
+        android:gravity="center"
         android:id="@+id/nothingToShow"
         android:layout_margin="16dp"
         android:layout_width="match_parent"

@@ -19,13 +19,14 @@
 
     <RelativeLayout
         android:id="@+id/progressBarContainer"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center">
 
         <TextView
             android:id="@+id/nothingToShow"
+            android:gravity="center"
             android:textSize="24sp"
             android:layout_margin="16dp"
             android:text="There isn't anything to display."

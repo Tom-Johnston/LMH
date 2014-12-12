@@ -110,6 +110,7 @@ public class FormalFragment extends Fragment {
                 recyclerView.setAdapter(formalRecyclerAdapter);
                 (view.findViewById(R.id.progressBarContainer)).setVisibility(View.GONE);
             }else{
+                (view.findViewById(R.id.progressBarContainer)).setVisibility(View.VISIBLE);
                 (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
                 (view.findViewById(R.id.nothingToShow)).setVisibility(View.VISIBLE);
             }

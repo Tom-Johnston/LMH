@@ -102,6 +102,7 @@ public class BattelsFragment extends Fragment {
                 recyclerView.setVisibility(View.VISIBLE);
                 view.findViewById(R.id.Status).setVisibility(View.GONE);
             }else{
+                (view.findViewById(R.id.progressBarContainer)).setVisibility(View.VISIBLE);
                 (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
                 (view.findViewById(R.id.nothingToShow)).setVisibility(View.VISIBLE);
             }
