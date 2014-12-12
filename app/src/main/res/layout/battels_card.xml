@@ -42,14 +42,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/battelsReference"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="4dp"
             android:text="Date:"
             android:textStyle="bold"/>
 
         <TextView
             android:layout_alignBaseline="@id/battelsDateTitle"
             android:layout_toRightOf="@id/battelsDateTitle"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="4dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"

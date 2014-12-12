@@ -62,7 +62,7 @@
         android:fadingEdge="none"
         android:fadingEdgeLength="0dp"
         android:overScrollMode="never"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp" />
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp" />
 
 </RelativeLayout>
