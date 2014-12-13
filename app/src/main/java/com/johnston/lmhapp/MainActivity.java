@@ -365,6 +365,7 @@ public class MainActivity extends ActionBarActivity {
                     getSupportActionBar().setTitle(mTitle);
                 } else {
                     mTitle = savedInstanceState.getString("mTitle");
+                    getSupportActionBar().setTitle(mTitle);
                 }
             }
         };
@@ -381,7 +382,6 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        getSupportActionBar().setTitle(mTitle);
         // Sync the toggle state after onRestoreInstanceState has occurred.
         mDrawerToggle.syncState();
 
