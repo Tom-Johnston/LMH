@@ -48,11 +48,14 @@ public class LoginDialog extends DialogFragment {
         builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {
+                SharedPreferences LogIn = getActivity().getSharedPreferences("LogIn", 0);
                 EditText passwordView = (EditText) view.findViewById(R.id.Password);
                 String password = passwordView.getText().toString();
+                if(password.equals("")){
+                    password = LogIn.getString("Password","");
+                }
                 EditText usernameView = (EditText) view.findViewById(R.id.Username);
                 String username = usernameView.getText().toString();
-                SharedPreferences LogIn = getActivity().getSharedPreferences("LogIn", 0);
                 SharedPreferences.Editor editor = LogIn.edit();
                 editor.putString("Username", username);
                 editor.putString("Password", password);
@@ -102,7 +105,9 @@ public class LoginDialog extends DialogFragment {
         EditText Username = (EditText) view.findViewById(R.id.Username);
         EditText Password = (EditText) view.findViewById(R.id.Password);
         Username.setText(LogIn.getString("Username", ""));
-        Password.setText(LogIn.getString("Password", ""));
+        if(!LogIn.getString("Password","").equals("")){
+            Password.setHint("Password (unchanged)");
+        }
         ((CheckBox) view.findViewById(R.id.checkBox)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
