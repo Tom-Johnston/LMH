@@ -34,7 +34,7 @@ public class EPOSFragment extends Fragment {
 
             if (message.what == -1) {
                 refreshing = false;
-                finished = false;
+                finished = true;
                 MainActivity main = (MainActivity) getActivity();
                 if (main != null) {
                     main.stopRefresh(3);

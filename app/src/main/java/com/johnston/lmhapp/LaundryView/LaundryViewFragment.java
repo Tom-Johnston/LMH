@@ -39,7 +39,7 @@ public class
 
             if (message.what == -1) {
                 refreshing = false;
-                finished = false;
+                finished = true;
                 MainActivity main = (MainActivity) getActivity();
                 if (main != null) {
                     main.stopRefresh(1);
@@ -76,7 +76,7 @@ public class
                 Talbot = (ArrayList<String>) message.obj;
                 if (view != null) {
                     addEntriesToList(R.id.Talbot, Talbot);
-                    (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
+                    (view.findViewById(R.id.progressBarContainer)).setVisibility(View.GONE);
                     (view.findViewById(R.id.card_view)).setVisibility(View.VISIBLE);
                     (view.findViewById(R.id.card_view2)).setVisibility(View.VISIBLE);
                     (view.findViewById(R.id.card_view3)).setVisibility(View.VISIBLE);
@@ -107,7 +107,9 @@ public class
         MainActivity main = (MainActivity) getActivity();
         main.startRefresh(1);
         handler.removeCallbacksAndMessages(null);
+        (view.findViewById(R.id.progressBarContainer)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
+        (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
         (view.findViewById(R.id.card_view)).setVisibility(View.GONE);
         (view.findViewById(R.id.card_view2)).setVisibility(View.GONE);
         (view.findViewById(R.id.card_view3)).setVisibility(View.GONE);
@@ -136,7 +138,9 @@ public class
         if (refreshing) {
             MainActivity main = (MainActivity) getActivity();
             main.startRefresh(1);
+            (view.findViewById(R.id.progressBarContainer)).setVisibility(View.VISIBLE);
             (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
+            (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
             (view.findViewById(R.id.card_view)).setVisibility(View.GONE);
             (view.findViewById(R.id.card_view2)).setVisibility(View.GONE);
             (view.findViewById(R.id.card_view3)).setVisibility(View.GONE);

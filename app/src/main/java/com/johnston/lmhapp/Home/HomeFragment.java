@@ -61,7 +61,7 @@ public class HomeFragment extends Fragment {
             }
 
             if (message.what == -1) {
-                finished = false;
+                finished = true;
                 if (view == null) {
                     return;
                 }

@@ -35,7 +35,7 @@ public class PermissionFailedDialog extends DialogFragment {
         view = inflater.inflate(R.layout.permission_failed_dialog, null);
         builder.setView(view);
         builder.setTitle("Cannot Continue");
-        if (fail.contains("Please update your app version")) {
+        if (fail.contains("Your version of the app is no longer supported")) {
             builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {

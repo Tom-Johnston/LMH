@@ -41,7 +41,7 @@ public class BattelsFragment extends Fragment {
 
             if (message.what == -1) {
                 refreshing = false;
-                finished = false;
+                finished = true;
                 if (view == null) {
                     return;
                 }

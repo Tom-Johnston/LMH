@@ -31,7 +31,7 @@
             android:gravity="center">
 
             <TextView
-                android:id="@+id/nothingToShow"
+                android:id="@+id/nothingToShow" android:freezesText="true"
                 android:textSize="24sp"
                 android:layout_margin="16dp"
                 android:gravity="center"
