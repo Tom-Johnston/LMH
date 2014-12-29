@@ -14,6 +14,8 @@ import android.os.Message;
 import android.widget.RemoteViews;
 
 import com.johnston.lmhapp.MainActivity;
+import com.johnston.lmhapp.PermissionAsync;
+import com.johnston.lmhapp.PermissionFailedDialog;
 import com.johnston.lmhapp.R;
 
 import java.io.BufferedReader;
@@ -36,6 +38,46 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(final Context context, Intent intent) {
+        Handler permissionHandler = new Handler() {
+            @Override
+            public void handleMessage(Message message) {
+                if (message.what == 0) {
+//                Success!
+                    part1(context);
+                } else{
+//                Failure
+                    SharedPreferences refreshTimePreference = context.getSharedPreferences("RefreshTime", 0);
+                    long refreshTime = refreshTimePreference.getLong("refreshTime", 2 * 60 * 60 * 1000);
+                    RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.lmh_widget);
+                    Intent svcIntent = new Intent(context, WidgetListViewService.class);
+                    svcIntent.putExtra("Options", "Unable to get permission for new Menu");
+                    svcIntent.setData(Uri.parse(
+                            svcIntent.toUri(Intent.URI_INTENT_SCHEME)));
+
+                    remoteViews.setRemoteAdapter(R.id.Menu, svcIntent);
+                    remoteViews.setTextViewText(R.id.WidgetTitle,"Day");
+                    remoteViews.setTextViewText(R.id.Day, "Meal");
+                    AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+                    ComponentName widget = new ComponentName(context, WidgetProvider.class);
+                    AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+                    Intent newIntent = new Intent(context, WidgetBroadcastReceiver.class);
+                    PendingIntent pi = PendingIntent.getBroadcast(context, 0, newIntent, 0);
+                    Intent intentmenu = new Intent(context, MainActivity.class);
+                    intentmenu.putExtra("Launch", true);
+                    PendingIntent pi2 = PendingIntent.getActivity(context, 0, intentmenu, 0);
+                    remoteViews.setOnClickPendingIntent(R.id.WidgetTitle, pi2);
+                    remoteViews.setOnClickPendingIntent(R.id.Day, pi2);
+                    appWidgetManager.updateAppWidget(widget, remoteViews);
+                    if (System.currentTimeMillis() + refreshTime != -1) {
+                        am.set(AlarmManager.RTC, System.currentTimeMillis() + refreshTime + 1000, pi);
+                    }
+                }
+            }
+        };
+        new PermissionAsync().execute(context, permissionHandler,null);
+    }
+
+    public void part1(final Context context){
         final File file = new File(context.getFilesDir(), "Menu.txt");
 
         if (!file.exists()) {

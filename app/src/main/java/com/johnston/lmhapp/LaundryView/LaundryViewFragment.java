@@ -14,6 +14,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.johnston.lmhapp.MainActivity;
+import com.johnston.lmhapp.PermissionAsync;
+import com.johnston.lmhapp.PermissionFailedDialog;
 import com.johnston.lmhapp.R;
 
 import java.net.MalformedURLException;
@@ -113,14 +115,32 @@ public class
         (view.findViewById(R.id.card_view)).setVisibility(View.GONE);
         (view.findViewById(R.id.card_view2)).setVisibility(View.GONE);
         (view.findViewById(R.id.card_view3)).setVisibility(View.GONE);
-        try {
-            URL KatieLee = new URL("http://classic.laundryview.com/laundry_room.php?lr=870043400887");
-            URL NewOldHall = new URL("http://classic.laundryview.com/laundry_room.php?lr=870043400853");
-            URL Talbot = new URL("http://classic.laundryview.com/laundry_room.php?lr=870043400855");
-            new LaundryViewAsync().execute(view, handler, KatieLee, NewOldHall, Talbot, this);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
+
+            Handler permissionHandler = new Handler() {
+                @Override
+                public void handleMessage(Message message) {
+                    if (message.what == 0) {
+//                Success!
+                        try {
+                            URL KatieLee = new URL("http://classic.laundryview.com/laundry_room.php?lr=870043400887");
+                            URL NewOldHall = new URL("http://classic.laundryview.com/laundry_room.php?lr=870043400853");
+                            URL Talbot = new URL("http://classic.laundryview.com/laundry_room.php?lr=870043400855");
+                            new LaundryViewAsync().execute(view, handler, KatieLee, NewOldHall, Talbot);
+                        } catch (MalformedURLException e) {
+                            e.printStackTrace();
+                        }
+                    } else if (message.what == 1) {
+//                Failure
+                        handler.obtainMessage(-1).sendToTarget();
+                        PermissionFailedDialog newFragment = PermissionFailedDialog.newInstance((String) message.obj);
+                        newFragment.show(getFragmentManager(), "PERMISSION DENIED");
+                    } else {
+//                Something has gone wrong checking.
+                        handler.obtainMessage(-1).sendToTarget();
+                    }
+                }
+            };
+            new PermissionAsync().execute(getActivity().getApplicationContext(), permissionHandler,null);
     }
 
     @Override

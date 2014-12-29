@@ -25,7 +25,10 @@ public class PermissionAsync extends AsyncTask<Object, String, Void> {
     protected Void doInBackground(Object[] objects) {
         Context context = (Context) objects[0];
         Handler handler = (Handler) objects[1];
-        statusHandler = (Handler)objects[2];
+        if(objects[2]!=null){
+            statusHandler = (Handler)objects[2];
+        }
+
         try {
             publishProgress("Getting Permission");
             int versionNumber = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
@@ -73,6 +76,8 @@ public class PermissionAsync extends AsyncTask<Object, String, Void> {
 
     @Override
     protected void onProgressUpdate(String... values) {
-        statusHandler.obtainMessage(0, values[0]).sendToTarget();
+        if (statusHandler != null) {
+            statusHandler.obtainMessage(0, values[0]).sendToTarget();
+        }
     }
 }

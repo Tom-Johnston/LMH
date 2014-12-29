@@ -15,10 +15,15 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.johnston.lmhapp.LaundryView.LaundryViewAsync;
 import com.johnston.lmhapp.MainActivity;
+import com.johnston.lmhapp.PermissionAsync;
+import com.johnston.lmhapp.PermissionFailedDialog;
 import com.johnston.lmhapp.R;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 
 /**
@@ -43,7 +48,7 @@ public class MenuFragment extends Fragment {
         new DownloadNewMenuAsync().execute(context, false, handler);
     }
 
-    void startMenu() {
+    public void checkForPermission(){
         refreshing = true;
         MainActivity main = (MainActivity) getActivity();
         main.startRefresh(5);
@@ -53,6 +58,27 @@ public class MenuFragment extends Fragment {
         pb.setVisibility(View.VISIBLE);
         TextView nothingToShow = (TextView) view.findViewById(R.id.nothingToShow);
         nothingToShow.setVisibility(View.GONE);
+        Handler permissionHandler = new Handler() {
+            @Override
+            public void handleMessage(Message message) {
+                if (message.what == 0) {
+//                Success!
+                    startMenu();
+                } else if (message.what == 1) {
+//                Failure
+                    handler.obtainMessage(-1).sendToTarget();
+                    PermissionFailedDialog newFragment = PermissionFailedDialog.newInstance((String) message.obj);
+                    newFragment.show(getFragmentManager(), "PERMISSION DENIED");
+                } else {
+//                Something has gone wrong checking.
+                    handler.obtainMessage(-1).sendToTarget();
+                }
+            }
+        };
+        new PermissionAsync().execute(getActivity().getApplicationContext(), permissionHandler,null);
+    }
+
+    public void startMenu() {
         File file = new File(context.getFilesDir(), "Menu.txt");
         if (!file.exists()) {
 //                No menu. Get a new menu();
@@ -113,7 +139,7 @@ public class MenuFragment extends Fragment {
             TextView nothingToShow = (TextView) view.findViewById(R.id.nothingToShow);
             nothingToShow.setVisibility(View.GONE);
         } else if (!finished) {
-            startMenu();
+            checkForPermission();
         } else {
             showMenu();
         }
