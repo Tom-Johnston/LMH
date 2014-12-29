@@ -31,7 +31,7 @@ public class MenuRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        if(i==0){
+        if (i == 0) {
             View v = LayoutInflater.from(viewGroup.getContext())
                     .inflate(R.layout.status, viewGroup, false);
             return new StatusHolder(v);
@@ -43,11 +43,11 @@ public class MenuRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
-        if(position==0){
+        if (position == 0) {
             ((TextView) viewHolder.itemView).setText(" ");
-        }else{
+        } else {
             MealHolder mealHolder = (MealHolder) viewHolder;
-            position = (position-1) * 2;
+            position = (position - 1) * 2;
             mealHolder.mealTitle.setText(entries.get(position));
             mealHolder.mealMenu.setText(entries.get(position + 1));
         }
@@ -55,7 +55,7 @@ public class MenuRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public int getItemCount() {
-        return entries.size() / 2 +1;
+        return entries.size() / 2 + 1;
     }
 
     public static class MealHolder extends RecyclerView.ViewHolder {

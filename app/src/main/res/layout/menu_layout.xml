@@ -4,22 +4,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
->
+    android:gravity="center"
+    >
+
+
     <TextView
-        android:gravity="center"
         android:id="@+id/nothingToShow"
+        android:textSize="24sp"
         android:layout_margin="16dp"
+        android:gravity="center"
+        android:text="@string/nothingToShow"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <ProgressBar
-        android:id="@+id/PM1"
+        android:id="@+id/progressBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:indeterminate="true"
-        android:keepScreenOn="true"
-        android:layout_centerInParent="true"
-        android:visibility="gone" />
+        android:keepScreenOn="true" />
+
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/my_recycler_view"

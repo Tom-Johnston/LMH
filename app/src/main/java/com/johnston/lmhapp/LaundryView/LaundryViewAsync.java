@@ -22,6 +22,7 @@ public class LaundryViewAsync extends AsyncTask<Object, Void, Boolean> {
     View view;
     Handler handler;
     String Error;
+
     @Override
     protected Boolean doInBackground(Object[] objects) {
         view = (View) objects[0];
@@ -56,7 +57,7 @@ public class LaundryViewAsync extends AsyncTask<Object, Void, Boolean> {
                     stringArrayList.add(Type + Result);
 
                 }
-                handler.obtainMessage(i-1,stringArrayList).sendToTarget();
+                handler.obtainMessage(i - 1, stringArrayList).sendToTarget();
             }
             return true;
         } catch (MalformedURLException e) {
@@ -77,7 +78,7 @@ public class LaundryViewAsync extends AsyncTask<Object, Void, Boolean> {
     @Override
     protected void onPostExecute(Boolean v) {
         final TextView timerView = (TextView) view.findViewById(R.id.LastUpdate);
-        if(!v){
+        if (!v) {
             timerView.setText(Error);
             return;
 

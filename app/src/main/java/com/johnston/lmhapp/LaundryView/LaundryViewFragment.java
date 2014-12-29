@@ -23,51 +23,59 @@ import java.util.ArrayList;
 /**
  * Created by Tom on 02/06/2014.
  */
-public class LaundryViewFragment extends Fragment {
+public class
+        LaundryViewFragment extends Fragment {
     Boolean finished = false;
-    Boolean refreshing=false;
+    Boolean refreshing = false;
     View view;
     long startTime = 0;
     ArrayList<String> KatieLee;
     ArrayList<String> NewOldHall;
     ArrayList<String> Talbot;
-    MenuItem actionRefresh;
     final Handler handler = new Handler() {
         @Override
         public void handleMessage(Message message) {
 
-            if(message.what==-1){
+
+            if (message.what == -1) {
+                refreshing = false;
+                finished = false;
                 MainActivity main = (MainActivity) getActivity();
-                if(main!=null) {
+                if (main != null) {
                     main.stopRefresh(1);
                 }
-                if(view!=null){
-                    (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
+                if (view == null) {
+                    return;
                 }
-
-            }else if(message.what==0){
+                view.findViewById(R.id.progressBar).setVisibility(View.GONE);
+                TextView nothingToShow = (TextView) view.findViewById(R.id.nothingToShow);
+                nothingToShow.setVisibility(View.VISIBLE);
+                nothingToShow.setText("Something has gone wrong.");
+                return;
+            }
+            if (message.what == 0) {
                 startTime = (Long) message.obj;
                 finished = true;
-                refreshing=false;
-            }else if(message.what==1){
+                refreshing = false;
+            } else if (message.what == 1) {
                 KatieLee = (ArrayList<String>) message.obj;
-                if(view!=null){
-                    addEntriesToList(R.id.KatieLee,KatieLee);
+                if (view != null) {
+                    addEntriesToList(R.id.KatieLee, KatieLee);
                 }
-            }else if(message.what==2){
+            } else if (message.what == 2) {
                 NewOldHall = (ArrayList<String>) message.obj;
-                if(view!=null){
-                    addEntriesToList(R.id.NewOldHall,NewOldHall);
+                if (view != null) {
+                    addEntriesToList(R.id.NewOldHall, NewOldHall);
                 }
 
-            }else if(message.what==3){
+            } else if (message.what == 3) {
                 MainActivity main = (MainActivity) getActivity();
-                if(main!=null) {
+                if (main != null) {
                     main.stopRefresh(1);
                 }
                 Talbot = (ArrayList<String>) message.obj;
-                if(view!=null){
-                    addEntriesToList(R.id.Talbot,Talbot);
+                if (view != null) {
+                    addEntriesToList(R.id.Talbot, Talbot);
                     (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
                     (view.findViewById(R.id.card_view)).setVisibility(View.VISIBLE);
                     (view.findViewById(R.id.card_view2)).setVisibility(View.VISIBLE);
@@ -76,18 +84,18 @@ public class LaundryViewFragment extends Fragment {
             }
         }
     };
+    MenuItem actionRefresh;
 
-
-    public void addEntriesToList(int resource,ArrayList<String> entries ){
-        LinearLayout linearLayout = (LinearLayout)view.findViewById(resource);
+    public void addEntriesToList(int resource, ArrayList<String> entries) {
+        LinearLayout linearLayout = (LinearLayout) view.findViewById(resource);
         linearLayout.removeAllViews();
-        for(int i=0;i<entries.size();i++){
+        for (int i = 0; i < entries.size(); i++) {
             TextView tv = new TextView(getActivity());
             tv.setText(entries.get(i));
 
             View divider = new View(getActivity());
             divider.setBackgroundColor(Color.parseColor("#1f000000"));
-            divider.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,2));
+            divider.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 2));
 
             linearLayout.addView(tv);
             linearLayout.addView(divider);
@@ -95,7 +103,7 @@ public class LaundryViewFragment extends Fragment {
     }
 
     public void LoadStatus() {
-        refreshing=true;
+        refreshing = true;
         MainActivity main = (MainActivity) getActivity();
         main.startRefresh(1);
         handler.removeCallbacksAndMessages(null);
@@ -125,15 +133,14 @@ public class LaundryViewFragment extends Fragment {
         if (view == null) {
             view = inflater.inflate(R.layout.new_laundry_view, container, false);
         }
-        if(refreshing){
+        if (refreshing) {
             MainActivity main = (MainActivity) getActivity();
             main.startRefresh(1);
             (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
             (view.findViewById(R.id.card_view)).setVisibility(View.GONE);
             (view.findViewById(R.id.card_view2)).setVisibility(View.GONE);
             (view.findViewById(R.id.card_view3)).setVisibility(View.GONE);
-        }else
-        if (!finished) {
+        } else if (!finished) {
             LoadStatus();
         } else {
             final TextView timerView = (TextView) view.findViewById(R.id.LastUpdate);

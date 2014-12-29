@@ -28,7 +28,7 @@ public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
         Context context = (Context) params[4];
         String username = (String) params[0];
         Handler handler = (Handler) params[1];
-        Boolean background = (Boolean)params[5];
+        Boolean background = (Boolean) params[5];
         if (username.length() > 4) {
 //            Get rid of the lady number to make the differences more obvious.
             username = username.substring(4);
@@ -45,8 +45,8 @@ public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
         }
 
         int numberOfIterationsToDo = 3;
-        if(background){
-            numberOfIterationsToDo=5;
+        if (background) {
+            numberOfIterationsToDo = 5;
         }
 
         int[] color = new int[9];
@@ -113,11 +113,11 @@ public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
             triangles = NextIteration(triangles);
         }
 
-        if(background){
-            handler.obtainMessage(0,paintBackground(triangles,binary,sizex,sizey)).sendToTarget();
+        if (background) {
+            handler.obtainMessage(0, paintBackground(triangles, binary, sizex, sizey)).sendToTarget();
             return null;
         }
-        Bitmap bmp = paint(triangles,binary,sizex,sizey,color);
+        Bitmap bmp = paint(triangles, binary, sizex, sizey, color);
 
 //      Flip the matrix to
 
@@ -142,7 +142,7 @@ public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
         return null;
     }
 
-    public Bitmap paintBackground(ArrayList<Triangle> triangles,String binary,int sizex,int sizey){
+    public Bitmap paintBackground(ArrayList<Triangle> triangles, String binary, int sizex, int sizey) {
         Bitmap.Config conf = Bitmap.Config.ARGB_8888;
         Bitmap bmp = Bitmap.createBitmap(sizex, sizey, conf);
         Canvas c = new Canvas(bmp);
@@ -181,7 +181,7 @@ public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
         return bmp;
     }
 
-    public Bitmap paint(ArrayList<Triangle> triangles,String binary,int sizex,int sizey,int[] color){
+    public Bitmap paint(ArrayList<Triangle> triangles, String binary, int sizex, int sizey, int[] color) {
         Bitmap.Config conf = Bitmap.Config.ARGB_8888;
         Bitmap bmp = Bitmap.createBitmap(sizex, sizey, conf);
         Canvas c = new Canvas(bmp);

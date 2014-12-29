@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.johnston.lmhapp.MainActivity;
 import com.johnston.lmhapp.R;
@@ -22,48 +23,55 @@ import java.util.ArrayList;
  */
 public class FormalFragment extends Fragment {
     View view;
-    ArrayList<String> entries =  new ArrayList<>();
+    ArrayList<String> entries = new ArrayList<>();
     ArrayList<String> listOfMeals;
     ArrayList<ArrayList<String>> listOfListsOfPeople;
     Boolean finished = false;
-    Boolean refreshing=false;
+    Boolean refreshing = false;
     final Handler handler = new Handler() {
         @Override
         public void handleMessage(Message message) {
 
-            if(message.what==-1){
-                if(view!=null){
-                    (view.findViewById(R.id.progressBarContainer)).setVisibility(View.GONE);
-                }
 
+            if (message.what == -1) {
+                refreshing = false;
+                finished = false;
                 MainActivity main = (MainActivity) getActivity();
-                if(main!=null) {
+                if (main != null) {
                     main.stopRefresh(4);
                 }
-                finished=true;
-                refreshing=false;
-            } else if(message.what==0){
-                entries = (ArrayList<String>)message.obj;
+                if (view == null) {
+                    return;
+                }
+                view.findViewById(R.id.progressBar).setVisibility(View.GONE);
+                TextView nothingToShow = (TextView) view.findViewById(R.id.nothingToShow);
+                nothingToShow.setVisibility(View.VISIBLE);
+                nothingToShow.setText("Something has gone wrong.");
+                return;
+            }
 
-            }else if(message.what==1){
+            if (message.what == 0) {
+                entries = (ArrayList<String>) message.obj;
+
+            } else if (message.what == 1) {
                 listOfMeals = (ArrayList<String>) message.obj;
-            }else if(message.what==2){
+            } else if (message.what == 2) {
                 MainActivity main = (MainActivity) getActivity();
-                if(main!=null) {
+                if (main != null) {
                     main.stopRefresh(4);
                 }
-                finished=true;
-                refreshing=false;
+                finished = true;
+                refreshing = false;
                 listOfListsOfPeople = (ArrayList<ArrayList<String>>) message.obj;
-                if(view==null){
+                if (view == null) {
                     return;
                 }
                 RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
-                if(entries.size()>0){
-                    FormalRecyclerAdapter formalRecyclerAdapter = new FormalRecyclerAdapter(entries,listOfMeals);
+                if (entries.size() > 0) {
+                    FormalRecyclerAdapter formalRecyclerAdapter = new FormalRecyclerAdapter(entries, listOfMeals);
                     recyclerView.setAdapter(formalRecyclerAdapter);
                     (view.findViewById(R.id.progressBarContainer)).setVisibility(View.GONE);
-                }else{
+                } else {
                     (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
                     (view.findViewById(R.id.nothingToShow)).setVisibility(View.VISIBLE);
                 }
@@ -73,7 +81,7 @@ public class FormalFragment extends Fragment {
     };
 
     public void GetTheData() {
-        refreshing=true;
+        refreshing = true;
         (view.findViewById(R.id.Status)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.progressBarContainer)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
@@ -85,9 +93,9 @@ public class FormalFragment extends Fragment {
         main.getInfo(view, handler, b);
     }
 
-    public void showListofPeopleGoing(int position){
-    FormalDetailsDialog dialog = FormalDetailsDialog.newInstance(listOfListsOfPeople.get(position));
-    dialog.show(getFragmentManager(), "details");
+    public void showListofPeopleGoing(int position) {
+        FormalDetailsDialog dialog = FormalDetailsDialog.newInstance(listOfListsOfPeople.get(position));
+        dialog.show(getFragmentManager(), "details");
     }
 
     @Override
@@ -96,7 +104,7 @@ public class FormalFragment extends Fragment {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
-        if(refreshing){
+        if (refreshing) {
             MainActivity main = (MainActivity) this.getActivity();
             main.startRefresh(4);
             MainActivity.Status = (android.widget.TextView) view.findViewById(R.id.Status);
@@ -104,12 +112,12 @@ public class FormalFragment extends Fragment {
             (view.findViewById(R.id.progressBarContainer)).setVisibility(View.VISIBLE);
             (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
             (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
-        }else if (finished) {
-            if(entries.size()>0){
-                FormalRecyclerAdapter formalRecyclerAdapter = new FormalRecyclerAdapter(entries,listOfMeals);
+        } else if (finished) {
+            if (entries.size() > 0) {
+                FormalRecyclerAdapter formalRecyclerAdapter = new FormalRecyclerAdapter(entries, listOfMeals);
                 recyclerView.setAdapter(formalRecyclerAdapter);
                 (view.findViewById(R.id.progressBarContainer)).setVisibility(View.GONE);
-            }else{
+            } else {
                 (view.findViewById(R.id.progressBarContainer)).setVisibility(View.VISIBLE);
                 (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
                 (view.findViewById(R.id.nothingToShow)).setVisibility(View.VISIBLE);

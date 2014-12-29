@@ -24,44 +24,54 @@ import java.util.ArrayList;
  */
 public class EPOSFragment extends Fragment {
     Boolean finished = false;
-    Boolean refreshing=false;
+    Boolean refreshing = false;
     View view;
     ArrayList<String> transactions;
-    MenuItem actionRefresh;
     final Handler handler = new Handler() {
         @Override
         public void handleMessage(Message message) {
-            if(message.what==-1){
-                if(view!=null){
-                    (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
-                }
-                finished = true;
+
+
+            if (message.what == -1) {
                 refreshing = false;
+                finished = false;
                 MainActivity main = (MainActivity) getActivity();
                 if (main != null) {
                     main.stopRefresh(3);
                 }
-            }else if(message.what==0) {
-                transactions = (ArrayList<String>) message.obj;
-                finished = true;
-                refreshing = false;
-                MainActivity main = (MainActivity) getActivity();
-                if (main != null) {
-                    main.stopRefresh(3);
-                }
-                if(view==null){
+                if (view == null) {
                     return;
                 }
+                view.findViewById(R.id.progressBar).setVisibility(View.GONE);
+                TextView nothingToShow = (TextView) view.findViewById(R.id.nothingToShow);
+                nothingToShow.setVisibility(View.VISIBLE);
+                nothingToShow.setText("Something has gone wrong.");
+                return;
+            }
+
+
+            if (message.what == 0) {
+                transactions = (ArrayList<String>) message.obj;
+                refreshing = false;
+                finished = true;
+                MainActivity main = (MainActivity) getActivity();
+                if (main != null) {
+                    main.stopRefresh(3);
+                }
+                if (view == null) {
+                    return;
+                }
+                TextView nothingToShow = (TextView) view.findViewById(R.id.nothingToShow);
                 (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
                 (view.findViewById(R.id.card_view)).setVisibility(View.VISIBLE);
                 (view.findViewById(R.id.card_view2)).setVisibility(View.VISIBLE);
                 (view.findViewById(R.id.card_view3)).setVisibility(View.VISIBLE);
-
+                nothingToShow.setVisibility(View.GONE);
                 addEntriesToList();
 
-            }else{
-                String[] strings = (String[])message.obj;
-                if(view==null){
+            } else {
+                String[] strings = (String[]) message.obj;
+                if (view == null) {
                     return;
                 }
                 TextView AccountBalance = (TextView) view.findViewById(R.id.AccountBalance);
@@ -77,12 +87,14 @@ public class EPOSFragment extends Fragment {
 
 
     };
+    MenuItem actionRefresh;
 
     public void GetEpos() {
-        refreshing=true;
+        refreshing = true;
         MainActivity main = (MainActivity) getActivity();
         main.startRefresh(3);
         (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
+        (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
         (view.findViewById(R.id.card_view)).setVisibility(View.GONE);
         (view.findViewById(R.id.card_view2)).setVisibility(View.GONE);
         (view.findViewById(R.id.card_view3)).setVisibility(View.GONE);
@@ -91,10 +103,10 @@ public class EPOSFragment extends Fragment {
     }
 
 
-    public void addEntriesToList(){
-        LinearLayout linearLayout = (LinearLayout)view.findViewById(R.id.transactionList);
+    public void addEntriesToList() {
+        LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.transactionList);
         linearLayout.removeAllViews();
-        for(int i=0;i<transactions.size();i++){
+        for (int i = 0; i < transactions.size(); i++) {
             String data = transactions.get(i);
             String code = data.substring(0, 2);
             String message = data.substring(2);
@@ -107,7 +119,7 @@ public class EPOSFragment extends Fragment {
             }
             View divider = new View(getActivity());
             divider.setBackgroundColor(Color.parseColor("#1f000000"));
-            divider.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,2));
+            divider.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 2));
 
             linearLayout.addView(tv);
             linearLayout.addView(divider);
@@ -124,15 +136,16 @@ public class EPOSFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(null, null, savedInstanceState);
         view = inflater.inflate(R.layout.new_epos_layout, container, false);
-        if(refreshing){
+        if (refreshing) {
             MainActivity main = (MainActivity) getActivity();
             main.startRefresh(3);
             MainActivity.Status = (android.widget.TextView) view.findViewById(R.id.Status);
             (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
+            (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
             (view.findViewById(R.id.card_view)).setVisibility(View.GONE);
             (view.findViewById(R.id.card_view2)).setVisibility(View.GONE);
             (view.findViewById(R.id.card_view3)).setVisibility(View.GONE);
-        }else if (finished) {
+        } else if (finished) {
             addEntriesToList();
         } else {
             GetEpos();

@@ -67,6 +67,20 @@ import javax.net.ssl.TrustManagerFactory;
 
 
 public class MainActivity extends ActionBarActivity {
+    public static TextView Status = null;
+    Handler statusHandler = new Handler() {
+        @Override
+        public void handleMessage(Message message) {
+            if (message.what == -1) {
+                handler.obtainMessage(-1).sendToTarget();
+                return;
+            }
+            String update = (String) message.obj;
+            if (Status != null) {
+                Status.setText(update);
+            }
+        }
+    };
     public Handler handler;
     ActionBarDrawerToggle mDrawerToggle;
     String mTitle;
@@ -74,7 +88,6 @@ public class MainActivity extends ActionBarActivity {
     DrawerLayout mDrawerLayout;
     CookieManager manager;
     byte Type;
-    public static TextView Status=null;
     int lastPosition = -99;
     SSLContext sslContext = null;
     DrawerAdapter mDrawerAdapter;
@@ -84,21 +97,17 @@ public class MainActivity extends ActionBarActivity {
     Animation an;
     int refreshSpinRequestFragment = -99;
     ImageView actionRefreshView;
-    Handler statusHandler =  new Handler(){
-        @Override
-        public void handleMessage(Message message){
-            if(message.what==-1){
-                handler.obtainMessage(-1).sendToTarget();
-                return;
-            }
-            String update = (String) message.obj;
-            if(Status!=null){
-                Status.setText(update);
-            }
-        }
-    };
 
-    public void startRefresh(int i ){
+    public void goToSettings() {
+        mDrawerList.smoothScrollToPosition(6);
+        View layout = mDrawerList.getChildAt(6 - mDrawerList.getFirstVisiblePosition());
+        mDrawerList.performItemClick(layout, 6, mDrawerList.getAdapter().getItemId(6));
+        String[] Options = getResources().getStringArray(R.array.options);
+        mTitle = Options[6];
+        getSupportActionBar().setTitle(mTitle);
+    }
+
+    public void startRefresh(int i) {
         refreshSpinRequestFragment = i;
         Handler startHandler = new Handler();
         Runnable startRunnable = new Runnable() {
@@ -116,9 +125,9 @@ public class MainActivity extends ActionBarActivity {
                 an.start();
                 actionRefreshView.setAnimation(an);
                 actionRefreshView.getAnimation().setAnimationListener(null);
-                if (item != null){
+                if (item != null) {
                     item.setActionView(actionRefreshView);
-            }
+                }
             }
         };
         startHandler.post(startRunnable);
@@ -129,7 +138,7 @@ public class MainActivity extends ActionBarActivity {
     public void stopRefresh(final int i) {
         final View actionRefreshView2 = this.actionRefreshView;
         if ((refreshSpinRequestFragment == i || i == -1) && item != null && item.getActionView() != null && item.getActionView().getAnimation() != null) {
-            refreshSpinRequestFragment=-99;
+            refreshSpinRequestFragment = -99;
             item.getActionView().getAnimation().setAnimationListener(new Animation.AnimationListener() {
                 @Override
                 public void onAnimationStart(Animation animation) {
@@ -139,7 +148,6 @@ public class MainActivity extends ActionBarActivity {
                 public void onAnimationEnd(Animation animation) {
                     item.setActionView(null);
                     actionRefreshView2.setVisibility(View.GONE);
-
                 }
 
                 @Override
@@ -172,8 +180,8 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    public void formalButtonClick(View v){
-        ((FormalFragment)getFragmentManager().findFragmentById(R.id.Frame)).showListofPeopleGoing(Integer.parseInt(v.getTag().toString()));
+    public void formalButtonClick(View v) {
+        ((FormalFragment) getFragmentManager().findFragmentById(R.id.Frame)).showListofPeopleGoing(Integer.parseInt(v.getTag().toString()));
     }
 
     public void Initialise() {
@@ -183,24 +191,53 @@ public class MainActivity extends ActionBarActivity {
             new BattelsAsync().execute(sslContext, statusHandler, handler);
         } else if (Type == 3) {
             new NameGrabberAsync().execute(sslContext, this.getApplicationContext(), handler);
-        } else if(Type==4){
-            new FormalAsync().execute(sslContext,handler,statusHandler);
+        } else if (Type == 4) {
+            new FormalAsync().execute(sslContext, handler, statusHandler);
         }
     }
 
     public void getInfo(View v, Handler passedHandler, byte passedType) {
         handler = passedHandler;
-        if(v!=null){
-            Status= (TextView) v.findViewById(R.id.Status);
-        }else{
-            Status=null;
+        if (v != null) {
+            Status = (TextView) v.findViewById(R.id.Status);
+        } else {
+            Status = null;
         }
         Type = passedType;
+        if (passedType == 3) {
+            manager.getCookieStore().removeAll();
+        }
         LogInView();
 
     }
 
+
     public void LogInView() {
+        Handler permissionHandler = new Handler() {
+            @Override
+            public void handleMessage(Message message) {
+                if (message.what == 0) {
+//                Success!
+                    LogIn();
+                } else if (message.what == 1) {
+//                Failure
+                    handler.obtainMessage(-1).sendToTarget();
+                    PermissionFailedDialog newFragment = PermissionFailedDialog.newInstance((String) message.obj);
+                    newFragment.show(getFragmentManager(), "PERMISSION DENIED");
+                } else {
+//                Something has gone wrong checking.
+                    handler.obtainMessage(-1).sendToTarget();
+                    if (Status != null) {
+                        Status.setText("Something has gone wrong!");
+                    }
+                }
+            }
+        };
+
+        new PermissionAsync().execute(this.getApplicationContext(), permissionHandler,statusHandler);
+    }
+
+    public void LogIn() {
         SharedPreferences LogIn = getSharedPreferences("LogIn", 0);
         if (LogIn.contains("Username") && LogIn.contains("Password")) {
             String username = LogIn.getString("Username", "Fail");
@@ -210,8 +247,6 @@ public class MainActivity extends ActionBarActivity {
         } else {
             Status.setText("Please input username and password");
         }
-
-
     }
 
     public SSLContext createTrustManager() {
@@ -266,7 +301,7 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
-    public void itemClicked(View v){
+    public void itemClicked(View v) {
         ((SettingsFragment) getFragmentManager().findFragmentById(R.id.Frame)).itemClicked(v);
     }
 
@@ -276,11 +311,11 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         an = AnimationUtils.loadAnimation(this, R.anim.rotate_animation);
         setContentView(R.layout.activity_main);
-        if (savedInstanceState!=null) {
+        if (savedInstanceState != null) {
             lastPosition = savedInstanceState.getInt("lastPosition");
         }
 
-        Status=null;
+        Status = null;
 //
 //
         File file = new File(getFilesDir(), "CustomGraphic.png");
@@ -294,7 +329,6 @@ public class MainActivity extends ActionBarActivity {
         }
 
 
-
         selectedCircle = drawCircle(getResources().getColor(R.color.colorPrimary2));
         unselectedCircle = drawCircle(Color.parseColor("#de000000"));
 
@@ -302,7 +336,7 @@ public class MainActivity extends ActionBarActivity {
 //      Cookie Manager
 
         manager = (CookieManager) CookieHandler.getDefault();
-        if(manager==null){
+        if (manager == null) {
             manager = new CookieManager();
         }
         manager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
@@ -376,7 +410,7 @@ public class MainActivity extends ActionBarActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString("mTitle", mTitle);
-        outState.putInt("lastPosition",lastPosition);
+        outState.putInt("lastPosition", lastPosition);
     }
 
     @Override
@@ -401,9 +435,9 @@ public class MainActivity extends ActionBarActivity {
     }
 
     @Override
-    public boolean onPrepareOptionsMenu(Menu menu){
+    public boolean onPrepareOptionsMenu(Menu menu) {
         item = menu.getItem(0);
-        if(refreshSpinRequestFragment!=-99){
+        if (refreshSpinRequestFragment != -99) {
             startRefresh(refreshSpinRequestFragment);
         }
         return true;
@@ -433,10 +467,10 @@ public class MainActivity extends ActionBarActivity {
         } else if (fragmentType.equals(Options[0])) {
             HomeFragment fragment = (HomeFragment) fragment1;
             fragment.loadTweeterFeed();
-        }else if(fragmentType.equals(Options[2])){
+        } else if (fragmentType.equals(Options[2])) {
             BattelsFragment fragment = (BattelsFragment) fragment1;
             fragment.LoadBattels();
-        }else if(fragmentType.equals(Options[4])){
+        } else if (fragmentType.equals(Options[4])) {
             FormalFragment fragment = (FormalFragment) fragment1;
             fragment.GetTheData();
         }
@@ -451,14 +485,14 @@ public class MainActivity extends ActionBarActivity {
         }
         if (lastPosition == 0) {
             this.finish();
-        } else if(lastPosition==-1){
+        } else if (lastPosition == -1) {
             mDrawerList.smoothScrollToPosition(4);
             View layout = mDrawerList.getChildAt(4 - mDrawerList.getFirstVisiblePosition());
             mDrawerList.performItemClick(layout, 4, mDrawerList.getAdapter().getItemId(4));
             String[] Options = getResources().getStringArray(R.array.options);
             mTitle = Options[4];
             getSupportActionBar().setTitle(mTitle);
-        }else{
+        } else {
             mDrawerList.smoothScrollToPosition(0);
             View layout = mDrawerList.getChildAt(0 - mDrawerList.getFirstVisiblePosition());
             mDrawerList.performItemClick(layout, 0, mDrawerList.getAdapter().getItemId(0));
@@ -496,9 +530,11 @@ public class MainActivity extends ActionBarActivity {
             }
             String[] iconNames = getResources().getStringArray(R.array.iconNames);
 
-            if (lastPosition == -1){lastPosition = 4;}
+            if (lastPosition == -1) {
+                lastPosition = 4;
+            }
             View layout = parent.getChildAt(lastPosition - parent.getFirstVisiblePosition());
-            if(layout!=null){
+            if (layout != null) {
                 ((TextView) layout.findViewById(R.id.text1)).setTextColor(Color.parseColor("#de000000"));
                 ImageView imageView = (ImageView) layout.findViewById(R.id.profilePicture);
                 if (iconNames[lastPosition].equals("Circle")) {
@@ -543,7 +579,7 @@ public class MainActivity extends ActionBarActivity {
             } else if (position == 3) {
                 newFragment = new EPOSFragment();
                 transaction.addToBackStack(Options[position]);
-            }else if(position==4){
+            } else if (position == 4) {
                 newFragment = new FormalFragment();
                 transaction.addToBackStack(Options[position]);
             } else if (position == 5) {

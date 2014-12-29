@@ -22,19 +22,28 @@
             android:layout_marginBottom="4dp" />
 
         <RelativeLayout
-            android:id="@+id/progressBar"
-            android:visibility="gone"
+            android:id="@+id/progressBarContainer"
+            android:visibility="visible"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center">
 
+            <TextView
+                android:id="@+id/nothingToShow"
+                android:textSize="24sp"
+                android:layout_margin="16dp"
+                android:gravity="center"
+                android:text="@string/nothingToShow"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
             <ProgressBar
+                android:id="@+id/progressBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:indeterminate="true"
-                android:keepScreenOn="true"
-                />
+                android:keepScreenOn="true" />
 
         </RelativeLayout>
 

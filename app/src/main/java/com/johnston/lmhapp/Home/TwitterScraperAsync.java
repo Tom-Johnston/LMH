@@ -23,15 +23,17 @@ import java.util.Comparator;
 import javax.net.ssl.HttpsURLConnection;
 
 
-public class TwitterScraperAsync extends AsyncTask<Object, Void, Void> {
-
+public class TwitterScraperAsync extends AsyncTask<Object, String, Void> {
+    Handler statusHandler;
 
     @Override
-    protected Void doInBackground(Object... params) {
+    protected Void doInBackground(Object[] params) {
         Handler handler = (Handler) params[0];
         Context context = (Context) params[1];
+        statusHandler = (Handler)params[2];
 
 //        Get the previously saved pictures.
+        publishProgress("Checking Old Information");
         SharedPreferences pictureList = context.getSharedPreferences("PictureList", 0);
         int previousSize = pictureList.getInt("previousSize", 0);
         Long previousNumber = pictureList.getLong("previousNumber", 0);
@@ -39,10 +41,10 @@ public class TwitterScraperAsync extends AsyncTask<Object, Void, Void> {
         ArrayList<Long> pictureIDs = new ArrayList<>();
         ArrayList<Boolean> pictureUsed = new ArrayList<>();
         String workingLine;
-        for(int i=0;i<previousSize;i++){
-            workingLine = pictureList.getString(Integer.toString(i),"null");
-            pictureURLs.add(workingLine.substring(0,workingLine.indexOf("¬")));
-            pictureIDs.add(Long.parseLong(workingLine.substring(workingLine.indexOf("¬")+1)));
+        for (int i = 0; i < previousSize; i++) {
+            workingLine = pictureList.getString(Integer.toString(i), "null");
+            pictureURLs.add(workingLine.substring(0, workingLine.indexOf("¬")));
+            pictureIDs.add(Long.parseLong(workingLine.substring(workingLine.indexOf("¬") + 1)));
             pictureUsed.add(false);
         }
 
@@ -61,7 +63,8 @@ public class TwitterScraperAsync extends AsyncTask<Object, Void, Void> {
             long cutOffTime = 0;
             for (int j = 0; j < urls.length; j++) {
                 URL url = urls[j];
-                // Note normal size is 48x48
+                publishProgress("Getting Tweets From: "+url.toString());
+
                 HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
                 conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.124 Safari/537.36");
                 BufferedReader in = new BufferedReader(new InputStreamReader(
@@ -124,19 +127,19 @@ public class TwitterScraperAsync extends AsyncTask<Object, Void, Void> {
                         inputLine = in.readLine();
                         start = inputLine.indexOf("src=\"") + 5;
                         String photoUrl = inputLine.substring(start, inputLine.indexOf("\"", start));
-                        for(int i=0;i<previousSize;i++){
-                            if(photoUrl.equals(pictureURLs.get(i))){
-                                pictureUsed.set(i,true);
-                                File file = new File(context.getFilesDir(),Long.toString(pictureIDs.get(i)));
+                        for (int i = 0; i < previousSize; i++) {
+                            if (photoUrl.equals(pictureURLs.get(i))) {
+                                pictureUsed.set(i, true);
+                                File file = new File(context.getFilesDir(), Long.toString(pictureIDs.get(i)));
                                 InputStream in2 = new FileInputStream(file);
                                 picture = BitmapFactory.decodeStream(in2);
                                 break;
                             }
                         }
-                        if(picture==null){
+                        if (picture == null) {
                             InputStream in2 = new java.net.URL(photoUrl).openStream();
                             previousNumber++;
-                            File file = new File(context.getFilesDir(),Long.toString(previousNumber));
+                            File file = new File(context.getFilesDir(), Long.toString(previousNumber));
                             FileOutputStream fos = new FileOutputStream(file);
                             int length;
                             byte[] buffer = new byte[1024];
@@ -227,6 +230,7 @@ public class TwitterScraperAsync extends AsyncTask<Object, Void, Void> {
                     cutOffTime = time;
                 }
             }
+            publishProgress("Sorting Tweets");
             Comparator<Tweet> tweetComparator = new TweetComparator();
             Collections.sort(tweets, tweetComparator);
             for (int i = tweets.size() - 1; i > -1; i--) {
@@ -239,24 +243,25 @@ public class TwitterScraperAsync extends AsyncTask<Object, Void, Void> {
 
 //            Get the pictures;
 
+            publishProgress("Getting Pictures");
             profilePictures = new Bitmap[ProfilePictureURLS.size()];
             for (int i = 0; i < ProfilePictureURLS.size(); i++) {
                 try {
                     String url = ProfilePictureURLS.get(i);
-                    for(int j=0;j<previousSize;j++){
-                        if(url.equals(pictureURLs.get(j))){
-                            pictureUsed.set(j,true);
-                            File file = new File(context.getFilesDir(),Long.toString(pictureIDs.get(j)));
+                    for (int j = 0; j < previousSize; j++) {
+                        if (url.equals(pictureURLs.get(j))) {
+                            pictureUsed.set(j, true);
+                            File file = new File(context.getFilesDir(), Long.toString(pictureIDs.get(j)));
                             InputStream in2 = new FileInputStream(file);
                             profilePictures[i] = BitmapFactory.decodeStream(in2);
                             break;
                         }
                     }
-                    if(profilePictures[i]==null){
+                    if (profilePictures[i] == null) {
                         InputStream in2 = new java.net.URL(url).openStream();
 
                         previousNumber++;
-                        File file = new File(context.getFilesDir(),Long.toString(previousNumber));
+                        File file = new File(context.getFilesDir(), Long.toString(previousNumber));
                         FileOutputStream fos = new FileOutputStream(file);
                         int length;
                         byte[] buffer = new byte[1024];
@@ -278,18 +283,19 @@ public class TwitterScraperAsync extends AsyncTask<Object, Void, Void> {
 
             }
 //            Save the new stuff.
+            publishProgress("Saving New Information");
             SharedPreferences.Editor editor = pictureList.edit();
 
-            int number=0;
+            int number = 0;
             int size = pictureIDs.size();
-            for(int i=0;i<size;i++){
-               if(pictureUsed.get(i)){
-                   editor.putString(Integer.toString(number), pictureURLs.get(i) + "¬" + Long.toString(pictureIDs.get(i)));
-                   number++;
-               }else{
-                   File file = new File(context.getFilesDir(),Long.toString(pictureIDs.get(i)));
-                   file.delete();
-               }
+            for (int i = 0; i < size; i++) {
+                if (pictureUsed.get(i)) {
+                    editor.putString(Integer.toString(number), pictureURLs.get(i) + "¬" + Long.toString(pictureIDs.get(i)));
+                    number++;
+                } else {
+                    File file = new File(context.getFilesDir(), Long.toString(pictureIDs.get(i)));
+                    file.delete();
+                }
             }
             editor.putInt("previousSize", number);
             editor.putLong("previousNumber", previousNumber);
@@ -300,13 +306,18 @@ public class TwitterScraperAsync extends AsyncTask<Object, Void, Void> {
             objects[1] = profilePictures;
             handler.obtainMessage(0, objects).sendToTarget();
         } catch (MalformedURLException e) {
-            handler.obtainMessage(-1).sendToTarget();
+            handler.obtainMessage(-1, "MalformedURLException").sendToTarget();
             e.printStackTrace();
         } catch (IOException e) {
-            handler.obtainMessage(-1).sendToTarget();
+            handler.obtainMessage(-1, "Network Error").sendToTarget();
             e.printStackTrace();
         }
         return null;
+    }
+
+    @Override
+    protected void onProgressUpdate(String... values) {
+        statusHandler.obtainMessage(0, values[0]).sendToTarget();
     }
 
 }

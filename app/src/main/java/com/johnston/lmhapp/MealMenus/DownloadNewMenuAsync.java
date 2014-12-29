@@ -48,12 +48,12 @@ public class DownloadNewMenuAsync extends AsyncTask<Object, Void, Void> {
                 handler.sendEmptyMessage(0);
             }
         } catch (MalformedURLException e) {
-            if(!widget){
+            if (!widget) {
                 handler.obtainMessage(-1).sendToTarget();
             }
             e.printStackTrace();
         } catch (IOException e) {
-            if(!widget){
+            if (!widget) {
                 handler.obtainMessage(-1).sendToTarget();
             }
             e.printStackTrace();

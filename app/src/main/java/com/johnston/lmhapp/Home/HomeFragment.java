@@ -16,6 +16,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.johnston.lmhapp.MainActivity;
+import com.johnston.lmhapp.PermissionAsync;
+import com.johnston.lmhapp.PermissionFailedDialog;
 import com.johnston.lmhapp.R;
 
 import java.util.ArrayList;
@@ -24,6 +26,20 @@ import java.util.ArrayList;
  * Created by Johnston on 29/09/2014.
  */
 public class HomeFragment extends Fragment {
+    public static TextView Status = null;
+    Handler statusHandler = new Handler() {
+        @Override
+        public void handleMessage(Message message) {
+            if (message.what == -1) {
+                handler.obtainMessage(-1).sendToTarget();
+                return;
+            }
+            String update = (String) message.obj;
+            if (Status != null) {
+                Status.setText(update);
+            }
+        }
+    };
     MenuItem actionRefresh;
     Boolean finished = false;
     Boolean refreshing = false;
@@ -34,36 +50,46 @@ public class HomeFragment extends Fragment {
         @Override
         public void handleMessage(Message message) {
 
-            finished = true;
+
             refreshing = false;
             MainActivity main = (MainActivity) getActivity();
             if (main != null) {
                 main.stopRefresh(0);
             }
-            if(view!=null) {
-
+            if (view != null) {
                 view.findViewById(R.id.PM1).setVisibility(View.GONE);
             }
-            if(message.what==-1){
+
+            if (message.what == -1) {
+                finished = false;
+                if (view == null) {
+                    return;
+                }
+                TextView nothingToShow = (TextView) view.findViewById(R.id.nothingToShow);
+                nothingToShow.setVisibility(View.VISIBLE);
+                nothingToShow.setText("Something has gone wrong.");
                 return;
             }
 
+            finished = true;
             Object[] objects = (Object[]) message.obj;
             tweets = (ArrayList<Tweet>) objects[0];
             profilePictures = (Bitmap[]) objects[1];
 
-            if(view==null){
+            if (view == null) {
                 return;
             }
 
-            final TextView nothingToShow = (TextView) view.findViewById(R.id.nothingToShow);
+            TextView nothingToShow = (TextView) view.findViewById(R.id.nothingToShow);
             if (tweets.size() > 0) {
                 RecyclerView tweetList = (RecyclerView) view.findViewById(R.id.tweetList);
                 tweetList.setAdapter(new TweetRecyclerAdapter(tweets, profilePictures));
                 tweetList.setVisibility(View.VISIBLE);
+                view.findViewById(R.id.Status).setVisibility(View.GONE);
                 nothingToShow.setVisibility(View.GONE);
             } else {
                 nothingToShow.setVisibility(View.VISIBLE);
+                nothingToShow.setText(getResources().getString(R.string.nothingToShow));
             }
         }
     };
@@ -72,13 +98,33 @@ public class HomeFragment extends Fragment {
         refreshing = true;
         MainActivity main = (MainActivity) getActivity();
         main.startRefresh(0);
+        view.findViewById(R.id.Status).setVisibility(View.VISIBLE);
         RecyclerView tweetList = (RecyclerView) view.findViewById(R.id.tweetList);
         tweetList.setVisibility(View.GONE);
         ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.PM1);
         progressBar.setVisibility(View.VISIBLE);
-        final TextView nothingToshow = (TextView) view.findViewById(R.id.nothingToShow);
-        nothingToshow.setVisibility(View.GONE);
-        new TwitterScraperAsync().execute(handler,getActivity());
+        TextView nothingToShow = (TextView) view.findViewById(R.id.nothingToShow);
+        nothingToShow.setVisibility(View.GONE);
+        Handler permissionHandler = new Handler() {
+            @Override
+            public void handleMessage(Message message) {
+                if (message.what == 0) {
+//                Success!
+                    new TwitterScraperAsync().execute(handler, getActivity(),statusHandler);
+                } else if (message.what == 1) {
+//                Failure
+                    handler.obtainMessage(-1, "Unable to get permission.").sendToTarget();
+                    PermissionFailedDialog newFragment = PermissionFailedDialog.newInstance((String) message.obj);
+                    newFragment.show(getFragmentManager(), "PERMISSION DENIED");
+                } else {
+//                Something has gone wrong checking.
+                    handler.obtainMessage(-1, "Unable to get permission.").sendToTarget();
+                }
+            }
+        };
+
+        new PermissionAsync().execute(getActivity().getApplicationContext(), permissionHandler,statusHandler);
+
     }
 
 
@@ -92,8 +138,9 @@ public class HomeFragment extends Fragment {
     public android.view.View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(null, null, savedInstanceState);
         view = inflater.inflate(R.layout.home_fragment, container, false);
+        Status  = (TextView)view.findViewById(R.id.Status);
         RecyclerView tweetList = (RecyclerView) view.findViewById(R.id.tweetList);
-        tweetList.setLayoutManager( new LinearLayoutManager(getActivity()));
+        tweetList.setLayoutManager(new LinearLayoutManager(getActivity()));
         if (refreshing) {
             MainActivity main = (MainActivity) getActivity();
             main.startRefresh(0);
@@ -110,6 +157,7 @@ public class HomeFragment extends Fragment {
                 tweetList.setVisibility(View.VISIBLE);
                 progressBar.setVisibility(View.GONE);
                 nothingToShow.setVisibility(View.GONE);
+                view.findViewById(R.id.Status).setVisibility(View.GONE);
             } else {
                 tweetList.setVisibility(View.GONE);
                 progressBar.setVisibility(View.GONE);

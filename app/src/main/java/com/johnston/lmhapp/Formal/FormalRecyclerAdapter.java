@@ -28,43 +28,13 @@ public class FormalRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         this.listOfMeals = listOfMeals;
     }
 
-    public static class StatusHolder extends RecyclerView.ViewHolder {
-
-        public StatusHolder(View itemView) {
-            super(itemView);
-        }
-    }
-
-    public static class FormalHolder extends RecyclerView.ViewHolder {
-        // each data item is just a string in this case
-        public TextView formalName;
-        public TextView formalDate;
-        public TextView formalMenu;
-        public TextView formalNumberLeft;
-        public TextView formalNumberGone;
-        public ImageView graphicNumberLeft;
-        public Button formalButton;
-
-
-        public FormalHolder(View itemView) {
-            super(itemView);
-            formalName = (TextView) itemView.findViewById(R.id.formalName);
-            formalDate = (TextView) itemView.findViewById(R.id.formalDate);
-            formalMenu = (TextView) itemView.findViewById(R.id.formalMenu);
-            formalNumberLeft = (TextView) itemView.findViewById(R.id.formalNumberLeft);
-            formalNumberGone = (TextView) itemView.findViewById(R.id.formalNumberGone);
-            graphicNumberLeft = (ImageView) itemView.findViewById(R.id.graphicNumberLeft);
-            formalButton = (Button)itemView.findViewById(R.id.formalButton);
-        }
-    }
-
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        if(i==0){
+        if (i == 0) {
             View v = LayoutInflater.from(viewGroup.getContext())
                     .inflate(R.layout.status, viewGroup, false);
             return new StatusHolder(v);
-        }else{
+        } else {
             View v = LayoutInflater.from(viewGroup.getContext())
                     .inflate(R.layout.formal_card, viewGroup, false);
             return new FormalHolder(v);
@@ -73,13 +43,13 @@ public class FormalRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
-        if(position==0){
-            ((TextView)viewHolder.itemView).setText("Finished");
-        }else{
+        if (position == 0) {
+            ((TextView) viewHolder.itemView).setText("Finished");
+        } else {
             FormalHolder formalHolder = (FormalHolder) viewHolder;
             formalHolder.formalMenu.setText(listOfMeals.get(position));
             formalHolder.formalButton.setTag(position);
-            position = (position-1) * 6;
+            position = (position - 1) * 6;
             final int numberGone = Integer.parseInt(entries.get(position + 3));
             final int numberLeft = Integer.parseInt(entries.get(position + 4));
             formalHolder.formalDate.setText(entries.get(position));
@@ -134,16 +104,46 @@ public class FormalRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     }
 
     @Override
-    public int getItemViewType(int position){
-        if(position==0){
+    public int getItemViewType(int position) {
+        if (position == 0) {
             return 0;
-        }else{
+        } else {
             return 1;
         }
     }
 
     @Override
     public int getItemCount() {
-        return entries.size() / 6 +1;
+        return entries.size() / 6 + 1;
+    }
+
+    public static class StatusHolder extends RecyclerView.ViewHolder {
+
+        public StatusHolder(View itemView) {
+            super(itemView);
+        }
+    }
+
+    public static class FormalHolder extends RecyclerView.ViewHolder {
+        // each data item is just a string in this case
+        public TextView formalName;
+        public TextView formalDate;
+        public TextView formalMenu;
+        public TextView formalNumberLeft;
+        public TextView formalNumberGone;
+        public ImageView graphicNumberLeft;
+        public Button formalButton;
+
+
+        public FormalHolder(View itemView) {
+            super(itemView);
+            formalName = (TextView) itemView.findViewById(R.id.formalName);
+            formalDate = (TextView) itemView.findViewById(R.id.formalDate);
+            formalMenu = (TextView) itemView.findViewById(R.id.formalMenu);
+            formalNumberLeft = (TextView) itemView.findViewById(R.id.formalNumberLeft);
+            formalNumberGone = (TextView) itemView.findViewById(R.id.formalNumberGone);
+            graphicNumberLeft = (ImageView) itemView.findViewById(R.id.graphicNumberLeft);
+            formalButton = (Button) itemView.findViewById(R.id.formalButton);
+        }
     }
 }

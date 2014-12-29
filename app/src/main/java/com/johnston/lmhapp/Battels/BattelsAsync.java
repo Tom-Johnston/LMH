@@ -2,6 +2,7 @@ package com.johnston.lmhapp.Battels;
 
 import android.os.AsyncTask;
 import android.os.Handler;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -85,7 +86,7 @@ public class BattelsAsync extends AsyncTask<Object, String, Void> {
             publishProgress("Getting Better Descriptions");
             for (int i = 1; i < Entries.size(); i += 4) {
                 if (Entries.get(i).contains("¬")) {
-                    Entries.set(i,Entries.get(i).substring(1));
+                    Entries.set(i, Entries.get(i).substring(1));
                     URL infoURL = new URL("https://intranet.lmh.ox.ac.uk/navbillingdetail.asp?invno=" + Entries.get(i));
                     HttpsURLConnection infoConn = (HttpsURLConnection) infoURL.openConnection();
                     infoConn.setSSLSocketFactory(sslContext.getSocketFactory());
@@ -128,7 +129,7 @@ public class BattelsAsync extends AsyncTask<Object, String, Void> {
 
     @Override
     protected void onProgressUpdate(String... values) {
-    statusHandler.obtainMessage(0,values[0]).sendToTarget();
+        statusHandler.obtainMessage(0, values[0]).sendToTarget();
     }
 
 

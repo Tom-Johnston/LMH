@@ -125,7 +125,7 @@ public class LoginAsync extends AsyncTask<Object, String, Boolean> {
 
     @Override
     protected void onProgressUpdate(String... values) {
-        statusHandler.obtainMessage(0,values[0]).sendToTarget();
+        statusHandler.obtainMessage(0, values[0]).sendToTarget();
     }
 
     @Override

@@ -16,38 +16,38 @@ import java.util.List;
  */
 public class FormalDetailsListAdapter extends ArrayAdapter<String> {
 
-        final int resource;
-        final Context context;
-        final List<String> objects;
+    final int resource;
+    final Context context;
+    final List<String> objects;
 
-        public FormalDetailsListAdapter(Context passedcontext, int passedresource, List<String> passedobjects) {
-            super(passedcontext, passedresource, passedobjects);
-            resource = passedresource;
-            context = passedcontext;
-            objects = passedobjects;
-        }
-
-        @Override
-        public int getCount() {
-            return objects.size() / 2;
-        }
-
-        @Override
-        public boolean isEnabled(int position) {
-            return false;
-        }
-
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            if (convertView == null) {
-                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                convertView = inflater.inflate(resource, parent, false);
-            }
-            ((TextView)convertView.findViewById(R.id.name)).setText(objects.get(2*position));
-            ((TextView)convertView.findViewById(R.id.numberOfGuests)).setText(objects.get(2*position+1));
-            return convertView;
-        }
-
-
+    public FormalDetailsListAdapter(Context passedcontext, int passedresource, List<String> passedobjects) {
+        super(passedcontext, passedresource, passedobjects);
+        resource = passedresource;
+        context = passedcontext;
+        objects = passedobjects;
     }
+
+    @Override
+    public int getCount() {
+        return objects.size() / 2;
+    }
+
+    @Override
+    public boolean isEnabled(int position) {
+        return false;
+    }
+
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        if (convertView == null) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            convertView = inflater.inflate(resource, parent, false);
+        }
+        ((TextView) convertView.findViewById(R.id.name)).setText(objects.get(2 * position));
+        ((TextView) convertView.findViewById(R.id.numberOfGuests)).setText(objects.get(2 * position + 1));
+        return convertView;
+    }
+
+
+}

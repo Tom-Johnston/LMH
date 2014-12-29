@@ -29,7 +29,7 @@
             android:gravity="center"
             android:textSize="24sp"
             android:layout_margin="16dp"
-            android:text="There isn't anything to display."
+            android:text="@string/nothingToShow"
             android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

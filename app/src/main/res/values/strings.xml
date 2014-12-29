@@ -104,5 +104,6 @@
     <string name="proportion_left">Proportion Left</string>
     <string name="user_graphic">User Graphic</string>
     <string name="tweeted_image">Tweeted Image</string>
+    <string name="nothingToShow">There isn\'t anything to display.</string>
     <dimen name="text_size_body_1_material">14sp</dimen>
 </resources>

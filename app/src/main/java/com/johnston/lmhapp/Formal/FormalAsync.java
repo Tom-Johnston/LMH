@@ -18,16 +18,16 @@ import javax.net.ssl.SSLContext;
 /**
  * Created by Tom on 11/11/2014.
  */
-public class FormalAsync extends AsyncTask<Object,String,Void> {
-Handler statusHandler;
+public class FormalAsync extends AsyncTask<Object, String, Void> {
+    Handler statusHandler;
 
     @Override
     protected Void doInBackground(Object[] params) {
         try {
-            SSLContext sslContext = (SSLContext)params[0];
-            Handler handler = (Handler)params[1];
+            SSLContext sslContext = (SSLContext) params[0];
+            Handler handler = (Handler) params[1];
             statusHandler = (Handler) params[2];
-            ArrayList<String> entries =new ArrayList<>();
+            ArrayList<String> entries = new ArrayList<>();
             URL formalHome = new URL("https://intranet.lmh.ox.ac.uk/mealbookings.asp");
             HttpsURLConnection formalHomec = (HttpsURLConnection) formalHome.openConnection();
             formalHomec.setSSLSocketFactory(sslContext.getSocketFactory());
@@ -36,50 +36,50 @@ Handler statusHandler;
             String inputLine;
             StringBuilder a = new StringBuilder();
             Boolean inTheBody = false;
-            while(true){
+            while (true) {
                 inputLine = in.readLine();
-                if(inputLine==null){
+                if (inputLine == null) {
                     break;
                 }
-                if(inputLine.contains("Meal Bookings Administration")){
-                    inTheBody=true;
+                if (inputLine.contains("Meal Bookings Administration")) {
+                    inTheBody = true;
                 }
-                if(inTheBody){
+                if (inTheBody) {
                     a.append(inputLine);
                 }
             }
             formalHomec.disconnect();
             String substring;
             String result = a.toString();
-            int end=result.indexOf("</tr>");
+            int end = result.indexOf("</tr>");
             int start;
             Boolean firstButton = true;
-            while(true){
-                end = result.indexOf("</td>",end+1);
-                if(end>-1) {
-                    start = result.lastIndexOf("<td>", end)+4;
+            while (true) {
+                end = result.indexOf("</td>", end + 1);
+                if (end > -1) {
+                    start = result.lastIndexOf("<td>", end) + 4;
                     substring = result.substring(start, end).trim();
                     if (substring.contains("<FORM")) {
-                        if(firstButton){
-                        start = substring.indexOf("name='book'");
-                        start = substring.indexOf("'",start+11);
-                        substring = substring.substring(start+1,substring.indexOf("'",start+1));
+                        if (firstButton) {
+                            start = substring.indexOf("name='book'");
+                            start = substring.indexOf("'", start + 11);
+                            substring = substring.substring(start + 1, substring.indexOf("'", start + 1));
                         }
-                        firstButton^=true;
-                    }else if(substring.trim().equals("-")){
-                        firstButton^=true;
+                        firstButton ^= true;
+                    } else if (substring.trim().equals("-")) {
+                        firstButton ^= true;
                     }
-                        entries.add(substring);
+                    entries.add(substring);
 
-                }else{
+                } else {
                     break;
                 }
             }
             publishProgress("Getting Formal Details");
 
-            ArrayList<String> listOfMeals= new ArrayList<>();
+            ArrayList<String> listOfMeals = new ArrayList<>();
             ArrayList<ArrayList<String>> listOfListsOfPeople = new ArrayList<>();
-            for(int i=5;i<entries.size();i+=6) {
+            for (int i = 5; i < entries.size(); i += 6) {
                 String post = "mealbookingState=viewattendees&book=" + URLEncoder.encode(entries.get(i), "UTF-8");
                 post = post.replaceAll(" ", "+");
                 URL url = new URL("https://intranet.lmh.ox.ac.uk/mealbookings.asp");
@@ -158,7 +158,7 @@ Handler statusHandler;
                 listOfMeals.add(meals);
                 listOfListsOfPeople.add(listOfNames);
             }
-            handler.obtainMessage(0,entries).sendToTarget();
+            handler.obtainMessage(0, entries).sendToTarget();
             handler.obtainMessage(1, listOfMeals).sendToTarget();
             handler.obtainMessage(2, listOfListsOfPeople).sendToTarget();
             publishProgress("Finished");
@@ -176,6 +176,6 @@ Handler statusHandler;
 
     @Override
     protected void onProgressUpdate(String... values) {
-        statusHandler.obtainMessage(0,values[0]).sendToTarget();
+        statusHandler.obtainMessage(0, values[0]).sendToTarget();
     }
 }

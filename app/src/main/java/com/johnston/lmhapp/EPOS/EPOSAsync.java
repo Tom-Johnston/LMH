@@ -226,7 +226,7 @@ public class EPOSAsync extends AsyncTask<Object, String, Void> {
 
             }
             handler.obtainMessage(0, transactions).sendToTarget();
-            handler.obtainMessage(1,Amounts).sendToTarget();
+            handler.obtainMessage(1, Amounts).sendToTarget();
             publishProgress("Finished");
 
         } catch (MalformedURLException e) {
@@ -244,9 +244,8 @@ public class EPOSAsync extends AsyncTask<Object, String, Void> {
 
     @Override
     protected void onProgressUpdate(String... values) {
-        statusHandler.obtainMessage(1,values[0]).sendToTarget();
+        statusHandler.obtainMessage(1, values[0]).sendToTarget();
     }
-
 
 
 }

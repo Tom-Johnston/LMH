@@ -51,8 +51,8 @@ public class LoginDialog extends DialogFragment {
                 SharedPreferences LogIn = getActivity().getSharedPreferences("LogIn", 0);
                 EditText passwordView = (EditText) view.findViewById(R.id.Password);
                 String password = passwordView.getText().toString();
-                if(password.equals("")){
-                    password = LogIn.getString("Password","");
+                if (password.equals("")) {
+                    password = LogIn.getString("Password", "");
                 }
                 EditText usernameView = (EditText) view.findViewById(R.id.Username);
                 String username = usernameView.getText().toString();
@@ -105,7 +105,7 @@ public class LoginDialog extends DialogFragment {
         EditText Username = (EditText) view.findViewById(R.id.Username);
         EditText Password = (EditText) view.findViewById(R.id.Password);
         Username.setText(LogIn.getString("Username", ""));
-        if(!LogIn.getString("Password","").equals("")){
+        if (!LogIn.getString("Password", "").equals("")) {
             Password.setHint("Password (unchanged)");
         }
         ((CheckBox) view.findViewById(R.id.checkBox)).setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

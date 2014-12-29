@@ -20,32 +20,9 @@ public class BattelsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         entries = initialEntries;
     }
 
-    public static class StatusHolder extends RecyclerView.ViewHolder {
-
-        public StatusHolder(View itemView) {
-            super(itemView);
-        }
-    }
-
-
-    public static class BattelsHolder extends RecyclerView.ViewHolder {
-        public TextView battelsReference;
-        public TextView battelsAmount;
-        public TextView battelsDescription;
-        public TextView battelsDate;
-
-        public BattelsHolder(View itemView) {
-            super(itemView);
-            battelsReference = (TextView) itemView.findViewById(R.id.battelsReference);
-            battelsAmount = (TextView) itemView.findViewById(R.id.battelsAmount);
-            battelsDescription = (TextView) itemView.findViewById(R.id.battelsDescription);
-            battelsDate = (TextView) itemView.findViewById(R.id.battelsDate);
-        }
-    }
-
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        if(i==0){
+        if (i == 0) {
             View v = LayoutInflater.from(viewGroup.getContext())
                     .inflate(R.layout.status, viewGroup, false);
             return new StatusHolder(v);
@@ -74,13 +51,34 @@ public class BattelsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
         return entries.size() / 4 + 1;
     }
 
-
     @Override
     public int getItemViewType(int position) {
         if (position == 0) {
             return 0;
         } else {
             return 1;
+        }
+    }
+
+    public static class StatusHolder extends RecyclerView.ViewHolder {
+
+        public StatusHolder(View itemView) {
+            super(itemView);
+        }
+    }
+
+    public static class BattelsHolder extends RecyclerView.ViewHolder {
+        public TextView battelsReference;
+        public TextView battelsAmount;
+        public TextView battelsDescription;
+        public TextView battelsDate;
+
+        public BattelsHolder(View itemView) {
+            super(itemView);
+            battelsReference = (TextView) itemView.findViewById(R.id.battelsReference);
+            battelsAmount = (TextView) itemView.findViewById(R.id.battelsAmount);
+            battelsDescription = (TextView) itemView.findViewById(R.id.battelsDescription);
+            battelsDate = (TextView) itemView.findViewById(R.id.battelsDate);
         }
     }
 }

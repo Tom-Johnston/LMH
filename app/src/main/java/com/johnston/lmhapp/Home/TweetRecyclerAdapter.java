@@ -20,12 +20,96 @@ import java.util.Locale;
 /**
  * Created by Johnston on 11/12/2014.
  */
-public class TweetRecyclerAdapter extends RecyclerView.Adapter<TweetRecyclerAdapter.TweetHolder> {
+public class TweetRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     final List<Tweet> tweets;
     final Bitmap[] profilePictures;
 
+    public TweetRecyclerAdapter(List<Tweet> passedtweets, Bitmap[] passedprofilePictures) {
+        tweets = passedtweets;
+        profilePictures = passedprofilePictures;
+    }
+
+
+
+    @Override
+    public int getItemViewType(int position) {
+        if (position == 0) {
+            return 0;
+        } else {
+            return 1;
+        }
+    }
+
+    public static class StatusHolder extends RecyclerView.ViewHolder {
+        public StatusHolder(View itemView) {
+            super(itemView);
+        }
+    }
+
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+        if (viewType == 0) {
+            View v = LayoutInflater.from(viewGroup.getContext())
+                    .inflate(R.layout.status, viewGroup, false);
+            return new StatusHolder(v);
+        }
+        View v = LayoutInflater.from(viewGroup.getContext())
+                .inflate(R.layout.tweet_item, viewGroup, false);
+        return new TweetHolder(v);
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        if (position == 0) {
+            ((TextView) holder.itemView).setText("Finished");
+        return;
+        }
+        position--;
+        TweetHolder tweetHolder = (TweetHolder) holder;
+        Tweet tweet = tweets.get(position);
+        if (tweet.pictureIndex > -1) {
+            tweetHolder.profilePicture.setImageBitmap(profilePictures[tweet.pictureIndex]);
+        }
+        if (tweet.bmp != null) {
+            tweetHolder.tweetImage.setImageBitmap(tweet.bmp);
+            tweetHolder.tweetImage.setVisibility(View.VISIBLE);
+        } else {
+            tweetHolder.tweetImage.setVisibility(View.GONE);
+        }
+        long timedifference = System.currentTimeMillis() - tweet.time;
+        String timeString;
+        if (timedifference > 1000 * 60 * 60 * 24) {
+//            Over 24 hours old. Will display the date it was posted.
+            Date date = new Date();
+            date.setTime(tweet.time);
+            timeString = new SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH).format(date);
+        } else if (timedifference > 1000 * 60 * 60) {
+            timeString = Long.toString(timedifference / (1000 * 60 * 60)) + "h";
+        } else if (timedifference > 1000 * 60) {
+            timeString = Long.toString(timedifference / (1000 * 60)) + "m";
+        } else {
+            timeString = "Less than a minute ago";
+        }
+        tweetHolder.time.setText(timeString);
+        tweetHolder.screenName.setText(Html.fromHtml(tweet.screenName));
+        tweetHolder.handle.setText(tweet.handle);
+        tweetHolder.tweetText.setText(Html.fromHtml(tweet.Text));
+        tweetHolder.tweetText.setMovementMethod(LinkMovementMethod.getInstance());
+        if (tweet.retweet) {
+            tweetHolder.retweet.setVisibility(View.VISIBLE);
+            tweetHolder.retweet.setText("Retweeted by " + tweet.retweeter);
+
+        } else {
+            tweetHolder.retweet.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public int getItemCount() {
+        return tweets.size()+1;
+    }
+
     public static class TweetHolder extends RecyclerView.ViewHolder {
-        // each data item is just a string in this case
         public TextView retweet;
         public ImageView profilePicture;
         public TextView screenName;
@@ -44,64 +128,6 @@ public class TweetRecyclerAdapter extends RecyclerView.Adapter<TweetRecyclerAdap
             tweetText = (TextView) itemView.findViewById(R.id.tweetText);
             tweetImage = (ImageView) itemView.findViewById(R.id.tweetImage);
         }
-    }
-
-
-    public TweetRecyclerAdapter(List<Tweet> passedtweets, Bitmap[] passedprofilePictures){
-        tweets = passedtweets;
-        profilePictures = passedprofilePictures;
-    }
-
-    @Override
-    public TweetHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        View v = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.tweet_item, viewGroup, false);
-        return new TweetHolder(v);
-    }
-
-    @Override
-    public void onBindViewHolder(TweetHolder holder, int position) {
-        Tweet tweet = tweets.get(position);
-        if (tweet.pictureIndex > -1) {
-            holder.profilePicture.setImageBitmap(profilePictures[tweet.pictureIndex]);
-        }
-        if (tweet.bmp != null) {
-            holder.tweetImage.setImageBitmap(tweet.bmp);
-            holder.tweetImage.setVisibility(View.VISIBLE);
-        } else {
-            holder.tweetImage.setVisibility(View.GONE);
-        }
-        long timedifference = System.currentTimeMillis() - tweet.time;
-        String timeString;
-        if (timedifference > 1000 * 60 * 60 * 24) {
-//            Over 24 hours old. Will display the date it was posted.
-            Date date = new Date();
-            date.setTime(tweet.time);
-            timeString = new SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH).format(date);
-        } else if (timedifference > 1000 * 60 * 60) {
-            timeString = Long.toString(timedifference / (1000 * 60 * 60)) + "h";
-        } else if (timedifference > 1000 * 60) {
-            timeString = Long.toString(timedifference / (1000 * 60)) + "m";
-        } else {
-            timeString = "Less than a minute ago";
-        }
-        holder.time.setText(timeString);
-        holder.screenName.setText(Html.fromHtml(tweet.screenName));
-        holder.handle.setText(tweet.handle);
-        holder.tweetText.setText(Html.fromHtml(tweet.Text));
-        holder.tweetText.setMovementMethod(LinkMovementMethod.getInstance());
-        if (tweet.retweet) {
-            holder.retweet.setVisibility(View.VISIBLE);
-            holder.retweet.setText("Retweeted by " + tweet.retweeter);
-
-        } else {
-            holder.retweet.setVisibility(View.GONE);
-        }
-    }
-
-    @Override
-    public int getItemCount() {
-        return tweets.size();
     }
 
 

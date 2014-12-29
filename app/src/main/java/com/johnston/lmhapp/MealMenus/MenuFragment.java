@@ -36,7 +36,7 @@ public class MenuFragment extends Fragment {
     public void downloadNewMenu() {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
         recyclerView.setVisibility(View.GONE);
-        ProgressBar pb = (ProgressBar) view.findViewById(R.id.PM1);
+        ProgressBar pb = (ProgressBar) view.findViewById(R.id.progressBar);
         pb.setVisibility(View.VISIBLE);
         TextView nothingToShow = (TextView) view.findViewById(R.id.nothingToShow);
         nothingToShow.setVisibility(View.GONE);
@@ -49,7 +49,7 @@ public class MenuFragment extends Fragment {
         main.startRefresh(5);
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
         recyclerView.setVisibility(View.GONE);
-        ProgressBar pb = (ProgressBar) view.findViewById(R.id.PM1);
+        ProgressBar pb = (ProgressBar) view.findViewById(R.id.progressBar);
         pb.setVisibility(View.VISIBLE);
         TextView nothingToShow = (TextView) view.findViewById(R.id.nothingToShow);
         nothingToShow.setVisibility(View.GONE);
@@ -79,13 +79,13 @@ public class MenuFragment extends Fragment {
         }
         if (meals.size() > 0) {
             recyclerView.setVisibility(View.VISIBLE);
-            ProgressBar pb = (ProgressBar) view.findViewById(R.id.PM1);
+            ProgressBar pb = (ProgressBar) view.findViewById(R.id.progressBar);
             pb.setVisibility(View.GONE);
             TextView nothingToShow = (TextView) view.findViewById(R.id.nothingToShow);
             nothingToShow.setVisibility(View.GONE);
         } else {
             recyclerView.setVisibility(View.GONE);
-            ProgressBar pb = (ProgressBar) view.findViewById(R.id.PM1);
+            ProgressBar pb = (ProgressBar) view.findViewById(R.id.progressBar);
             pb.setVisibility(View.GONE);
             TextView nothingToShow = (TextView) view.findViewById(R.id.nothingToShow);
             nothingToShow.setVisibility(View.VISIBLE);
@@ -108,7 +108,7 @@ public class MenuFragment extends Fragment {
             main.startRefresh(5);
             MainActivity.Status = (android.widget.TextView) view.findViewById(R.id.Status);
             recyclerView.setVisibility(View.GONE);
-            ProgressBar pb = (ProgressBar) view.findViewById(R.id.PM1);
+            ProgressBar pb = (ProgressBar) view.findViewById(R.id.progressBar);
             pb.setVisibility(View.VISIBLE);
             TextView nothingToShow = (TextView) view.findViewById(R.id.nothingToShow);
             nothingToShow.setVisibility(View.GONE);
@@ -132,25 +132,32 @@ public class MenuFragment extends Fragment {
     final Handler handler = new Handler() {
         @Override
         public void handleMessage(Message message) {
-            if(message.what==-1){
+            if (message.what == -1) {
+                refreshing = false;
+                finished = false;
                 MainActivity main = (MainActivity) getActivity();
                 if (main != null) {
                     main.stopRefresh(5);
                 }
-                if(view!=null){
-                    view.findViewById(R.id.PM1).setVisibility(View.GONE);
+
+                if (view == null) {
+                    return;
                 }
-                finished = true;
-                refreshing = false;
-            }else if (message.what == 0) {
+                view.findViewById(R.id.progressBar).setVisibility(View.GONE);
+                TextView nothingToShow = (TextView) view.findViewById(R.id.nothingToShow);
+                nothingToShow.setVisibility(View.VISIBLE);
+                nothingToShow.setText("Something has gone wrong.");
+                return;
+            }
+            if (message.what == 0) {
                 meals = (ArrayList<String>) message.obj;
                 if (starting) {
                     if (meals.size() == 0) {
                         new DownloadNewMenuAsync().execute(context, false, handler);
-                    } else if(view!=null){
+                    } else if (view != null) {
                         showMenu();
                     }
-                } else if(view!=null){
+                } else if (view != null) {
                     showMenu();
                 }
             } else {
