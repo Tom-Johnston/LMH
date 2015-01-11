@@ -127,7 +127,7 @@ public class NotificationsService extends BroadcastReceiver {
                 return;
             }
 
-            if (startOfNextMeal == -1) {
+            if (startOfNextMeal == -1&&refreshTime!=-1) {
                 startOfNextMeal = System.currentTimeMillis() + refreshTime;
             }
             SharedPreferences sharedPreferences = context.getSharedPreferences("mealsToNotifyFor", 0);
@@ -198,7 +198,9 @@ public class NotificationsService extends BroadcastReceiver {
             AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
             Intent newIntent = new Intent(context, NotificationsService.class);
             PendingIntent pi = PendingIntent.getBroadcast(context, 0, newIntent, 0);
-            am.set(AlarmManager.RTC_WAKEUP, startOfNextMeal - notifyTime, pi);
+            if(startOfNextMeal!=-1){
+                am.set(AlarmManager.RTC_WAKEUP, startOfNextMeal - notifyTime, pi);
+            }
             wl.release();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
