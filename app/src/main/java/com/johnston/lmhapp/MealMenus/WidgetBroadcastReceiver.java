@@ -24,6 +24,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.DateFormat;
+import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -55,8 +56,8 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
                             svcIntent.toUri(Intent.URI_INTENT_SCHEME)));
 
                     remoteViews.setRemoteAdapter(R.id.Menu, svcIntent);
-                    remoteViews.setTextViewText(R.id.WidgetTitle,"Day");
-                    remoteViews.setTextViewText(R.id.Day, "Meal");
+                    remoteViews.setTextViewText(R.id.Day,"Day");
+                    remoteViews.setTextViewText(R.id.Meal, "Meal");
                     AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
                     ComponentName widget = new ComponentName(context, WidgetProvider.class);
                     AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -65,10 +66,11 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
                     Intent intentmenu = new Intent(context, MainActivity.class);
                     intentmenu.putExtra("Launch", true);
                     PendingIntent pi2 = PendingIntent.getActivity(context, 0, intentmenu, 0);
-                    remoteViews.setOnClickPendingIntent(R.id.WidgetTitle, pi2);
                     remoteViews.setOnClickPendingIntent(R.id.Day, pi2);
+                    remoteViews.setOnClickPendingIntent(R.id.Meal, pi2);
                     appWidgetManager.updateAppWidget(widget, remoteViews);
-                    if (System.currentTimeMillis() + refreshTime != -1) {
+
+                    if (refreshTime != -1) {
                         am.set(AlarmManager.RTC, System.currentTimeMillis() + refreshTime + 1000, pi);
                     }
                 }
@@ -100,12 +102,8 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
 
             BufferedReader br = new BufferedReader(new FileReader(file));
 //            Check the date.
-            String dateString = br.readLine();
-            Date date = new SimpleDateFormat("dd/MM/yy", Locale.ENGLISH).parse(dateString);
-            long time = date.getTime();
-            String[] output = constructMenu(br, time);
-            String nextMeal = output[2];
-            if (nextMeal.equals("")) {
+            long startOfMeal  = (long) constructMenu(br)[2];
+            if (startOfMeal==-1) {
 //                We have an old menu.
                 final Handler handler = new Handler() {
                     @Override
@@ -119,8 +117,6 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
             }
         } catch (FileNotFoundException e1) {
             e1.printStackTrace();
-        } catch (ParseException e1) {
-            e1.printStackTrace();
         } catch (IOException e1) {
             e1.printStackTrace();
         }
@@ -132,37 +128,44 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
             long refreshTime = refreshTimePreference.getLong("refreshTime", 2 * 60 * 60 * 1000);
 
             BufferedReader br = new BufferedReader(new FileReader(file));
-            String dateString = br.readLine();
-            Date date = new SimpleDateFormat("dd/MM/yy", Locale.ENGLISH).parse(dateString);
-            long time = date.getTime();
-            String[] output = constructMenu(br, time);
-            String Day = output[0];
-            String ShortDay = output[7];
-            String Meal = output[1];
-            String nextMeal = output[2];
-            long TimeOfMeal = Long.parseLong(output[3]);
-            if (nextMeal.equals("")) {
+
+            Object[] output = constructMenu(br);
+            String Meal = (String) output[0];
+            String menu = (String) output[1];
+            long startOfMeal  = (long) output[2];
+            long endOfMeal = (long) output[3];
+            if (startOfMeal==-1) {
 //                Looks like even the new menu is old;
                 Date download_date = new Date(System.currentTimeMillis());
                 DateFormat Date_format = DateFormat.getDateTimeInstance();
-                nextMeal = "Old Menu" + "¬" + "Downloaded:" + Date_format.format(download_date);
-                TimeOfMeal = System.currentTimeMillis() + refreshTime;
+                menu = "Old Menu" + "¬" + "Downloaded:" + Date_format.format(download_date);
+
+                if(refreshTime==-1){
+                    endOfMeal = -1;
+                }else{
+                    endOfMeal = System.currentTimeMillis() + refreshTime;
+                }
             }
+
             RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.lmh_widget);
             Intent svcIntent = new Intent(context, WidgetListViewService.class);
-            svcIntent.putExtra("Options", nextMeal);
+            svcIntent.putExtra("Options", menu);
             svcIntent.setData(Uri.parse(
                     svcIntent.toUri(Intent.URI_INTENT_SCHEME)));
 
             remoteViews.setRemoteAdapter(R.id.Menu, svcIntent);
 
             int width = context.getSharedPreferences("widgetWidth", 0).getInt("width", 0);
+            String[] namesOfDays;
             if (width > 145) {
-                remoteViews.setTextViewText(R.id.WidgetTitle, Day);
+                namesOfDays = DateFormatSymbols.getInstance().getWeekdays();
             } else {
-                remoteViews.setTextViewText(R.id.WidgetTitle, ShortDay);
+                namesOfDays = DateFormatSymbols.getInstance().getShortWeekdays();
             }
-            remoteViews.setTextViewText(R.id.Day, Meal);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(startOfMeal);
+            remoteViews.setTextViewText(R.id.Day,namesOfDays[calendar.DAY_OF_WEEK]);
+            remoteViews.setTextViewText(R.id.Meal, Meal);
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
             ComponentName widget = new ComponentName(context, WidgetProvider.class);
             AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -171,65 +174,48 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
             Intent intentmenu = new Intent(context, MainActivity.class);
             intentmenu.putExtra("Launch", true);
             PendingIntent pi2 = PendingIntent.getActivity(context, 0, intentmenu, 0);
-            remoteViews.setOnClickPendingIntent(R.id.WidgetTitle, pi2);
             remoteViews.setOnClickPendingIntent(R.id.Day, pi2);
+            remoteViews.setOnClickPendingIntent(R.id.Meal, pi2);
             appWidgetManager.updateAppWidget(widget, remoteViews);
-            if (TimeOfMeal != -1) {
-                am.set(AlarmManager.RTC, TimeOfMeal + 1000, pi);
+
+            if (endOfMeal != -1) {
+                am.set(AlarmManager.RTC, endOfMeal + 1000, pi);
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
         }
     }
 
 
-    public String[] constructMenu(BufferedReader br, long time) throws IOException {
+    public Object[] constructMenu(BufferedReader br) throws IOException {
 
         String inputLine;
-        int day = 0;
-        String nextMeal = "";
-        String Day;
-        String ShortDay;
+        String menu = "";
         String Meal = "Meal";
-        int keepDay = 0;
         int Hours;
         int Minutes;
         Boolean record = false;
         long currentTime = System.currentTimeMillis();
-        long TimeOfMeal = 0;
-        long startOfNextMeal = 0;
-        long startOfMeal = 0;
+        long endOfMeal = -1;
+        long startOfNextMeal = -1;
+        long startOfMeal = -1;
         String Times = "";
+        long timeOfBeginningOfDay=0;
         while (true) {
             inputLine = br.readLine();
             if (inputLine == null) {
                 break;
             }
-            if (inputLine.equals("Monday") || inputLine.equals("Monday,")) {
-                day = 2;
-            } else if ((inputLine.equals("Tuesday") || inputLine.equals("Tuesday,"))) {
-                day = 3;
-            } else if ((inputLine.equals("Wednesday") || inputLine.equals("Wednesday,"))) {
-                day = 4;
-            } else if ((inputLine.equals("Thursday") || inputLine.equals("Thursday,"))) {
-                day = 5;
-            } else if ((inputLine.equals("Friday") || inputLine.equals("Friday,"))) {
-                day = 6;
-            } else if ((inputLine.equals("Saturday") || inputLine.equals("Saturday,"))) {
-                day = 7;
-            } else if ((inputLine.equals("Sunday") || inputLine.equals("Sunday,"))) {
-                day = 8;
+            if(checkForValidDate(inputLine)!=-1){
+                timeOfBeginningOfDay=checkForValidDate(inputLine);
             } else if (inputLine.contains(":")) {
                 if (record) {
                     Hours = Integer.parseInt(inputLine.substring(0, 2));
                     Minutes = Integer.parseInt(inputLine.substring(3, 5));
                     Calendar calendar = Calendar.getInstance();
-                    calendar.setTimeInMillis(time);
-                    calendar.roll(Calendar.DAY_OF_WEEK, (day - 2));
+                    calendar.setTimeInMillis(timeOfBeginningOfDay);
                     calendar.set(Calendar.HOUR_OF_DAY, Hours);
                     calendar.set(Calendar.MINUTE, Minutes);
                     startOfNextMeal = calendar.getTimeInMillis();
@@ -239,67 +225,45 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
                     Hours = Integer.parseInt(inputLine.substring(6, 8));
                     Minutes = Integer.parseInt(inputLine.substring(9, 11));
                     Calendar calendar = Calendar.getInstance();
-                    calendar.setTimeInMillis(time);
-                    calendar.roll(Calendar.DAY_OF_WEEK, (day - 2));
+                    calendar.setTimeInMillis(timeOfBeginningOfDay);
                     calendar.set(Calendar.HOUR_OF_DAY, Hours);
                     calendar.set(Calendar.MINUTE, Minutes);
-                    TimeOfMeal = calendar.getTimeInMillis();
+                    endOfMeal = calendar.getTimeInMillis();
                     Hours = Integer.parseInt(inputLine.substring(0, 2));
                     Minutes = Integer.parseInt(inputLine.substring(3, 5));
-                    calendar.setTimeInMillis(time);
-                    calendar.roll(Calendar.DAY_OF_WEEK, (day - 2));
+                    calendar.setTimeInMillis(timeOfBeginningOfDay);
                     calendar.set(Calendar.HOUR_OF_DAY, Hours);
                     calendar.set(Calendar.MINUTE, Minutes);
                     startOfMeal = calendar.getTimeInMillis();
 
-                    if (currentTime < TimeOfMeal) {
+                    if (currentTime < endOfMeal) {
                         record = true;
                         Meal = br.readLine();
-                        keepDay = day;
                     }
                 }
             } else if (record) {
-                nextMeal = nextMeal + inputLine + "¬";
+                menu = menu + inputLine + "¬";
             }
         }
-        day = keepDay;
-        if (day == 2) {
-            Day = "Monday";
-            ShortDay = "Mon";
-        } else if (day == 3) {
-            Day = "Tuesday";
-            ShortDay = "Tues";
-        } else if (day == 4) {
-            Day = "Wednesday";
-            ShortDay = "Weds";
-        } else if (day == 5) {
-            Day = "Thursday";
-            ShortDay = "Thurs";
-        } else if (day == 6) {
-            Day = "Friday";
-            ShortDay = "Fri";
-        } else if (day == 7) {
-            Day = "Saturday";
-            ShortDay = "Sat";
-        } else if (day == 8) {
-            Day = "Sunday";
-            ShortDay = "Sun";
-        } else {
-            Day = "Problem";
-            ShortDay = "Problem";
-        }
-        String[] output = new String[8];
-        output[0] = Day;
-        output[1] = Meal;
-        output[2] = nextMeal;
-        output[3] = String.valueOf(TimeOfMeal);
-        output[4] = String.valueOf(startOfNextMeal);
-        output[5] = Times;
-        output[6] = String.valueOf(startOfMeal);
-        output[7] = ShortDay;
-//        This is undoubtedly bad practice but I am lazy. To be fixed in the future.
+
+
+        Object[] output = new Object[8];
+        output[0] = Meal;
+        output[1] = menu;
+        output[2] = startOfMeal;
+        output[3] = endOfMeal;
+        output[4] = Times;
+        output[5] = startOfNextMeal;
         return output;
     }
 
+    public long checkForValidDate(String inputLine){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yy", Locale.ENGLISH);
+        try{
+            return simpleDateFormat.parse(inputLine).getTime();
+        } catch (ParseException e) {
+            return -1;
+        }
+    }
 
 }

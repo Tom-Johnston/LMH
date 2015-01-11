@@ -79,13 +79,9 @@ public class NotificationsService extends BroadcastReceiver {
             WidgetBroadcastReceiver mealMenu = new WidgetBroadcastReceiver();
             BufferedReader br = new BufferedReader(new FileReader(file));
 //            Check the date.
-            String dateString;
-            dateString = br.readLine();
-            Date date = new SimpleDateFormat("dd/MM/yy", Locale.ENGLISH).parse(dateString);
-            long time = date.getTime();
-            String[] output = mealMenu.constructMenu(br, time);
-            String nextMeal = output[2];
-            if (nextMeal.equals("")) {
+
+            long startOfMeal = (long) (new WidgetBroadcastReceiver()).constructMenu(br)[2];
+            if (startOfMeal==-1) {
 //                We have an old menu.
                 final Handler handler = new Handler() {
                     @Override
@@ -99,8 +95,6 @@ public class NotificationsService extends BroadcastReceiver {
             }
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
         }
     }
 
@@ -109,49 +103,47 @@ public class NotificationsService extends BroadcastReceiver {
         try {
             SharedPreferences refreshTimePreference = context.getSharedPreferences("RefreshTime", 0);
             long refreshTime = refreshTimePreference.getLong("refreshTime", 2 * 60 * 60 * 1000);
-            WidgetBroadcastReceiver mealMenu = new WidgetBroadcastReceiver();
             BufferedReader br = new BufferedReader(new FileReader(file));
-//            Check the date.
-            String dateString;
-            dateString = br.readLine();
-            Date date = new SimpleDateFormat("dd/MM/yy", Locale.ENGLISH).parse(dateString);
-            long time = date.getTime();
-            String[] output = mealMenu.constructMenu(br, time);
-            String nextMeal = output[2];
+            Object[] output = new WidgetBroadcastReceiver().constructMenu(br);
 
-            long startOfNextMeal = Long.parseLong(output[4]);
-            String Meal = output[1];
-            String Times = output[5];
-            long startOfMeal = Long.parseLong(output[6]);
-            if (nextMeal.equals("")) {
+            String meal = (String) output[0];
+            String menu = (String) output[1];
+            long startOfMeal = (long) output[2];
+            String times = (String) output[4];
+            long startOfNextMeal = (long)output[5];
+            if (startOfMeal==-1) {
 //                Looks like even the new menu is old;
 //                Handle this.
+                if(refreshTime==-1){
+                    wl.release();
+                    return;
+                }
                 startOfNextMeal = System.currentTimeMillis() + refreshTime;
                 AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
                 Intent newIntent = new Intent(context, NotificationsService.class);
                 PendingIntent pi = PendingIntent.getBroadcast(context, 0, newIntent, 0);
-                am.set(AlarmManager.RTC_WAKEUP, startOfNextMeal - notifyTime, pi);
+                am.set(AlarmManager.RTC_WAKEUP, startOfNextMeal, pi);
                 wl.release();
                 return;
             }
 
-            if (startOfNextMeal == 0) {
+            if (startOfNextMeal == -1) {
                 startOfNextMeal = System.currentTimeMillis() + refreshTime;
             }
             SharedPreferences sharedPreferences = context.getSharedPreferences("mealsToNotifyFor", 0);
             Boolean notifyForLunch = sharedPreferences.getBoolean("Lunch", true);
             Boolean notifyForDinner = sharedPreferences.getBoolean("Dinner", true);
             Boolean skipNotification = false;
-            if (!notifyForLunch && Meal.equals("Lunch")) {
+            if (!notifyForLunch && meal.equals("Lunch")) {
                 skipNotification = true;
-            } else if (!notifyForDinner && Meal.equals("Dinner")) {
+            } else if (!notifyForDinner && meal.equals("Dinner")) {
                 skipNotification = true;
             }
 
             if (System.currentTimeMillis() + notifyTime > startOfMeal && !skipNotification) {
 //                We are supposed to be showing a notification. This is because this class is called to start the chain of notifications.
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-                builder.setContentTitle(Meal + " at " + Times);
+                builder.setContentTitle(meal + " at " + times);
                 builder.setSmallIcon(R.drawable.ic_notification);
                 builder.setContentText("Expand to see menu");
                 SharedPreferences NotificationSound = context.getSharedPreferences("NotificationSound", 0);
@@ -192,8 +184,8 @@ public class NotificationsService extends BroadcastReceiver {
                 builder.setContentIntent(pi2);
                 builder.setLights(Color.argb(255, r, g, b), onFor, offFor);
                 NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
-                inboxStyle.setBigContentTitle(Meal + " at " + Times);
-                StringTokenizer stringTokenizer = new StringTokenizer(nextMeal, "¬");
+                inboxStyle.setBigContentTitle(meal + " at " + times);
+                StringTokenizer stringTokenizer = new StringTokenizer(menu, "¬");
                 while (stringTokenizer.hasMoreTokens()) {
                     inboxStyle.addLine(stringTokenizer.nextToken());
                 }
@@ -209,8 +201,6 @@ public class NotificationsService extends BroadcastReceiver {
             am.set(AlarmManager.RTC_WAKEUP, startOfNextMeal - notifyTime, pi);
             wl.release();
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
