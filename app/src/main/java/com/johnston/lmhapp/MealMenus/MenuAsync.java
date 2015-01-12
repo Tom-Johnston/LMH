@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -28,13 +29,10 @@ public class MenuAsync extends AsyncTask<Object, Void, Void> {
         File file = new File(context.getFilesDir(), "Menu.txt");
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
-            String dateString = br.readLine();
-            Date readDate = new SimpleDateFormat("dd/MM/yy", Locale.ENGLISH).parse(dateString);
-            long time = readDate.getTime();
-            Byte day = 1;
             int Hours;
             int Minutes;
-            long mealTime;
+            long endOfMeal;
+            long startOfDay=0;
             long currentTime = System.currentTimeMillis();
             String inputLine;
             String outputLine = "";
@@ -45,20 +43,8 @@ public class MenuAsync extends AsyncTask<Object, Void, Void> {
                 if (inputLine == null) {
                     break;
                 }
-                if (inputLine.equals("Monday") || inputLine.equals("Monday,")) {
-                    day = 2;
-                } else if ((inputLine.equals("Tuesday") || inputLine.equals("Tuesday,"))) {
-                    day = 3;
-                } else if ((inputLine.equals("Wednesday") || inputLine.equals("Wednesday,"))) {
-                    day = 4;
-                } else if ((inputLine.equals("Thursday") || inputLine.equals("Thursday,"))) {
-                    day = 5;
-                } else if ((inputLine.equals("Friday") || inputLine.equals("Friday,"))) {
-                    day = 6;
-                } else if ((inputLine.equals("Saturday") || inputLine.equals("Saturday,"))) {
-                    day = 7;
-                } else if ((inputLine.equals("Sunday") || inputLine.equals("Sunday,"))) {
-                    day = 8;
+                if(checkForValidDate(inputLine)!=-1){
+                    startOfDay = checkForValidDate(inputLine);
                 } else if (inputLine.contains(":")) {
                     if (!outputLine.equals("")) {
                         meals.add(outputLine);
@@ -66,10 +52,14 @@ public class MenuAsync extends AsyncTask<Object, Void, Void> {
                     }
                     Hours = Integer.parseInt(inputLine.substring(6, 8));
                     Minutes = Integer.parseInt(inputLine.substring(9, 11));
-                    mealTime = time + (day - 2) * 86400000 + Hours * 3600000 + Minutes * 60000;
-                    if (mealTime > currentTime) {
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTimeInMillis(startOfDay);
+                    calendar.set(Calendar.HOUR_OF_DAY, Hours);
+                    calendar.set(Calendar.MINUTE, Minutes);
+                    endOfMeal = calendar.getTimeInMillis();
+                    if (endOfMeal > currentTime) {
                         old = false;
-                        outputLine = outputLine + br.readLine() + " on " + new SimpleDateFormat("EEEE d MMMM").format(new Date(mealTime));
+                        outputLine = outputLine + br.readLine() + " on " + new SimpleDateFormat("EEEE d MMMM").format(new Date(endOfMeal));
                         meals.add(outputLine);
                         outputLine = "";
                     }
@@ -88,12 +78,18 @@ public class MenuAsync extends AsyncTask<Object, Void, Void> {
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
         handler.obtainMessage(0, meals).sendToTarget();
         return null;
+    }
+    public long checkForValidDate(String inputLine){
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yy", Locale.ENGLISH);
+        try{
+            return simpleDateFormat.parse(inputLine).getTime();
+        } catch (ParseException e) {
+            return -1;
+        }
     }
 }
