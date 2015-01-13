@@ -59,6 +59,7 @@ public class MenuAsync extends AsyncTask<Object, Void, Void> {
                     endOfMeal = calendar.getTimeInMillis();
                     if (endOfMeal > currentTime) {
                         old = false;
+                        meals.add(inputLine); // Add the times.
                         outputLine = outputLine + br.readLine() + " on " + new SimpleDateFormat("EEEE d MMMM").format(new Date(endOfMeal));
                         meals.add(outputLine);
                         outputLine = "";

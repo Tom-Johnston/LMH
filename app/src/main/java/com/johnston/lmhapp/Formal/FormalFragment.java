@@ -87,7 +87,7 @@ public class FormalFragment extends Fragment {
     }
 
     public void showListofPeopleGoing(int position) {
-        FormalDetailsDialog dialog = FormalDetailsDialog.newInstance(listOfListsOfPeople.get(position));
+        FormalDetailsDialog dialog = FormalDetailsDialog.newInstance(listOfListsOfPeople.get(position-1));
         dialog.show(getFragmentManager(), "details");
     }
 

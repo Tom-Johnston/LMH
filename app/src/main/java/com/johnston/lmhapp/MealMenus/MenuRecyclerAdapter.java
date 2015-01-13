@@ -47,25 +47,28 @@ public class MenuRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             ((TextView) viewHolder.itemView).setText(" ");
         } else {
             MealHolder mealHolder = (MealHolder) viewHolder;
-            position = (position - 1) * 2;
-            mealHolder.mealTitle.setText(entries.get(position));
-            mealHolder.mealMenu.setText(entries.get(position + 1));
+            position = (position - 1) * 3;
+            mealHolder.mealTime.setText(entries.get(position));
+            mealHolder.mealTitle.setText(entries.get(position+1));
+            mealHolder.mealMenu.setText(entries.get(position + 2));
         }
     }
 
     @Override
     public int getItemCount() {
-        return entries.size() / 2 + 1;
+        return entries.size() / 3 + 1;
     }
 
     public static class MealHolder extends RecyclerView.ViewHolder {
         public TextView mealTitle;
         public TextView mealMenu;
+        public TextView mealTime;
 
         public MealHolder(View itemView) {
             super(itemView);
             mealTitle = (TextView) itemView.findViewById(R.id.mealTitle);
             mealMenu = (TextView) itemView.findViewById(R.id.mealMenu);
+            mealTime = (TextView) itemView.findViewById(R.id.mealTime);
         }
     }
 

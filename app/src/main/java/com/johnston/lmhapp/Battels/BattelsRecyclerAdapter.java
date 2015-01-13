@@ -27,6 +27,11 @@ public class BattelsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
                     .inflate(R.layout.status, viewGroup, false);
             return new StatusHolder(v);
         }
+        if(i==2){
+            View v = LayoutInflater.from(viewGroup.getContext())
+                    .inflate(R.layout.battels_card_total, viewGroup, false);
+            return new BattelsTotalHolder(v);
+        }
         View v = LayoutInflater.from(viewGroup.getContext())
                 .inflate(R.layout.battels_card, viewGroup, false);
         return new BattelsHolder(v);
@@ -36,6 +41,11 @@ public class BattelsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
         if (position == 0) {
             ((TextView) viewHolder.itemView).setText("Finished");
+        }else if(position==getItemCount()-1){
+            BattelsTotalHolder battelsTotalHolder = (BattelsTotalHolder) viewHolder;
+            position = (position - 1) * 4;
+            battelsTotalHolder.battelsAmount.setText(entries.get(position + 3));
+            battelsTotalHolder.battelsReference.setText(entries.get(position + 1));
         } else {
             BattelsHolder battelsHolder = (BattelsHolder) viewHolder;
             position = (position - 1) * 4;
@@ -55,6 +65,8 @@ public class BattelsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     public int getItemViewType(int position) {
         if (position == 0) {
             return 0;
+        }else if(position==getItemCount()-1){
+            return 2;
         } else {
             return 1;
         }
@@ -79,6 +91,17 @@ public class BattelsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
             battelsAmount = (TextView) itemView.findViewById(R.id.battelsAmount);
             battelsDescription = (TextView) itemView.findViewById(R.id.battelsDescription);
             battelsDate = (TextView) itemView.findViewById(R.id.battelsDate);
+        }
+    }
+
+    public static class BattelsTotalHolder extends RecyclerView.ViewHolder {
+        public TextView battelsReference;
+        public TextView battelsAmount;
+
+        public BattelsTotalHolder(View itemView) {
+            super(itemView);
+            battelsReference = (TextView) itemView.findViewById(R.id.battelsReference);
+            battelsAmount = (TextView) itemView.findViewById(R.id.battelsAmount);
         }
     }
 }
