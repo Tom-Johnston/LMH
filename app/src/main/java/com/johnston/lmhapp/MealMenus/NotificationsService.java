@@ -109,6 +109,7 @@ public class NotificationsService extends BroadcastReceiver {
             String meal = (String) output[0];
             String menu = (String) output[1];
             long startOfMeal = (long) output[2];
+            long endOfMeal = (long)output[3];
             String times = (String) output[4];
             long startOfNextMeal = (long)output[5];
             if (startOfMeal==-1) {
@@ -145,7 +146,6 @@ public class NotificationsService extends BroadcastReceiver {
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
                 builder.setContentTitle(meal + " at " + times);
                 builder.setSmallIcon(R.drawable.ic_notification);
-                builder.setContentText("Expand to see menu");
                 SharedPreferences NotificationSound = context.getSharedPreferences("NotificationSound", 0);
                 if (NotificationSound.contains("SoundURI")) {
                     String SoundURI = (NotificationSound.getString("SoundURI", "null"));
@@ -183,13 +183,20 @@ public class NotificationsService extends BroadcastReceiver {
                 PendingIntent pi2 = PendingIntent.getActivity(context, 0, intentmenu, 0);
                 builder.setContentIntent(pi2);
                 builder.setLights(Color.argb(255, r, g, b), onFor, offFor);
+                builder.setColor(Color.argb(255, r, g, b));
                 NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
                 inboxStyle.setBigContentTitle(meal + " at " + times);
                 StringTokenizer stringTokenizer = new StringTokenizer(menu, "¬");
+                if(stringTokenizer.countTokens()==1){
+                    builder.setContentText(stringTokenizer.nextToken());
+                }else{
+                    builder.setContentText("Expand to see menu");
+                }
                 while (stringTokenizer.hasMoreTokens()) {
                     inboxStyle.addLine(stringTokenizer.nextToken());
                 }
                 builder.setStyle(inboxStyle);
+                builder.setAutoCancel(true);
                 NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                 mNotificationManager.notify(1, builder.build());
             } else if (!skipNotification) {
@@ -199,6 +206,9 @@ public class NotificationsService extends BroadcastReceiver {
             Intent newIntent = new Intent(context, NotificationsService.class);
             PendingIntent pi = PendingIntent.getBroadcast(context, 0, newIntent, 0);
             if(startOfNextMeal!=-1){
+                if(startOfNextMeal-notifyTime<0){
+                    startOfNextMeal = endOfMeal;
+                }
                 am.set(AlarmManager.RTC_WAKEUP, startOfNextMeal - notifyTime, pi);
             }
             wl.release();

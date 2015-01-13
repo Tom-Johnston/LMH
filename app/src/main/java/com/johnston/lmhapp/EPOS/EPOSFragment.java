@@ -42,10 +42,7 @@ public class EPOSFragment extends Fragment {
                 if (view == null) {
                     return;
                 }
-                view.findViewById(R.id.progressBar).setVisibility(View.GONE);
-                TextView nothingToShow = (TextView) view.findViewById(R.id.nothingToShow);
-                nothingToShow.setVisibility(View.VISIBLE);
-                nothingToShow.setText("Something has gone wrong.");
+                showMessage(getResources().getString(R.string.somethingWentWrong));
                 return;
             }
 
@@ -61,12 +58,7 @@ public class EPOSFragment extends Fragment {
                 if (view == null) {
                     return;
                 }
-                TextView nothingToShow = (TextView) view.findViewById(R.id.nothingToShow);
-                (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
-                (view.findViewById(R.id.card_view)).setVisibility(View.VISIBLE);
-                (view.findViewById(R.id.card_view2)).setVisibility(View.VISIBLE);
-                (view.findViewById(R.id.card_view3)).setVisibility(View.VISIBLE);
-                nothingToShow.setVisibility(View.GONE);
+                showCards();
                 addEntriesToList();
 
             } else {
@@ -93,11 +85,7 @@ public class EPOSFragment extends Fragment {
         refreshing = true;
         MainActivity main = (MainActivity) getActivity();
         main.startRefresh(3);
-        (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
-        (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
-        (view.findViewById(R.id.card_view)).setVisibility(View.GONE);
-        (view.findViewById(R.id.card_view2)).setVisibility(View.GONE);
-        (view.findViewById(R.id.card_view3)).setVisibility(View.GONE);
+        showProgressBar();
         byte b = 1;
         main.getInfo(view, handler, b);
     }
@@ -125,6 +113,29 @@ public class EPOSFragment extends Fragment {
             linearLayout.addView(divider);
         }
     }
+    public void showCards(){
+        (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
+        (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
+        (view.findViewById(R.id.card_view)).setVisibility(View.VISIBLE);
+        (view.findViewById(R.id.card_view2)).setVisibility(View.VISIBLE);
+        (view.findViewById(R.id.card_view3)).setVisibility(View.VISIBLE);
+    }
+
+    public void showMessage(String message){
+        (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
+        (view.findViewById(R.id.nothingToShow)).setVisibility(View.VISIBLE);
+        ((TextView)view.findViewById(R.id.nothingToShow)).setText(message);
+        (view.findViewById(R.id.card_view)).setVisibility(View.GONE);
+        (view.findViewById(R.id.card_view2)).setVisibility(View.GONE);
+        (view.findViewById(R.id.card_view3)).setVisibility(View.GONE);
+    }
+    public void showProgressBar(){
+        (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
+        (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
+        (view.findViewById(R.id.card_view)).setVisibility(View.GONE);
+        (view.findViewById(R.id.card_view2)).setVisibility(View.GONE);
+        (view.findViewById(R.id.card_view3)).setVisibility(View.GONE);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -140,13 +151,10 @@ public class EPOSFragment extends Fragment {
             MainActivity main = (MainActivity) getActivity();
             main.startRefresh(3);
             MainActivity.Status = (android.widget.TextView) view.findViewById(R.id.Status);
-            (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
-            (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
-            (view.findViewById(R.id.card_view)).setVisibility(View.GONE);
-            (view.findViewById(R.id.card_view2)).setVisibility(View.GONE);
-            (view.findViewById(R.id.card_view3)).setVisibility(View.GONE);
+            showProgressBar();
         } else if (finished) {
             addEntriesToList();
+            showCards();
         } else {
             GetEpos();
         }

@@ -56,18 +56,12 @@ public class HomeFragment extends Fragment {
             if (main != null) {
                 main.stopRefresh(0);
             }
-            if (view != null) {
-                view.findViewById(R.id.PM1).setVisibility(View.GONE);
-            }
-
             if (message.what == -1) {
                 finished = true;
                 if (view == null) {
                     return;
                 }
-                TextView nothingToShow = (TextView) view.findViewById(R.id.nothingToShow);
-                nothingToShow.setVisibility(View.VISIBLE);
-                nothingToShow.setText("Something has gone wrong.");
+                showMessage(getResources().getString(R.string.somethingWentWrong));
                 return;
             }
 
@@ -80,31 +74,21 @@ public class HomeFragment extends Fragment {
                 return;
             }
 
-            TextView nothingToShow = (TextView) view.findViewById(R.id.nothingToShow);
             if (tweets.size() > 0) {
                 RecyclerView tweetList = (RecyclerView) view.findViewById(R.id.tweetList);
                 tweetList.setAdapter(new TweetRecyclerAdapter(tweets, profilePictures));
-                tweetList.setVisibility(View.VISIBLE);
-                view.findViewById(R.id.Status).setVisibility(View.GONE);
-                nothingToShow.setVisibility(View.GONE);
+                showTweets();
             } else {
-                nothingToShow.setVisibility(View.VISIBLE);
-                nothingToShow.setText(getResources().getString(R.string.nothingToShow));
+                showMessage(getResources().getString(R.string.nothingToShow));
             }
         }
     };
 
     public void loadTweeterFeed() {
         refreshing = true;
+        showProgressBar();
         MainActivity main = (MainActivity) getActivity();
         main.startRefresh(0);
-        view.findViewById(R.id.Status).setVisibility(View.VISIBLE);
-        RecyclerView tweetList = (RecyclerView) view.findViewById(R.id.tweetList);
-        tweetList.setVisibility(View.GONE);
-        ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.PM1);
-        progressBar.setVisibility(View.VISIBLE);
-        TextView nothingToShow = (TextView) view.findViewById(R.id.nothingToShow);
-        nothingToShow.setVisibility(View.GONE);
         Handler permissionHandler = new Handler() {
             @Override
             public void handleMessage(Message message) {
@@ -127,6 +111,27 @@ public class HomeFragment extends Fragment {
 
     }
 
+    public void showTweets(){
+        view.findViewById(R.id.Status).setVisibility(View.GONE);
+        view.findViewById(R.id.tweetList).setVisibility(View.VISIBLE);
+        view.findViewById(R.id.PM1).setVisibility(View.GONE);
+        view.findViewById(R.id.nothingToShow).setVisibility(View.GONE);
+    }
+    public void showMessage(String message){
+        view.findViewById(R.id.Status).setVisibility(View.VISIBLE);
+        view.findViewById(R.id.tweetList).setVisibility(View.GONE);
+        view.findViewById(R.id.PM1).setVisibility(View.GONE);
+        view.findViewById(R.id.nothingToShow).setVisibility(View.VISIBLE);
+        ((TextView)view.findViewById(R.id.nothingToShow)).setText(message);
+    }
+    public void showProgressBar(){
+        view.findViewById(R.id.Status).setVisibility(View.VISIBLE);
+        view.findViewById(R.id.tweetList).setVisibility(View.GONE);
+        view.findViewById(R.id.PM1).setVisibility(View.VISIBLE);
+        view.findViewById(R.id.nothingToShow).setVisibility(View.GONE);
+    }
+
+
 
     @Override
     public void onDestroyView() {
@@ -144,24 +149,13 @@ public class HomeFragment extends Fragment {
         if (refreshing) {
             MainActivity main = (MainActivity) getActivity();
             main.startRefresh(0);
-            tweetList.setVisibility(View.GONE);
-            final ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.PM1);
-            progressBar.setVisibility(View.VISIBLE);
-            final TextView nothingToShow = (TextView) view.findViewById(R.id.nothingToShow);
-            nothingToShow.setVisibility(View.VISIBLE);
+            showProgressBar();
         } else if (finished) {
-            final ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.PM1);
-            final TextView nothingToShow = (TextView) view.findViewById(R.id.nothingToShow);
             if (tweets.size() > 0) {
                 tweetList.setAdapter(new TweetRecyclerAdapter(tweets, profilePictures));
-                tweetList.setVisibility(View.VISIBLE);
-                progressBar.setVisibility(View.GONE);
-                nothingToShow.setVisibility(View.GONE);
-                view.findViewById(R.id.Status).setVisibility(View.GONE);
+                showTweets();
             } else {
-                tweetList.setVisibility(View.GONE);
-                progressBar.setVisibility(View.GONE);
-                nothingToShow.setVisibility(View.VISIBLE);
+                showMessage(getResources().getString(R.string.nothingToShow));
             }
         } else {
             loadTweeterFeed();

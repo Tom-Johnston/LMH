@@ -35,9 +35,6 @@ public class BattelsFragment extends Fragment {
             if (main != null) {
                 main.stopRefresh(2);
             }
-            if (view != null) {
-                (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
-            }
 
             if (message.what == -1) {
                 refreshing = false;
@@ -45,9 +42,7 @@ public class BattelsFragment extends Fragment {
                 if (view == null) {
                     return;
                 }
-                TextView nothingToShow = (TextView) view.findViewById(R.id.nothingToShow);
-                nothingToShow.setVisibility(View.VISIBLE);
-                nothingToShow.setText("Something has gone wrong.");
+                showMessage(getResources().getString(R.string.somethingWentWrong));
                 return;
             }
 
@@ -63,14 +58,9 @@ public class BattelsFragment extends Fragment {
             if (entries.size() > 0) {
                 BattelsRecyclerAdapter battelsRecyclerAdapter = new BattelsRecyclerAdapter(entries);
                 recyclerView.setAdapter(battelsRecyclerAdapter);
-                (view.findViewById(R.id.progressBarContainer)).setVisibility(View.GONE);
-                recyclerView.setVisibility(View.VISIBLE);
-                view.findViewById(R.id.Status).setVisibility(View.GONE);
+                showCards();
             } else {
-                (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
-                TextView nothingToShow = (TextView) view.findViewById(R.id.nothingToShow);
-                nothingToShow.setVisibility(View.VISIBLE);
-                nothingToShow.setText(getResources().getString(R.string.nothingToShow));
+                showMessage(getResources().getString(R.string.nothingToShow));
             }
         }
     };
@@ -78,16 +68,33 @@ public class BattelsFragment extends Fragment {
 
     public void LoadBattels() {
         refreshing = true;
-        (view.findViewById(R.id.Status)).setVisibility(View.VISIBLE);
-        (view.findViewById(R.id.progressBarContainer)).setVisibility(View.VISIBLE);
-        (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
-        (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
-        (view.findViewById(R.id.my_recycler_view)).setVisibility(View.GONE);
+        showProgressBar();
         MainActivity main = (MainActivity) this.getActivity();
         main.startRefresh(2);
         byte b = 2;
         main.getInfo(view, handler, b);
+    }
 
+    public void showProgressBar(){
+        view.findViewById(R.id.Status).setVisibility(View.VISIBLE);
+        (view.findViewById(R.id.progressBarContainer)).setVisibility(View.VISIBLE);
+        (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
+        (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
+        (view.findViewById(R.id.my_recycler_view)).setVisibility(View.GONE);
+    }
+
+    public void showMessage(String message){
+        view.findViewById(R.id.Status).setVisibility(View.VISIBLE);
+        (view.findViewById(R.id.progressBarContainer)).setVisibility(View.VISIBLE);
+        (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
+        (view.findViewById(R.id.nothingToShow)).setVisibility(View.VISIBLE);
+        ((TextView)view.findViewById(R.id.nothingToShow)).setText(message);
+        (view.findViewById(R.id.my_recycler_view)).setVisibility(View.GONE);
+    }
+    public void showCards(){
+        (view.findViewById(R.id.Status)).setVisibility(View.GONE);
+        (view.findViewById(R.id.progressBarContainer)).setVisibility(View.GONE);
+        (view.findViewById(R.id.my_recycler_view)).setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -100,22 +107,14 @@ public class BattelsFragment extends Fragment {
             MainActivity main = (MainActivity) this.getActivity();
             main.startRefresh(2);
             MainActivity.Status = (android.widget.TextView) view.findViewById(R.id.Status);
-            (view.findViewById(R.id.Status)).setVisibility(View.VISIBLE);
-            (view.findViewById(R.id.progressBarContainer)).setVisibility(View.VISIBLE);
-            (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
-            (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
-            (view.findViewById(R.id.my_recycler_view)).setVisibility(View.GONE);
+            showCards();
         } else if (finished) {
             if (entries.size() > 0) {
                 BattelsRecyclerAdapter battelsRecyclerAdapter = new BattelsRecyclerAdapter(entries);
                 recyclerView.setAdapter(battelsRecyclerAdapter);
-                (view.findViewById(R.id.progressBarContainer)).setVisibility(View.GONE);
-                recyclerView.setVisibility(View.VISIBLE);
-                view.findViewById(R.id.Status).setVisibility(View.GONE);
+                showCards();
             } else {
-                (view.findViewById(R.id.progressBarContainer)).setVisibility(View.VISIBLE);
-                (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
-                (view.findViewById(R.id.nothingToShow)).setVisibility(View.VISIBLE);
+                showMessage(getResources().getString(R.string.nothingToShow));
             }
         } else {
             LoadBattels();

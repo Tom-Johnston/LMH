@@ -43,10 +43,7 @@ public class FormalFragment extends Fragment {
                 if (view == null) {
                     return;
                 }
-                view.findViewById(R.id.progressBar).setVisibility(View.GONE);
-                TextView nothingToShow = (TextView) view.findViewById(R.id.nothingToShow);
-                nothingToShow.setVisibility(View.VISIBLE);
-                nothingToShow.setText("Something has gone wrong.");
+                showMessage(getResources().getString(R.string.somethingWentWrong));
                 return;
             }
 
@@ -70,10 +67,9 @@ public class FormalFragment extends Fragment {
                 if (entries.size() > 0) {
                     FormalRecyclerAdapter formalRecyclerAdapter = new FormalRecyclerAdapter(entries, listOfMeals);
                     recyclerView.setAdapter(formalRecyclerAdapter);
-                    (view.findViewById(R.id.progressBarContainer)).setVisibility(View.GONE);
+                    showCards();
                 } else {
-                    (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
-                    (view.findViewById(R.id.nothingToShow)).setVisibility(View.VISIBLE);
+                    showMessage(getResources().getString(R.string.nothingToShow));
                 }
 
             }
@@ -82,10 +78,7 @@ public class FormalFragment extends Fragment {
 
     public void GetTheData() {
         refreshing = true;
-        (view.findViewById(R.id.Status)).setVisibility(View.VISIBLE);
-        (view.findViewById(R.id.progressBarContainer)).setVisibility(View.VISIBLE);
-        (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
-        (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
+        showProgressBar();
 
         MainActivity main = (MainActivity) this.getActivity();
         byte b = 4;
@@ -98,6 +91,27 @@ public class FormalFragment extends Fragment {
         dialog.show(getFragmentManager(), "details");
     }
 
+    public void showCards(){
+        (view.findViewById(R.id.Status)).setVisibility(View.GONE);
+        (view.findViewById(R.id.progressBarContainer)).setVisibility(View.GONE);
+        (view.findViewById(R.id.my_recycler_view)).setVisibility(View.VISIBLE);
+    }
+    public void showMessage(String message){
+        (view.findViewById(R.id.Status)).setVisibility(View.VISIBLE);
+        (view.findViewById(R.id.progressBarContainer)).setVisibility(View.VISIBLE);
+        (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
+        (view.findViewById(R.id.nothingToShow)).setVisibility(View.VISIBLE);
+        ((TextView)view.findViewById(R.id.nothingToShow)).setText(message);
+        (view.findViewById(R.id.my_recycler_view)).setVisibility(View.GONE);
+    }
+    public void showProgressBar(){
+        (view.findViewById(R.id.Status)).setVisibility(View.VISIBLE);
+        (view.findViewById(R.id.progressBarContainer)).setVisibility(View.VISIBLE);
+        (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
+        (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
+        (view.findViewById(R.id.my_recycler_view)).setVisibility(View.GONE);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.formal_layout, container, false);
@@ -108,19 +122,14 @@ public class FormalFragment extends Fragment {
             MainActivity main = (MainActivity) this.getActivity();
             main.startRefresh(4);
             MainActivity.Status = (android.widget.TextView) view.findViewById(R.id.Status);
-            (view.findViewById(R.id.Status)).setVisibility(View.VISIBLE);
-            (view.findViewById(R.id.progressBarContainer)).setVisibility(View.VISIBLE);
-            (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
-            (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
+            showProgressBar();
         } else if (finished) {
             if (entries.size() > 0) {
                 FormalRecyclerAdapter formalRecyclerAdapter = new FormalRecyclerAdapter(entries, listOfMeals);
                 recyclerView.setAdapter(formalRecyclerAdapter);
-                (view.findViewById(R.id.progressBarContainer)).setVisibility(View.GONE);
+                showCards();
             } else {
-                (view.findViewById(R.id.progressBarContainer)).setVisibility(View.VISIBLE);
-                (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
-                (view.findViewById(R.id.nothingToShow)).setVisibility(View.VISIBLE);
+                showMessage(getResources().getString(R.string.nothingToShow));
             }
         } else {
             GetTheData();
