@@ -47,9 +47,9 @@ public class FormalRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             ((TextView) viewHolder.itemView).setText("Finished");
         } else {
             FormalHolder formalHolder = (FormalHolder) viewHolder;
-            formalHolder.formalMenu.setText(listOfMeals.get(position));
             formalHolder.formalButton.setTag(position);
             position = (position - 1) * 6;
+            formalHolder.formalMenu.setText(listOfMeals.get(position));
             final int numberGone = Integer.parseInt(entries.get(position + 3));
             final int numberLeft = Integer.parseInt(entries.get(position + 4));
             formalHolder.formalDate.setText(entries.get(position));

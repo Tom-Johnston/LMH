@@ -66,10 +66,13 @@ public class PermissionAsync extends AsyncTask<Object, String, Void> {
             }
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
+            handler.obtainMessage(-1).sendToTarget();
         } catch (MalformedURLException e) {
             e.printStackTrace();
+            handler.obtainMessage(-1).sendToTarget();
         } catch (IOException e) {
             e.printStackTrace();
+            handler.obtainMessage(-1).sendToTarget();
         }
         return null;
     }
