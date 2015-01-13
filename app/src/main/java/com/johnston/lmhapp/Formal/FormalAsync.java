@@ -125,7 +125,9 @@ public class FormalAsync extends AsyncTask<Object, String, Void> {
                         break;
                     }
                 }
-                meals = meals.substring(1);
+                if(meals.length()>0) {
+                    meals = meals.substring(1);
+                }
                 ArrayList<String> listOfNames = new ArrayList<>();
                 start = result.indexOf("<tr>", startOfTable);
                 start = result.indexOf("<tr>", start + 1);

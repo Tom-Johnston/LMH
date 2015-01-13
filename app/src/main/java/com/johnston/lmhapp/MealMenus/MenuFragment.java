@@ -38,26 +38,11 @@ public class MenuFragment extends Fragment {
     private Context context;
     private ArrayList<String> meals = new ArrayList<>();
 
-    public void downloadNewMenu() {
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
-        recyclerView.setVisibility(View.GONE);
-        ProgressBar pb = (ProgressBar) view.findViewById(R.id.progressBar);
-        pb.setVisibility(View.VISIBLE);
-        TextView nothingToShow = (TextView) view.findViewById(R.id.nothingToShow);
-        nothingToShow.setVisibility(View.GONE);
-        new DownloadNewMenuAsync().execute(context, false, handler);
-    }
-
     public void checkForPermission(){
         refreshing = true;
         MainActivity main = (MainActivity) getActivity();
         main.startRefresh(5);
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
-        recyclerView.setVisibility(View.GONE);
-        ProgressBar pb = (ProgressBar) view.findViewById(R.id.progressBar);
-        pb.setVisibility(View.VISIBLE);
-        TextView nothingToShow = (TextView) view.findViewById(R.id.nothingToShow);
-        nothingToShow.setVisibility(View.GONE);
+        showProgressBar();
         Handler permissionHandler = new Handler() {
             @Override
             public void handleMessage(Message message) {
@@ -92,10 +77,7 @@ public class MenuFragment extends Fragment {
     }
 
     public void showMenu() {
-//        0 for old
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(layoutManager);
         MenuRecyclerAdapter menuRecyclerAdapter = new MenuRecyclerAdapter(meals);
         recyclerView.setAdapter(menuRecyclerAdapter);
 
@@ -104,22 +86,33 @@ public class MenuFragment extends Fragment {
             main.stopRefresh(5);
         }
         if (meals.size() > 0) {
-            recyclerView.setVisibility(View.VISIBLE);
-            ProgressBar pb = (ProgressBar) view.findViewById(R.id.progressBar);
-            pb.setVisibility(View.GONE);
-            TextView nothingToShow = (TextView) view.findViewById(R.id.nothingToShow);
-            nothingToShow.setVisibility(View.GONE);
+            showCards();
         } else {
-            recyclerView.setVisibility(View.GONE);
-            ProgressBar pb = (ProgressBar) view.findViewById(R.id.progressBar);
-            pb.setVisibility(View.GONE);
-            TextView nothingToShow = (TextView) view.findViewById(R.id.nothingToShow);
-            nothingToShow.setVisibility(View.VISIBLE);
+        showMessage(getResources().getString(R.string.nothingToShow));
         }
 
         finished = true;
         refreshing = false;
     }
+
+    public void showCards(){
+        (view.findViewById(R.id.my_recycler_view)).setVisibility(View.VISIBLE);
+        (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
+        (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
+    }
+    public void showProgressBar(){
+        (view.findViewById(R.id.my_recycler_view)).setVisibility(View.GONE);
+        (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
+        (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
+    }
+    public void showMessage(String message){
+        (view.findViewById(R.id.my_recycler_view)).setVisibility(View.GONE);
+        (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
+        (view.findViewById(R.id.nothingToShow)).setVisibility(View.VISIBLE);
+        ((TextView)view.findViewById(R.id.nothingToShow)).setText(message);
+
+    }
+
 
     @Override
     public android.view.View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -133,11 +126,7 @@ public class MenuFragment extends Fragment {
             MainActivity main = (MainActivity) getActivity();
             main.startRefresh(5);
             MainActivity.Status = (android.widget.TextView) view.findViewById(R.id.Status);
-            recyclerView.setVisibility(View.GONE);
-            ProgressBar pb = (ProgressBar) view.findViewById(R.id.progressBar);
-            pb.setVisibility(View.VISIBLE);
-            TextView nothingToShow = (TextView) view.findViewById(R.id.nothingToShow);
-            nothingToShow.setVisibility(View.GONE);
+            showProgressBar();
         } else if (!finished) {
             checkForPermission();
         } else {
@@ -169,10 +158,7 @@ public class MenuFragment extends Fragment {
                 if (view == null) {
                     return;
                 }
-                view.findViewById(R.id.progressBar).setVisibility(View.GONE);
-                TextView nothingToShow = (TextView) view.findViewById(R.id.nothingToShow);
-                nothingToShow.setVisibility(View.VISIBLE);
-                nothingToShow.setText("Something has gone wrong.");
+showMessage(getResources().getString(R.string.somethingWentWrong));
                 return;
             }
             if (message.what == 0) {

@@ -1,5 +1,6 @@
 package com.johnston.lmhapp.EPOS;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -94,18 +95,22 @@ public class EPOSFragment extends Fragment {
     public void addEntriesToList() {
         LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.transactionList);
         linearLayout.removeAllViews();
+        Activity activity = getActivity();
+        if(activity==null){
+            return;
+        }
         for (int i = 0; i < transactions.size(); i++) {
             String data = transactions.get(i);
             String code = data.substring(0, 2);
             String message = data.substring(2);
-            TextView tv = new TextView(getActivity());
+            TextView tv = new TextView(activity);
             tv.setText(message);
             if (code.equals("12")) {
                 tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
             } else if (code.equals("02")) {
                 tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
             }
-            View divider = new View(getActivity());
+            View divider = new View(activity);
             divider.setBackgroundColor(Color.parseColor("#1f000000"));
             divider.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 2));
 

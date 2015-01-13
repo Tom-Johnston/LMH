@@ -107,7 +107,7 @@ public class BattelsFragment extends Fragment {
             MainActivity main = (MainActivity) this.getActivity();
             main.startRefresh(2);
             MainActivity.Status = (android.widget.TextView) view.findViewById(R.id.Status);
-            showCards();
+            showProgressBar();
         } else if (finished) {
             if (entries.size() > 0) {
                 BattelsRecyclerAdapter battelsRecyclerAdapter = new BattelsRecyclerAdapter(entries);

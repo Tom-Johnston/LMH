@@ -1,5 +1,6 @@
 package com.johnston.lmhapp.LaundryView;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -49,10 +50,7 @@ public class
                 if (view == null) {
                     return;
                 }
-                view.findViewById(R.id.progressBar).setVisibility(View.GONE);
-                TextView nothingToShow = (TextView) view.findViewById(R.id.nothingToShow);
-                nothingToShow.setVisibility(View.VISIBLE);
-                nothingToShow.setText("Something has gone wrong.");
+                showMessage(getResources().getString(R.string.somethingWentWrong));
                 return;
             }
             if (message.what == 0) {
@@ -78,10 +76,7 @@ public class
                 Talbot = (ArrayList<String>) message.obj;
                 if (view != null) {
                     addEntriesToList(R.id.Talbot, Talbot);
-                    (view.findViewById(R.id.progressBarContainer)).setVisibility(View.GONE);
-                    (view.findViewById(R.id.card_view)).setVisibility(View.VISIBLE);
-                    (view.findViewById(R.id.card_view2)).setVisibility(View.VISIBLE);
-                    (view.findViewById(R.id.card_view3)).setVisibility(View.VISIBLE);
+                    showCards();
                 }
             }
         }
@@ -91,11 +86,15 @@ public class
     public void addEntriesToList(int resource, ArrayList<String> entries) {
         LinearLayout linearLayout = (LinearLayout) view.findViewById(resource);
         linearLayout.removeAllViews();
+        Activity activity = getActivity();
+        if(activity==null){
+            return;
+        }
         for (int i = 0; i < entries.size(); i++) {
-            TextView tv = new TextView(getActivity());
+            TextView tv = new TextView(activity);
             tv.setText(entries.get(i));
 
-            View divider = new View(getActivity());
+            View divider = new View(activity);
             divider.setBackgroundColor(Color.parseColor("#1f000000"));
             divider.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 2));
 
@@ -108,13 +107,7 @@ public class
         refreshing = true;
         MainActivity main = (MainActivity) getActivity();
         main.startRefresh(1);
-        handler.removeCallbacksAndMessages(null);
-        (view.findViewById(R.id.progressBarContainer)).setVisibility(View.VISIBLE);
-        (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
-        (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
-        (view.findViewById(R.id.card_view)).setVisibility(View.GONE);
-        (view.findViewById(R.id.card_view2)).setVisibility(View.GONE);
-        (view.findViewById(R.id.card_view3)).setVisibility(View.GONE);
+        showProgressBar();
 
             Handler permissionHandler = new Handler() {
                 @Override
@@ -143,6 +136,30 @@ public class
             new PermissionAsync().execute(getActivity().getApplicationContext(), permissionHandler,null);
     }
 
+    public void showProgressBar() {
+        (view.findViewById(R.id.progressBarContainer)).setVisibility(View.VISIBLE);
+        (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
+        (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
+        (view.findViewById(R.id.card_view)).setVisibility(View.GONE);
+        (view.findViewById(R.id.card_view2)).setVisibility(View.GONE);
+        (view.findViewById(R.id.card_view3)).setVisibility(View.GONE);
+    }
+    public void showMessage(String message){
+        (view.findViewById(R.id.progressBarContainer)).setVisibility(View.VISIBLE);
+        (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
+        (view.findViewById(R.id.nothingToShow)).setVisibility(View.VISIBLE);
+        ((TextView)view.findViewById(R.id.nothingToShow)).setText(message);
+        (view.findViewById(R.id.card_view)).setVisibility(View.GONE);
+        (view.findViewById(R.id.card_view2)).setVisibility(View.GONE);
+        (view.findViewById(R.id.card_view3)).setVisibility(View.GONE);
+    }
+    public void showCards(){
+        (view.findViewById(R.id.progressBarContainer)).setVisibility(View.GONE);
+        (view.findViewById(R.id.card_view)).setVisibility(View.VISIBLE);
+        (view.findViewById(R.id.card_view2)).setVisibility(View.VISIBLE);
+        (view.findViewById(R.id.card_view3)).setVisibility(View.VISIBLE);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -158,15 +175,11 @@ public class
         if (refreshing) {
             MainActivity main = (MainActivity) getActivity();
             main.startRefresh(1);
-            (view.findViewById(R.id.progressBarContainer)).setVisibility(View.VISIBLE);
-            (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
-            (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
-            (view.findViewById(R.id.card_view)).setVisibility(View.GONE);
-            (view.findViewById(R.id.card_view2)).setVisibility(View.GONE);
-            (view.findViewById(R.id.card_view3)).setVisibility(View.GONE);
+            showProgressBar();
         } else if (!finished) {
             LoadStatus();
         } else {
+            showCards();
             final TextView timerView = (TextView) view.findViewById(R.id.LastUpdate);
             Runnable updateTime = new Runnable() {
 
@@ -187,7 +200,6 @@ public class
     @Override
     public void onDestroy() {
         super.onDestroy();
-        handler.removeCallbacksAndMessages(null);
     }
 
 
