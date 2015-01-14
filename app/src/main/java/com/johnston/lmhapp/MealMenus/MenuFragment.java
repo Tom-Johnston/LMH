@@ -38,6 +38,10 @@ public class MenuFragment extends Fragment {
     private Context context;
     private ArrayList<String> meals = new ArrayList<>();
 
+    public void downloadNewMenu() {
+        new DownloadNewMenuAsync().execute(context, false, handler);
+    }
+
     public void checkForPermission(){
         refreshing = true;
         MainActivity main = (MainActivity) getActivity();

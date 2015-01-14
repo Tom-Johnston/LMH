@@ -463,7 +463,7 @@ public class MainActivity extends ActionBarActivity {
             fragment.GetEpos();
         } else if (fragmentType.equals(Options[5])) {
             MenuFragment fragment = (MenuFragment) fragment1;
-            fragment.checkForPermission();
+            fragment.downloadNewMenu();
         } else if (fragmentType.equals(Options[0])) {
             HomeFragment fragment = (HomeFragment) fragment1;
             fragment.loadTweeterFeed();
