@@ -164,7 +164,7 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
             }
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(startOfMeal);
-            remoteViews.setTextViewText(R.id.Day,namesOfDays[calendar.DAY_OF_WEEK]);
+            remoteViews.setTextViewText(R.id.Day,namesOfDays[calendar.DAY_OF_WEEK-1]);
             remoteViews.setTextViewText(R.id.Meal, Meal);
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
             ComponentName widget = new ComponentName(context, WidgetProvider.class);

@@ -26,13 +26,13 @@ public class LoginAsync extends AsyncTask<Object, String, Boolean> {
 
     @Override
     protected Boolean doInBackground(Object[] Objects) {
-        publishProgress("Started");
         statusHandler = (Handler) Objects[3];
         SSLContext context = (SSLContext) Objects[0];
         String args = (String) Objects[1];
         String args2 = (String) Objects[2];
         Main = (MainActivity) Objects[4];
         CookieManager manager = (CookieManager) Objects[5];
+        publishProgress("Started");
         try {
             URL url = new URL("https://intranet.lmh.ox.ac.uk/mealmenus.asp");
             HttpsURLConnection urlc = (HttpsURLConnection) url.openConnection();

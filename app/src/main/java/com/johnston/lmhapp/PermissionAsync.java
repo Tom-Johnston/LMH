@@ -35,24 +35,31 @@ public class PermissionAsync extends AsyncTask<Object, String, Void> {
             SharedPreferences LogIn = context.getSharedPreferences("LogIn", 0);
             String username = LogIn.getString("Username", "Fail");
             String name = LogIn.getString("Name", "");
-            String post = "versionNumber=" + Integer.toString(versionNumber) + "&username=" + username + "&=name" + name;
-
+            String post = "versionNumber=" + Integer.toString(versionNumber) + "&username=" + username + "&name=" + name;
 
             URL url = new URL("https://script.google.com/macros/s/AKfycbzSXs54NkaaqIvnBA1oUSO9lVEel2NEpapDx9TO5S9lB2Ots8Cq/exec");
             HttpsURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
+            urlConnection.setInstanceFollowRedirects(true);
             urlConnection.setRequestMethod("POST");
             urlConnection.setRequestProperty("Content-Length", String.valueOf(post.length()));
             urlConnection.setRequestProperty("User-Agent", "LMH App");
+
+            urlConnection.setDoInput(true);
+            urlConnection.setDoOutput(true);
             OutputStream os = urlConnection.getOutputStream();
-            os.write(post.getBytes("UTF-8"));
+
+            os.write(post.getBytes());
             os.flush();
             os.close();
-            urlConnection.getResponseCode();
+
+            System.out.println(urlConnection.getResponseCode());
+            System.out.println(urlConnection.getURL());
             BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), "UTF-8"));
             String inputLine = in.readLine();
             StringBuilder a = new StringBuilder();
             while (inputLine != null) {
                 a.append(inputLine);
+                System.out.println(inputLine);
                 inputLine = in.readLine();
             }
             in.close();

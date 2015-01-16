@@ -38,10 +38,6 @@ public class MenuFragment extends Fragment {
     private Context context;
     private ArrayList<String> meals = new ArrayList<>();
 
-    public void downloadNewMenu() {
-        new DownloadNewMenuAsync().execute(context, false, handler);
-    }
-
     public void checkForPermission(){
         refreshing = true;
         MainActivity main = (MainActivity) getActivity();
@@ -52,7 +48,7 @@ public class MenuFragment extends Fragment {
             public void handleMessage(Message message) {
                 if (message.what == 0) {
 //                Success!
-                    startMenu();
+                    new DownloadNewMenuAsync().execute(context, false, handler);
                 } else if (message.what == 1) {
 //                Failure
                     handler.obtainMessage(-1).sendToTarget();
@@ -71,9 +67,7 @@ public class MenuFragment extends Fragment {
         File file = new File(context.getFilesDir(), "Menu.txt");
         if (!file.exists()) {
 //                No menu. Get a new menu();
-            new DownloadNewMenuAsync().execute(context, false, handler);
         } else {
-//          Check if we should get a fresh menu. Note we will display the menu even if it is old.
             starting = true;
             new MenuAsync().execute(context, handler);
 
@@ -92,7 +86,7 @@ public class MenuFragment extends Fragment {
         if (meals.size() > 0) {
             showCards();
         } else {
-        showMessage(getResources().getString(R.string.nothingToShow));
+            showMessage(getResources().getString(R.string.nothingToShow));
         }
 
         finished = true;
@@ -132,7 +126,7 @@ public class MenuFragment extends Fragment {
             MainActivity.Status = (android.widget.TextView) view.findViewById(R.id.Status);
             showProgressBar();
         } else if (!finished) {
-            checkForPermission();
+            startMenu();
         } else {
             showMenu();
         }
@@ -169,7 +163,7 @@ showMessage(getResources().getString(R.string.somethingWentWrong));
                 meals = (ArrayList<String>) message.obj;
                 if (starting) {
                     if (meals.size() == 0) {
-                        new DownloadNewMenuAsync().execute(context, false, handler);
+                    checkForPermission();
                     } else if (view != null) {
                         showMenu();
                     }

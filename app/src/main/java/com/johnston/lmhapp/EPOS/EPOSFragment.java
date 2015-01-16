@@ -27,7 +27,7 @@ public class EPOSFragment extends Fragment {
     Boolean finished = false;
     Boolean refreshing = false;
     View view;
-    ArrayList<String> transactions;
+    ArrayList<String> transactions =new ArrayList<>();
     final Handler handler = new Handler() {
         @Override
         public void handleMessage(Message message) {

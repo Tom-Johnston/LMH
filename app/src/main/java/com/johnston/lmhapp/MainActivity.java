@@ -206,6 +206,8 @@ public class MainActivity extends ActionBarActivity {
         Type = passedType;
         if (passedType == 3) {
             manager.getCookieStore().removeAll();
+            LogIn();
+            return;
         }
         LogInView();
 
@@ -463,7 +465,7 @@ public class MainActivity extends ActionBarActivity {
             fragment.GetEpos();
         } else if (fragmentType.equals(Options[5])) {
             MenuFragment fragment = (MenuFragment) fragment1;
-            fragment.downloadNewMenu();
+            fragment.checkForPermission();
         } else if (fragmentType.equals(Options[0])) {
             HomeFragment fragment = (HomeFragment) fragment1;
             fragment.loadTweeterFeed();
@@ -572,7 +574,6 @@ public class MainActivity extends ActionBarActivity {
             } else if (position == 1) {
                 newFragment = new LaundryViewFragment();
                 transaction.addToBackStack(Options[position]);
-
             } else if (position == 2) {
                 newFragment = new BattelsFragment();
                 transaction.addToBackStack(Options[position]);
