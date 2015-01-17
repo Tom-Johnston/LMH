@@ -76,7 +76,6 @@ public class NotificationsService extends BroadcastReceiver {
 
     private void part2(final File file, final Context context) {
         try {
-            WidgetBroadcastReceiver mealMenu = new WidgetBroadcastReceiver();
             BufferedReader br = new BufferedReader(new FileReader(file));
 //            Check the date.
 
@@ -150,7 +149,6 @@ public class NotificationsService extends BroadcastReceiver {
                 if (NotificationSound.contains("SoundURI")) {
                     String SoundURI = (NotificationSound.getString("SoundURI", "null"));
                     if (!SoundURI.equals("None")) {
-
                         builder.setSound(Uri.parse(SoundURI));
                     }
                 } else {
@@ -205,6 +203,7 @@ public class NotificationsService extends BroadcastReceiver {
             AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
             Intent newIntent = new Intent(context, NotificationsService.class);
             PendingIntent pi = PendingIntent.getBroadcast(context, 0, newIntent, 0);
+            am.cancel(pi);
             if(startOfNextMeal!=-1){
                 if(startOfNextMeal-notifyTime<0){
                     startOfNextMeal = endOfMeal;
