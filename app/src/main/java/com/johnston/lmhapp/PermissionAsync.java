@@ -34,8 +34,7 @@ public class PermissionAsync extends AsyncTask<Object, String, Void> {
             SharedPreferences LogIn = context.getSharedPreferences("LogIn", 0);
             String username = LogIn.getString("Username", "Fail");
             String name = LogIn.getString("Name", "");
-            String post = "versionNumber=" + Integer.toString(versionNumber) + "&username=" + username + "&name=" + name;
-            post = URLEncoder.encode(post,"UTF-8");
+            String post = "versionNumber=" + Integer.toString(versionNumber) + "&username=" + URLEncoder.encode(username,"UTF-8") + "&name=" + URLEncoder.encode(name,"UTf-8");
             URL url = new URL("https://script.google.com/macros/s/AKfycbzSXs54NkaaqIvnBA1oUSO9lVEel2NEpapDx9TO5S9lB2Ots8Cq/exec");
             HttpsURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
             urlConnection.setInstanceFollowRedirects(true);
