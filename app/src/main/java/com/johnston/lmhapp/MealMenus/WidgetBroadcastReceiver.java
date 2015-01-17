@@ -158,9 +158,9 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
             int width = context.getSharedPreferences("widgetWidth", 0).getInt("width", 0);
             String[] namesOfDays;
             if (width > 145) {
-                namesOfDays = DateFormatSymbols.getInstance().getWeekdays();
+                namesOfDays = new String[]{"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"};
             } else {
-                namesOfDays = DateFormatSymbols.getInstance().getShortWeekdays();
+                namesOfDays = new String[]{"Mon","Tue","Wed","Thur","Fri","Sat","Sun"};
             }
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(startOfMeal);
