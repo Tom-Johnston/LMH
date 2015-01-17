@@ -10,8 +10,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.*;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -20,7 +19,6 @@ import javax.net.ssl.HttpsURLConnection;
  */
 public class PermissionAsync extends AsyncTask<Object, String, Void> {
     Handler statusHandler;
-
     @Override
     protected Void doInBackground(Object[] objects) {
         Context context = (Context) objects[0];
@@ -30,31 +28,30 @@ public class PermissionAsync extends AsyncTask<Object, String, Void> {
         }
 
         try {
+            // Setting the user agent seems to cause problems on some devices.
             publishProgress("Getting Permission");
             int versionNumber = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
             SharedPreferences LogIn = context.getSharedPreferences("LogIn", 0);
             String username = LogIn.getString("Username", "Fail");
             String name = LogIn.getString("Name", "");
             String post = "versionNumber=" + Integer.toString(versionNumber) + "&username=" + username + "&name=" + name;
-
+            post = URLEncoder.encode(post,"UTF-8");
             URL url = new URL("https://script.google.com/macros/s/AKfycbzSXs54NkaaqIvnBA1oUSO9lVEel2NEpapDx9TO5S9lB2Ots8Cq/exec");
             HttpsURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
             urlConnection.setInstanceFollowRedirects(true);
             urlConnection.setRequestMethod("POST");
-            urlConnection.setRequestProperty("Content-Length", String.valueOf(post.length()));
-            urlConnection.setRequestProperty("User-Agent", "LMH App");
 
             urlConnection.setDoInput(true);
             urlConnection.setDoOutput(true);
             OutputStream os = urlConnection.getOutputStream();
 
-            os.write(post.getBytes());
+            os.write(post.getBytes("UTF-8"));
             os.flush();
             os.close();
 
-            System.out.println(urlConnection.getResponseCode());
+            System.out.println("RC: "+urlConnection.getResponseCode());
             System.out.println(urlConnection.getURL());
-            BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream(), "UTF-8"));
+            BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
             String inputLine = in.readLine();
             StringBuilder a = new StringBuilder();
             while (inputLine != null) {
