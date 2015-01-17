@@ -48,14 +48,11 @@ public class PermissionAsync extends AsyncTask<Object, String, Void> {
             os.flush();
             os.close();
 
-            System.out.println("RC: "+urlConnection.getResponseCode());
-            System.out.println(urlConnection.getURL());
             BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
             String inputLine = in.readLine();
             StringBuilder a = new StringBuilder();
             while (inputLine != null) {
                 a.append(inputLine);
-                System.out.println(inputLine);
                 inputLine = in.readLine();
             }
             in.close();
