@@ -149,6 +149,9 @@ public class SettingsFragment extends Fragment {
                 newFragment.show(getFragmentManager(), "backgroundGenerator");
                 break;
             }
+            case "Set Live Wallpaper": {
+
+            }
             case "Refresh Time": {
                 RefreshTimeDialog newFragment = RefreshTimeDialog.newInstance();
                 newFragment.show(getFragmentManager(), "refreshTimeDialog");

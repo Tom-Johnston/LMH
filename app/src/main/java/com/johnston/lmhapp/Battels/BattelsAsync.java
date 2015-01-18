@@ -58,8 +58,8 @@ public class BattelsAsync extends AsyncTask<Object, String, Void> {
                             String s = inputLine.substring(start + 1, end).trim();
                             if (s.length()-s.lastIndexOf(".")==2){
                                 s+="0";
-                                Entries.add(s);
                             }
+                            Entries.add(s);
                         } else {
                             Entries.add(inputLine.substring(start + 1, end).trim());
                         }

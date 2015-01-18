@@ -85,6 +85,7 @@
         <item>Other Settings</item>
         <item>Refresh Time</item>
         <item>Set Wallpaper</item>
+        <item>Set Live Wallpaper</item>
     </string-array>
     <string-array name="refreshTimeChoices">
         <item>30 Minutes</item>
