@@ -114,7 +114,7 @@ public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
         }
 
         if (background) {
-            handler.obtainMessage(0, paintBackground(triangles, binary, sizex, sizey)).sendToTarget();
+            handler.obtainMessage(0, paintBackgroundLMH(triangles, binary, sizex, sizey)).sendToTarget();
             return null;
         }
         Bitmap bmp = paint(triangles, binary, sizex, sizey, color);
@@ -140,6 +140,46 @@ public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
         }
         handler.obtainMessage(0, dst).sendToTarget();
         return null;
+    }
+
+
+    public Bitmap paintBackgroundLMH(ArrayList<Triangle> triangles, String binary, int sizex, int sizey){
+        Bitmap.Config conf = Bitmap.Config.ARGB_8888;
+        Bitmap bmp = Bitmap.createBitmap(sizex, sizey, conf);
+        Canvas c = new Canvas(bmp);
+
+        Paint bottomLeftFillPaint1 = new Paint();
+        bottomLeftFillPaint1.setColor(Color.parseColor("#002147"));
+        bottomLeftFillPaint1.setStyle(Paint.Style.FILL);
+        bottomLeftFillPaint1.setAntiAlias(true);
+        Paint bottomLeftFillPaint2 = new Paint();
+        bottomLeftFillPaint2.setColor(Color.parseColor("#001123"));
+        bottomLeftFillPaint2.setStyle(Paint.Style.FILL);
+        Paint bottomLeftStrokePaint = new Paint();
+        bottomLeftStrokePaint.setColor(Color.parseColor("#003D81"));
+        bottomLeftStrokePaint.setStyle(Paint.Style.STROKE);
+        bottomLeftStrokePaint.setAntiAlias(true);
+        bottomLeftStrokePaint.setStrokeWidth(2);
+
+        Triangle triangle;
+        int i;
+        for (i = 0; i < triangles.size(); i++) {
+            triangle = triangles.get(i);
+            Path path = new Path();
+            path.setFillType(Path.FillType.EVEN_ODD);
+            path.moveTo(triangle.x1, triangle.y1);
+            path.lineTo(triangle.x2, triangle.y2);
+            path.lineTo(triangle.x3, triangle.y3);
+            path.close();
+
+            System.out.println(triangle.middley);
+            if (triangle.middley<300) {
+                c.drawPath(path, bottomLeftFillPaint1);
+                c.drawPath(path, bottomLeftStrokePaint);
+            }
+
+        }
+        return bmp;
     }
 
     public Bitmap paintBackground(ArrayList<Triangle> triangles, String binary, int sizex, int sizey) {
@@ -250,7 +290,6 @@ public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
 
     public ArrayList<Triangle> NextIteration(ArrayList<Triangle> passedTriangles) {
         ArrayList<Triangle> triangles = new ArrayList<>();
-        float oneOverSquareRoot5 = 0.4472135955f;
         Triangle newTriangle;
         int numberOfTriangles = passedTriangles.size();
         Triangle triangle;
@@ -261,8 +300,8 @@ public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
 
 //            Triangle 1
             newTriangle = new Triangle();
-            newTriangle.x1 = triangle.x3 - oneOverSquareRoot5 * oneOverSquareRoot5 * (triangle.x3 - triangle.x2);
-            newTriangle.y1 = triangle.y3 - oneOverSquareRoot5 * oneOverSquareRoot5 * (triangle.y3 - triangle.y2);
+            newTriangle.x1 = triangle.x3 - 0.2f * (triangle.x3 - triangle.x2);
+            newTriangle.y1 = triangle.y3 - 0.2f * (triangle.y3 - triangle.y2);
 
             newTriangle.x2 = triangle.x1;
             newTriangle.y2 = triangle.y1;
@@ -270,40 +309,49 @@ public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
             newTriangle.x3 = triangle.x3;
             newTriangle.y3 = triangle.y3;
 
+            newTriangle.middlex = (2f/3f) * newTriangle.x1 +  (1f/3f) * newTriangle.x2;
+            newTriangle.middley = (2f/3f) * newTriangle.y1 +  (1f/3f) * newTriangle.y3;
+
             triangles.add(newTriangle);
 
 //            Triangle 2
             newTriangle = new Triangle();
-            newTriangle.x1 = (float) (0.5 * triangle.x1 + 0.5 * (triangle.x3 - oneOverSquareRoot5 * oneOverSquareRoot5 * (triangle.x3 - triangle.x2)));
-            newTriangle.y1 = (float) (0.5 * triangle.y1 + 0.5 * (triangle.y3 - oneOverSquareRoot5 * oneOverSquareRoot5 * (triangle.y3 - triangle.y2)));
+            newTriangle.x1 = (float) (0.5 * triangle.x1 + 0.5 * (triangle.x3 - 0.2f * (triangle.x3 - triangle.x2)));
+            newTriangle.y1 = (float) (0.5 * triangle.y1 + 0.5 * (triangle.y3 - 0.2f * (triangle.y3 - triangle.y2)));
 
             newTriangle.x2 = (float) (0.5 * (triangle.x1 + triangle.x2));
             newTriangle.y2 = (float) (0.5 * (triangle.y1 + triangle.y2));
 
-            newTriangle.x3 = triangle.x3 - oneOverSquareRoot5 * oneOverSquareRoot5 * (triangle.x3 - triangle.x2);
-            newTriangle.y3 = triangle.y3 - oneOverSquareRoot5 * oneOverSquareRoot5 * (triangle.y3 - triangle.y2);
+            newTriangle.x3 = triangle.x3 - 0.2f * (triangle.x3 - triangle.x2);
+            newTriangle.y3 = triangle.y3 - 0.2f * (triangle.y3 - triangle.y2);
+
+            newTriangle.middlex = (2f/3f) * newTriangle.x1 +  (1f/3f) * newTriangle.x2;
+            newTriangle.middley = (2f/3f) * newTriangle.y1 +  (1f/3f) * newTriangle.y3;
 
             triangles.add(newTriangle);
 
 //            Triangle 3
 
             newTriangle = new Triangle();
-            newTriangle.x1 = triangle.x3 - oneOverSquareRoot5 * oneOverSquareRoot5 * 3 * (triangle.x3 - triangle.x2);
-            newTriangle.y1 = triangle.y3 - oneOverSquareRoot5 * oneOverSquareRoot5 * 3 * (triangle.y3 - triangle.y2);
+            newTriangle.x1 = triangle.x3 - 0.2f * 3 * (triangle.x3 - triangle.x2);
+            newTriangle.y1 = triangle.y3 - 0.2f * 3 * (triangle.y3 - triangle.y2);
 
-            newTriangle.x2 = triangle.x3 - oneOverSquareRoot5 * oneOverSquareRoot5 * (triangle.x3 - triangle.x2);
-            newTriangle.y2 = triangle.y3 - oneOverSquareRoot5 * oneOverSquareRoot5 * (triangle.y3 - triangle.y2);
+            newTriangle.x2 = triangle.x3 - 0.2f * (triangle.x3 - triangle.x2);
+            newTriangle.y2 = triangle.y3 - 0.2f * (triangle.y3 - triangle.y2);
 
             newTriangle.x3 = (float) (0.5 * (triangle.x1 + triangle.x2));
             newTriangle.y3 = (float) (0.5 * (triangle.y1 + triangle.y2));
+
+            newTriangle.middlex = (2f/3f) * newTriangle.x1 +  (1f/3f) * newTriangle.x2;
+            newTriangle.middley = (2f/3f) * newTriangle.y1 +  (1f/3f) * newTriangle.y3;
 
             triangles.add(newTriangle);
 
             //            Triangle 4
 
             newTriangle = new Triangle();
-            newTriangle.x1 = (float) (0.5 * triangle.x1 + 0.5 * (triangle.x3 - oneOverSquareRoot5 * oneOverSquareRoot5 * (triangle.x3 - triangle.x2)));
-            newTriangle.y1 = (float) (0.5 * triangle.y1 + 0.5 * (triangle.y3 - oneOverSquareRoot5 * oneOverSquareRoot5 * (triangle.y3 - triangle.y2)));
+            newTriangle.x1 = (float) (0.5 * triangle.x1 + 0.5 * (triangle.x3 - 0.2f * (triangle.x3 - triangle.x2)));
+            newTriangle.y1 = (float) (0.5 * triangle.y1 + 0.5 * (triangle.y3 - 0.2f * (triangle.y3 - triangle.y2)));
 
             newTriangle.x2 = (float) (0.5 * (triangle.x1 + triangle.x2));
             newTriangle.y2 = (float) (0.5 * (triangle.y1 + triangle.y2));
@@ -311,19 +359,25 @@ public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
             newTriangle.x3 = triangle.x1;
             newTriangle.y3 = triangle.y1;
 
+            newTriangle.middlex = (2f/3f) * newTriangle.x1 +  (1f/3f) * newTriangle.x2;
+            newTriangle.middley = (2f/3f) * newTriangle.y1 +  (1f/3f) * newTriangle.y3;
+
             triangles.add(newTriangle);
 
             //            Triangle 5
 
             newTriangle = new Triangle();
-            newTriangle.x1 = triangle.x3 - oneOverSquareRoot5 * oneOverSquareRoot5 * 3 * (triangle.x3 - triangle.x2);
-            newTriangle.y1 = triangle.y3 - oneOverSquareRoot5 * oneOverSquareRoot5 * 3 * (triangle.y3 - triangle.y2);
+            newTriangle.x1 = triangle.x3 - 0.2f * 3 * (triangle.x3 - triangle.x2);
+            newTriangle.y1 = triangle.y3 - 0.2f * 3 * (triangle.y3 - triangle.y2);
 
             newTriangle.x2 = triangle.x2;
             newTriangle.y2 = triangle.y2;
 
             newTriangle.x3 = (float) (0.5 * (triangle.x1 + triangle.x2));
             newTriangle.y3 = (float) (0.5 * (triangle.y1 + triangle.y2));
+
+            newTriangle.middlex = (2f/3f) * newTriangle.x1 +  (1f/3f) * newTriangle.x2;
+            newTriangle.middley = (2f/3f) * newTriangle.y1 +  (1f/3f) * newTriangle.y3;
 
             triangles.add(newTriangle);
 
