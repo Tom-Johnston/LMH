@@ -16,6 +16,7 @@ import android.os.PowerManager;
 import android.support.v4.app.NotificationCompat;
 
 import com.johnston.lmhapp.MainActivity;
+import com.johnston.lmhapp.PermissionAsync;
 import com.johnston.lmhapp.R;
 
 import java.io.BufferedReader;
@@ -37,6 +38,26 @@ public class NotificationsService extends BroadcastReceiver {
 
     long notifyTime = 10 * 60 * 1000;
     PowerManager.WakeLock wl;
+
+    public void permissionFailed(Context context){
+        SharedPreferences refreshTimePreference = context.getSharedPreferences("RefreshTime", 0);
+        long refreshTime = refreshTimePreference.getLong("refreshTime", 2 * 60 * 60 * 1000);
+
+        if(refreshTime==-1){
+//                    Never refresh.
+            wl.release();
+            return;
+        }
+
+        long startOfNextMeal = System.currentTimeMillis() + refreshTime;
+        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent newIntent = new Intent(context, NotificationsService.class);
+        PendingIntent pi = PendingIntent.getBroadcast(context, 0, newIntent, 0);
+        am.cancel(pi);
+        am.set(AlarmManager.RTC_WAKEUP, startOfNextMeal, pi);
+        wl.release();
+        return;
+    }
 
     @Override
     public void onReceive(final Context context, Intent intent) {
@@ -61,13 +82,25 @@ public class NotificationsService extends BroadcastReceiver {
         final File file = new File(context.getFilesDir(), "Menu.txt");
 
         if (!file.exists()) {
-            final Handler handler = new Handler() {
+            Handler permissionHandler = new Handler() {
                 @Override
                 public void handleMessage(Message message) {
-                    part3(file, context);
+                    if (message.what == 0) {
+//                      Success!
+                        final Handler handler = new Handler() {
+                            @Override
+                            public void handleMessage(Message message) {
+                                part3(file, context);
+                            }
+                        };
+                        new DownloadNewMenuAsync().execute(context, true, handler);
+                    } else{
+//                      Failure
+                        permissionFailed(context);
+                    }
                 }
             };
-            new DownloadNewMenuAsync().execute(context, true, handler);
+            new PermissionAsync().execute(context, permissionHandler,null);
 
         } else {
             part2(file, context);
@@ -80,13 +113,25 @@ public class NotificationsService extends BroadcastReceiver {
             long startOfMeal = (long) (new WidgetBroadcastReceiver()).constructMenu(br)[2];
             if (startOfMeal==-1) {
 //                We have an old menu.
-                final Handler handler = new Handler() {
+                Handler permissionHandler = new Handler() {
                     @Override
                     public void handleMessage(Message message) {
-                        part3(file, context);
+                        if (message.what == 0) {
+//                          Success!
+                            final Handler handler = new Handler() {
+                                @Override
+                                public void handleMessage(Message message) {
+                                    part3(file, context);
+                                }
+                            };
+                            new DownloadNewMenuAsync().execute(context, true, handler);
+                        } else{
+//                          Failure
+                            permissionFailed(context);
+                        }
                     }
                 };
-                new DownloadNewMenuAsync().execute(context, true, handler);
+                new PermissionAsync().execute(context, permissionHandler,null);
             } else {
                 part3(file, context);
             }

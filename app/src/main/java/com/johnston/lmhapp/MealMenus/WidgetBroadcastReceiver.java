@@ -39,57 +39,60 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(final Context context, Intent intent) {
-        Handler permissionHandler = new Handler() {
-            @Override
-            public void handleMessage(Message message) {
-                if (message.what == 0) {
-//                Success!
-                    part1(context);
-                } else{
-//                Failure
-                    SharedPreferences refreshTimePreference = context.getSharedPreferences("RefreshTime", 0);
-                    long refreshTime = refreshTimePreference.getLong("refreshTime", 2 * 60 * 60 * 1000);
-                    RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.lmh_widget);
-                    Intent svcIntent = new Intent(context, WidgetListViewService.class);
-                    svcIntent.putExtra("Options", "Unable to get permission for new Menu");
-                    svcIntent.setData(Uri.parse(
-                            svcIntent.toUri(Intent.URI_INTENT_SCHEME)));
+        part1(context);
+    }
 
-                    remoteViews.setRemoteAdapter(R.id.Menu, svcIntent);
-                    remoteViews.setTextViewText(R.id.Day,"Day");
-                    remoteViews.setTextViewText(R.id.Meal, "Meal");
-                    AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
-                    ComponentName widget = new ComponentName(context, WidgetProvider.class);
-                    AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-                    Intent newIntent = new Intent(context, WidgetBroadcastReceiver.class);
-                    PendingIntent pi = PendingIntent.getBroadcast(context, 0, newIntent, 0);
-                    Intent intentmenu = new Intent(context, MainActivity.class);
-                    intentmenu.putExtra("Launch", true);
-                    PendingIntent pi2 = PendingIntent.getActivity(context, 0, intentmenu, 0);
-                    remoteViews.setOnClickPendingIntent(R.id.Day, pi2);
-                    remoteViews.setOnClickPendingIntent(R.id.Meal, pi2);
-                    appWidgetManager.updateAppWidget(widget, remoteViews);
+    public void permissionFailed(final Context context){
+        SharedPreferences refreshTimePreference = context.getSharedPreferences("RefreshTime", 0);
+        long refreshTime = refreshTimePreference.getLong("refreshTime", 2 * 60 * 60 * 1000);
+        RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.lmh_widget);
+        Intent svcIntent = new Intent(context, WidgetListViewService.class);
+        svcIntent.putExtra("Options", "Unable to get permission for new Menu");
+        svcIntent.setData(Uri.parse(
+                svcIntent.toUri(Intent.URI_INTENT_SCHEME)));
 
-                    if (refreshTime != -1) {
-                        am.set(AlarmManager.RTC, System.currentTimeMillis() + refreshTime + 1000, pi);
-                    }
-                }
-            }
-        };
-        new PermissionAsync().execute(context, permissionHandler,null);
+        remoteViews.setRemoteAdapter(R.id.Menu, svcIntent);
+        remoteViews.setTextViewText(R.id.Day,"Day");
+        remoteViews.setTextViewText(R.id.Meal, "Meal");
+        AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+        ComponentName widget = new ComponentName(context, WidgetProvider.class);
+        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent newIntent = new Intent(context, WidgetBroadcastReceiver.class);
+        PendingIntent pi = PendingIntent.getBroadcast(context, 0, newIntent, 0);
+        Intent intentmenu = new Intent(context, MainActivity.class);
+        intentmenu.putExtra("Launch", true);
+        PendingIntent pi2 = PendingIntent.getActivity(context, 0, intentmenu, 0);
+        remoteViews.setOnClickPendingIntent(R.id.Day, pi2);
+        remoteViews.setOnClickPendingIntent(R.id.Meal, pi2);
+        appWidgetManager.updateAppWidget(widget, remoteViews);
+
+        if (refreshTime != -1) {
+            am.set(AlarmManager.RTC, System.currentTimeMillis() + refreshTime + 1000, pi);
+        }
     }
 
     public void part1(final Context context){
         final File file = new File(context.getFilesDir(), "Menu.txt");
-
         if (!file.exists()) {
-            final Handler handler = new Handler() {
+            Handler permissionHandler = new Handler() {
                 @Override
                 public void handleMessage(Message message) {
-                    part3(file, context);
+                    if (message.what == 0) {
+//                Success!
+                        final Handler handler = new Handler() {
+                            @Override
+                            public void handleMessage(Message message) {
+                                part3(file, context);
+                            }
+                        };
+                        new DownloadNewMenuAsync().execute(context, true, handler);
+                    } else{
+//                Failure
+                        permissionFailed(context);
+                    }
                 }
             };
-            new DownloadNewMenuAsync().execute(context, true, handler);
+            new PermissionAsync().execute(context, permissionHandler,null);
 
         } else {
             part2(file, context);
@@ -101,17 +104,28 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
         try {
 
             BufferedReader br = new BufferedReader(new FileReader(file));
-//            Check the date.
             long startOfMeal  = (long) constructMenu(br)[2];
             if (startOfMeal==-1) {
 //                We have an old menu.
-                final Handler handler = new Handler() {
+                Handler permissionHandler = new Handler() {
                     @Override
                     public void handleMessage(Message message) {
-                        part3(file, context);
+                        if (message.what == 0) {
+//                Success!
+                            final Handler handler = new Handler() {
+                                @Override
+                                public void handleMessage(Message message) {
+                                    part3(file, context);
+                                }
+                            };
+                            new DownloadNewMenuAsync().execute(context, true, handler);
+                        } else{
+//                Failure
+                            permissionFailed(context);
+                        }
                     }
                 };
-                new DownloadNewMenuAsync().execute(context, true, handler);
+                new PermissionAsync().execute(context, permissionHandler,null);
             } else {
                 part3(file, context);
             }
