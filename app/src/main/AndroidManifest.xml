@@ -47,6 +47,21 @@
             android:name=".MealMenus.WidgetListViewService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
+        <service
+            android:name=".LiveWallpaper.LMHWallpaperService"
+            android:enabled="false"
+            android:label="LiveWallpaper "
+            android:permission="android.permission.BIND_WALLPAPER" >
+            <intent-filter>
+                <action android:name="android.service.wallpaper.WallpaperService" >
+                </action>
+            </intent-filter>
+
+            <meta-data
+                android:name="android.service.wallpaper"
+                android:resource="@xml/lmh_wallpaper" >
+            </meta-data>
+        </service>
 
     </application>
 

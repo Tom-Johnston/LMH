@@ -158,13 +158,13 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
             int width = context.getSharedPreferences("widgetWidth", 0).getInt("width", 0);
             String[] namesOfDays;
             if (width > 145) {
-                namesOfDays = new String[]{"Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"};
+                namesOfDays = new String[]{"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"};
             } else {
-                namesOfDays = new String[]{"Mon","Tue","Wed","Thur","Fri","Sat","Sun"};
+                namesOfDays = new String[]{"Sun","Mon","Tue","Wed","Thur","Fri","Sat"};
             }
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(startOfMeal);
-            remoteViews.setTextViewText(R.id.Day,namesOfDays[calendar.DAY_OF_WEEK-1]);
+            remoteViews.setTextViewText(R.id.Day,namesOfDays[calendar.get(Calendar.DAY_OF_WEEK)-1]);
             remoteViews.setTextViewText(R.id.Meal, Meal);
             AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
             ComponentName widget = new ComponentName(context, WidgetProvider.class);
@@ -222,24 +222,27 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
                     break;
                 } else {
                     Times = inputLine;
+
                     Hours = Integer.parseInt(inputLine.substring(6, 8));
                     Minutes = Integer.parseInt(inputLine.substring(9, 11));
                     Calendar calendar = Calendar.getInstance();
                     calendar.setTimeInMillis(timeOfBeginningOfDay);
                     calendar.set(Calendar.HOUR_OF_DAY, Hours);
                     calendar.set(Calendar.MINUTE, Minutes);
-                    endOfMeal = calendar.getTimeInMillis();
-                    Hours = Integer.parseInt(inputLine.substring(0, 2));
-                    Minutes = Integer.parseInt(inputLine.substring(3, 5));
-                    calendar.setTimeInMillis(timeOfBeginningOfDay);
-                    calendar.set(Calendar.HOUR_OF_DAY, Hours);
-                    calendar.set(Calendar.MINUTE, Minutes);
-                    startOfMeal = calendar.getTimeInMillis();
-
-                    if (currentTime < endOfMeal) {
+                    if(calendar.getTimeInMillis()>currentTime){
+                        endOfMeal = calendar.getTimeInMillis();
                         record = true;
                         Meal = br.readLine();
+
+//                        Get the start of the meal. Note that there isn't any point in doing this for old meals and that other parts use startOfMeal ==-1 as a check for if there is a current/future meal.
+                        Hours = Integer.parseInt(inputLine.substring(0, 2));
+                        Minutes = Integer.parseInt(inputLine.substring(3, 5));
+                        calendar.setTimeInMillis(timeOfBeginningOfDay);
+                        calendar.set(Calendar.HOUR_OF_DAY, Hours);
+                        calendar.set(Calendar.MINUTE, Minutes);
+                        startOfMeal = calendar.getTimeInMillis();
                     }
+
                 }
             } else if (record) {
                 menu = menu + inputLine + "¬";

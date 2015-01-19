@@ -77,8 +77,6 @@ public class NotificationsService extends BroadcastReceiver {
     private void part2(final File file, final Context context) {
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
-//            Check the date.
-
             long startOfMeal = (long) (new WidgetBroadcastReceiver()).constructMenu(br)[2];
             if (startOfMeal==-1) {
 //                We have an old menu.
@@ -100,8 +98,8 @@ public class NotificationsService extends BroadcastReceiver {
 
     public void part3(File file, Context context) {
         try {
-            SharedPreferences refreshTimePreference = context.getSharedPreferences("RefreshTime", 0);
-            long refreshTime = refreshTimePreference.getLong("refreshTime", 2 * 60 * 60 * 1000);
+
+//            Read the file.
             BufferedReader br = new BufferedReader(new FileReader(file));
             Object[] output = new WidgetBroadcastReceiver().constructMenu(br);
 
@@ -111,25 +109,34 @@ public class NotificationsService extends BroadcastReceiver {
             long endOfMeal = (long)output[3];
             String times = (String) output[4];
             long startOfNextMeal = (long)output[5];
+
+            SharedPreferences refreshTimePreference = context.getSharedPreferences("RefreshTime", 0);
+            long refreshTime = refreshTimePreference.getLong("refreshTime", 2 * 60 * 60 * 1000);
+
             if (startOfMeal==-1) {
-//                Looks like even the new menu is old;
-//                Handle this.
+//                Old Menu
                 if(refreshTime==-1){
+//                    Never refresh.
                     wl.release();
                     return;
                 }
+
                 startOfNextMeal = System.currentTimeMillis() + refreshTime;
                 AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
                 Intent newIntent = new Intent(context, NotificationsService.class);
                 PendingIntent pi = PendingIntent.getBroadcast(context, 0, newIntent, 0);
+                am.cancel(pi);
                 am.set(AlarmManager.RTC_WAKEUP, startOfNextMeal, pi);
                 wl.release();
                 return;
             }
 
             if (startOfNextMeal == -1&&refreshTime!=-1) {
-                startOfNextMeal = System.currentTimeMillis() + refreshTime;
+//                We have a notification now but the next time there won't be a notification so we will trigger the next notification after the refresh time..
+                startOfNextMeal = endOfMeal + refreshTime;
             }
+
+//            Check if we should skip this notification.
             SharedPreferences sharedPreferences = context.getSharedPreferences("mealsToNotifyFor", 0);
             Boolean notifyForLunch = sharedPreferences.getBoolean("Lunch", true);
             Boolean notifyForDinner = sharedPreferences.getBoolean("Dinner", true);
@@ -141,10 +148,28 @@ public class NotificationsService extends BroadcastReceiver {
             }
 
             if (System.currentTimeMillis() + notifyTime > startOfMeal && !skipNotification) {
-//                We are supposed to be showing a notification. This is because this class is called to start the chain of notifications.
+//                We are supposed to be showing a notification. This check is because this class is called to start the chain of notifications.
+
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+
+//                Layout the notification.
                 builder.setContentTitle(meal + " at " + times);
                 builder.setSmallIcon(R.drawable.ic_notification);
+                NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
+                inboxStyle.setBigContentTitle(meal + " at " + times);
+                StringTokenizer stringTokenizer = new StringTokenizer(menu, "¬");
+                if(stringTokenizer.countTokens()<2){
+                    builder.setContentText(stringTokenizer.nextToken());
+                }else{
+                    builder.setContentText("Expand to see menu");
+                }
+                while (stringTokenizer.hasMoreTokens()) {
+                    inboxStyle.addLine(stringTokenizer.nextToken());
+                }
+                builder.setStyle(inboxStyle);
+                builder.setAutoCancel(true);
+
+//                Sound
                 SharedPreferences NotificationSound = context.getSharedPreferences("NotificationSound", 0);
                 if (NotificationSound.contains("SoundURI")) {
                     String SoundURI = (NotificationSound.getString("SoundURI", "null"));
@@ -154,10 +179,12 @@ public class NotificationsService extends BroadcastReceiver {
                 } else {
                     builder.setDefaults(Notification.DEFAULT_SOUND);
                 }
+
+//                Vibrate
                 SharedPreferences vibratePattern = context.getSharedPreferences("vibratePattern", 0);
                 if (vibratePattern.contains("vibratePattern")) {
                     String pattern = vibratePattern.getString("vibratePattern", "null");
-                    StringTokenizer stringTokenizer = new StringTokenizer(pattern, ",");
+                    stringTokenizer = new StringTokenizer(pattern, ",");
                     ArrayList<Long> vibratePatternList = new ArrayList<>();
                     while (stringTokenizer.hasMoreElements()) {
                         vibratePatternList.add(Long.parseLong(stringTokenizer.nextToken()));
@@ -170,42 +197,41 @@ public class NotificationsService extends BroadcastReceiver {
                 } else {
                     builder.setDefaults(Notification.DEFAULT_VIBRATE);
                 }
+
+//                LED
                 SharedPreferences LEDSettings = context.getSharedPreferences("LEDSettings", 0);
                 int r = LEDSettings.getInt("redValue", 0);
                 int g = LEDSettings.getInt("greenValue", 33);
                 int b = LEDSettings.getInt("blueValue", 71);
                 int onFor = LEDSettings.getInt("onFor", 1000);
                 int offFor = LEDSettings.getInt("offFor", 1000);
+                builder.setLights(Color.argb(255, r, g, b), onFor, offFor);
+//                We also set the colour for lollipop. This matches the LED colour.
+                builder.setColor(Color.argb(255, r, g, b));
+
+//              Clicking on the day or meal opens the app and navigates to MenuFragment.
                 Intent intentmenu = new Intent(context, MainActivity.class);
                 intentmenu.putExtra("Launch", true);
                 PendingIntent pi2 = PendingIntent.getActivity(context, 0, intentmenu, 0);
                 builder.setContentIntent(pi2);
-                builder.setLights(Color.argb(255, r, g, b), onFor, offFor);
-                builder.setColor(Color.argb(255, r, g, b));
-                NotificationCompat.InboxStyle inboxStyle = new NotificationCompat.InboxStyle();
-                inboxStyle.setBigContentTitle(meal + " at " + times);
-                StringTokenizer stringTokenizer = new StringTokenizer(menu, "¬");
-                if(stringTokenizer.countTokens()==1){
-                    builder.setContentText(stringTokenizer.nextToken());
-                }else{
-                    builder.setContentText("Expand to see menu");
-                }
-                while (stringTokenizer.hasMoreTokens()) {
-                    inboxStyle.addLine(stringTokenizer.nextToken());
-                }
-                builder.setStyle(inboxStyle);
-                builder.setAutoCancel(true);
+
+//                Send the notification.
                 NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
                 mNotificationManager.notify(1, builder.build());
+
             } else if (!skipNotification) {
+//                The nex meal should be the nex meal notified for.
                 startOfNextMeal = startOfMeal;
             }
+
+//            Set up a timer for the next meal.
             AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
             Intent newIntent = new Intent(context, NotificationsService.class);
             PendingIntent pi = PendingIntent.getBroadcast(context, 0, newIntent, 0);
             am.cancel(pi);
             if(startOfNextMeal!=-1){
                 if(startOfNextMeal-notifyTime<0){
+//                    Got to wait for this meal to end.
                     startOfNextMeal = endOfMeal;
                 }
                 am.set(AlarmManager.RTC_WAKEUP, startOfNextMeal - notifyTime, pi);

@@ -85,7 +85,6 @@
         <item>Other Settings</item>
         <item>Refresh Time</item>
         <item>Set Wallpaper</item>
-        <item>Set Live Wallpaper</item>
     </string-array>
     <string-array name="refreshTimeChoices">
         <item>30 Minutes</item>
@@ -108,4 +107,5 @@
     <string name="nothingToShow">There isn\'t anything to display.</string>
     <string name="somethingWentWrong"> Something went wrong.</string>
     <dimen name="text_size_body_1_material">14sp</dimen>
+    <string name ="WallpaperDescription">Wallpaper Description</string>
 </resources>
