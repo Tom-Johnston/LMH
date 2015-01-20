@@ -2,6 +2,7 @@ package com.johnston.lmhapp;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -22,9 +23,11 @@ import java.util.Random;
  * Created by Tom on 05/11/2014.
  */
 public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
+    long startTime;
 
     @Override
     protected Void doInBackground(Object... params) {
+        startTime = System.currentTimeMillis();
         Context context = (Context) params[4];
         String username = (String) params[0];
         Handler handler = (Handler) params[1];
@@ -33,6 +36,10 @@ public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
 //            Get rid of the lady number to make the differences more obvious.
             username = username.substring(4);
         }
+        int desiredWidth = (Integer) params[2];
+        System.out.println("desiredWith="+desiredWidth);
+        int desiredHeight = (Integer) params[3];
+        System.out.println("desiredHeight="+desiredHeight);
 
         int sizex = (Integer) params[2];
         int sizey = (Integer) params[3];
@@ -46,7 +53,7 @@ public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
 
         int numberOfIterationsToDo = 3;
         if (background) {
-            numberOfIterationsToDo = 5;
+            numberOfIterationsToDo = 6;
         }
 
         int[] color = new int[9];
@@ -111,10 +118,11 @@ public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
 
         for (int j = 0; j < numberOfIterationsToDo; j++) {
             triangles = NextIteration(triangles);
+            System.out.println("Completed Iteration: "+j);
         }
 
         if (background) {
-            handler.obtainMessage(0, paintBackgroundLMH(triangles, binary, sizex, sizey)).sendToTarget();
+            handler.obtainMessage(0, paintBackgroundLMH(triangles, context, desiredWidth, desiredHeight)).sendToTarget();
             return null;
         }
         Bitmap bmp = paint(triangles, binary, sizex, sizey, color);
@@ -143,26 +151,33 @@ public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
     }
 
 
-    public Bitmap paintBackgroundLMH(ArrayList<Triangle> triangles, String binary, int sizex, int sizey){
+    public Bitmap paintBackgroundLMH(ArrayList<Triangle> triangles, Context context, int sizex, int sizey){
+        int margin = sizey/8;
+        Bitmap logo = BitmapFactory.decodeResource(context.getResources(), R.drawable.icon_for_background);
+        float scale = ((float)logo.getHeight())/((float)sizey-2*margin); //We will scale the height so the height of the logo fits the height of the display with margins.
+
+        int numberOfTriagnles =0;
         Bitmap.Config conf = Bitmap.Config.ARGB_8888;
         Bitmap bmp = Bitmap.createBitmap(sizex, sizey, conf);
         Canvas c = new Canvas(bmp);
+        c.drawColor(Color.WHITE);
+        System.out.println(c.getHeight());
 
         Paint bottomLeftFillPaint1 = new Paint();
         bottomLeftFillPaint1.setColor(Color.parseColor("#002147"));
         bottomLeftFillPaint1.setStyle(Paint.Style.FILL);
         bottomLeftFillPaint1.setAntiAlias(true);
-        Paint bottomLeftFillPaint2 = new Paint();
-        bottomLeftFillPaint2.setColor(Color.parseColor("#001123"));
-        bottomLeftFillPaint2.setStyle(Paint.Style.FILL);
         Paint bottomLeftStrokePaint = new Paint();
         bottomLeftStrokePaint.setColor(Color.parseColor("#003D81"));
         bottomLeftStrokePaint.setStyle(Paint.Style.STROKE);
         bottomLeftStrokePaint.setAntiAlias(true);
-        bottomLeftStrokePaint.setStrokeWidth(2);
+        bottomLeftStrokePaint.setStrokeWidth(1);
 
         Triangle triangle;
         int i;
+        int x;
+        int y;
+
         for (i = 0; i < triangles.size(); i++) {
             triangle = triangles.get(i);
             Path path = new Path();
@@ -171,14 +186,29 @@ public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
             path.lineTo(triangle.x2, triangle.y2);
             path.lineTo(triangle.x3, triangle.y3);
             path.close();
+            int periodInX = (int) (((float)logo.getWidth())/scale + margin); // Repeat the logo horizontally.
+            int xMargin = (sizex-periodInX*((int)sizex/periodInX)+margin)/2;       // Center the logos.
+            x = (int) (scale*(triangle.middlex%periodInX-xMargin));
+            y = (int) (scale*(triangle.middley-margin));
+            if(0<=x&&x<logo.getWidth()&&0<=y&&y<logo.getHeight()) {
+                if(logo.getPixel(x,y)==Color.parseColor("#002147")){
+                    bottomLeftFillPaint1.setColor(Color.parseColor("#002147"));
+                    c.drawPath(path, bottomLeftFillPaint1);
+                    c.drawPath(path, bottomLeftStrokePaint);
+                    numberOfTriagnles++;
+                }else if(Color.alpha(logo.getPixel(x,y))==0){
+                    c.drawPath(path, bottomLeftStrokePaint);
+                }else{
+//                    This contains the white triangles and the triangles that are in between the specified colours due to anti-aliasing.
 
-            System.out.println(triangle.middley);
-            if (triangle.middley<300) {
-                c.drawPath(path, bottomLeftFillPaint1);
-                c.drawPath(path, bottomLeftStrokePaint);
+                }
+            }else{
+                    c.drawPath(path, bottomLeftStrokePaint);
             }
-
         }
+        System.out.println("Number of Triangles="+numberOfTriagnles);
+        long timeTaken = System.currentTimeMillis()-startTime;
+        System.out.println("Time taken = " + timeTaken+"ms");
         return bmp;
     }
 
@@ -198,7 +228,7 @@ public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
         bottomLeftStrokePaint.setColor(Color.parseColor("#003D81"));
         bottomLeftStrokePaint.setStyle(Paint.Style.STROKE);
         bottomLeftStrokePaint.setAntiAlias(true);
-        bottomLeftStrokePaint.setStrokeWidth(2);
+        bottomLeftStrokePaint.setStrokeWidth(1);
 
         Triangle triangle;
         int i;

@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.view.Display;
@@ -22,6 +23,8 @@ import android.widget.Toast;
 import com.johnston.lmhapp.ImageGeneratorAsync;
 import com.johnston.lmhapp.R;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
@@ -48,17 +51,7 @@ public class BackgroundGeneratorDialog extends DialogFragment {
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        WindowManager wm = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
-                        Display display = wm.getDefaultDisplay();
-                        int width;
-                        int height;
-                        if (android.os.Build.VERSION.SDK_INT >= 13) {
-                            Point size = new Point();
-                            display.getSize(size);
-                            height = size.y;
-                        } else {
-                            height = display.getHeight();
-                        }
+
                         final Activity activity = getActivity();
                         Handler handler = new Handler() {
                             @Override
@@ -67,6 +60,12 @@ public class BackgroundGeneratorDialog extends DialogFragment {
                                 WallpaperManager wallpaperManager = WallpaperManager.getInstance(activity.getApplicationContext());
                                 try {
                                     wallpaperManager.setBitmap(bmp);
+                                    File pictures = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+                                    File file = new File(pictures,"file.png");
+                                    FileOutputStream out = new FileOutputStream(file);
+                                    bmp.compress(Bitmap.CompressFormat.PNG, 100, out);
+                                    out.flush();
+                                    out.close();
                                     Toast toast = Toast.makeText(activity.getApplicationContext(), "Wallpaper Set.", Toast.LENGTH_SHORT);
                                     toast.show();
                                 } catch (IOException e) {
@@ -77,10 +76,10 @@ public class BackgroundGeneratorDialog extends DialogFragment {
                                 }
                             }
                         };
-                        width = height * 2;
+                        WallpaperManager wallpaperManager = WallpaperManager.getInstance(getActivity().getApplicationContext());
                         SharedPreferences LogIn = getActivity().getSharedPreferences("LogIn", 0);
                         String username = LogIn.getString("Username", "Fail");
-                        new ImageGeneratorAsync().execute(username, handler, width, height, getActivity().getApplicationContext(), true);
+                        new ImageGeneratorAsync().execute(username, handler, wallpaperManager.getDesiredMinimumWidth(), wallpaperManager.getDesiredMinimumHeight(), getActivity().getApplicationContext(), true);
 
 
                     }
