@@ -79,7 +79,29 @@ public class BackgroundGeneratorDialog extends DialogFragment {
                         WallpaperManager wallpaperManager = WallpaperManager.getInstance(getActivity().getApplicationContext());
                         SharedPreferences LogIn = getActivity().getSharedPreferences("LogIn", 0);
                         String username = LogIn.getString("Username", "Fail");
-                        new ImageGeneratorAsync().execute(username, handler, wallpaperManager.getDesiredMinimumWidth(), wallpaperManager.getDesiredMinimumHeight(), getActivity().getApplicationContext(), true);
+
+                        Display display = getActivity().getWindowManager().getDefaultDisplay();
+                        int sizex = wallpaperManager.getDesiredMinimumWidth();
+                        int sizey = wallpaperManager.getDesiredMinimumHeight();
+                        if(sizex<1){
+                            if(android.os.Build.VERSION.SDK_INT >= 13){
+                                Point size = new Point();
+                                display.getSize(size);
+                                sizex = size.x;
+                            }else{
+                                sizex = display.getWidth();
+                            }
+                        }
+                        if(sizey<1){
+                            if(android.os.Build.VERSION.SDK_INT >= 13){
+                                Point size = new Point();
+                                display.getSize(size);
+                                sizey = size.y;
+                            }else{
+                                sizey = display.getHeight();
+                            }
+                        }
+                        new ImageGeneratorAsync().execute(username, handler, sizex, sizey, getActivity().getApplicationContext(), true);
 
 
                     }
