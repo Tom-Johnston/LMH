@@ -53,7 +53,7 @@ public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
 
         int numberOfIterationsToDo = 3;
         if (background) {
-            numberOfIterationsToDo = 7;
+            numberOfIterationsToDo = 6;
         }
 
         int[] color = new int[9];
@@ -103,7 +103,7 @@ public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
         if(!background) {
             String binary="";
             for (int i = 0; i < username.length(); i++) {
-                binary = binary + (Integer.toBinaryString(username.charAt(i))); // This is still a poor way of doing this. I should look at the bits. However this is very quick for short strings so it isn't worth changing. 
+                binary = binary + (Integer.toBinaryString(username.charAt(i))); // This is still a poor way of doing this. I should look at the bits. However this is very quick for short strings so it isn't worth changing.
             }
             for( int i = 0;i<binary.length();i++){
                 if(binary.charAt(i)==1){
