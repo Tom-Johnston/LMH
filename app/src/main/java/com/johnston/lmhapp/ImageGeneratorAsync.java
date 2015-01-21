@@ -68,36 +68,7 @@ public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
         color[8] = (Color.parseColor("#90A4AE"));
 
 
-        ArrayList<Boolean> changeColours = new ArrayList<>();
 
-        startTime = System.currentTimeMillis();
-        if(true) {
-            String binary="";
-            for (int i = 0; i < username.length(); i++) {
-                binary = binary + (Integer.toBinaryString(username.charAt(i)));
-            }
-            for( int i = 0;i<binary.length();i++){
-                if(binary.charAt(i)==1){
-                    changeColours.add(true);
-                }else{
-                    changeColours.add(false);
-                }
-            }
-            int necessaryNumberOfBooleans = (int) (2 * Math.pow(5, numberOfIterationsToDo));
-            int currentNumberOfBooleans = changeColours.size();
-            if (necessaryNumberOfBooleans > currentNumberOfBooleans) {
-                int binaryInt;
-                if (binary.length() > 32) {
-                    binaryInt = Integer.parseInt(binary.substring(0, 31), 2);
-                } else {
-                    binaryInt = Integer.parseInt(binary, 2);
-                }
-                Random random = new Random(binaryInt);
-                for (int i = 0; i < necessaryNumberOfBooleans - currentNumberOfBooleans; i++) {
-                    changeColours.add(random.nextBoolean());
-                }
-            }
-        }
 
 //        Starting bottom triangle
         ArrayList<Triangle> triangles = new ArrayList<>();
@@ -125,6 +96,36 @@ public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
         for (int j = 0; j < numberOfIterationsToDo; j++) {
             triangles = NextIteration(triangles,desiredWidth,desiredHeight);
             System.out.println("Completed Iteration: "+j);
+        }
+
+        ArrayList<Boolean> changeColours = new ArrayList<>();
+
+        if(!background) {
+            String binary="";
+            for (int i = 0; i < username.length(); i++) {
+                binary = binary + (Integer.toBinaryString(username.charAt(i))); // This is still a poor way of doing this. I should look at the bits. However this is very quick for short strings so it isn't worth changing. 
+            }
+            for( int i = 0;i<binary.length();i++){
+                if(binary.charAt(i)==1){
+                    changeColours.add(true);
+                }else{
+                    changeColours.add(false);
+                }
+            }
+            int necessaryNumberOfBooleans = triangles.size();
+            int currentNumberOfBooleans = changeColours.size();
+            if (necessaryNumberOfBooleans > currentNumberOfBooleans) {
+                int binaryInt;
+                if (binary.length() > 32) {
+                    binaryInt = Integer.parseInt(binary.substring(0, 31), 2);
+                } else {
+                    binaryInt = Integer.parseInt(binary, 2);
+                }
+                Random random = new Random(binaryInt);
+                for (int i = 0; i < necessaryNumberOfBooleans - currentNumberOfBooleans; i++) {
+                    changeColours.add(random.nextBoolean());
+                }
+            }
         }
 
         if (background) {
