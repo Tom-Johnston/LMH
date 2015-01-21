@@ -53,7 +53,7 @@ public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
 
         int numberOfIterationsToDo = 3;
         if (background) {
-            numberOfIterationsToDo = 6;
+            numberOfIterationsToDo = 7;
         }
 
         int[] color = new int[9];
@@ -68,31 +68,36 @@ public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
         color[8] = (Color.parseColor("#90A4AE"));
 
 
-//        Generate a string to switch colors
-        String binary = "0";
+        ArrayList<Boolean> changeColours = new ArrayList<>();
 
-        for (int i = 0; i < username.length(); i++) {
-            binary = binary + (Integer.toBinaryString(username.charAt(i)));
-        }
-        int necessaryBinaryLength = (int) (2 * Math.pow(5, numberOfIterationsToDo));
-        int binaryLength = binary.length();
-        if (necessaryBinaryLength > binary.length()) {
-            int binaryInt;
-            if (binary.length() > 32) {
-                binaryInt = Integer.parseInt(binary.substring(0, 31), 2);
-            } else {
-                binaryInt = Integer.parseInt(binary, 2);
+        startTime = System.currentTimeMillis();
+        if(true) {
+            String binary="";
+            for (int i = 0; i < username.length(); i++) {
+                binary = binary + (Integer.toBinaryString(username.charAt(i)));
             }
-            Random random = new Random(binaryInt);
-            for (int i = 0; i < necessaryBinaryLength - binaryLength; i++) {
-                if (random.nextBoolean()) {
-                    binary = binary + "1";
+            for( int i = 0;i<binary.length();i++){
+                if(binary.charAt(i)==1){
+                    changeColours.add(true);
+                }else{
+                    changeColours.add(false);
+                }
+            }
+            int necessaryNumberOfBooleans = (int) (2 * Math.pow(5, numberOfIterationsToDo));
+            int currentNumberOfBooleans = changeColours.size();
+            if (necessaryNumberOfBooleans > currentNumberOfBooleans) {
+                int binaryInt;
+                if (binary.length() > 32) {
+                    binaryInt = Integer.parseInt(binary.substring(0, 31), 2);
                 } else {
-                    binary = binary + "0";
+                    binaryInt = Integer.parseInt(binary, 2);
+                }
+                Random random = new Random(binaryInt);
+                for (int i = 0; i < necessaryNumberOfBooleans - currentNumberOfBooleans; i++) {
+                    changeColours.add(random.nextBoolean());
                 }
             }
         }
-
 
 //        Starting bottom triangle
         ArrayList<Triangle> triangles = new ArrayList<>();
@@ -115,9 +120,10 @@ public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
         triangle.y3 = 0;
         triangles.add(triangle);
 
+        System.out.println("Starting calculating triangles");
 
         for (int j = 0; j < numberOfIterationsToDo; j++) {
-            triangles = NextIteration(triangles);
+            triangles = NextIteration(triangles,desiredWidth,desiredHeight);
             System.out.println("Completed Iteration: "+j);
         }
 
@@ -125,7 +131,7 @@ public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
             handler.obtainMessage(0, paintBackgroundLMH(triangles, context, desiredWidth, desiredHeight)).sendToTarget();
             return null;
         }
-        Bitmap bmp = paint(triangles, binary, sizex, sizey, color);
+        Bitmap bmp = paint(triangles, changeColours, sizex, sizey, color);
 
 //      Flip the matrix to
 
@@ -251,7 +257,7 @@ public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
         return bmp;
     }
 
-    public Bitmap paint(ArrayList<Triangle> triangles, String binary, int sizex, int sizey, int[] color) {
+    public Bitmap paint(ArrayList<Triangle> triangles, ArrayList<Boolean> changeColours, int sizex, int sizey, int[] color) {
         Bitmap.Config conf = Bitmap.Config.ARGB_8888;
         Bitmap bmp = Bitmap.createBitmap(sizex, sizey, conf);
         Canvas c = new Canvas(bmp);
@@ -280,7 +286,7 @@ public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
             path.lineTo(triangle.x3, triangle.y3);
             path.close();
 
-            if (binary.charAt(i) == '1') {
+            if (changeColours.get(i)) {
                 c.drawPath(path, bottomLeftFillPaint2);
             } else {
                 c.drawPath(path, bottomLeftFillPaint1);
@@ -299,7 +305,7 @@ public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
         fillPaint.setColor(color[0]);
 
         for (i = triangles.size() / 2; i < triangles.size(); i++) {
-            if (binary.charAt(i) == '1') {
+            if (changeColours.get(i)) {
                 fillPaint.setColor(color[i % 9]);
             }
 
@@ -318,7 +324,7 @@ public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
         return bmp;
     }
 
-    public ArrayList<Triangle> NextIteration(ArrayList<Triangle> passedTriangles) {
+    public ArrayList<Triangle> NextIteration(ArrayList<Triangle> passedTriangles,int desiredWidth, int desiredHeight) {
         ArrayList<Triangle> triangles = new ArrayList<>();
         Triangle newTriangle;
         int numberOfTriangles = passedTriangles.size();
@@ -326,6 +332,11 @@ public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
         for (int i = 0; i < numberOfTriangles; i++) {
 
             triangle = passedTriangles.get(i);
+
+            if(triangle.x1>desiredWidth && triangle.x2>desiredWidth && triangle.x3>desiredWidth  ||  triangle.y1>desiredHeight && triangle.y2>desiredHeight && triangle.y3>desiredHeight){
+                System.out.println("Skipped traingle");
+                continue;
+            }
 
 
 //            Triangle 1
