@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Handler;
 
 import java.io.BufferedReader;
@@ -34,8 +35,8 @@ public class PermissionAsync extends AsyncTask<Object, String, Void> {
             SharedPreferences LogIn = context.getSharedPreferences("LogIn", 0);
             String username = LogIn.getString("Username", "Fail");
             String name = LogIn.getString("Name", "");
-            String post = "versionNumber=" + Integer.toString(versionNumber) + "&username=" + URLEncoder.encode(username,"UTF-8") + "&name=" + URLEncoder.encode(name,"UTf-8");
-            URL url = new URL("https://script.google.com/macros/s/AKfycbzSXs54NkaaqIvnBA1oUSO9lVEel2NEpapDx9TO5S9lB2Ots8Cq/exec");
+            String post = "versionNumber=" + Integer.toString(versionNumber) + "&username=" + URLEncoder.encode(username,"UTF-8") + "&name=" + URLEncoder.encode(name,"UTf-8")+"&androidVersionNumber="+ Integer.toString(Build.VERSION.SDK_INT)+"&modelName="+ Build.MODEL;
+            URL url = new URL("https://script.google.com/macros/s/AKfycbx0Bb1Rv_h3qpqGbQRjzFFU5OcDTXy2g7o52oedhn2zdHCMgnM/exec");
             HttpsURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
             urlConnection.setInstanceFollowRedirects(true);
             urlConnection.setRequestMethod("POST");

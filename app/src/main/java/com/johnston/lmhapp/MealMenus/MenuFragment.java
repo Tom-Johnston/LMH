@@ -64,6 +64,7 @@ public class MenuFragment extends Fragment {
     }
 
     public void startMenu() {
+        showProgressBar();
         File file = new File(context.getFilesDir(), "Menu.txt");
         if (!file.exists()) {
 //                No menu. Get a new menu();
