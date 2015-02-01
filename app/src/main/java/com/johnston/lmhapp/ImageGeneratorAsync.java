@@ -163,6 +163,9 @@ public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
         Bitmap logo = BitmapFactory.decodeResource(context.getResources(), R.drawable.icon_for_background);
         float scale = ((float)logo.getHeight())/((float)sizey-2*margin); //We will scale the height so the height of the logo fits the height of the display with margins.
 
+        int periodInX = (int) (((float)logo.getWidth())/scale + margin); // Repeat the logo horizontally.
+        int xMargin = (sizex-periodInX*((int)sizex/periodInX)+margin)/2;       // Center the logos.
+
         int numberOfTriagnles =0;
         Bitmap.Config conf = Bitmap.Config.ARGB_8888;
         Bitmap bmp = Bitmap.createBitmap(sizex, sizey, conf);
@@ -193,9 +196,8 @@ public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
             path.lineTo(triangle.x2, triangle.y2);
             path.lineTo(triangle.x3, triangle.y3);
             path.close();
-            int periodInX = (int) (((float)logo.getWidth())/scale + margin); // Repeat the logo horizontally.
-            int xMargin = (sizex-periodInX*((int)sizex/periodInX)+margin)/2;       // Center the logos.
-            x = (int) (scale*(triangle.middlex%periodInX-xMargin));
+
+            x = (int) (scale*((triangle.middlex-xMargin)%periodInX));
             y = (int) (scale*(triangle.middley-margin));
             if(0<=x&&x<logo.getWidth()&&0<=y&&y<logo.getHeight()) {
                 if(logo.getPixel(x,y)==Color.parseColor("#002147")){
