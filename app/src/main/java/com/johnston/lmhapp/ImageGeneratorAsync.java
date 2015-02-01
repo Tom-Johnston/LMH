@@ -199,7 +199,7 @@ public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
 
             x = (int) (scale*((triangle.middlex-xMargin)%periodInX));
             y = (int) (scale*(triangle.middley-margin));
-            if(0<=x&&x<logo.getWidth()&&0<=y&&y<logo.getHeight()) {
+            if(0<=x&&x<logo.getWidth()&&0<=y&&y<logo.getHeight()&&triangle.middlex<sizex-xMargin) {
                 if(logo.getPixel(x,y)==Color.parseColor("#002147")){
                     bottomLeftFillPaint1.setColor(Color.parseColor("#002147"));
                     c.drawPath(path, bottomLeftFillPaint1);
