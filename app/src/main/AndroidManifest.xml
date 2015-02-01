@@ -50,7 +50,7 @@
 
         <service
             android:name=".LiveWallpaper.LMHWallpaperService"
-            android:enabled="true"
+            android:enabled="false"
             android:label="LiveWallpaper "
             android:permission="android.permission.BIND_WALLPAPER" >
             <intent-filter>
