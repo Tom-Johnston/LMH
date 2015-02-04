@@ -108,7 +108,16 @@ public class SettingsFragment extends Fragment {
                 newFragment.show(getFragmentManager(), "missiles");
                 break;
             }
-            case "Lunch":
+            case "Lunch": {
+                CheckBox checkBox = (CheckBox) ((LinearLayout) view.findViewById(R.id.widget_frame)).getChildAt(0);
+                if (checkBox.isChecked()) {
+                    checkBox.setChecked(false);
+                } else {
+                    checkBox.setChecked(true);
+                }
+                toggleMealNotification(checkBox, title);
+                break;
+                }
             case "Dinner":
                 CheckBox checkBox = (CheckBox) ((LinearLayout) view.findViewById(R.id.widget_frame)).getChildAt(0);
                 if (checkBox.isChecked()) {
