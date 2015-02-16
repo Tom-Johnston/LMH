@@ -10,5 +10,7 @@ public class Triangle {
     public float y2;
     public float x3;
     public float y3;
+    public float middlex;
+    public float middley;
 
 }
