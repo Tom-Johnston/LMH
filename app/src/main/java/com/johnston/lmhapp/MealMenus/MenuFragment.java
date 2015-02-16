@@ -64,7 +64,10 @@ public class MenuFragment extends Fragment {
     }
 
     public void startMenu() {
+        MainActivity main = (MainActivity) getActivity();
+        main.startRefresh(5);
         showProgressBar();
+
         File file = new File(context.getFilesDir(), "Menu.txt");
         if (!file.exists()) {
 //                No menu. Get a new menu();
@@ -157,14 +160,14 @@ public class MenuFragment extends Fragment {
                 if (view == null) {
                     return;
                 }
-showMessage(getResources().getString(R.string.somethingWentWrong));
+                showMessage(getResources().getString(R.string.somethingWentWrong));
                 return;
             }
             if (message.what == 0) {
                 meals = (ArrayList<String>) message.obj;
                 if (starting) {
                     if (meals.size() == 0) {
-                    checkForPermission();
+                        checkForPermission();
                     } else if (view != null) {
                         showMenu();
                     }

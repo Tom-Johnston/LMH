@@ -2,7 +2,7 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_margin="16dp"
     android:layout_width="match_parent" android:layout_height="match_parent"
-    android:text="Set this phone's background to a dark blue pinwheel tiling?"
+    android:text="@string/wallpaper_description"
     android:padding="16dp">
 
 </TextView>

@@ -107,5 +107,5 @@
     <string name="nothingToShow">There isn\'t anything to display.</string>
     <string name="somethingWentWrong"> Something went wrong.</string>
     <dimen name="text_size_body_1_material">14sp</dimen>
-    <string name ="WallpaperDescription">Wallpaper Description</string>
+    <string name ="wallpaper_description">I can't think of a good description.</string>
 </resources>
