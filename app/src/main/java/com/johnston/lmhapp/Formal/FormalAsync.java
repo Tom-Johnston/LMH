@@ -79,7 +79,7 @@ public class FormalAsync extends AsyncTask<Object, String, Void> {
 
             ArrayList<String> listOfMeals = new ArrayList<>();
             ArrayList<ArrayList<String>> listOfListsOfPeople = new ArrayList<>();
-            for (int i = 5; i < entries.size(); i += 6) {
+            for (int i = 5; i < entries.size(); i += 7) {
                 String post = "mealbookingState=viewattendees&book=" + URLEncoder.encode(entries.get(i), "UTF-8");
                 post = post.replaceAll(" ", "+");
                 URL url = new URL("https://intranet.lmh.ox.ac.uk/mealbookings.asp");

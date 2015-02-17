@@ -48,8 +48,8 @@ public class FormalRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         } else {
             FormalHolder formalHolder = (FormalHolder) viewHolder;
             formalHolder.formalButton.setTag(position);
-            position = (position - 1) * 6;
-            formalHolder.formalMenu.setText(listOfMeals.get(position));
+            formalHolder.formalMenu.setText(listOfMeals.get(position-1));
+            position = (position - 1) * 7;
             final int numberGone = Integer.parseInt(entries.get(position + 3));
             final int numberLeft = Integer.parseInt(entries.get(position + 4));
             formalHolder.formalDate.setText(entries.get(position));
