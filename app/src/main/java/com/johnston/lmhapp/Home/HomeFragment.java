@@ -107,7 +107,7 @@ public class HomeFragment extends Fragment {
             }
         };
 
-        new PermissionAsync().execute(getActivity().getApplicationContext(), permissionHandler,statusHandler);
+        new PermissionAsync().execute(getActivity().getApplicationContext(), permissionHandler,statusHandler,"HomeFragment");
 
     }
 

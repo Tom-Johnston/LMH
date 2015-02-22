@@ -92,7 +92,7 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
                     }
                 }
             };
-            new PermissionAsync().execute(context, permissionHandler,null);
+            new PermissionAsync().execute(context, permissionHandler,null,"Widget");
 
         } else {
             part2(file, context);
@@ -125,7 +125,7 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
                         }
                     }
                 };
-                new PermissionAsync().execute(context, permissionHandler,null);
+                new PermissionAsync().execute(context, permissionHandler,null,"Widget");
             } else {
                 part3(file, context);
             }

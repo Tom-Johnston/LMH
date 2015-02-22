@@ -100,7 +100,7 @@ public class NotificationsService extends BroadcastReceiver {
                     }
                 }
             };
-            new PermissionAsync().execute(context, permissionHandler,null);
+            new PermissionAsync().execute(context, permissionHandler,null,"NotificationService");
 
         } else {
             part2(file, context);
@@ -131,7 +131,7 @@ public class NotificationsService extends BroadcastReceiver {
                         }
                     }
                 };
-                new PermissionAsync().execute(context, permissionHandler,null);
+                new PermissionAsync().execute(context, permissionHandler,null,"NotificationsService");
             } else {
                 part3(file, context);
             }

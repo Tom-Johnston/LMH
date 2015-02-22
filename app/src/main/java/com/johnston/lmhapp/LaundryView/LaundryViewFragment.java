@@ -133,7 +133,7 @@ public class
                     }
                 }
             };
-            new PermissionAsync().execute(getActivity().getApplicationContext(), permissionHandler,null);
+            new PermissionAsync().execute(getActivity().getApplicationContext(), permissionHandler,null,"LaundryView");
     }
 
     public void showProgressBar() {

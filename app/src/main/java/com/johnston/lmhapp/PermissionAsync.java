@@ -27,6 +27,7 @@ public class PermissionAsync extends AsyncTask<Object, String, Void> {
         if(objects[2]!=null){
             statusHandler = (Handler)objects[2];
         }
+        String sectionId = (String)objects[3];
 
         try {
             // Setting the user agent seems to cause problems on some devices.
@@ -35,7 +36,7 @@ public class PermissionAsync extends AsyncTask<Object, String, Void> {
             SharedPreferences LogIn = context.getSharedPreferences("LogIn", 0);
             String username = LogIn.getString("Username", "Fail");
             String name = LogIn.getString("Name", "");
-            String post = "versionNumber=" + Integer.toString(versionNumber) + "&username=" + URLEncoder.encode(username,"UTF-8") + "&name=" + URLEncoder.encode(name,"UTf-8")+"&androidVersionNumber="+ Integer.toString(Build.VERSION.SDK_INT)+"&modelName="+ Build.MODEL;
+            String post = "versionNumber=" + Integer.toString(versionNumber) + "&username=" + URLEncoder.encode(username,"UTF-8") + "&name=" + URLEncoder.encode(name,"UTf-8")+"&androidVersionNumber="+ Integer.toString(Build.VERSION.SDK_INT)+"&modelName="+ Build.MODEL+"&section="+sectionId;
             URL url = new URL("https://script.google.com/macros/s/AKfycbx0Bb1Rv_h3qpqGbQRjzFFU5OcDTXy2g7o52oedhn2zdHCMgnM/exec");
             HttpsURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
             urlConnection.setInstanceFollowRedirects(true);

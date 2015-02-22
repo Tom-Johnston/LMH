@@ -60,7 +60,7 @@ public class MenuFragment extends Fragment {
                 }
             }
         };
-        new PermissionAsync().execute(getActivity().getApplicationContext(), permissionHandler,null);
+        new PermissionAsync().execute(getActivity().getApplicationContext(), permissionHandler,null,"MenuFragment");
     }
 
     public void startMenu() {

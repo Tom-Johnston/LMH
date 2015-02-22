@@ -236,7 +236,7 @@ public class MainActivity extends ActionBarActivity {
             }
         };
 
-        new PermissionAsync().execute(this.getApplicationContext(), permissionHandler,statusHandler);
+        new PermissionAsync().execute(this.getApplicationContext(), permissionHandler,statusHandler,Byte.toString(Type));
     }
 
     public void LogIn() {
