@@ -6,8 +6,10 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Handler;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -46,6 +48,19 @@ public class DownloadNewMenuAsync extends AsyncTask<Object, Void, Void> {
                 }
             } else {
                 handler.sendEmptyMessage(0);
+            }
+            BufferedReader br = new BufferedReader(new FileReader(file));
+            String firstLine = br.readLine();
+            SharedPreferences sharedPreferences = context.getSharedPreferences("mealVersionNumber",0);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            try{
+                Integer integer = Integer.parseInt(firstLine.substring(8).trim());
+                editor.putInt("mealVersionNumber",integer);
+                editor.commit();
+            } catch (NumberFormatException e){
+//                Put in a minus one so that it will automatically update.
+                editor.putInt("mealVersionNumber",-1);
+                editor.commit();
             }
         } catch (MalformedURLException e) {
             if (!widget) {

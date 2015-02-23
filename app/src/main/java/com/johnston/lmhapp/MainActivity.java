@@ -43,6 +43,7 @@ import com.johnston.lmhapp.Formal.FormalAsync;
 import com.johnston.lmhapp.Formal.FormalFragment;
 import com.johnston.lmhapp.Home.HomeFragment;
 import com.johnston.lmhapp.LaundryView.LaundryViewFragment;
+import com.johnston.lmhapp.MealMenus.DownloadNewMenuAsync;
 import com.johnston.lmhapp.MealMenus.MenuFragment;
 import com.johnston.lmhapp.Settings.SettingsFragment;
 
@@ -249,6 +250,8 @@ public class MainActivity extends ActionBarActivity {
                     handler.obtainMessage(-1).sendToTarget();
                     PermissionFailedDialog newFragment = PermissionFailedDialog.newInstance((String) message.obj);
                     newFragment.show(getFragmentManager(), "PERMISSION DENIED");
+                }else if(message.what==2){
+                    new DownloadNewMenuAsync().execute(this, false, new Handler());    //TODO Maybe let the handler be null.
                 } else {
 //                Something has gone wrong checking.
                     handler.obtainMessage(-1).sendToTarget();

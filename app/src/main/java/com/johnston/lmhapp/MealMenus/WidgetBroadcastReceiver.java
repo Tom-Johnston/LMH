@@ -86,6 +86,8 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
                             }
                         };
                         new DownloadNewMenuAsync().execute(context, true, handler);
+                    }else if(message.what==2){
+                        //Do nothing.
                     } else{
 //                Failure
                         permissionFailed(context);
@@ -119,6 +121,8 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
                                 }
                             };
                             new DownloadNewMenuAsync().execute(context, true, handler);
+                        }else if(message.what==2){
+                        // Do nothing.
                         } else{
 //                Failure
                             permissionFailed(context);

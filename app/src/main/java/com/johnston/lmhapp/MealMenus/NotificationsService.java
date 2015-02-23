@@ -94,6 +94,8 @@ public class NotificationsService extends BroadcastReceiver {
                             }
                         };
                         new DownloadNewMenuAsync().execute(context, true, handler);
+                    }else if(message.what==2){
+//                        Do nothing. We are already downloading a new menu.
                     } else{
 //                      Failure
                         permissionFailed(context);
@@ -125,6 +127,9 @@ public class NotificationsService extends BroadcastReceiver {
                                 }
                             };
                             new DownloadNewMenuAsync().execute(context, true, handler);
+                        }else if(message.what==2){
+//                            Do nothing.
+
                         } else{
 //                          Failure
                             permissionFailed(context);

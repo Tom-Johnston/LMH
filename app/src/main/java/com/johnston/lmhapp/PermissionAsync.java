@@ -7,6 +7,8 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 
+import com.johnston.lmhapp.MealMenus.DownloadNewMenuAsync;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -36,7 +38,9 @@ public class PermissionAsync extends AsyncTask<Object, String, Void> {
             SharedPreferences LogIn = context.getSharedPreferences("LogIn", 0);
             String username = LogIn.getString("Username", "Fail");
             String name = LogIn.getString("Name", "");
-            String post = "versionNumber=" + Integer.toString(versionNumber) + "&username=" + URLEncoder.encode(username,"UTF-8") + "&name=" + URLEncoder.encode(name,"UTf-8")+"&androidVersionNumber="+ Integer.toString(Build.VERSION.SDK_INT)+"&modelName="+ Build.MODEL+"&section="+sectionId;
+            SharedPreferences sharedPreferences = context.getSharedPreferences("mealVersionNumber", 0);
+            String mealVersionNumber = Integer.toString(sharedPreferences.getInt("mealVersionNumber",-1));
+            String post = "versionNumber=" + Integer.toString(versionNumber) + "&username=" + URLEncoder.encode(username,"UTF-8") + "&name=" + URLEncoder.encode(name,"UTf-8")+"&androidVersionNumber="+ Integer.toString(Build.VERSION.SDK_INT)+"&modelName="+ Build.MODEL+"&section="+sectionId+"&mealVersionNumber="+mealVersionNumber;
             URL url = new URL("https://script.google.com/macros/s/AKfycbx0Bb1Rv_h3qpqGbQRjzFFU5OcDTXy2g7o52oedhn2zdHCMgnM/exec");
             HttpsURLConnection urlConnection = (HttpsURLConnection) url.openConnection();
             urlConnection.setInstanceFollowRedirects(true);
@@ -60,6 +64,9 @@ public class PermissionAsync extends AsyncTask<Object, String, Void> {
             in.close();
             String result = a.toString();
             if (result.contains("Success")) {
+                if(result.contains("UpdateMenu")){
+                    handler.obtainMessage(2).sendToTarget();
+                }
                 publishProgress("Permission Granted");
                 handler.obtainMessage(0).sendToTarget();
             } else {

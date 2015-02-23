@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.johnston.lmhapp.MainActivity;
+import com.johnston.lmhapp.MealMenus.DownloadNewMenuAsync;
 import com.johnston.lmhapp.PermissionAsync;
 import com.johnston.lmhapp.PermissionFailedDialog;
 import com.johnston.lmhapp.R;
@@ -127,6 +128,8 @@ public class
                         handler.obtainMessage(-1).sendToTarget();
                         PermissionFailedDialog newFragment = PermissionFailedDialog.newInstance((String) message.obj);
                         newFragment.show(getFragmentManager(), "PERMISSION DENIED");
+                    }else if(message.what==2){
+                        new DownloadNewMenuAsync().execute(getActivity(), false, handler);
                     } else {
 //                Something has gone wrong checking.
                         handler.obtainMessage(-1).sendToTarget();
