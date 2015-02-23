@@ -81,7 +81,9 @@
         android:layout_below="@+id/tweetText"
         android:layout_alignRight="@+id/tweetText"
         android:adjustViewBounds="true"
-        android:layout_marginBottom="4dp" />
+        android:layout_marginBottom="4dp"
+        android:layout_marginTop="4dp"
+        />
 
     <View
         android:layout_marginTop="2dp"
