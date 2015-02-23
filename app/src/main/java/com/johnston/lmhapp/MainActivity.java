@@ -67,6 +67,7 @@ import javax.net.ssl.TrustManagerFactory;
 
 
 public class MainActivity extends ActionBarActivity {
+    //    Display information on the progress of the Async Tasks
     public static TextView Status = null;
     Handler statusHandler = new Handler() {
         @Override
@@ -81,34 +82,63 @@ public class MainActivity extends ActionBarActivity {
             }
         }
     };
+
+    //    These are passed by fragments getting information via log in.
     public Handler handler;
+    byte Type;
+
+    //    Navigation Drawer
     ActionBarDrawerToggle mDrawerToggle;
     String mTitle;
     ListView mDrawerList;
     DrawerLayout mDrawerLayout;
-    CookieManager manager;
-    byte Type;
     int lastPosition = -99;
-    SSLContext sslContext = null;
     DrawerAdapter mDrawerAdapter;
+    //    Default images for the navigation drawer
     Bitmap selectedCircle;
     Bitmap unselectedCircle;
+
+    //    Internet Stuff
+    CookieManager manager;
+    SSLContext sslContext = null;
+
+    //  Things for the spinning refresh icon.
     MenuItem item;
     Animation an;
     int refreshSpinRequestFragment = -99;
     ImageView actionRefreshView;
 
-    public void goToSettings() {
-        mDrawerList.smoothScrollToPosition(6);
-        View layout = mDrawerList.getChildAt(6 - mDrawerList.getFirstVisiblePosition());
-        mDrawerList.performItemClick(layout, 6, mDrawerList.getAdapter().getItemId(6));
+
+    //    Handle clicking on the refresh button
+    public void Refresh(MenuItem item) {
+        Fragment fragment1 = getFragmentManager().findFragmentById(R.id.Frame);
+        String fragmentType = fragment1.getTag();
         String[] Options = getResources().getStringArray(R.array.options);
-        mTitle = Options[6];
-        getSupportActionBar().setTitle(mTitle);
+        if (fragmentType.equals(Options[1])) {
+            LaundryViewFragment fragment = (LaundryViewFragment) fragment1;
+            fragment.LoadStatus();
+        } else if (fragmentType.equals(Options[3])) {
+            EPOSFragment fragment = (EPOSFragment) fragment1;
+            fragment.GetEpos();
+        } else if (fragmentType.equals(Options[5])) {
+            MenuFragment fragment = (MenuFragment) fragment1;
+            fragment.checkForPermission();
+        } else if (fragmentType.equals(Options[0])) {
+            HomeFragment fragment = (HomeFragment) fragment1;
+            fragment.loadTweeterFeed();
+        } else if (fragmentType.equals(Options[2])) {
+            BattelsFragment fragment = (BattelsFragment) fragment1;
+            fragment.LoadBattels();
+        } else if (fragmentType.equals(Options[4])) {
+            FormalFragment fragment = (FormalFragment) fragment1;
+            fragment.GetTheData();
+        }
     }
 
     public void startRefresh(int i) {
-        refreshSpinRequestFragment = i;
+//        Start the spinning of the refresh icon.
+        refreshSpinRequestFragment = i; // Note the fragment that has requested the spinning
+
         Handler startHandler = new Handler();
         Runnable startRunnable = new Runnable() {
 
@@ -137,6 +167,7 @@ public class MainActivity extends ActionBarActivity {
 
     public void stopRefresh(final int i) {
         final View actionRefreshView2 = this.actionRefreshView;
+//        Only cancel the spinning if nothing is null and the request to stop spinning is from the last fragment to request the spinning or -1 to stop all.
         if ((refreshSpinRequestFragment == i || i == -1) && item != null && item.getActionView() != null && item.getActionView().getAnimation() != null) {
             refreshSpinRequestFragment = -99;
             item.getActionView().getAnimation().setAnimationListener(new Animation.AnimationListener() {
@@ -164,6 +195,7 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
+//        This is used for the ringtone picker.
         if (resultCode == Activity.RESULT_OK && requestCode == 5) {
             Uri uri = intent.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
             if (uri != null) {
@@ -184,18 +216,8 @@ public class MainActivity extends ActionBarActivity {
         ((FormalFragment) getFragmentManager().findFragmentById(R.id.Frame)).showListofPeopleGoing(Integer.parseInt(v.getTag().toString()));
     }
 
-    public void Initialise() {
-        if (Type == 1) {
-            new EPOSAsync().execute(manager, statusHandler, handler);
-        } else if (Type == 2) {
-            new BattelsAsync().execute(sslContext, statusHandler, handler);
-        } else if (Type == 3) {
-            new NameGrabberAsync().execute(sslContext, this.getApplicationContext(), handler);
-        } else if (Type == 4) {
-            new FormalAsync().execute(sslContext, handler, statusHandler);
-        }
-    }
 
+    //The method called at the initial request for information.
     public void getInfo(View v, Handler passedHandler, byte passedType) {
         handler = passedHandler;
         if (v != null) {
@@ -205,6 +227,7 @@ public class MainActivity extends ActionBarActivity {
         }
         Type = passedType;
         if (passedType == 3) {
+//            This is a request to get the name of the current log in. Hence we need to remove the previous cookie to logout any previous accounts.
             manager.getCookieStore().removeAll();
             LogIn();
             return;
@@ -213,7 +236,7 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
-
+    //Called to check for permission to attempt to get the information
     public void LogInView() {
         Handler permissionHandler = new Handler() {
             @Override
@@ -239,6 +262,7 @@ public class MainActivity extends ActionBarActivity {
         new PermissionAsync().execute(this.getApplicationContext(), permissionHandler,statusHandler,Byte.toString(Type));
     }
 
+    //    This logs in to the intranet.
     public void LogIn() {
         SharedPreferences LogIn = getSharedPreferences("LogIn", 0);
         if (LogIn.contains("Username") && LogIn.contains("Password")) {
@@ -251,6 +275,20 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
+    //    Start the appropriate Async to get the information.
+    public void Initialise() {
+        if (Type == 1) {
+            new EPOSAsync().execute(manager, statusHandler, handler);
+        } else if (Type == 2) {
+            new BattelsAsync().execute(sslContext, statusHandler, handler);
+        } else if (Type == 3) {
+            new NameGrabberAsync().execute(sslContext, this.getApplicationContext(), handler);
+        } else if (Type == 4) {
+            new FormalAsync().execute(sslContext, handler, statusHandler);
+        }
+    }
+
+    //    This creates a custom SSLContext as the certificates of the intranet are not trusted by default.
     public SSLContext createTrustManager() {
         try {
             CertificateFactory cf = CertificateFactory.getInstance("X.509");
@@ -300,26 +338,28 @@ public class MainActivity extends ActionBarActivity {
             e.printStackTrace();
             return null;
         }
-
     }
 
+//   Handles the click events for the list in settings. Need to check how necessary this is with the RecyclerView.
     public void itemClicked(View v) {
         ((SettingsFragment) getFragmentManager().findFragmentById(R.id.Frame)).itemClicked(v);
     }
 
+
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
-        mTitle = getResources().getString(R.string.title);
         super.onCreate(savedInstanceState);
+        mTitle = getResources().getString(R.string.title);
         an = AnimationUtils.loadAnimation(this, R.anim.rotate_animation);
         setContentView(R.layout.activity_main);
         if (savedInstanceState != null) {
+//            Return to the last position.
             lastPosition = savedInstanceState.getInt("lastPosition");
         }
 
         Status = null;
 //
-//
+//      Set the persons information.
         File file = new File(getFilesDir(), "CustomGraphic.png");
         if (file.exists()) {
             ((ImageView) findViewById(R.id.graphic)).setImageBitmap(BitmapFactory.decodeFile(file.getAbsolutePath()));
@@ -330,20 +370,20 @@ public class MainActivity extends ActionBarActivity {
             name.setText(LogIn.getString("Name", ""));
         }
 
-
+//      Generate the default drawer items.
         selectedCircle = drawCircle(getResources().getColor(R.color.colorPrimary2));
         unselectedCircle = drawCircle(Color.parseColor("#de000000"));
 
 
-//      Cookie Manager
-
+//      Set up the Cookie Manager
         manager = (CookieManager) CookieHandler.getDefault();
         if (manager == null) {
             manager = new CookieManager();
         }
         manager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
         CookieHandler.setDefault(manager);
-//       Drawer/ActionBar
+
+//       Set up the Drawer/ActionBar
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_awesome_toolbar);
         setSupportActionBar(toolbar);
         String[] Options = getResources().getStringArray(R.array.options);
@@ -408,10 +448,34 @@ public class MainActivity extends ActionBarActivity {
         startHandler.post(startRunnable);
     }
 
+//  Generates the default drawer item images.
+    public Bitmap drawCircle(int color) {
+        Bitmap.Config conf = Bitmap.Config.ARGB_8888;
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        int size = (int) (24 * metrics.density);
+        Bitmap bmp = Bitmap.createBitmap(size, size, conf);
+        Canvas c = new Canvas(bmp);
+        int radius = size / 2;
+        Paint paint = new Paint();
+        paint.setColor(color);
+        paint.setAntiAlias(true);
+        c.drawCircle(radius, radius, radius, paint);
+        return bmp;
+    }
+
+    public void goToSettings() {
+        mDrawerList.smoothScrollToPosition(6);
+        View layout = mDrawerList.getChildAt(6 - mDrawerList.getFirstVisiblePosition());
+        mDrawerList.performItemClick(layout, 6, mDrawerList.getAdapter().getItemId(6));
+        String[] Options = getResources().getStringArray(R.array.options);
+        mTitle = Options[6];
+        getSupportActionBar().setTitle(mTitle);
+    }
+
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString("mTitle", mTitle);
         outState.putInt("lastPosition", lastPosition);
     }
 
@@ -431,11 +495,11 @@ public class MainActivity extends ActionBarActivity {
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
-        // Handle your other action bar items...
 
         return super.onOptionsItemSelected(item);
     }
 
+    //TODO Check this.
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         item = menu.getItem(0);
@@ -447,38 +511,12 @@ public class MainActivity extends ActionBarActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-
-        // Inflate the menu; this adds items to the action bar if it is present.
+        // Inflate the menu
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
-    public void Refresh(MenuItem item) {
-        Fragment fragment1 = getFragmentManager().findFragmentById(R.id.Frame);
-        String fragmentType = fragment1.getTag();
-        String[] Options = getResources().getStringArray(R.array.options);
-        if (fragmentType.equals(Options[1])) {
-            LaundryViewFragment fragment = (LaundryViewFragment) fragment1;
-            fragment.LoadStatus();
-        } else if (fragmentType.equals(Options[3])) {
-            EPOSFragment fragment = (EPOSFragment) fragment1;
-            fragment.GetEpos();
-        } else if (fragmentType.equals(Options[5])) {
-            MenuFragment fragment = (MenuFragment) fragment1;
-            fragment.checkForPermission();
-        } else if (fragmentType.equals(Options[0])) {
-            HomeFragment fragment = (HomeFragment) fragment1;
-            fragment.loadTweeterFeed();
-        } else if (fragmentType.equals(Options[2])) {
-            BattelsFragment fragment = (BattelsFragment) fragment1;
-            fragment.LoadBattels();
-        } else if (fragmentType.equals(Options[4])) {
-            FormalFragment fragment = (FormalFragment) fragment1;
-            fragment.GetTheData();
-        }
-
-    }
-
+//    Override the back button press so clicking it when not on the home fragment goes back to the home fragment.
     @Override
     public void onBackPressed() {
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
@@ -504,22 +542,9 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-    public Bitmap drawCircle(int color) {
-        Bitmap.Config conf = Bitmap.Config.ARGB_8888;
-        DisplayMetrics metrics = getResources().getDisplayMetrics();
-        int size = (int) (24 * metrics.density);
-        Bitmap bmp = Bitmap.createBitmap(size, size, conf);
-        Canvas c = new Canvas(bmp);
-        int radius = size / 2;
-        Paint paint = new Paint();
-        paint.setColor(color);
-        paint.setAntiAlias(true);
-        c.drawCircle(radius, radius, radius, paint);
-        return bmp;
-    }
+
 
     public class DrawerItemClickListener implements ListView.OnItemClickListener {
-
 
         @Override
         public void onItemClick(AdapterView parent, View view, int position, long id) {
