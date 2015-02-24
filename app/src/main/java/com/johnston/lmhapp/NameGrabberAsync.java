@@ -17,7 +17,7 @@ import javax.net.ssl.SSLContext;
 /**
  * Created by Tom on 07/11/2014.
  */
-public class NameGrabberAsync extends AsyncTask<Object, Void, Void> {
+class NameGrabberAsync extends AsyncTask<Object, Void, Void> {
     @Override
     protected Void doInBackground(Object[] objects) {
 

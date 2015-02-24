@@ -13,8 +13,8 @@ import java.util.ArrayList;
 /**
  * Created by Tom on 04/12/2014.
  */
-public class BattelsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    public ArrayList<String> entries;
+class BattelsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private final ArrayList<String> entries;
 
     public BattelsRecyclerAdapter(ArrayList<String> initialEntries) {
         entries = initialEntries;
@@ -80,10 +80,10 @@ public class BattelsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     public static class BattelsHolder extends RecyclerView.ViewHolder {
-        public TextView battelsReference;
-        public TextView battelsAmount;
-        public TextView battelsDescription;
-        public TextView battelsDate;
+        public final TextView battelsReference;
+        public final TextView battelsAmount;
+        public final TextView battelsDescription;
+        public final TextView battelsDate;
 
         public BattelsHolder(View itemView) {
             super(itemView);
@@ -95,8 +95,8 @@ public class BattelsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vi
     }
 
     public static class BattelsTotalHolder extends RecyclerView.ViewHolder {
-        public TextView battelsReference;
-        public TextView battelsAmount;
+        public final TextView battelsReference;
+        public final TextView battelsAmount;
 
         public BattelsTotalHolder(View itemView) {
             super(itemView);

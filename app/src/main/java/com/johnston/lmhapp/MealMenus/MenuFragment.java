@@ -12,28 +12,24 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.johnston.lmhapp.LaundryView.LaundryViewAsync;
 import com.johnston.lmhapp.MainActivity;
 import com.johnston.lmhapp.PermissionAsync;
 import com.johnston.lmhapp.PermissionFailedDialog;
 import com.johnston.lmhapp.R;
 
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 
 /**
  * Created by Johnston on 10/09/2014.
  */
 public class MenuFragment extends Fragment {
-    Boolean starting;
-    MenuItem actionRefresh;
-    Boolean finished = false;
-    Boolean refreshing = false;
+    private Boolean starting;
+    private MenuItem actionRefresh;
+    private Boolean finished = false;
+    private Boolean refreshing = false;
     private View view;
     private Context context;
     private ArrayList<String> meals = new ArrayList<>();
@@ -66,7 +62,7 @@ public class MenuFragment extends Fragment {
         new PermissionAsync().execute(getActivity().getApplicationContext(), permissionHandler,null,"MenuFragment");
     }
 
-    public void startMenu() {
+    void startMenu() {
         MainActivity main = (MainActivity) getActivity();
         main.startRefresh(5);
         showProgressBar();
@@ -81,7 +77,7 @@ public class MenuFragment extends Fragment {
         }
     }
 
-    public void showMenu() {
+    void showMenu() {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
         MenuRecyclerAdapter menuRecyclerAdapter = new MenuRecyclerAdapter(meals);
         recyclerView.setAdapter(menuRecyclerAdapter);
@@ -100,17 +96,17 @@ public class MenuFragment extends Fragment {
         refreshing = false;
     }
 
-    public void showCards(){
+    void showCards(){
         (view.findViewById(R.id.my_recycler_view)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
         (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
     }
-    public void showProgressBar(){
+    void showProgressBar(){
         (view.findViewById(R.id.my_recycler_view)).setVisibility(View.GONE);
         (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
     }
-    public void showMessage(String message){
+    void showMessage(String message){
         (view.findViewById(R.id.my_recycler_view)).setVisibility(View.GONE);
         (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
         (view.findViewById(R.id.nothingToShow)).setVisibility(View.VISIBLE);
@@ -149,7 +145,7 @@ public class MenuFragment extends Fragment {
         actionRefresh.setVisible(true);
     }
 
-    final Handler handler = new Handler() {
+    private final Handler handler = new Handler() {
         @Override
         public void handleMessage(Message message) {
             if (message.what == -1) {

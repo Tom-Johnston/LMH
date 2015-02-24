@@ -15,7 +15,6 @@ import android.widget.RemoteViews;
 
 import com.johnston.lmhapp.MainActivity;
 import com.johnston.lmhapp.PermissionAsync;
-import com.johnston.lmhapp.PermissionFailedDialog;
 import com.johnston.lmhapp.R;
 
 import java.io.BufferedReader;
@@ -24,7 +23,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.DateFormat;
-import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -42,7 +40,7 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
         part1(context);
     }
 
-    public void permissionFailed(final Context context){
+    void permissionFailed(final Context context){
         SharedPreferences refreshTimePreference = context.getSharedPreferences("RefreshTime", 0);
         long refreshTime = refreshTimePreference.getLong("refreshTime", 2 * 60 * 60 * 1000);
         RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.lmh_widget);
@@ -71,7 +69,7 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
         }
     }
 
-    public void part1(final Context context){
+    void part1(final Context context){
         final File file = new File(context.getFilesDir(), "Menu.txt");
         if (!file.exists()) {
             Handler permissionHandler = new Handler() {
@@ -102,7 +100,7 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
     }
 
 
-    public void part2(final File file, final Context context) {
+    void part2(final File file, final Context context) {
         try {
 
             BufferedReader br = new BufferedReader(new FileReader(file));
@@ -140,7 +138,7 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
         }
     }
 
-    public void part3(File file, Context context) {
+    void part3(File file, Context context) {
         try {
             SharedPreferences refreshTimePreference = context.getSharedPreferences("RefreshTime", 0);
             long refreshTime = refreshTimePreference.getLong("refreshTime", 2 * 60 * 60 * 1000);
@@ -278,7 +276,7 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
         return output;
     }
 
-    public long checkForValidDate(String inputLine){
+    long checkForValidDate(String inputLine){
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yy", Locale.ENGLISH);
         try{
             return simpleDateFormat.parse(inputLine).getTime();

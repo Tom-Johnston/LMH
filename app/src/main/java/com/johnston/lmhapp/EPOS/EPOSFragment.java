@@ -24,11 +24,11 @@ import java.util.ArrayList;
  * Created by Tom on 02/06/2014.
  */
 public class EPOSFragment extends Fragment {
-    Boolean finished = false;
-    Boolean refreshing = false;
-    View view;
-    ArrayList<String> transactions =new ArrayList<>();
-    final Handler handler = new Handler() {
+    private Boolean finished = false;
+    private Boolean refreshing = false;
+    private View view;
+    private ArrayList<String> transactions =new ArrayList<>();
+    private final Handler handler = new Handler() {
         @Override
         public void handleMessage(Message message) {
 
@@ -80,7 +80,7 @@ public class EPOSFragment extends Fragment {
 
 
     };
-    MenuItem actionRefresh;
+    private MenuItem actionRefresh;
 
     public void GetEpos() {
         refreshing = true;
@@ -92,7 +92,7 @@ public class EPOSFragment extends Fragment {
     }
 
 
-    public void addEntriesToList() {
+    void addEntriesToList() {
         LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.transactionList);
         linearLayout.removeAllViews();
         Activity activity = getActivity();
@@ -118,7 +118,7 @@ public class EPOSFragment extends Fragment {
             linearLayout.addView(divider);
         }
     }
-    public void showCards(){
+    void showCards(){
         (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
         (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
         (view.findViewById(R.id.card_view)).setVisibility(View.VISIBLE);
@@ -126,7 +126,7 @@ public class EPOSFragment extends Fragment {
         (view.findViewById(R.id.card_view3)).setVisibility(View.VISIBLE);
     }
 
-    public void showMessage(String message){
+    void showMessage(String message){
         (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
         (view.findViewById(R.id.nothingToShow)).setVisibility(View.VISIBLE);
         ((TextView)view.findViewById(R.id.nothingToShow)).setText(message);
@@ -134,7 +134,7 @@ public class EPOSFragment extends Fragment {
         (view.findViewById(R.id.card_view2)).setVisibility(View.GONE);
         (view.findViewById(R.id.card_view3)).setVisibility(View.GONE);
     }
-    public void showProgressBar(){
+    void showProgressBar(){
         (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
         (view.findViewById(R.id.card_view)).setVisibility(View.GONE);

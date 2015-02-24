@@ -20,9 +20,9 @@ import javax.net.ssl.SSLContext;
 /**
  * Created by Tom on 28/05/2014.
  */
-public class LoginAsync extends AsyncTask<Object, String, Boolean> {
-    Handler statusHandler;
-    MainActivity Main;
+class LoginAsync extends AsyncTask<Object, String, Boolean> {
+    private Handler statusHandler;
+    private MainActivity Main;
 
     @Override
     protected Boolean doInBackground(Object[] Objects) {

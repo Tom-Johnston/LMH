@@ -14,7 +14,7 @@ import android.widget.TextView;
  * Created by Johnston on 29/12/2014.
  */
 public class PermissionFailedDialog extends DialogFragment {
-    View view;
+    private View view;
 
 
     public static PermissionFailedDialog newInstance(String fail) {

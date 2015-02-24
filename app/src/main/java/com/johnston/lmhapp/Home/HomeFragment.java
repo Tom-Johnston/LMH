@@ -12,7 +12,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.johnston.lmhapp.MainActivity;
@@ -27,8 +26,8 @@ import java.util.ArrayList;
  * Created by Johnston on 29/09/2014.
  */
 public class HomeFragment extends Fragment {
-    public static TextView Status = null;
-    Handler statusHandler = new Handler() {
+    private static TextView Status = null;
+    private final Handler statusHandler = new Handler() {
         @Override
         public void handleMessage(Message message) {
             if (message.what == -1) {
@@ -41,13 +40,13 @@ public class HomeFragment extends Fragment {
             }
         }
     };
-    MenuItem actionRefresh;
-    Boolean finished = false;
-    Boolean refreshing = false;
+    private MenuItem actionRefresh;
+    private Boolean finished = false;
+    private Boolean refreshing = false;
     private View view;
     private ArrayList<Tweet> tweets = new ArrayList<>();
     private Bitmap[] profilePictures;
-    Handler handler = new Handler() {
+    private final Handler handler = new Handler() {
         @Override
         public void handleMessage(Message message) {
 
@@ -114,20 +113,20 @@ public class HomeFragment extends Fragment {
 
     }
 
-    public void showTweets(){
+    void showTweets(){
         view.findViewById(R.id.Status).setVisibility(View.GONE);
         view.findViewById(R.id.tweetList).setVisibility(View.VISIBLE);
         view.findViewById(R.id.PM1).setVisibility(View.GONE);
         view.findViewById(R.id.nothingToShow).setVisibility(View.GONE);
     }
-    public void showMessage(String message){
+    void showMessage(String message){
         view.findViewById(R.id.Status).setVisibility(View.VISIBLE);
         view.findViewById(R.id.tweetList).setVisibility(View.GONE);
         view.findViewById(R.id.PM1).setVisibility(View.GONE);
         view.findViewById(R.id.nothingToShow).setVisibility(View.VISIBLE);
         ((TextView)view.findViewById(R.id.nothingToShow)).setText(message);
     }
-    public void showProgressBar(){
+    void showProgressBar(){
         view.findViewById(R.id.Status).setVisibility(View.VISIBLE);
         view.findViewById(R.id.tweetList).setVisibility(View.GONE);
         view.findViewById(R.id.PM1).setVisibility(View.VISIBLE);

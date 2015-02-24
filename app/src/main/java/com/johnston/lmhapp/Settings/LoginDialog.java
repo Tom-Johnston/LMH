@@ -29,7 +29,7 @@ import com.johnston.lmhapp.R;
  * Created by Jake on 14/11/2014.
  */
 public class LoginDialog extends DialogFragment {
-    View view;
+    private View view;
 
     static LoginDialog newInstance() {
         LoginDialog f = new LoginDialog();

@@ -18,8 +18,8 @@ import com.johnston.lmhapp.R;
  * Created by Tom on 20/11/2014.
  */
 public class RefreshTimeDialog extends DialogFragment {
-    View view;
-    long[] refreshTimeChoices = {1800000, 3600000, 7200000, 14400000, 21600000, 43200000, 86400000, -1};
+    private View view;
+    private final long[] refreshTimeChoices = {1800000, 3600000, 7200000, 14400000, 21600000, 43200000, 86400000, -1};
 
     static RefreshTimeDialog newInstance() {
         RefreshTimeDialog f = new RefreshTimeDialog();

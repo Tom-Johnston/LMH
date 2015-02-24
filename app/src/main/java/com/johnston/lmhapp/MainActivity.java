@@ -70,7 +70,7 @@ import javax.net.ssl.TrustManagerFactory;
 public class MainActivity extends ActionBarActivity {
     //    Display information on the progress of the Async Tasks
     public static TextView Status = null;
-    Handler statusHandler = new Handler() {
+    private final Handler statusHandler = new Handler() {
         @Override
         public void handleMessage(Message message) {
             if (message.what == -1) {
@@ -85,29 +85,29 @@ public class MainActivity extends ActionBarActivity {
     };
 
     //    These are passed by fragments getting information via log in.
-    public Handler handler;
-    byte Type;
+    private Handler handler;
+    private byte Type;
 
     //    Navigation Drawer
-    ActionBarDrawerToggle mDrawerToggle;
-    String mTitle;
-    ListView mDrawerList;
-    DrawerLayout mDrawerLayout;
-    int lastPosition = -99;
-    DrawerAdapter mDrawerAdapter;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private String mTitle;
+    private ListView mDrawerList;
+    private DrawerLayout mDrawerLayout;
+    private int lastPosition = -99;
+    private DrawerAdapter mDrawerAdapter;
     //    Default images for the navigation drawer
-    Bitmap selectedCircle;
-    Bitmap unselectedCircle;
+    private Bitmap selectedCircle;
+    private Bitmap unselectedCircle;
 
     //    Internet Stuff
-    CookieManager manager;
-    SSLContext sslContext = null;
+    private CookieManager manager;
+    private SSLContext sslContext = null;
 
     //  Things for the spinning refresh icon.
-    MenuItem item;
-    Animation an;
-    int refreshSpinRequestFragment = -99;
-    ImageView actionRefreshView;
+    private MenuItem item;
+    private Animation an;
+    private int refreshSpinRequestFragment = -99;
+    private ImageView actionRefreshView;
 
 
     //    Handle clicking on the refresh button
@@ -238,7 +238,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     //Called to check for permission to attempt to get the information
-    public void LogInView() {
+    void LogInView() {
         Handler permissionHandler = new Handler() {
             @Override
             public void handleMessage(Message message) {
@@ -266,7 +266,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     //    This logs in to the intranet.
-    public void LogIn() {
+    void LogIn() {
         SharedPreferences LogIn = getSharedPreferences("LogIn", 0);
         if (LogIn.contains("Username") && LogIn.contains("Password")) {
             String username = LogIn.getString("Username", "Fail");
@@ -292,7 +292,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     //    This creates a custom SSLContext as the certificates of the intranet are not trusted by default.
-    public SSLContext createTrustManager() {
+    SSLContext createTrustManager() {
         try {
             CertificateFactory cf = CertificateFactory.getInstance("X.509");
             InputStream fis1 = (getResources().openRawResource(R.raw.ca));
@@ -410,10 +410,6 @@ public class MainActivity extends ActionBarActivity {
                 getSupportActionBar().setTitle(mTitle);
             }
 
-            /** Called when a drawer has settled in a completely open state. */
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-            }
         };
 
         // Set the drawer toggle as the DrawerListener
@@ -452,7 +448,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
 //  Generates the default drawer item images.
-    public Bitmap drawCircle(int color) {
+Bitmap drawCircle(int color) {
         Bitmap.Config conf = Bitmap.Config.ARGB_8888;
         DisplayMetrics metrics = getResources().getDisplayMetrics();
         int size = (int) (24 * metrics.density);
@@ -495,11 +491,8 @@ public class MainActivity extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Pass the event to ActionBarDrawerToggle, if it returns
         // true, then it has handled the app icon touch event
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
+        return mDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
 
-        return super.onOptionsItemSelected(item);
     }
 
     //TODO Check this.

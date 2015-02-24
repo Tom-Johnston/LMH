@@ -18,10 +18,10 @@ import java.util.ArrayList;
 /**
  * Created by Tom on 03/06/2014.
  */
-public class LaundryViewAsync extends AsyncTask<Object, Void, Boolean> {
-    View view;
-    Handler handler;
-    String Error;
+class LaundryViewAsync extends AsyncTask<Object, Void, Boolean> {
+    private View view;
+    private Handler handler;
+    private String Error;
 
     @Override
     protected Boolean doInBackground(Object[] objects) {

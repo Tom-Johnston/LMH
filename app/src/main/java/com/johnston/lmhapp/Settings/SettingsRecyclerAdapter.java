@@ -21,11 +21,11 @@ import java.util.List;
 /**
  * Created by Johnston on 11/12/2014.
  */
-public class SettingsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+class SettingsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public Handler switchHandler;
-    Context context;
-    List<String> strings;
+    private final Context context;
+    private final List<String> strings;
 
     public SettingsRecyclerAdapter(Context context, List<String> objects) {
         this.context = context;

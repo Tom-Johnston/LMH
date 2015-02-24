@@ -24,8 +24,8 @@ import java.util.StringTokenizer;
  * Created by Jake on 15/11/2014.
  */
 public class VibrationDialog extends DialogFragment {
-    View view;
-    View.OnClickListener radioListener = new View.OnClickListener() {
+    private View view;
+    private final View.OnClickListener radioListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             EditText pattern = (EditText) view.findViewById(R.id.Pattern);
@@ -126,7 +126,7 @@ public class VibrationDialog extends DialogFragment {
         return d;
     }
 
-    public boolean TestString(Boolean vibrate) {
+    boolean TestString(Boolean vibrate) {
         // Tests for a valid string. If vibrate is true, will vibrate on valid string.
         EditText editText = (EditText) view.findViewById(R.id.Pattern);
         String pattern = editText.getText().toString();
@@ -156,7 +156,7 @@ public class VibrationDialog extends DialogFragment {
         }
     }
 
-    public void Vibrate(ArrayList<Long> vibratePatternList) {
+    void Vibrate(ArrayList<Long> vibratePatternList) {
         Vibrator v = (Vibrator) getActivity().getApplicationContext().getSystemService(Context.VIBRATOR_SERVICE);
         long[] vibrateArray = new long[vibratePatternList.size()];
         for (int i = 0; i < vibratePatternList.size(); i++) {

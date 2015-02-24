@@ -23,7 +23,7 @@ import java.util.Random;
  * Created by Tom on 05/11/2014.
  */
 public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
-    long startTime;
+    private long startTime;
 
     @Override
     protected Void doInBackground(Object... params) {
@@ -158,7 +158,7 @@ public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
     }
 
 
-    public Bitmap paintBackgroundLMH(ArrayList<Triangle> triangles, Context context, int sizex, int sizey){
+    Bitmap paintBackgroundLMH(ArrayList<Triangle> triangles, Context context, int sizex, int sizey){
         int margin = sizey/8;
         Bitmap logo = BitmapFactory.decodeResource(context.getResources(), R.drawable.icon_for_background);
         float scale = ((float)logo.getHeight())/((float)sizey-2*margin); //We will scale the height so the height of the logo fits the height of the display with margins.
@@ -260,7 +260,7 @@ public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
         return bmp;
     }
 
-    public Bitmap paint(ArrayList<Triangle> triangles, ArrayList<Boolean> changeColours, int sizex, int sizey, int[] color) {
+    Bitmap paint(ArrayList<Triangle> triangles, ArrayList<Boolean> changeColours, int sizex, int sizey, int[] color) {
         Bitmap.Config conf = Bitmap.Config.ARGB_8888;
         Bitmap bmp = Bitmap.createBitmap(sizex, sizey, conf);
         Canvas c = new Canvas(bmp);
@@ -327,7 +327,7 @@ public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
         return bmp;
     }
 
-    public ArrayList<Triangle> NextIteration(ArrayList<Triangle> passedTriangles,int desiredWidth, int desiredHeight) {
+    ArrayList<Triangle> NextIteration(ArrayList<Triangle> passedTriangles, int desiredWidth, int desiredHeight) {
         ArrayList<Triangle> triangles = new ArrayList<>();
         Triangle newTriangle;
         int numberOfTriangles = passedTriangles.size();

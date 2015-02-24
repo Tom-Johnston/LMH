@@ -3,7 +3,7 @@ package com.johnston.lmhapp;
 /**
  * Created by Tom on 06/11/2014.
  */
-public class Triangle {
+class Triangle {
     public float x1;
     public float y1;
     public float x2;

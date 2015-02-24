@@ -17,7 +17,7 @@ import javax.net.ssl.SSLContext;
  * Created by Tom on 27/10/2014.
  */
 public class BattelsAsync extends AsyncTask<Object, String, Void> {
-    Handler statusHandler;
+    private Handler statusHandler;
 
     @Override
     protected Void doInBackground(Object[] objects) {

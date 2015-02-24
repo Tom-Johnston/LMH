@@ -16,7 +16,7 @@ import java.util.ArrayList;
  * Created by Tom on 01/12/2014.
  */
 public class FormalDetailsDialog extends DialogFragment {
-    View view;
+    private View view;
 
     static FormalDetailsDialog newInstance(ArrayList<String> passedEntries) {
         FormalDetailsDialog f = new FormalDetailsDialog();

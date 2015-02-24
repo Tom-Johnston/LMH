@@ -15,14 +15,14 @@ import java.util.List;
 /**
  * Created by Tom on 03/11/2014.
  */
-public class DrawerAdapter extends ArrayAdapter<String> {
-    final int resource;
-    final Context context;
-    final List<String> objects;
+class DrawerAdapter extends ArrayAdapter<String> {
+    private final int resource;
+    private final Context context;
+    private final List<String> objects;
     public int selected = 0;
-    Bitmap selectedCircle;
-    Bitmap unselectedCircle;
-    String[] iconNames;
+    private final Bitmap selectedCircle;
+    private final Bitmap unselectedCircle;
+    private final String[] iconNames;
 
 
     public DrawerAdapter(Context passedcontext, int passedresource, List<String> passedobjects, Bitmap passedSelectedCircle, Bitmap passedUnselectedCircle) {

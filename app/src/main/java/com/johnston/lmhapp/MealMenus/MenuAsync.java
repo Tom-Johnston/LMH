@@ -19,7 +19,7 @@ import java.util.Locale;
 /**
  * Created by Johnston on 03/10/2014.
  */
-public class MenuAsync extends AsyncTask<Object, Void, Void> {
+class MenuAsync extends AsyncTask<Object, Void, Void> {
 
     @Override
     protected Void doInBackground(Object[] objects) {
@@ -85,7 +85,7 @@ public class MenuAsync extends AsyncTask<Object, Void, Void> {
         handler.obtainMessage(0, meals).sendToTarget();
         return null;
     }
-    public long checkForValidDate(String inputLine){
+    long checkForValidDate(String inputLine){
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yy", Locale.ENGLISH);
         try{
             return simpleDateFormat.parse(inputLine).getTime();

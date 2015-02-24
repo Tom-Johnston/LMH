@@ -92,7 +92,7 @@
             android:layout_below="@+id/formalMenu"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:text="Show the people going"/>
+            android:text="@string/show_the_people_going"/>
 
     </RelativeLayout>
 

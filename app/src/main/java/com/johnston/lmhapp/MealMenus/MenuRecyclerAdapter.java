@@ -13,8 +13,8 @@ import java.util.ArrayList;
 /**
  * Created by Tom on 02/12/2014.
  */
-public class MenuRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    public ArrayList<String> entries;
+class MenuRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private final ArrayList<String> entries;
 
     public MenuRecyclerAdapter(ArrayList<String> initialEntries) {
         entries = initialEntries;
@@ -60,9 +60,9 @@ public class MenuRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     public static class MealHolder extends RecyclerView.ViewHolder {
-        public TextView mealTitle;
-        public TextView mealMenu;
-        public TextView mealTime;
+        public final TextView mealTitle;
+        public final TextView mealMenu;
+        public final TextView mealTime;
 
         public MealHolder(View itemView) {
             super(itemView);

@@ -14,7 +14,7 @@ import java.util.List;
 /**
  * Created by Johnston on 11/12/2014.
  */
-public class SettingsAnimator extends RecyclerView.ItemAnimator {
+class SettingsAnimator extends RecyclerView.ItemAnimator {
 
     private ArrayList<RecyclerView.ViewHolder> mPendingRemovals = new ArrayList<>();
     private ArrayList<RecyclerView.ViewHolder> mPendingAdditions = new ArrayList<>();
@@ -561,7 +561,10 @@ public class SettingsAnimator extends RecyclerView.ItemAnimator {
 
     private static class MoveInfo {
         public RecyclerView.ViewHolder holder;
-        public int fromX, fromY, toX, toY;
+        public int fromX;
+        public final int fromY;
+        public int toX;
+        public int toY;
 
         private MoveInfo(RecyclerView.ViewHolder holder, int fromX, int fromY, int toX, int toY) {
             this.holder = holder;

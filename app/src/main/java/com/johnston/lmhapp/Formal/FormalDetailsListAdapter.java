@@ -14,11 +14,11 @@ import java.util.List;
 /**
  * Created by Tom on 23/11/2014.
  */
-public class FormalDetailsListAdapter extends ArrayAdapter<String> {
+class FormalDetailsListAdapter extends ArrayAdapter<String> {
 
-    final int resource;
-    final Context context;
-    final List<String> objects;
+    private final int resource;
+    private final Context context;
+    private final List<String> objects;
 
     public FormalDetailsListAdapter(Context passedcontext, int passedresource, List<String> passedobjects) {
         super(passedcontext, passedresource, passedobjects);

@@ -24,9 +24,9 @@ import javax.net.ssl.HttpsURLConnection;
  * Created by Tom on 05/06/2014.
  */
 public class EPOSAsync extends AsyncTask<Object, String, Void> {
-    final String UserAgent = "Mozilla/5.0 (Linux; Android 4.1.1; Nexus 7 Build/JRO03D) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.166  Safari/535.19";
-    Handler statusHandler;
-    Handler handler;
+    private final String UserAgent = "Mozilla/5.0 (Linux; Android 4.1.1; Nexus 7 Build/JRO03D) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.166  Safari/535.19";
+    private Handler statusHandler;
+    private Handler handler;
 
     @Override
     protected Void doInBackground(Object[] Objects) {

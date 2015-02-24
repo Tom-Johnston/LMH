@@ -20,10 +20,10 @@ import com.johnston.lmhapp.R;
  * Created by Johnston on 17/09/2014.
  */
 public class LEDColourDialog extends DialogFragment {
-    View view;
-    int r;
-    int g;
-    int b;
+    private View view;
+    private int r;
+    private int g;
+    private int b;
 
     static LEDColourDialog newInstance() {
         LEDColourDialog f = new LEDColourDialog();
@@ -32,7 +32,7 @@ public class LEDColourDialog extends DialogFragment {
         return f;
     }
 
-    public void changeRectangleColour() {
+    void changeRectangleColour() {
         ImageView img = (ImageView) view.findViewById(R.id.led);
         img.setBackgroundColor(Color.argb(255, r, g, b));
     }

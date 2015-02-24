@@ -23,8 +23,8 @@ import java.util.Comparator;
 import javax.net.ssl.HttpsURLConnection;
 
 
-public class TwitterScraperAsync extends AsyncTask<Object, String, Void> {
-    Handler statusHandler;
+class TwitterScraperAsync extends AsyncTask<Object, String, Void> {
+    private Handler statusHandler;
 
     @Override
     protected Void doInBackground(Object[] params) {

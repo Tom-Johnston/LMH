@@ -22,13 +22,13 @@ import java.util.ArrayList;
  * Created by Tom on 11/11/2014.
  */
 public class FormalFragment extends Fragment {
-    View view;
-    ArrayList<String> entries = new ArrayList<>();
-    ArrayList<String> listOfMeals;
-    ArrayList<ArrayList<String>> listOfListsOfPeople;
-    Boolean finished = false;
-    Boolean refreshing = false;
-    final Handler handler = new Handler() {
+    private View view;
+    private ArrayList<String> entries = new ArrayList<>();
+    private ArrayList<String> listOfMeals;
+    private ArrayList<ArrayList<String>> listOfListsOfPeople;
+    private Boolean finished = false;
+    private Boolean refreshing = false;
+    private final Handler handler = new Handler() {
         @Override
         public void handleMessage(Message message) {
 
@@ -91,12 +91,12 @@ public class FormalFragment extends Fragment {
         dialog.show(getFragmentManager(), "details");
     }
 
-    public void showCards(){
+    void showCards(){
         (view.findViewById(R.id.Status)).setVisibility(View.GONE);
         (view.findViewById(R.id.progressBarContainer)).setVisibility(View.GONE);
         (view.findViewById(R.id.my_recycler_view)).setVisibility(View.VISIBLE);
     }
-    public void showMessage(String message){
+    void showMessage(String message){
         (view.findViewById(R.id.Status)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.progressBarContainer)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
@@ -104,7 +104,7 @@ public class FormalFragment extends Fragment {
         ((TextView)view.findViewById(R.id.nothingToShow)).setText(message);
         (view.findViewById(R.id.my_recycler_view)).setVisibility(View.GONE);
     }
-    public void showProgressBar(){
+    void showProgressBar(){
         (view.findViewById(R.id.Status)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.progressBarContainer)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);

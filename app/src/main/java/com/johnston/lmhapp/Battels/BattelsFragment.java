@@ -22,11 +22,11 @@ import java.util.ArrayList;
  * Created by Tom on 27/10/2014.
  */
 public class BattelsFragment extends Fragment {
-    View view;
-    ArrayList<String> entries = new ArrayList<>();
-    Boolean finished = false;
-    Boolean refreshing = false;
-    final Handler handler = new Handler() {
+    private View view;
+    private ArrayList<String> entries = new ArrayList<>();
+    private Boolean finished = false;
+    private Boolean refreshing = false;
+    private final Handler handler = new Handler() {
         @Override
         public void handleMessage(Message message) {
 
@@ -64,7 +64,7 @@ public class BattelsFragment extends Fragment {
             }
         }
     };
-    MenuItem actionRefresh;
+    private MenuItem actionRefresh;
 
     public void LoadBattels() {
         refreshing = true;
@@ -75,7 +75,7 @@ public class BattelsFragment extends Fragment {
         main.getInfo(view, handler, b);
     }
 
-    public void showProgressBar(){
+    void showProgressBar(){
         view.findViewById(R.id.Status).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.progressBarContainer)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
@@ -83,7 +83,7 @@ public class BattelsFragment extends Fragment {
         (view.findViewById(R.id.my_recycler_view)).setVisibility(View.GONE);
     }
 
-    public void showMessage(String message){
+    void showMessage(String message){
         view.findViewById(R.id.Status).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.progressBarContainer)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
@@ -91,7 +91,7 @@ public class BattelsFragment extends Fragment {
         ((TextView)view.findViewById(R.id.nothingToShow)).setText(message);
         (view.findViewById(R.id.my_recycler_view)).setVisibility(View.GONE);
     }
-    public void showCards(){
+    void showCards(){
         (view.findViewById(R.id.Status)).setVisibility(View.GONE);
         (view.findViewById(R.id.progressBarContainer)).setVisibility(View.GONE);
         (view.findViewById(R.id.my_recycler_view)).setVisibility(View.VISIBLE);

@@ -24,11 +24,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
 import java.util.StringTokenizer;
 
 /**
@@ -36,10 +32,10 @@ import java.util.StringTokenizer;
  */
 public class NotificationsService extends BroadcastReceiver {
 
-    long notifyTime = 10 * 60 * 1000;
-    PowerManager.WakeLock wl;
+    private long notifyTime = 10 * 60 * 1000;
+    private PowerManager.WakeLock wl;
 
-    public void permissionFailed(Context context){
+    void permissionFailed(Context context){
         SharedPreferences refreshTimePreference = context.getSharedPreferences("RefreshTime", 0);
         long refreshTime = refreshTimePreference.getLong("refreshTime", 2 * 60 * 60 * 1000);
 
@@ -146,7 +142,7 @@ public class NotificationsService extends BroadcastReceiver {
     }
 
 
-    public void part3(File file, Context context) {
+    void part3(File file, Context context) {
         try {
 
 //            Read the file.

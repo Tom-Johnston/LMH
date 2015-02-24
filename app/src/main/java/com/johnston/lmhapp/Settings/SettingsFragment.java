@@ -28,7 +28,7 @@ import java.util.Arrays;
  * Created by Tom on 08/08/2014.
  */
 public class SettingsFragment extends Fragment {
-    final Handler switchHandler = new Handler() {
+    private final Handler switchHandler = new Handler() {
         @Override
         public void handleMessage(Message message) {
             if (!(Boolean) message.obj) {
@@ -59,10 +59,10 @@ public class SettingsFragment extends Fragment {
             }
         }
     };
-    View view;
-    ArrayList<String> strings;
-    SettingsRecyclerAdapter settingsRecyclerAdapter;
-    SwitchCompat switchCompat;
+    private View view;
+    private ArrayList<String> strings;
+    private SettingsRecyclerAdapter settingsRecyclerAdapter;
+    private SwitchCompat switchCompat;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -169,7 +169,7 @@ public class SettingsFragment extends Fragment {
         }
     }
 
-    public void notificationSound() {
+    void notificationSound() {
         SharedPreferences NotificationSound = getActivity().getSharedPreferences("NotificationSound", 0);
         Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
         intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
@@ -184,7 +184,7 @@ public class SettingsFragment extends Fragment {
         this.startActivityForResult(intent, 5);
     }
 
-    public void toggleMealNotification(CheckBox checkBox, String title) {
+    void toggleMealNotification(CheckBox checkBox, String title) {
         SharedPreferences mealsToNotifyFor = getActivity().getSharedPreferences("mealsToNotifyFor", 0);
         SharedPreferences.Editor editor = mealsToNotifyFor.edit();
         editor.putBoolean(title, checkBox.isChecked());

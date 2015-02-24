@@ -7,8 +7,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 
-import com.johnston.lmhapp.MealMenus.DownloadNewMenuAsync;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -21,7 +19,7 @@ import javax.net.ssl.HttpsURLConnection;
  * Created by Johnston on 29/12/2014.
  */
 public class PermissionAsync extends AsyncTask<Object, String, Void> {
-    Handler statusHandler;
+    private Handler statusHandler;
     @Override
     protected Void doInBackground(Object[] objects) {
         Context context = (Context) objects[0];

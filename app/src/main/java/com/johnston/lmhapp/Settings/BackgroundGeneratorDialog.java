@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.WallpaperManager;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -17,7 +16,6 @@ import android.os.Message;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.johnston.lmhapp.ImageGeneratorAsync;
@@ -31,7 +29,7 @@ import java.io.IOException;
  * Created by Tom on 18/11/2014.
  */
 public class BackgroundGeneratorDialog extends DialogFragment {
-    View view;
+    private View view;
 
 
     static BackgroundGeneratorDialog newInstance() {
@@ -69,7 +67,6 @@ public class BackgroundGeneratorDialog extends DialogFragment {
                                     Toast toast = Toast.makeText(activity.getApplicationContext(), "Wallpaper Set.", Toast.LENGTH_SHORT);
                                     toast.show();
                                 } catch (IOException e) {
-                                    // TODO Auto-generated catch block
                                     e.printStackTrace();
                                     Toast toast = Toast.makeText(getActivity().getApplicationContext(), "Something has gone wrong.", Toast.LENGTH_SHORT);
                                     toast.show();

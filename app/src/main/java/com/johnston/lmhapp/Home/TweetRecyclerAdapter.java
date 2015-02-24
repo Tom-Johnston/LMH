@@ -20,9 +20,9 @@ import java.util.Locale;
 /**
  * Created by Johnston on 11/12/2014.
  */
-public class TweetRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    final List<Tweet> tweets;
-    final Bitmap[] profilePictures;
+class TweetRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private final List<Tweet> tweets;
+    private final Bitmap[] profilePictures;
 
     public TweetRecyclerAdapter(List<Tweet> passedtweets, Bitmap[] passedprofilePictures) {
         tweets = passedtweets;

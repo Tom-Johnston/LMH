@@ -29,14 +29,14 @@ import java.util.ArrayList;
  */
 public class
         LaundryViewFragment extends Fragment {
-    Boolean finished = false;
-    Boolean refreshing = false;
-    View view;
-    long startTime = 0;
-    ArrayList<String> KatieLee;
-    ArrayList<String> NewOldHall;
-    ArrayList<String> Talbot;
-    final Handler handler = new Handler() {
+    private Boolean finished = false;
+    private Boolean refreshing = false;
+    private View view;
+    private long startTime = 0;
+    private ArrayList<String> KatieLee;
+    private ArrayList<String> NewOldHall;
+    private ArrayList<String> Talbot;
+    private final Handler handler = new Handler() {
         @Override
         public void handleMessage(Message message) {
 
@@ -82,9 +82,9 @@ public class
             }
         }
     };
-    MenuItem actionRefresh;
+    private MenuItem actionRefresh;
 
-    public void addEntriesToList(int resource, ArrayList<String> entries) {
+    void addEntriesToList(int resource, ArrayList<String> entries) {
         LinearLayout linearLayout = (LinearLayout) view.findViewById(resource);
         linearLayout.removeAllViews();
         Activity activity = getActivity();
@@ -139,7 +139,7 @@ public class
             new PermissionAsync().execute(getActivity().getApplicationContext(), permissionHandler,null,"LaundryView");
     }
 
-    public void showProgressBar() {
+    void showProgressBar() {
         (view.findViewById(R.id.progressBarContainer)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
@@ -147,7 +147,7 @@ public class
         (view.findViewById(R.id.card_view2)).setVisibility(View.GONE);
         (view.findViewById(R.id.card_view3)).setVisibility(View.GONE);
     }
-    public void showMessage(String message){
+    void showMessage(String message){
         (view.findViewById(R.id.progressBarContainer)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
         (view.findViewById(R.id.nothingToShow)).setVisibility(View.VISIBLE);
@@ -156,7 +156,7 @@ public class
         (view.findViewById(R.id.card_view2)).setVisibility(View.GONE);
         (view.findViewById(R.id.card_view3)).setVisibility(View.GONE);
     }
-    public void showCards(){
+    void showCards(){
         (view.findViewById(R.id.progressBarContainer)).setVisibility(View.GONE);
         (view.findViewById(R.id.card_view)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.card_view2)).setVisibility(View.VISIBLE);
@@ -198,11 +198,6 @@ public class
             handler.post(updateTime);
         }
         return view;
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
     }
 
 

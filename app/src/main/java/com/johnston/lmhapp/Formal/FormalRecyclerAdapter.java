@@ -19,9 +19,9 @@ import java.util.ArrayList;
 /**
  * Created by Tom on 28/11/2014.
  */
-public class FormalRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    public ArrayList<String> entries;
-    public ArrayList<String> listOfMeals;
+class FormalRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private final ArrayList<String> entries;
+    private final ArrayList<String> listOfMeals;
 
     public FormalRecyclerAdapter(ArrayList<String> initialEntries, ArrayList<String> listOfMeals) {
         entries = initialEntries;
@@ -69,7 +69,7 @@ public class FormalRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     }
 
-    public Bitmap generateGraphicNumberLeft(int numberGone, int numberLeft, int sizex, int sizey) {
+    Bitmap generateGraphicNumberLeft(int numberGone, int numberLeft, int sizex, int sizey) {
         Bitmap.Config conf = Bitmap.Config.ARGB_8888;
         Bitmap bmp = Bitmap.createBitmap(sizex, sizey, conf);
         Canvas c = new Canvas(bmp);
@@ -126,13 +126,13 @@ public class FormalRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     public static class FormalHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        public TextView formalName;
-        public TextView formalDate;
-        public TextView formalMenu;
-        public TextView formalNumberLeft;
-        public TextView formalNumberGone;
-        public ImageView graphicNumberLeft;
-        public Button formalButton;
+        public final TextView formalName;
+        public final TextView formalDate;
+        public final TextView formalMenu;
+        public final TextView formalNumberLeft;
+        public final TextView formalNumberGone;
+        public final ImageView graphicNumberLeft;
+        public final Button formalButton;
 
 
         public FormalHolder(View itemView) {

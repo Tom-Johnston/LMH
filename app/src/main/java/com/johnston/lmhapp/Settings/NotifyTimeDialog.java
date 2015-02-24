@@ -20,7 +20,7 @@ import com.johnston.lmhapp.R;
  * Created by Jake on 15/11/2014.
  */
 public class NotifyTimeDialog extends DialogFragment {
-    View view;
+    private View view;
 
     static NotifyTimeDialog newInstance() {
         NotifyTimeDialog f = new NotifyTimeDialog();

@@ -19,7 +19,7 @@ import javax.net.ssl.SSLContext;
  * Created by Tom on 11/11/2014.
  */
 public class FormalAsync extends AsyncTask<Object, String, Void> {
-    Handler statusHandler;
+    private Handler statusHandler;
 
     @Override
     protected Void doInBackground(Object[] params) {
