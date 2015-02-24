@@ -102,7 +102,7 @@ public class HomeFragment extends Fragment {
                     PermissionFailedDialog newFragment = PermissionFailedDialog.newInstance((String) message.obj);
                     newFragment.show(getFragmentManager(), "PERMISSION DENIED");
                 }else if(message.what==2){
-                    new DownloadNewMenuAsync().execute(getActivity(), false, handler);
+                    new DownloadNewMenuAsync().execute(getActivity(), false, null );
                 } else {
 //                Something has gone wrong checking.
                     handler.obtainMessage(-1, "Unable to get permission.").sendToTarget();

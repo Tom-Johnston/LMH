@@ -25,7 +25,10 @@ public class DownloadNewMenuAsync extends AsyncTask<Object, Void, Void> {
         Boolean widget;
         Context context = (Context) contexts[0];
         widget = (Boolean) contexts[1];
-        Handler handler = (Handler) contexts[2];
+        Handler handler=null;
+        if(contexts[2]!=null){
+            handler = (Handler) contexts[2];
+        }
         try {
             File file = new File(context.getFilesDir(), "Menu.txt");
             URL url = new URL("https://drive.google.com/uc?id=0Bzygl0tJta6ZZmdRdnZyb2Iyb0k&export=download");
@@ -37,7 +40,7 @@ public class DownloadNewMenuAsync extends AsyncTask<Object, Void, Void> {
                 fos.write(buffer, 0, length);
             }
             fos.close();
-            if (!widget) {
+            if (!widget&&handler!=null) {
                 handler.obtainMessage(1).sendToTarget();
                 Intent intent = new Intent(context, NotificationsService.class);
                 context.sendBroadcast(intent);
@@ -46,7 +49,7 @@ public class DownloadNewMenuAsync extends AsyncTask<Object, Void, Void> {
                     Intent updateWidget = new Intent(context, WidgetBroadcastReceiver.class);
                     context.sendBroadcast(updateWidget);
                 }
-            } else {
+            } else if(handler!=null) {
                 handler.sendEmptyMessage(0);
             }
             BufferedReader br = new BufferedReader(new FileReader(file));
@@ -63,12 +66,12 @@ public class DownloadNewMenuAsync extends AsyncTask<Object, Void, Void> {
                 editor.commit();
             }
         } catch (MalformedURLException e) {
-            if (!widget) {
+            if (!widget&&handler!=null) {
                 handler.obtainMessage(-1).sendToTarget();
             }
             e.printStackTrace();
         } catch (IOException e) {
-            if (!widget) {
+            if (!widget&handler!=null) {
                 handler.obtainMessage(-1).sendToTarget();
             }
             e.printStackTrace();
