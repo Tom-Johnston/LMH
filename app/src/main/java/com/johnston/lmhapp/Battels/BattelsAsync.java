@@ -128,10 +128,10 @@ public class BattelsAsync extends AsyncTask<Object, String, Void> {
             handler.obtainMessage(0, Entries).sendToTarget();
         } catch (MalformedURLException e) {
             e.printStackTrace();
-            statusHandler.obtainMessage(-1).sendToTarget();
+            statusHandler.obtainMessage(-1,"Error getting battels: MalformedURLException").sendToTarget();
         } catch (IOException e) {
             e.printStackTrace();
-            statusHandler.obtainMessage(-1).sendToTarget();
+            statusHandler.obtainMessage(-1,"Error getting battels: IOException. Check your network connection.").sendToTarget();
         }
         return null;
     }

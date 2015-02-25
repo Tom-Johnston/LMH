@@ -165,10 +165,10 @@ public class FormalAsync extends AsyncTask<Object, String, Void> {
             handler.obtainMessage(2, listOfListsOfPeople).sendToTarget();
             publishProgress("Finished");
         } catch (MalformedURLException e) {
-            statusHandler.obtainMessage(-1).sendToTarget();
+            statusHandler.obtainMessage(-1,"Error getting formals: MalformedURLException").sendToTarget();
             e.printStackTrace();
         } catch (IOException e) {
-            statusHandler.obtainMessage(-1).sendToTarget();
+            statusHandler.obtainMessage(-1,"Error getting formals: IOException. Check your network connection.").sendToTarget();
             e.printStackTrace();
         }
 

@@ -73,13 +73,16 @@ public class PermissionAsync extends AsyncTask<Object, String, Void> {
             }
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
-            handler.obtainMessage(-1).sendToTarget();
+            publishProgress("Error getting permission: Unable to get package name");
+            handler.obtainMessage(-1,"Error getting permission: Unable to get package name").sendToTarget();
         } catch (MalformedURLException e) {
             e.printStackTrace();
-            handler.obtainMessage(-1).sendToTarget();
+            publishProgress("Error getting permission: MalformedURLException");
+            handler.obtainMessage(-1,"Error getting permission: MalformedURLException").sendToTarget();
         } catch (IOException e) {
             e.printStackTrace();
-            handler.obtainMessage(-1).sendToTarget();
+            publishProgress("Error getting permission: IOException. Check your network connection");
+            handler.obtainMessage(-1,"Error getting permission: IOException. Check your network connection").sendToTarget();
         }
         return null;
     }

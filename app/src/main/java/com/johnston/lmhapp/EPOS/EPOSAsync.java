@@ -230,13 +230,13 @@ public class EPOSAsync extends AsyncTask<Object, String, Void> {
             publishProgress("Finished");
 
         } catch (MalformedURLException e) {
-            statusHandler.obtainMessage(-1).sendToTarget();
+            statusHandler.obtainMessage(-1,"Error getting EPOS: MalformedURLException").sendToTarget();
             e.printStackTrace();
         } catch (IOException e) {
-            statusHandler.obtainMessage(-1).sendToTarget();
+            statusHandler.obtainMessage(-1,"Error getting EPOS: IOExcepion. Check your network connection.").sendToTarget();
             e.printStackTrace();
         } catch (URISyntaxException e) {
-            statusHandler.obtainMessage(-1).sendToTarget();
+            statusHandler.obtainMessage(-1,"Error getting EPOS:URISyntaxException").sendToTarget();
             e.printStackTrace();
         }
         return null;

@@ -80,9 +80,8 @@ class LoginAsync extends AsyncTask<Object, String, Boolean> {
                 }
                 in.close();
                 if (a.indexOf("Error") > 0) {
-                    publishProgress("Error");
                     manager.getCookieStore().removeAll();
-                    statusHandler.obtainMessage(-1).sendToTarget();
+                    statusHandler.obtainMessage(-1,"Error Logging In").sendToTarget();
                     return false;
                 }
                 publishProgress("Successful Login");
@@ -100,22 +99,18 @@ class LoginAsync extends AsyncTask<Object, String, Boolean> {
             }
         } catch (MalformedURLException e) {
             e.printStackTrace();
-            publishProgress("Error logging in: MalformedURLException");
-            statusHandler.obtainMessage(-1).sendToTarget();
+            statusHandler.obtainMessage(-1,"Error logging in: MalformedURLException").sendToTarget();
             return false;
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-            publishProgress("Error logging in: UnsupportedEncodingException");
-            statusHandler.obtainMessage(-1).sendToTarget();
+            statusHandler.obtainMessage(-1,"Error logging in: UnsupportedEncodingException").sendToTarget();
             return false;
         } catch (ProtocolException e) {
             e.printStackTrace();
-            publishProgress("Error logging in: ProtocolException");
-            statusHandler.obtainMessage(-1).sendToTarget();
+            statusHandler.obtainMessage(-1,"Error logging in: ProtocolException").sendToTarget();
             return false;
         } catch (IOException e) {
-            publishProgress("Error logging in: IOExeption. Check your network connection");
-            statusHandler.obtainMessage(-1).sendToTarget();
+            statusHandler.obtainMessage(-1,"Error logging in: IOExeption. Check your network connection").sendToTarget();
             e.printStackTrace();
             return false;
         }

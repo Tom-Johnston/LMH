@@ -306,10 +306,10 @@ class TwitterScraperAsync extends AsyncTask<Object, String, Void> {
             objects[1] = profilePictures;
             handler.obtainMessage(0, objects).sendToTarget();
         } catch (MalformedURLException e) {
-            handler.obtainMessage(-1, "MalformedURLException").sendToTarget();
+            handler.obtainMessage(-1, "Error getting tweets: MalformedURLException").sendToTarget();
             e.printStackTrace();
         } catch (IOException e) {
-            handler.obtainMessage(-1, "Network Error").sendToTarget();
+            handler.obtainMessage(-1, "Error getting tweets: IOException. Check your network connection.").sendToTarget();
             e.printStackTrace();
         }
         return null;

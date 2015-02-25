@@ -75,7 +75,6 @@ public class MainActivity extends ActionBarActivity {
         public void handleMessage(Message message) {
             if (message.what == -1) {
                 handler.obtainMessage(-1).sendToTarget();
-                return;
             }
             String update = (String) message.obj;
             if (Status != null) {
@@ -255,9 +254,6 @@ public class MainActivity extends ActionBarActivity {
                 } else {
 //                Something has gone wrong checking.
                     handler.obtainMessage(-1).sendToTarget();
-                    if (Status != null) {
-                        Status.setText("Something has gone wrong!");
-                    }
                 }
             }
         };
