@@ -18,16 +18,15 @@ import java.util.ArrayList;
 /**
  * Created by Tom on 03/06/2014.
  */
-class LaundryViewAsync extends AsyncTask<Object, Void, Boolean> {
-    private View view;
+class LaundryViewAsync extends AsyncTask<Object, Void, Void> {
+    private Handler statusHandler;
     private Handler handler;
-    private String Error;
 
     @Override
-    protected Boolean doInBackground(Object[] objects) {
-        view = (View) objects[0];
+    protected Void doInBackground(Object[] objects) {
+        Handler statusHandler = (Handler) objects[0];
         handler = (Handler) objects[1];
-
+        statusHandler.obtainMessage(0,"Pulling data").sendToTarget();
         try {
             for (int i = 2; i < 5; i++) {
                 URL url = new URL(objects[i].toString());
@@ -59,43 +58,24 @@ class LaundryViewAsync extends AsyncTask<Object, Void, Boolean> {
                 }
                 handler.obtainMessage(i - 1, stringArrayList).sendToTarget();
             }
-            return true;
+            final long startTime = System.currentTimeMillis();
+            handler.obtainMessage(0, startTime).sendToTarget();
+            statusHandler.obtainMessage(0,"Finished").sendToTarget();
+            handler.obtainMessage(4).sendToTarget();
+            return null;
         } catch (MalformedURLException e) {
-            Error = "Error getting LaundryView: MalformedURLException";
+            statusHandler.obtainMessage(0,"Error getting LaundryView: MalformedURLException").sendToTarget();
             handler.obtainMessage(-1).sendToTarget();
             e.printStackTrace();
-            return false;
+            return null;
         } catch (IOException e) {
-            Error = "Error getting LaundryView: IO Exception. Check your network connection.";
+            statusHandler.obtainMessage(0, "Error getting LaundryView: IO Exception. Check your network connection.").sendToTarget();
             handler.obtainMessage(-1).sendToTarget();
             e.printStackTrace();
-            return false;
+            return null;
         }
 
     }
 
 
-    @Override
-    protected void onPostExecute(Boolean v) {
-        final TextView timerView = (TextView) view.findViewById(R.id.LastUpdate);
-        if (!v) {
-            timerView.setText(Error);
-            return;
-
-        }
-        final long startTime = System.currentTimeMillis();
-        Runnable updateTime = new Runnable() {
-
-            @Override
-            public void run() {
-                long runningTime = System.currentTimeMillis() - startTime;
-                int minutes = (int) runningTime / (1000 * 60);
-                int seconds = (int) (runningTime / (1000)) % 60;
-                timerView.setText("Last updated: " + minutes + "m " + seconds + "s ago.");
-                handler.postDelayed(this, 1000);
-            }
-        };
-        handler.obtainMessage(0, startTime).sendToTarget();
-        handler.post(updateTime);
-    }
 }

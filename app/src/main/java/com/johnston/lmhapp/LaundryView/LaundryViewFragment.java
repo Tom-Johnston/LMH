@@ -36,6 +36,18 @@ public class
     private ArrayList<String> KatieLee;
     private ArrayList<String> NewOldHall;
     private ArrayList<String> Talbot;
+    private static TextView Status;
+    private final Handler statusHandler = new Handler(){
+        @Override
+        public void handleMessage(Message message){
+            if(message.what==-1){
+                handler.obtainMessage(-1).sendToTarget();
+            }
+            if(Status!=null){
+                Status.setText((String)message.obj);
+            }
+        }
+    };
     private final Handler handler = new Handler() {
         @Override
         public void handleMessage(Message message) {
@@ -68,7 +80,6 @@ public class
                 if (view != null) {
                     addEntriesToList(R.id.NewOldHall, NewOldHall);
                 }
-
             } else if (message.what == 3) {
                 MainActivity main = (MainActivity) getActivity();
                 if (main != null) {
@@ -79,6 +90,20 @@ public class
                     addEntriesToList(R.id.Talbot, Talbot);
                     showCards();
                 }
+            }
+            if(message.what==4) {
+                Runnable updateTime = new Runnable() {
+
+                    @Override
+                    public void run() {
+                        long runningTime = System.currentTimeMillis() - startTime;
+                        int minutes = (int) runningTime / (1000 * 60);
+                        int seconds = (int) (runningTime / (1000)) % 60;
+                        Status.setText("Last updated: " + minutes + "m " + seconds + "s ago.");
+                        handler.postDelayed(this, 1000);
+                    }
+                };
+                handler.post(updateTime);
             }
         }
     };
@@ -119,7 +144,7 @@ public class
                             URL KatieLee = new URL("http://classic.laundryview.com/laundry_room.php?lr=870043400887");
                             URL NewOldHall = new URL("http://classic.laundryview.com/laundry_room.php?lr=870043400853");
                             URL Talbot = new URL("http://classic.laundryview.com/laundry_room.php?lr=870043400855");
-                            new LaundryViewAsync().execute(view, handler, KatieLee, NewOldHall, Talbot);
+                            new LaundryViewAsync().execute(statusHandler, handler, KatieLee, NewOldHall, Talbot);
                         } catch (MalformedURLException e) {
                             e.printStackTrace();
                         }
@@ -136,7 +161,7 @@ public class
                     }
                 }
             };
-            new PermissionAsync().execute(getActivity().getApplicationContext(), permissionHandler,null,"LaundryView");
+            new PermissionAsync().execute(getActivity().getApplicationContext(), permissionHandler,statusHandler,"LaundryView");
     }
 
     void showProgressBar() {
@@ -175,6 +200,7 @@ public class
         if (view == null) {
             view = inflater.inflate(R.layout.laundry_view, container, false);
         }
+        Status = (TextView) view.findViewById(R.id.Status);
         if (refreshing) {
             MainActivity main = (MainActivity) getActivity();
             main.startRefresh(1);
@@ -183,19 +209,7 @@ public class
             LoadStatus();
         } else {
             showCards();
-            final TextView timerView = (TextView) view.findViewById(R.id.LastUpdate);
-            Runnable updateTime = new Runnable() {
-
-                @Override
-                public void run() {
-                    long runningTime = System.currentTimeMillis() - startTime;
-                    int minutes = (int) runningTime / (1000 * 60);
-                    int seconds = (int) (runningTime / (1000)) % 60;
-                    timerView.setText("Last updated: " + minutes + "m " + seconds + "s ago.");
-                    handler.postDelayed(this, 1000);
-                }
-            };
-            handler.post(updateTime);
+            handler.obtainMessage(4).sendToTarget();
         }
         return view;
     }
