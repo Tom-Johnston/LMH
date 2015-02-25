@@ -19,15 +19,18 @@ import java.util.Locale;
 /**
  * Created by Johnston on 03/10/2014.
  */
-class MenuAsync extends AsyncTask<Object, Void, Void> {
+class MenuAsync extends AsyncTask<Object, String, Void> {
+    Handler statusHandler;
 
     @Override
     protected Void doInBackground(Object[] objects) {
         Context context = (Context) objects[0];
         Handler handler = (Handler) objects[1];
+        statusHandler = (Handler) objects[2];
         ArrayList<String> meals = new ArrayList<>();
         File file = new File(context.getFilesDir(), "Menu.txt");
         try {
+            publishProgress("Reading Menu");
             BufferedReader br = new BufferedReader(new FileReader(file));
             int Hours;
             int Minutes;
@@ -48,6 +51,7 @@ class MenuAsync extends AsyncTask<Object, Void, Void> {
                 } else if (inputLine.contains(":")) {
                     if (!outputLine.equals("")) {
                         meals.add(outputLine);
+                        outputLine = "";
                         outputLine = "";
                     }
                     Hours = Integer.parseInt(inputLine.substring(6, 8));
@@ -77,9 +81,14 @@ class MenuAsync extends AsyncTask<Object, Void, Void> {
             if (!outputLine.equals("")) {
                 meals.add(outputLine);
             }
+            publishProgress("Finished");
         } catch (FileNotFoundException e) {
+            publishProgress("Error reading menu: FileNotFoundException");
+            handler.obtainMessage(-1).sendToTarget();
             e.printStackTrace();
         } catch (IOException e) {
+            publishProgress("Error reading menu: IOException");
+            handler.obtainMessage(-1).sendToTarget();
             e.printStackTrace();
         }
         handler.obtainMessage(0, meals).sendToTarget();
@@ -92,5 +101,9 @@ class MenuAsync extends AsyncTask<Object, Void, Void> {
         } catch (ParseException e) {
             return -1;
         }
+    }
+    @Override
+    protected void onProgressUpdate(String... update) {
+        statusHandler.obtainMessage(0,update[0]).sendToTarget();
     }
 }

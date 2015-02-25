@@ -18,16 +18,20 @@ import java.net.URL;
 /**
  * Created by Tom on 13/08/2014.
  */
-public class DownloadNewMenuAsync extends AsyncTask<Object, Void, Void> {
+public class DownloadNewMenuAsync extends AsyncTask<Object, String, Void> {
+    Handler statusHandler =null;
 
     @Override
-    protected Void doInBackground(Object[] contexts) {
+    protected Void doInBackground(Object[] objects) {
         Boolean widget;
-        Context context = (Context) contexts[0];
-        widget = (Boolean) contexts[1];
+        Context context = (Context) objects[0];
+        widget = (Boolean) objects[1];
         Handler handler=null;
-        if(contexts[2]!=null){
-            handler = (Handler) contexts[2];
+        if(objects[2]!=null){
+            handler = (Handler) objects[2];
+        }
+        if(objects[3]!=null){
+            statusHandler = (Handler)objects[3];
         }
         try {
             File file = new File(context.getFilesDir(), "Menu.txt");
@@ -65,6 +69,7 @@ public class DownloadNewMenuAsync extends AsyncTask<Object, Void, Void> {
                 editor.putInt("mealVersionNumber",-1);
                 editor.commit();
             }
+            publishProgress("Finished Downloading");
         } catch (MalformedURLException e) {
             if (!widget&&handler!=null) {
                 handler.obtainMessage(-1).sendToTarget();
@@ -78,5 +83,10 @@ public class DownloadNewMenuAsync extends AsyncTask<Object, Void, Void> {
         }
 
         return null;
+    }
+
+    @Override
+    protected void onProgressUpdate(String... update){
+        statusHandler.obtainMessage(0,update[0]);
     }
 }

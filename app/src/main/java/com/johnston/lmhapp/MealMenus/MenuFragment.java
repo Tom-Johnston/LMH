@@ -33,18 +33,28 @@ public class MenuFragment extends Fragment {
     private View view;
     private Context context;
     private ArrayList<String> meals = new ArrayList<>();
+    private static TextView Status;
+    Handler statusHandler = new Handler() {
+        @Override
+        public void handleMessage(Message message) {
+            if(Status!=null){
+                Status.setText((String)message.obj);
+            }
+        }
+    };
 
-    public void checkForPermission(){
+        public void checkForPermission(){
         refreshing = true;
         MainActivity main = (MainActivity) getActivity();
         main.startRefresh(5);
         showProgressBar();
+
         Handler permissionHandler = new Handler() {
             @Override
             public void handleMessage(Message message) {
                 if (message.what == 0) {
 //                Success!
-                    new DownloadNewMenuAsync().execute(context, false, handler);
+                    new DownloadNewMenuAsync().execute(context, false, handler,statusHandler);
                 } else if (message.what == 1) {
 //                Failure
                     handler.obtainMessage(-1).sendToTarget();
@@ -59,7 +69,7 @@ public class MenuFragment extends Fragment {
                 }
             }
         };
-        new PermissionAsync().execute(getActivity().getApplicationContext(), permissionHandler,null,"MenuFragment");
+        new PermissionAsync().execute(getActivity().getApplicationContext(), permissionHandler,statusHandler,"MenuFragment");
     }
 
     void startMenu() {
@@ -72,7 +82,7 @@ public class MenuFragment extends Fragment {
 //                No menu. Get a new menu();
         } else {
             starting = true;
-            new MenuAsync().execute(context, handler);
+            new MenuAsync().execute(context, handler,statusHandler);
 
         }
     }
@@ -123,13 +133,13 @@ public class MenuFragment extends Fragment {
         super.onCreateView(null, null, savedInstanceState);
         context = this.getActivity().getApplicationContext();
         view = inflater.inflate(R.layout.menu_layout, container, false);
+        Status = (TextView)view.findViewById(R.id.Status);
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         if (refreshing) {
             MainActivity main = (MainActivity) getActivity();
             main.startRefresh(5);
-            MainActivity.Status = (android.widget.TextView) view.findViewById(R.id.Status);
             showProgressBar();
         } else if (!finished) {
             startMenu();
@@ -178,7 +188,7 @@ public class MenuFragment extends Fragment {
                 }
             } else {
                 starting = false;
-                new MenuAsync().execute(context, handler);
+                new MenuAsync().execute(context, handler,statusHandler);
             }
         }
     };
