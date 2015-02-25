@@ -10,16 +10,7 @@
         android:paddingLeft="16dp"
         android:paddingRight="16dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:id="@+id/Status"
-            android:layout_marginTop="4dp"
-            android:textColor="@color/abc_search_url_text_holo"
-            android:freezesText="true"
-            android:elevation="1dp"
-            android:layout_marginBottom="4dp" />
+        <include layout="@layout/status"/>
 
         <RelativeLayout
             android:id="@+id/progressBarContainer"

@@ -44,7 +44,7 @@ class MenuRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
         if (position == 0) {
-            ((TextView) viewHolder.itemView).setText(" ");
+            ((TextView) viewHolder.itemView).setText("Finished");
         } else {
             MealHolder mealHolder = (MealHolder) viewHolder;
             position = (position - 1) * 3;

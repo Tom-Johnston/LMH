@@ -6,16 +6,7 @@
     android:layout_height="match_parent"
     android:layout_gravity="center">
 
-    <TextView
-        android:id="@+id/Status"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top"
-        android:layout_marginTop="4dp"
-        android:gravity="center"
-        android:text="@string/started"
-        android:textColor="@color/abc_search_url_text_holo"
-        android:freezesText="true" />
+    <include layout="@layout/status"/>
 
     <RelativeLayout
         android:id="@+id/progressBarContainer"
@@ -35,13 +26,13 @@
             android:layout_height="wrap_content" />
 
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:indeterminate="true"
-        android:keepScreenOn="true"
-         />
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:keepScreenOn="true"
+            />
 
     </RelativeLayout>
     <android.support.v7.widget.RecyclerView

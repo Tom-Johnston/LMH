@@ -2,8 +2,7 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center">
+    android:layout_height="match_parent">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/tweetList"
@@ -34,18 +33,7 @@
         android:layout_centerInParent="true"
         android:visibility="gone" />
 
+    <include layout="@layout/status"/>
 
-    <!--I set this to match_parent as wrap_content didn't work.
-    I have no idea why but the TextView would show part way down. The ProgressBar was also offset.
-    I coloured the RelativeLayout and it filled the correct area.  -->
-    <TextView
-        android:id="@+id/Status"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="4dp"
-        android:gravity="center_horizontal"
-        android:text="@string/started"
-        android:textColor="@color/abc_search_url_text_holo"
-        android:freezesText="true" />
 
 </RelativeLayout>
