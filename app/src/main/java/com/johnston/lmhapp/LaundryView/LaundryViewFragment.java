@@ -173,7 +173,7 @@ public class
     public android.view.View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
         super.onCreateView(null, null, savedInstanceState);
         if (view == null) {
-            view = inflater.inflate(R.layout.new_laundry_view, container, false);
+            view = inflater.inflate(R.layout.laundry_view, container, false);
         }
         if (refreshing) {
             MainActivity main = (MainActivity) getActivity();

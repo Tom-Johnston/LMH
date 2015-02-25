@@ -151,7 +151,7 @@ public class EPOSFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(null, null, savedInstanceState);
-        view = inflater.inflate(R.layout.new_epos_layout, container, false);
+        view = inflater.inflate(R.layout.epos_layout, container, false);
         if (refreshing) {
             MainActivity main = (MainActivity) getActivity();
             main.startRefresh(3);
