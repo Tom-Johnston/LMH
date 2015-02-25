@@ -87,6 +87,8 @@ public class DownloadNewMenuAsync extends AsyncTask<Object, String, Void> {
 
     @Override
     protected void onProgressUpdate(String... update){
-        statusHandler.obtainMessage(0,update[0]);
+        if(statusHandler!=null){
+            statusHandler.obtainMessage(0,update[0]);
+        }
     }
 }
