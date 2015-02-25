@@ -30,7 +30,7 @@ public class DownloadNewMenuAsync extends AsyncTask<Object, String, Void> {
         if(objects[2]!=null){
             handler = (Handler) objects[2];
         }
-        if(objects[3]!=null){
+        if(objects.length==4&&objects[3]!=null){
             statusHandler = (Handler)objects[3];
         }
         try {
