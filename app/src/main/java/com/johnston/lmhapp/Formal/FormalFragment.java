@@ -93,12 +93,12 @@ public class FormalFragment extends Fragment {
 
     void showCards(){
         (view.findViewById(R.id.Status)).setVisibility(View.GONE);
-        (view.findViewById(R.id.progressBarContainer)).setVisibility(View.GONE);
         (view.findViewById(R.id.my_recycler_view)).setVisibility(View.VISIBLE);
+        (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
+        (view.findViewById(R.id.nothingToShow)).setVisibility(View.VISIBLE);
     }
     void showMessage(String message){
         (view.findViewById(R.id.Status)).setVisibility(View.VISIBLE);
-        (view.findViewById(R.id.progressBarContainer)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
         (view.findViewById(R.id.nothingToShow)).setVisibility(View.VISIBLE);
         ((TextView)view.findViewById(R.id.nothingToShow)).setText(message);
@@ -106,7 +106,6 @@ public class FormalFragment extends Fragment {
     }
     void showProgressBar(){
         (view.findViewById(R.id.Status)).setVisibility(View.VISIBLE);
-        (view.findViewById(R.id.progressBarContainer)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
         (view.findViewById(R.id.my_recycler_view)).setVisibility(View.GONE);

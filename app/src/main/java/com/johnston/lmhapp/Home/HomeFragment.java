@@ -74,7 +74,7 @@ public class HomeFragment extends Fragment {
             }
 
             if (tweets.size() > 0) {
-                RecyclerView tweetList = (RecyclerView) view.findViewById(R.id.tweetList);
+                RecyclerView tweetList = (RecyclerView) view.findViewById(R.id.my_recycler_view);
                 tweetList.setAdapter(new TweetRecyclerAdapter(tweets, profilePictures));
                 showTweets();
             } else {
@@ -114,21 +114,21 @@ public class HomeFragment extends Fragment {
 
     void showTweets(){
         view.findViewById(R.id.Status).setVisibility(View.GONE);
-        view.findViewById(R.id.tweetList).setVisibility(View.VISIBLE);
-        view.findViewById(R.id.PM1).setVisibility(View.GONE);
+        view.findViewById(R.id.my_recycler_view).setVisibility(View.VISIBLE);
+        view.findViewById(R.id.progressBar).setVisibility(View.GONE);
         view.findViewById(R.id.nothingToShow).setVisibility(View.GONE);
     }
     void showMessage(String message){
         view.findViewById(R.id.Status).setVisibility(View.VISIBLE);
-        view.findViewById(R.id.tweetList).setVisibility(View.GONE);
-        view.findViewById(R.id.PM1).setVisibility(View.GONE);
+        view.findViewById(R.id.my_recycler_view).setVisibility(View.GONE);
+        view.findViewById(R.id.progressBar).setVisibility(View.GONE);
         view.findViewById(R.id.nothingToShow).setVisibility(View.VISIBLE);
         ((TextView)view.findViewById(R.id.nothingToShow)).setText(message);
     }
     void showProgressBar(){
         view.findViewById(R.id.Status).setVisibility(View.VISIBLE);
-        view.findViewById(R.id.tweetList).setVisibility(View.GONE);
-        view.findViewById(R.id.PM1).setVisibility(View.VISIBLE);
+        view.findViewById(R.id.my_recycler_view).setVisibility(View.GONE);
+        view.findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
         view.findViewById(R.id.nothingToShow).setVisibility(View.GONE);
     }
 
@@ -145,7 +145,7 @@ public class HomeFragment extends Fragment {
         super.onCreateView(null, null, savedInstanceState);
         view = inflater.inflate(R.layout.home_fragment, container, false);
         Status  = (TextView)view.findViewById(R.id.Status);
-        RecyclerView tweetList = (RecyclerView) view.findViewById(R.id.tweetList);
+        RecyclerView tweetList = (RecyclerView) view.findViewById(R.id.my_recycler_view);
         tweetList.setLayoutManager(new LinearLayoutManager(getActivity()));
         if (refreshing) {
             MainActivity main = (MainActivity) getActivity();

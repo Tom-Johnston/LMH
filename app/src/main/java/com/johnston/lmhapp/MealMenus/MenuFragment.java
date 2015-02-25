@@ -97,16 +97,19 @@ public class MenuFragment extends Fragment {
     }
 
     void showCards(){
+        (view.findViewById(R.id.Status)).setVisibility(View.GONE);
         (view.findViewById(R.id.my_recycler_view)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
         (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
     }
     void showProgressBar(){
+        (view.findViewById(R.id.Status)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.my_recycler_view)).setVisibility(View.GONE);
         (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
     }
     void showMessage(String message){
+        (view.findViewById(R.id.Status)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.my_recycler_view)).setVisibility(View.GONE);
         (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
         (view.findViewById(R.id.nothingToShow)).setVisibility(View.VISIBLE);

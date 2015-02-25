@@ -165,7 +165,6 @@ public class
     }
 
     void showProgressBar() {
-        (view.findViewById(R.id.progressBarContainer)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
         (view.findViewById(R.id.card_view)).setVisibility(View.GONE);
@@ -173,7 +172,6 @@ public class
         (view.findViewById(R.id.card_view3)).setVisibility(View.GONE);
     }
     void showMessage(String message){
-        (view.findViewById(R.id.progressBarContainer)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
         (view.findViewById(R.id.nothingToShow)).setVisibility(View.VISIBLE);
         ((TextView)view.findViewById(R.id.nothingToShow)).setText(message);
@@ -182,10 +180,11 @@ public class
         (view.findViewById(R.id.card_view3)).setVisibility(View.GONE);
     }
     void showCards(){
-        (view.findViewById(R.id.progressBarContainer)).setVisibility(View.GONE);
         (view.findViewById(R.id.card_view)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.card_view2)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.card_view3)).setVisibility(View.VISIBLE);
+        (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
+        (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
     }
 
     @Override

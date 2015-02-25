@@ -4,39 +4,15 @@
     android:layout_width="match_parent"
     android:fillViewport="true">
 
-    <LinearLayout
+    <RelativeLayout
         android:orientation="vertical" android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="16dp"
         android:paddingRight="16dp">
 
         <include layout="@layout/status"/>
-
-        <RelativeLayout
-            android:id="@+id/progressBarContainer"
-            android:visibility="visible"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center">
-
-            <TextView
-                android:id="@+id/nothingToShow" android:freezesText="true"
-                android:textSize="24sp"
-                android:layout_margin="16dp"
-                android:gravity="center"
-                android:text="@string/nothingToShow"
-                android:visibility="gone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <ProgressBar
-                android:id="@+id/progressBar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:indeterminate="true"
-                android:keepScreenOn="true" />
-
-        </RelativeLayout>
+        <include layout="@layout/loading_progress_bar"/>
+        <include layout="@layout/nothing_to_show"/>
 
         <android.support.v7.widget.CardView
             xmlns:card_view="http://schemas.android.com/apk/res-auto"
@@ -46,6 +22,7 @@
             card_view:cardCornerRadius="2dp"
             android:layout_marginBottom="8dp"
             android:id="@id/card_view"
+            android:layout_below="@+id/Status"
             >
             <LinearLayout
                 android:padding="8dp"
@@ -94,6 +71,7 @@
             android:layout_height="wrap_content"
             card_view:cardCornerRadius="2dp"
             android:layout_marginBottom="8dp"
+            android:layout_below="@+id/card_view"
             android:id="@id/card_view2"
             >
 
@@ -140,6 +118,7 @@
             android:layout_height="wrap_content"
             card_view:cardCornerRadius="2dp"
             android:layout_marginBottom="8dp"
+            android:layout_below="@+id/card_view2"
             android:id="@id/card_view3"
             >
             <LinearLayout
@@ -181,5 +160,5 @@
         </android.support.v7.widget.CardView>
 
 
-    </LinearLayout>
+    </RelativeLayout>
 </ScrollView>

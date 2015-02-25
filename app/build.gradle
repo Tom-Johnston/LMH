@@ -29,6 +29,7 @@ android {
                             'src/main/res/layout/LaundryView',
                             'src/main/res/layout/MealMenus',
                             'src/main/res/layout/Settings',
+                            'src/main/res/layout/StandardLayouts',
                             'src/main/res'
                     ]
         }
