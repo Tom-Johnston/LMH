@@ -367,6 +367,19 @@ public class MainActivity extends ActionBarActivity {
             SharedPreferences LogIn = getSharedPreferences("LogIn", 0);
             username.setText(LogIn.getString("Username", ""));
             name.setText(LogIn.getString("Name", ""));
+        }else{
+//            Generate a plain blue background for the
+            Bitmap.Config conf = Bitmap.Config.ARGB_8888;
+            Bitmap bmp = Bitmap.createBitmap(2, 1, conf);
+            Canvas c = new Canvas(bmp);
+            c.drawColor(getResources().getColor(R.color.colorPrimary2));
+            ((ImageView) findViewById(R.id.graphic)).setImageBitmap(bmp);
+            TextView username = (TextView) findViewById(R.id.username);
+            TextView name = (TextView) findViewById(R.id.name);
+            SharedPreferences LogIn = getSharedPreferences("LogIn", 0);
+            username.setText(LogIn.getString("Username", "Please Log In"));
+            name.setText(LogIn.getString("Name", "Welcome to the LMH App"));
+
         }
 
 //      Generate the default drawer items.
