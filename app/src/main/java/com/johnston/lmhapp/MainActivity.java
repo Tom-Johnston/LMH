@@ -472,6 +472,7 @@ Bitmap drawCircle(int color) {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("lastPosition", lastPosition);
+        outState.putString("mTitle",mTitle);
     }
 
     @Override
