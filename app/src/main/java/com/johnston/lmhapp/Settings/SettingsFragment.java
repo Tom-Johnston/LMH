@@ -1,5 +1,6 @@
 package com.johnston.lmhapp.Settings;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -183,14 +184,33 @@ public class SettingsFragment extends Fragment {
         }
         this.startActivityForResult(intent, 5);
     }
+    @Override
+    public void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
+//        This is used for the ringtone picker.
+        if (resultCode == Activity.RESULT_OK && requestCode == 5) {
+            Uri uri = intent.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
+            if (uri != null) {
+                SharedPreferences NotificationSound = getActivity().getSharedPreferences("NotificationSound", 0);
+                SharedPreferences.Editor editor = NotificationSound.edit();
+                editor.putString("SoundURI", uri.toString());
+                editor.apply();
+            } else {
+                SharedPreferences NotificationSound = getActivity().getSharedPreferences("NotificationSound", 0);
+                SharedPreferences.Editor editor = NotificationSound.edit();
+                editor.putString("SoundURI", "None");
+                editor.apply();
+            }
+        }
+    }
+
 
     void toggleMealNotification(CheckBox checkBox, String title) {
         SharedPreferences mealsToNotifyFor = getActivity().getSharedPreferences("mealsToNotifyFor", 0);
         SharedPreferences.Editor editor = mealsToNotifyFor.edit();
         editor.putBoolean(title, checkBox.isChecked());
+        editor.apply();
         Intent intent = new Intent(this.getActivity(), NotificationsService.class);
         this.getActivity().sendBroadcast(intent);
-        editor.apply();
     }
 
 }

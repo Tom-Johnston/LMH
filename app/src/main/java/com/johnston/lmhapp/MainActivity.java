@@ -192,26 +192,6 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-
-    @Override
-    protected void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
-//        This is used for the ringtone picker.
-        if (resultCode == Activity.RESULT_OK && requestCode == 5) {
-            Uri uri = intent.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
-            if (uri != null) {
-                SharedPreferences NotificationSound = getSharedPreferences("NotificationSound", 0);
-                SharedPreferences.Editor editor = NotificationSound.edit();
-                editor.putString("SoundURI", uri.toString());
-                editor.apply();
-            } else {
-                SharedPreferences NotificationSound = getSharedPreferences("NotificationSound", 0);
-                SharedPreferences.Editor editor = NotificationSound.edit();
-                editor.putString("SoundURI", "None");
-                editor.apply();
-            }
-        }
-    }
-
     public void formalButtonClick(View v) {
         ((FormalFragment) getFragmentManager().findFragmentById(R.id.Frame)).showListofPeopleGoing(Integer.parseInt(v.getTag().toString()));
     }
@@ -368,7 +348,7 @@ public class MainActivity extends ActionBarActivity {
             username.setText(LogIn.getString("Username", ""));
             name.setText(LogIn.getString("Name", ""));
         }else{
-//            Generate a plain blue background for the
+//            Generate a plain blue background for the user image.
             Bitmap.Config conf = Bitmap.Config.ARGB_8888;
             Bitmap bmp = Bitmap.createBitmap(2, 1, conf);
             Canvas c = new Canvas(bmp);
