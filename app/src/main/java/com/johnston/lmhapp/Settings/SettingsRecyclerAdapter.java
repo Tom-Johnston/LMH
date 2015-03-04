@@ -1,6 +1,7 @@
 package com.johnston.lmhapp.Settings;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.johnston.lmhapp.MealMenus.NotificationsService;
 import com.johnston.lmhapp.R;
 
 import java.util.List;
@@ -81,14 +83,26 @@ class SettingsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     private View CheckBoxViewCreator(int position, View parent) {
+        final String title = strings.get(position);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        CheckBox checkBox = (CheckBox) inflater.inflate(R.layout.checkbox, (ViewGroup) parent, false);
+        final CheckBox checkBox = (CheckBox) inflater.inflate(R.layout.checkbox, (ViewGroup) parent, false);
         SharedPreferences mealsToNotifyFor = context.getSharedPreferences("mealsToNotifyFor", 0);
-        if (mealsToNotifyFor.getBoolean(strings.get(position), true)) {
+        if (mealsToNotifyFor.getBoolean(title, true)) {
             checkBox.setChecked(true);
         } else {
             checkBox.setChecked(false);
         }
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SharedPreferences mealsToNotifyFor = context.getSharedPreferences("mealsToNotifyFor", 0);
+                SharedPreferences.Editor editor = mealsToNotifyFor.edit();
+                editor.putBoolean(title, checkBox.isChecked());
+                editor.apply();
+                Intent intent = new Intent(context, NotificationsService.class);
+                context.sendBroadcast(intent);
+            }
+        });
         return checkBox;
     }
 
