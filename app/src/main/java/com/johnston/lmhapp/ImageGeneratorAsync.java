@@ -37,9 +37,7 @@ public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
             username = username.substring(4);
         }
         int desiredWidth = (Integer) params[2];
-        System.out.println("desiredWith="+desiredWidth);
         int desiredHeight = (Integer) params[3];
-        System.out.println("desiredHeight="+desiredHeight);
 
         int sizex = (Integer) params[2];
         int sizey = (Integer) params[3];
@@ -91,11 +89,9 @@ public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
         triangle.y3 = 0;
         triangles.add(triangle);
 
-        System.out.println("Starting calculating triangles");
 
         for (int j = 0; j < numberOfIterationsToDo; j++) {
             triangles = NextIteration(triangles,desiredWidth,desiredHeight);
-            System.out.println("Completed Iteration: "+j);
         }
 
         ArrayList<Boolean> changeColours = new ArrayList<>();
@@ -171,7 +167,6 @@ public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
         Bitmap bmp = Bitmap.createBitmap(sizex, sizey, conf);
         Canvas c = new Canvas(bmp);
         c.drawColor(Color.WHITE);
-        System.out.println(c.getHeight());
 
         Paint bottomLeftFillPaint1 = new Paint();
         bottomLeftFillPaint1.setColor(Color.parseColor("#002147"));
@@ -215,9 +210,7 @@ public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
                     c.drawPath(path, bottomLeftStrokePaint);
             }
         }
-        System.out.println("Number of Triangles="+numberOfTriagnles);
         long timeTaken = System.currentTimeMillis()-startTime;
-        System.out.println("Time taken = " + timeTaken+"ms");
         return bmp;
     }
 
@@ -337,7 +330,6 @@ public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
             triangle = passedTriangles.get(i);
 
             if(triangle.x1>desiredWidth && triangle.x2>desiredWidth && triangle.x3>desiredWidth  ||  triangle.y1>desiredHeight && triangle.y2>desiredHeight && triangle.y3>desiredHeight){
-                System.out.println("Skipped traingle");
                 continue;
             }
 
