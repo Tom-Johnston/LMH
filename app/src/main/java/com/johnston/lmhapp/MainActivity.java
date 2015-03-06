@@ -209,7 +209,7 @@ public class MainActivity extends ActionBarActivity {
         if (passedType == 3) {
 //            This is a request to get the name of the current log in. Hence we need to remove the previous cookie to logout any previous accounts.
             manager.getCookieStore().removeAll();
-            LogIn();
+            LogInView();
             return;
         }
         LogInView();
