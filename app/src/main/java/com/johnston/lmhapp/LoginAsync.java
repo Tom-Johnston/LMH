@@ -20,17 +20,16 @@ import javax.net.ssl.SSLContext;
 /**
  * Created by Tom on 28/05/2014.
  */
-class LoginAsync extends AsyncTask<Object, String, Boolean> {
+class LoginAsync extends AsyncTask<Object, String, Void> {
     private Handler statusHandler;
-    private MainActivity Main;
 
     @Override
-    protected Boolean doInBackground(Object[] Objects) {
+    protected Void doInBackground(Object[] Objects) {
         statusHandler = (Handler) Objects[3];
         SSLContext context = (SSLContext) Objects[0];
         String args = (String) Objects[1];
         String args2 = (String) Objects[2];
-        Main = (MainActivity) Objects[4];
+        Handler loginHandler = (Handler) Objects[4];
         CookieManager manager = (CookieManager) Objects[5];
         publishProgress("Started");
         try {
@@ -40,7 +39,8 @@ class LoginAsync extends AsyncTask<Object, String, Boolean> {
             urlc.getResponseCode();
             if (urlc.getURL().toString().equals("https://intranet.lmh.ox.ac.uk/mealmenus.asp")) {
                 publishProgress("Already Logged In");
-                return true;
+                loginHandler.obtainMessage(1).sendToTarget();
+                return null;
             } else {
                 manager.getCookieStore().removeAll();
                 urlc = (HttpsURLConnection) url.openConnection();
@@ -81,8 +81,8 @@ class LoginAsync extends AsyncTask<Object, String, Boolean> {
                 in.close();
                 if (a.indexOf("Error") > 0) {
                     manager.getCookieStore().removeAll();
-                    statusHandler.obtainMessage(-1,"Error Logging In").sendToTarget();
-                    return false;
+                    statusHandler.obtainMessage(-1, "Error Logging In").sendToTarget();
+                    return null;
                 }
                 publishProgress("Successful Login");
                 int start = a.indexOf("https://intranet.lmh.ox.ac.uk/mealmenus.asp?WEBAUTHR");
@@ -95,39 +95,27 @@ class LoginAsync extends AsyncTask<Object, String, Boolean> {
                 allowc.connect();
                 allowc.getResponseCode();
                 publishProgress("Finished Logging In");
-                return true;
+                loginHandler.obtainMessage(1).sendToTarget();
             }
         } catch (MalformedURLException e) {
             e.printStackTrace();
-            statusHandler.obtainMessage(-1,"Error logging in: MalformedURLException").sendToTarget();
-            return false;
+            statusHandler.obtainMessage(-1, "Error logging in: MalformedURLException").sendToTarget();
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-            statusHandler.obtainMessage(-1,"Error logging in: UnsupportedEncodingException").sendToTarget();
-            return false;
+            statusHandler.obtainMessage(-1, "Error logging in: UnsupportedEncodingException").sendToTarget();
         } catch (ProtocolException e) {
             e.printStackTrace();
-            statusHandler.obtainMessage(-1,"Error logging in: ProtocolException").sendToTarget();
-            return false;
+            statusHandler.obtainMessage(-1, "Error logging in: ProtocolException").sendToTarget();
         } catch (IOException e) {
-            statusHandler.obtainMessage(-1,"Error logging in: IOExeption. Check your network connection").sendToTarget();
+            statusHandler.obtainMessage(-1, "Error logging in: IOExeption. Check your network connection").sendToTarget();
             e.printStackTrace();
-            return false;
         }
-
-
+        return null;
     }
 
     @Override
     protected void onProgressUpdate(String... values) {
         statusHandler.obtainMessage(0, values[0]).sendToTarget();
     }
-
-    @Override
-    protected void onPostExecute(Boolean passed) {
-        if (passed) {
-            Main.Initialise();
-        }
-    }
-
 }
+

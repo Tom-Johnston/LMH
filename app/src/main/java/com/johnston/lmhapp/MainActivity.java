@@ -70,22 +70,19 @@ import javax.net.ssl.TrustManagerFactory;
 public class MainActivity extends ActionBarActivity {
     //    Display information on the progress of the Async Tasks
     public static TextView Status = null;
-    private final Handler statusHandler = new Handler() {
-        @Override
-        public void handleMessage(Message message) {
-            if (message.what == -1) {
-                handler.obtainMessage(-1).sendToTarget();
-            }
-            String update = (String) message.obj;
-            if (Status != null) {
-                Status.setText(update);
-            }
-        }
-    };
+//    private final Handler statusHandler = new Handler() {
+//        @Override
+//        public void handleMessage(Message message) {
+//            if (message.what == -1) {
+//                handler.obtainMessage(-1).sendToTarget();
+//            }
+//            String update = (String) message.obj;
+//            if (Status != null) {
+//                Status.setText(update);
+//            }
+//        }
+//    };
 
-    //    These are passed by fragments getting information via log in.
-    private Handler handler;
-    private byte Type;
 
     //    Navigation Drawer
     private ActionBarDrawerToggle mDrawerToggle;
@@ -198,72 +195,88 @@ public class MainActivity extends ActionBarActivity {
 
 
     //The method called at the initial request for information.
-    public void getInfo(View v, Handler passedHandler, byte passedType) {
-        handler = passedHandler;
+    public void getInfo(View v, final Handler passedHandler, byte passedType) {
         if (v != null) {
             Status = (TextView) v.findViewById(R.id.Status);
         } else {
             Status = null;
         }
-        Type = passedType;
+        final Handler statusHandler = new Handler() {
+            @Override
+            public void handleMessage(Message message) {
+                if (message.what == -1) {
+                    passedHandler.obtainMessage(-1).sendToTarget();
+                }
+                String update = (String) message.obj;
+                if (Status != null) {
+                    Status.setText(update);
+                }
+            }
+        };
         if (passedType == 3) {
 //            This is a request to get the name of the current log in. Hence we need to remove the previous cookie to logout any previous accounts.
             manager.getCookieStore().removeAll();
-            LogInView();
-            return;
         }
-        LogInView();
+        LogInView(statusHandler,passedHandler,passedType);
 
     }
 
     //Called to check for permission to attempt to get the information
-    void LogInView() {
+    void LogInView(final Handler statusHandler, final Handler passedHandler,final byte passedType) {
         Handler permissionHandler = new Handler() {
             @Override
             public void handleMessage(Message message) {
                 if (message.what == 0) {
 //                Success!
-                    LogIn();
+                    LogIn(statusHandler,passedHandler,passedType);
                 } else if (message.what == 1) {
 //                Failure
-                    handler.obtainMessage(-1).sendToTarget();
+                    passedHandler.obtainMessage(-1).sendToTarget();
                     PermissionFailedDialog newFragment = PermissionFailedDialog.newInstance((String) message.obj);
                     newFragment.show(getFragmentManager(), "PERMISSION DENIED");
                 }else if(message.what==2){
                     new DownloadNewMenuAsync().execute(this, false, null );
                 } else {
 //                Something has gone wrong checking.
-                    handler.obtainMessage(-1).sendToTarget();
+                    passedHandler.obtainMessage(-1).sendToTarget();
                 }
             }
         };
 
-        new PermissionAsync().execute(this.getApplicationContext(), permissionHandler,statusHandler,Byte.toString(Type));
+        new PermissionAsync().execute(this.getApplicationContext(), permissionHandler,statusHandler,Byte.toString(passedType));
     }
 
     //    This logs in to the intranet.
-    void LogIn() {
+    void LogIn(final Handler statusHandler, final Handler passedHandler, final byte passedType) {
         SharedPreferences LogIn = getSharedPreferences("LogIn", 0);
         if (LogIn.contains("Username") && LogIn.contains("Password")) {
             String username = LogIn.getString("Username", "Fail");
             String password = LogIn.getString("Password", "Fail");
             SSLContext context = createTrustManager();
-            new LoginAsync().execute(context, username, password, statusHandler, this, manager);
+            Handler loginHandler =  new Handler(){
+                @Override
+                public void handleMessage(Message message) {
+                    if(message.what==1){
+                       Initialise(statusHandler,passedHandler,passedType);
+                    }
+                }
+            };
+            new LoginAsync().execute(context, username, password, statusHandler, loginHandler, manager);
         } else {
             Status.setText("Please input username and password");
         }
     }
 
     //    Start the appropriate Async to get the information.
-    public void Initialise() {
-        if (Type == 1) {
-            new EPOSAsync().execute(manager, statusHandler, handler);
-        } else if (Type == 2) {
-            new BattelsAsync().execute(sslContext, statusHandler, handler);
-        } else if (Type == 3) {
-            new NameGrabberAsync().execute(sslContext, this.getApplicationContext(), handler);
-        } else if (Type == 4) {
-            new FormalAsync().execute(sslContext, handler, statusHandler);
+    public void Initialise(Handler statusHandler, Handler passedHandler, Byte passedType) {
+        if (passedType == 1) {
+            new EPOSAsync().execute(manager, statusHandler, passedHandler);
+        } else if (passedType == 2) {
+            new BattelsAsync().execute(sslContext, statusHandler, passedHandler);
+        } else if (passedType == 3) {
+            new NameGrabberAsync().execute(sslContext, this.getApplicationContext(), passedHandler);
+        } else if (passedType == 4) {
+            new FormalAsync().execute(sslContext, passedHandler, statusHandler);
         }
     }
 
@@ -319,7 +332,7 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
-//   Handles the click events for the list in settings. Need to check how necessary this is with the RecyclerView.
+    //   Handles the click events for the list in settings. Need to check how necessary this is with the RecyclerView.
     public void itemClicked(View v) {
         ((SettingsFragment) getFragmentManager().findFragmentById(R.id.Frame)).itemClicked(v);
     }
@@ -436,8 +449,8 @@ public class MainActivity extends ActionBarActivity {
         startHandler.post(startRunnable);
     }
 
-//  Generates the default drawer item images.
-Bitmap drawCircle(int color) {
+    //  Generates the default drawer item images.
+    Bitmap drawCircle(int color) {
         Bitmap.Config conf = Bitmap.Config.ARGB_8888;
         DisplayMetrics metrics = getResources().getDisplayMetrics();
         int size = (int) (24 * metrics.density);
@@ -502,7 +515,7 @@ Bitmap drawCircle(int color) {
         return true;
     }
 
-//    Override the back button press so clicking it when not on the home fragment goes back to the home fragment.
+    //    Override the back button press so clicking it when not on the home fragment goes back to the home fragment.
     @Override
     public void onBackPressed() {
         if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
