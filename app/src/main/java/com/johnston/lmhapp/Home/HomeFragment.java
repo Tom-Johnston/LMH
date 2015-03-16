@@ -2,6 +2,7 @@ package com.johnston.lmhapp.Home;
 
 import android.app.Fragment;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -93,14 +94,14 @@ public class HomeFragment extends Fragment {
             public void handleMessage(Message message) {
                 if (message.what == 0) {
 //                Success!
-                    new TwitterScraperAsync().execute(handler, getActivity(),statusHandler);
+                    new TwitterScraperAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, handler, getActivity(), statusHandler);
                 } else if (message.what == 1) {
 //                Failure
                     handler.obtainMessage(-1, "Unable to get permission.").sendToTarget();
                     PermissionFailedDialog newFragment = PermissionFailedDialog.newInstance((String) message.obj);
                     newFragment.show(getFragmentManager(), "PERMISSION DENIED");
                 }else if(message.what==2){
-                    new DownloadNewMenuAsync().execute(getActivity(), false, null );
+                    new DownloadNewMenuAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, getActivity(), false, null);
                 } else {
 //                Something has gone wrong checking.
                     handler.obtainMessage(-1, "Unable to get permission.").sendToTarget();
@@ -108,7 +109,7 @@ public class HomeFragment extends Fragment {
             }
         };
 
-        new PermissionAsync().execute(getActivity().getApplicationContext(), permissionHandler,statusHandler,"HomeFragment");
+        new PermissionAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, getActivity().getApplicationContext(), permissionHandler, statusHandler, "HomeFragment");
 
     }
 

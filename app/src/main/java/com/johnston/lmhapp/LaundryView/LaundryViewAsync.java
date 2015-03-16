@@ -2,10 +2,6 @@ package com.johnston.lmhapp.LaundryView;
 
 import android.os.AsyncTask;
 import android.os.Handler;
-import android.view.View;
-import android.widget.TextView;
-
-import com.johnston.lmhapp.R;
 
 import java.io.BufferedReader;
 import java.io.IOException;

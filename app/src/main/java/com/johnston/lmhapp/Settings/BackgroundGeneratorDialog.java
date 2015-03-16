@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Point;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -98,7 +99,7 @@ public class BackgroundGeneratorDialog extends DialogFragment {
                                 sizey = display.getHeight();
                             }
                         }
-                        new ImageGeneratorAsync().execute(username, handler, sizex, sizey, getActivity().getApplicationContext(), true);
+                        new ImageGeneratorAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,username, handler, sizex, sizey, getActivity().getApplicationContext(), true);
 
 
                     }

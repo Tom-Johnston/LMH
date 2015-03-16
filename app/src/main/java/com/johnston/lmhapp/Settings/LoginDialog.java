@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -76,7 +77,7 @@ public class LoginDialog extends DialogFragment {
 //        Make the sizex an even number.
                 sizex = (sizex / 2) * 2;
                 int sizey = sizex / 2;
-                new ImageGeneratorAsync().execute(username, handler, sizex, sizey, getActivity().getApplicationContext(), false);
+                new ImageGeneratorAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,username, handler, sizex, sizey, getActivity().getApplicationContext(), false);
                 Byte three = 3;
                 editor.putString("Name", "");
                 ((TextView) main.findViewById(R.id.name)).setText("");

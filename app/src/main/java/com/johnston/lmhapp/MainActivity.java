@@ -14,6 +14,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -70,20 +71,6 @@ import javax.net.ssl.TrustManagerFactory;
 public class MainActivity extends ActionBarActivity {
     //    Display information on the progress of the Async Tasks
     public static TextView Status = null;
-//    private final Handler statusHandler = new Handler() {
-//        @Override
-//        public void handleMessage(Message message) {
-//            if (message.what == -1) {
-//                handler.obtainMessage(-1).sendToTarget();
-//            }
-//            String update = (String) message.obj;
-//            if (Status != null) {
-//                Status.setText(update);
-//            }
-//        }
-//    };
-
-
     //    Navigation Drawer
     private ActionBarDrawerToggle mDrawerToggle;
     private String mTitle;
@@ -235,7 +222,7 @@ public class MainActivity extends ActionBarActivity {
                     PermissionFailedDialog newFragment = PermissionFailedDialog.newInstance((String) message.obj);
                     newFragment.show(getFragmentManager(), "PERMISSION DENIED");
                 }else if(message.what==2){
-                    new DownloadNewMenuAsync().execute(this, false, null );
+                    new DownloadNewMenuAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, this, false, null);
                 } else {
 //                Something has gone wrong checking.
                     passedHandler.obtainMessage(-1).sendToTarget();
@@ -243,7 +230,7 @@ public class MainActivity extends ActionBarActivity {
             }
         };
 
-        new PermissionAsync().execute(this.getApplicationContext(), permissionHandler,statusHandler,Byte.toString(passedType));
+        new PermissionAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, this.getApplicationContext(), permissionHandler, statusHandler, Byte.toString(passedType));
     }
 
     //    This logs in to the intranet.
@@ -261,7 +248,7 @@ public class MainActivity extends ActionBarActivity {
                     }
                 }
             };
-            new LoginAsync().execute(context, username, password, statusHandler, loginHandler, manager);
+            new LoginAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, context, username, password, statusHandler, loginHandler, manager);
         } else {
             Status.setText("Please input username and password");
         }
@@ -270,13 +257,13 @@ public class MainActivity extends ActionBarActivity {
     //    Start the appropriate Async to get the information.
     public void Initialise(Handler statusHandler, Handler passedHandler, Byte passedType) {
         if (passedType == 1) {
-            new EPOSAsync().execute(manager, statusHandler, passedHandler);
+            new EPOSAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, manager, statusHandler, passedHandler);
         } else if (passedType == 2) {
-            new BattelsAsync().execute(sslContext, statusHandler, passedHandler);
+            new BattelsAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, sslContext, statusHandler, passedHandler);
         } else if (passedType == 3) {
-            new NameGrabberAsync().execute(sslContext, this.getApplicationContext(), passedHandler);
+            new NameGrabberAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, sslContext, this.getApplicationContext(), passedHandler);
         } else if (passedType == 4) {
-            new FormalAsync().execute(sslContext, passedHandler, statusHandler);
+            new FormalAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, sslContext, passedHandler, statusHandler);
         }
     }
 

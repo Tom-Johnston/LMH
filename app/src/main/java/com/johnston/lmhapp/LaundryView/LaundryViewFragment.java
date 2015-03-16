@@ -3,6 +3,7 @@ package com.johnston.lmhapp.LaundryView;
 import android.app.Activity;
 import android.app.Fragment;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -144,7 +145,7 @@ public class
                             URL KatieLee = new URL("http://classic.laundryview.com/laundry_room.php?lr=870043400887");
                             URL NewOldHall = new URL("http://classic.laundryview.com/laundry_room.php?lr=870043400853");
                             URL Talbot = new URL("http://classic.laundryview.com/laundry_room.php?lr=870043400855");
-                            new LaundryViewAsync().execute(statusHandler, handler, KatieLee, NewOldHall, Talbot);
+                            new LaundryViewAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, statusHandler, handler, KatieLee, NewOldHall, Talbot);
                         } catch (MalformedURLException e) {
                             e.printStackTrace();
                         }
@@ -154,14 +155,14 @@ public class
                         PermissionFailedDialog newFragment = PermissionFailedDialog.newInstance((String) message.obj);
                         newFragment.show(getFragmentManager(), "PERMISSION DENIED");
                     }else if(message.what==2){
-                        new DownloadNewMenuAsync().execute(getActivity(), false, null );
+                        new DownloadNewMenuAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, getActivity(), false, null);
                     } else {
 //                Something has gone wrong checking.
                         handler.obtainMessage(-1).sendToTarget();
                     }
                 }
             };
-            new PermissionAsync().execute(getActivity().getApplicationContext(), permissionHandler,statusHandler,"LaundryView");
+            new PermissionAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, getActivity().getApplicationContext(), permissionHandler, statusHandler, "LaundryView");
     }
 
     void showProgressBar() {

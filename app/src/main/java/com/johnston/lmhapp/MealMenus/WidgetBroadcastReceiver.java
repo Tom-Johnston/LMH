@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
 import android.widget.RemoteViews;
@@ -83,7 +84,7 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
                                 part3(file, context);
                             }
                         };
-                        new DownloadNewMenuAsync().execute(context, true, handler);
+                        new DownloadNewMenuAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,context, true, handler);
                     }else if(message.what==2){
                         //Do nothing.
                     } else{
@@ -92,7 +93,7 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
                     }
                 }
             };
-            new PermissionAsync().execute(context, permissionHandler,null,"Widget");
+            new PermissionAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,context, permissionHandler,null,"Widget");
 
         } else {
             part2(file, context);
@@ -118,7 +119,7 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
                                     part3(file, context);
                                 }
                             };
-                            new DownloadNewMenuAsync().execute(context, true, handler);
+                            new DownloadNewMenuAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,context, true, handler);
                         }else if(message.what==2){
                         // Do nothing.
                         } else{
@@ -127,7 +128,7 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
                         }
                     }
                 };
-                new PermissionAsync().execute(context, permissionHandler,null,"Widget");
+                new PermissionAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,context, permissionHandler,null,"Widget");
             } else {
                 part3(file, context);
             }

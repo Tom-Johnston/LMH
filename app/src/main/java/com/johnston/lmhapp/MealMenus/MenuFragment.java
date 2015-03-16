@@ -2,6 +2,7 @@ package com.johnston.lmhapp.MealMenus;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -54,7 +55,7 @@ public class MenuFragment extends Fragment {
             public void handleMessage(Message message) {
                 if (message.what == 0) {
 //                Success!
-                    new DownloadNewMenuAsync().execute(context, false, handler,statusHandler);
+                    new DownloadNewMenuAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, context, false, handler, statusHandler);
                 } else if (message.what == 1) {
 //                Failure
                     handler.obtainMessage(-1).sendToTarget();
@@ -69,7 +70,7 @@ public class MenuFragment extends Fragment {
                 }
             }
         };
-        new PermissionAsync().execute(getActivity().getApplicationContext(), permissionHandler,statusHandler,"MenuFragment");
+        new PermissionAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, getActivity().getApplicationContext(), permissionHandler, statusHandler, "MenuFragment");
     }
 
     void startMenu() {
@@ -82,7 +83,7 @@ public class MenuFragment extends Fragment {
 //                No menu. Get a new menu();
         } else {
             starting = true;
-            new MenuAsync().execute(context, handler,statusHandler);
+            new MenuAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, context, handler, statusHandler);
 
         }
     }
@@ -188,7 +189,7 @@ public class MenuFragment extends Fragment {
                 }
             } else {
                 starting = false;
-                new MenuAsync().execute(context, handler,statusHandler);
+                new MenuAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, context, handler, statusHandler);
             }
         }
     };
