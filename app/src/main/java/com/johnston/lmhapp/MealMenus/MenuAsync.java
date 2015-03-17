@@ -52,7 +52,6 @@ class MenuAsync extends AsyncTask<Object, String, Void> {
                     if (!outputLine.equals("")) {
                         meals.add(outputLine);
                         outputLine = "";
-                        outputLine = "";
                     }
                     Hours = Integer.parseInt(inputLine.substring(6, 8));
                     Minutes = Integer.parseInt(inputLine.substring(9, 11));

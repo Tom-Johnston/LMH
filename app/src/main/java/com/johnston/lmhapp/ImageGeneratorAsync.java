@@ -160,7 +160,7 @@ public class ImageGeneratorAsync extends AsyncTask<Object, Void, Void> {
         float scale = ((float)logo.getHeight())/((float)sizey-2*margin); //We will scale the height so the height of the logo fits the height of the display with margins.
 
         int periodInX = (int) (((float)logo.getWidth())/scale + margin); // Repeat the logo horizontally.
-        int xMargin = (sizex-periodInX*((int)sizex/periodInX)+margin)/2;       // Center the logos.
+        int xMargin = (sizex-periodInX*(sizex /periodInX)+margin)/2;       // Center the logos.
 
         int numberOfTriagnles =0;
         Bitmap.Config conf = Bitmap.Config.ARGB_8888;
