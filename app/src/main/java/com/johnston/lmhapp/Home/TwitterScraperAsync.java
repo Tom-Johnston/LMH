@@ -206,10 +206,7 @@ class TwitterScraperAsync extends AsyncTask<Object, String, Void> {
 
                     }
 
-                    if (inputLine.contains("ProfileTweet-text")) {
-                        in.readLine();
-                        in.readLine();
-                        inputLine = in.readLine();
+                    if (inputLine.contains("tweet-text")&&!inputLine.contains("retweet-text")) {
                         bodyEnd = 0;
                         String bodySegment;
                         body = inputLine.substring(inputLine.indexOf(">") + 1, inputLine.indexOf("</p>"));

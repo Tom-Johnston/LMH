@@ -201,7 +201,7 @@ public class MainActivity extends ActionBarActivity {
 //            This is a request to get the name of the current log in. Hence we need to remove the previous cookie to logout any previous accounts.
             manager.getCookieStore().removeAll();
         }
-        LogInView(statusHandler,passedHandler,passedType);
+        LogInView(statusHandler, passedHandler, passedType);
 
     }
 
@@ -247,7 +247,7 @@ public class MainActivity extends ActionBarActivity {
             };
             new LoginAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, context, username, password, statusHandler, loginHandler, manager);
         } else {
-            Status.setText("Please input username and password");
+            statusHandler.obtainMessage(-1,"Please input username and password").sendToTarget();
         }
     }
 
