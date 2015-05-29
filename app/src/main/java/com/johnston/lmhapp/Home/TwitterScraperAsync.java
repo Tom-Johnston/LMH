@@ -58,7 +58,6 @@ class TwitterScraperAsync extends AsyncTask<Object, String, Void> {
             urls[1] = new URL("https://twitter.com/LMHJCR");
             urls[2] = new URL("https://twitter.com/LMHITManager");
             urls[3] = new URL("https://twitter.com/lmhbursar");
-            urls[4] = new URL("https://twitter.com/OxfordUnion");
 
             long cutOffTime = 0;
             for (int j = 0; j < urls.length; j++) {
