@@ -53,7 +53,7 @@ class TwitterScraperAsync extends AsyncTask<Object, String, Void> {
         ArrayList<Tweet> tweets = new ArrayList<>();
         ArrayList<String> ProfilePictureURLS = new ArrayList<>();
         try {
-            URL[] urls = new URL[5];
+            URL[] urls = new URL[4];
             urls[0] = new URL("https://twitter.com/UniofOxford");
             urls[1] = new URL("https://twitter.com/LMHJCR");
             urls[2] = new URL("https://twitter.com/LMHITManager");
@@ -205,7 +205,7 @@ class TwitterScraperAsync extends AsyncTask<Object, String, Void> {
 
                     }
 
-                    if (inputLine.contains("tweet-text")&&!inputLine.contains("retweet-text")) {
+                    if (inputLine.contains("js-tweet-text")) {
                         bodyEnd = 0;
                         String bodySegment;
                         body = inputLine.substring(inputLine.indexOf(">") + 1, inputLine.indexOf("</p>"));
