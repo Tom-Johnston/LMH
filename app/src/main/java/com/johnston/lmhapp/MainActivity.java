@@ -266,26 +266,20 @@ public class MainActivity extends ActionBarActivity {
 
     //    This creates a custom SSLContext as the certificates of the intranet are not trusted by default.
     SSLContext createTrustManager() {
+        int[] certificates = {R.raw.intranet,R.raw.webauth,R.raw.idp_certificate};
         try {
             CertificateFactory cf = CertificateFactory.getInstance("X.509");
-            InputStream fis1 = (getResources().openRawResource(R.raw.ca));
-            InputStream fis5 = (getResources().openRawResource(R.raw.ca5));
-            InputStream caInput = new BufferedInputStream(fis1);
-            InputStream caInput5 = new BufferedInputStream(fis5);
-            Certificate ca;
-            Certificate ca5;
-            ca = cf.generateCertificate(caInput);
-            ca5 = cf.generateCertificate(caInput5);
-            caInput.close();
-            caInput5.close();
-
-
-// Create a KeyStore containing our trusted CAs
+//Create a keystore to add the certificates to.
             String keyStoreType = KeyStore.getDefaultType();
             KeyStore keyStore = KeyStore.getInstance(keyStoreType);
             keyStore.load(null, null);
-            keyStore.setCertificateEntry("ca", ca);
-            keyStore.setCertificateEntry("ca5", ca5);
+
+            for(int i=0; i<certificates.length; i++){
+                InputStream inputStream = new BufferedInputStream(getResources().openRawResource(certificates[i]));
+                Certificate parsedCertificate = cf.generateCertificate(inputStream);
+                inputStream.close();
+                keyStore.setCertificateEntry(Integer.toString(i), parsedCertificate);
+            }
 
 // Create a TrustManager that trusts the CAs in our KeyStore
             String tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
