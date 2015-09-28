@@ -58,7 +58,7 @@ class LoginAsync extends AsyncTask<Object, String, Void> {
                 String post = "RT=" + RT + "&ST=" + ST + "&LC=&login=yes&username=" + args + "&password=" + args2 + "&Submit=Login";
                 String type = "application/x-www-form-urlencoded";
                 HttpsURLConnection conn = (HttpsURLConnection) regUrl.openConnection();
-                conn.setSSLSocketFactory(context.getSocketFactory());
+               conn.setSSLSocketFactory(context.getSocketFactory());
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("Content-Type", type);
                 conn.setRequestProperty("charset", "UTF-8");
@@ -85,15 +85,58 @@ class LoginAsync extends AsyncTask<Object, String, Void> {
                     return null;
                 }
                 publishProgress("Successful Login");
-                int start = a.indexOf("https://intranet.lmh.ox.ac.uk/mealmenus.asp?WEBAUTHR");
+                int start = a.indexOf("href=\"",a.indexOf("a class=\"go_button\""))+6;
                 publishProgress("Getting Access Cookie");
-                String Beast = a.substring(start, a.indexOf(";", start));
+                String Beast = a.substring(start, a.indexOf("\"", start));
                 URL allow = new URL(Beast);
                 HttpsURLConnection allowc = (HttpsURLConnection) allow.openConnection();
                 allowc.setSSLSocketFactory(context.getSocketFactory());
-
                 allowc.connect();
                 allowc.getResponseCode();
+
+//                No JavaScript continue.
+//                Yes, this is just an adapted version from EPOSAsync. Yes, just adapting code is bad practice.
+                StringBuilder b = new StringBuilder();
+                BufferedReader continueReader = new BufferedReader(new InputStreamReader(
+                        allowc.getInputStream(), "UTF-8"));
+                while ((inputLine = continueReader.readLine()) != null) {
+                    b.append(inputLine);
+                }
+                continueReader.close();
+                allowc.disconnect();
+
+                int RSStart = b.indexOf("value=\"") + 7;
+                int RSEnd = b.indexOf(">", RSStart);
+                String RelayState = b.substring(RSStart, RSEnd - 2);
+                int Start = b.indexOf("value=\"", RSStart) + 7;
+                int End = b.indexOf(">", Start);
+                String SAMLRespose = b.substring(Start, End - 2);
+                SAMLRespose = SAMLRespose.replace("=", "%3D");
+//            Charset.forName("UTF-8").encode(SAMLRespose);
+                post = "RelayState=" + RelayState + "&SAMLResponse=" + SAMLRespose;
+                post = post.replace("&#x3a;", "%3A");
+                post = post.replace("+", "%2B");
+//              post= URLEncoder.encode(post, "UTF-8");
+                publishProgress("No JavaScript Continue");
+                URL Final = new URL("https://intranet.lmh.ox.ac.uk/Shibboleth.sso/SAML2/POST");
+                HttpsURLConnection connl = (HttpsURLConnection) Final.openConnection();
+                connl.setInstanceFollowRedirects(true);
+                connl.setRequestMethod("POST");
+                connl.addRequestProperty("REFERER", "https://idp.shibboleth.ox.ac.uk/idp/profile/SAML2/Redirect/SSO");
+                String typel = "application/x-www-form-urlencoded";
+                connl.setRequestProperty("Content-Type", typel);
+//                connl.setRequestProperty("Content-Length", String.valueOf(post.length()));
+//                When the above line is in the code it breaks. Something to do with expecting x bytes and receiving 0. No idea why it receives 0.
+                connl.setRequestProperty("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8");
+                connl.setAllowUserInteraction(true);
+                connl.setDoOutput(true);
+                connl.setDoInput(true);
+                OutputStream osl = connl.getOutputStream();
+                osl.write(post.getBytes());
+                osl.flush();
+                osl.close();
+                connl.getResponseCode();
+
                 publishProgress("Finished Logging In");
                 loginHandler.obtainMessage(1).sendToTarget();
             }

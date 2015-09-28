@@ -6,9 +6,7 @@
 
     <RelativeLayout
         android:orientation="vertical" android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp">
+        android:layout_height="wrap_content">
 
         <include layout="@layout/status"/>
         <include layout="@layout/loading_progress_bar"/>
@@ -23,6 +21,8 @@
             android:layout_marginBottom="8dp"
             android:id="@id/card_view"
             android:layout_below="@+id/Status"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
             >
             <LinearLayout
                 android:padding="8dp"
@@ -73,6 +73,8 @@
             android:layout_marginBottom="8dp"
             android:layout_below="@+id/card_view"
             android:id="@id/card_view2"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
             >
 
             <LinearLayout
@@ -120,6 +122,8 @@
             android:layout_marginBottom="8dp"
             android:layout_below="@+id/card_view2"
             android:id="@id/card_view3"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
             >
             <LinearLayout
                 android:padding="8dp"
