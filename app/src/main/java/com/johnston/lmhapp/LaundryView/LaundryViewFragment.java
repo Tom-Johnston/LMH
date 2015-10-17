@@ -131,6 +131,7 @@ public class
     }
 
     public void LoadStatus() {
+        handler.removeCallbacksAndMessages(null);
         refreshing = true;
         MainActivity main = (MainActivity) getActivity();
         main.startRefresh(1);
