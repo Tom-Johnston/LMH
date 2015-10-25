@@ -95,7 +95,7 @@ public class FormalFragment extends Fragment {
         (view.findViewById(R.id.Status)).setVisibility(View.GONE);
         (view.findViewById(R.id.my_recycler_view)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
-        (view.findViewById(R.id.nothingToShow)).setVisibility(View.VISIBLE);
+        (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
     }
     void showMessage(String message){
         (view.findViewById(R.id.Status)).setVisibility(View.VISIBLE);
