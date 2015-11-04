@@ -76,7 +76,7 @@ public class NotificationsService extends BroadcastReceiver {
             wl.release();
             return;
         }
-        final File file = new File(context.getFilesDir(), "Menu.txt");
+        final File file = new File(context.getCacheDir(), "Menu.txt");
 
         if (!file.exists()) {
             Handler permissionHandler = new Handler() {

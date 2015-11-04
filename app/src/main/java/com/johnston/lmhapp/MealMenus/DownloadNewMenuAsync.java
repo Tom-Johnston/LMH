@@ -34,7 +34,7 @@ public class DownloadNewMenuAsync extends AsyncTask<Object, String, Void> {
             statusHandler = (Handler)objects[3];
         }
         try {
-            File file = new File(context.getFilesDir(), "Menu.txt");
+            File file = new File(context.getCacheDir(), "Menu.txt");
             URL url = new URL("https://drive.google.com/uc?id=0Bzygl0tJta6ZZmdRdnZyb2Iyb0k&export=download");
             InputStream menus = url.openStream();
             FileOutputStream fos = new FileOutputStream(file);

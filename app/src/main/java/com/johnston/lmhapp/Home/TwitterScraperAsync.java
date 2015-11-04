@@ -129,7 +129,7 @@ class TwitterScraperAsync extends AsyncTask<Object, String, Void> {
                         for (int i = 0; i < previousSize; i++) {
                             if (photoUrl.equals(pictureURLs.get(i))) {
                                 pictureUsed.set(i, true);
-                                File file = new File(context.getFilesDir(), Long.toString(pictureIDs.get(i)));
+                                File file = new File(context.getCacheDir(), Long.toString(pictureIDs.get(i)));
                                 InputStream in2 = new FileInputStream(file);
                                 picture = BitmapFactory.decodeStream(in2);
                                 break;
@@ -138,7 +138,7 @@ class TwitterScraperAsync extends AsyncTask<Object, String, Void> {
                         if (picture == null) {
                             InputStream in2 = new java.net.URL(photoUrl).openStream();
                             previousNumber++;
-                            File file = new File(context.getFilesDir(), Long.toString(previousNumber));
+                            File file = new File(context.getCacheDir(), Long.toString(previousNumber));
                             FileOutputStream fos = new FileOutputStream(file);
                             int length;
                             byte[] buffer = new byte[1024];
@@ -247,7 +247,7 @@ class TwitterScraperAsync extends AsyncTask<Object, String, Void> {
                     for (int j = 0; j < previousSize; j++) {
                         if (url.equals(pictureURLs.get(j))) {
                             pictureUsed.set(j, true);
-                            File file = new File(context.getFilesDir(), Long.toString(pictureIDs.get(j)));
+                            File file = new File(context.getCacheDir(), Long.toString(pictureIDs.get(j)));
                             InputStream in2 = new FileInputStream(file);
                             profilePictures[i] = BitmapFactory.decodeStream(in2);
                             break;
@@ -257,7 +257,7 @@ class TwitterScraperAsync extends AsyncTask<Object, String, Void> {
                         InputStream in2 = new java.net.URL(url).openStream();
 
                         previousNumber++;
-                        File file = new File(context.getFilesDir(), Long.toString(previousNumber));
+                        File file = new File(context.getCacheDir(), Long.toString(previousNumber));
                         FileOutputStream fos = new FileOutputStream(file);
                         int length;
                         byte[] buffer = new byte[1024];
@@ -289,7 +289,7 @@ class TwitterScraperAsync extends AsyncTask<Object, String, Void> {
                     editor.putString(Integer.toString(number), pictureURLs.get(i) + "¬" + Long.toString(pictureIDs.get(i)));
                     number++;
                 } else {
-                    File file = new File(context.getFilesDir(), Long.toString(pictureIDs.get(i)));
+                    File file = new File(context.getCacheDir(), Long.toString(pictureIDs.get(i)));
                     file.delete();
                 }
             }
