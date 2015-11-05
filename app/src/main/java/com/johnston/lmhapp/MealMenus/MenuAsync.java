@@ -28,7 +28,7 @@ class MenuAsync extends AsyncTask<Object, String, Void> {
         Handler handler = (Handler) objects[1];
         statusHandler = (Handler) objects[2];
         ArrayList<String> meals = new ArrayList<>();
-        File file = new File(context.getFilesDir(), "Menu.txt");
+        File file = new File(context.getCacheDir(), "Menu.txt");
         try {
             publishProgress("Reading Menu");
             BufferedReader br = new BufferedReader(new FileReader(file));

@@ -34,7 +34,7 @@ public class DownloadNewMenuAsync extends AsyncTask<Object, String, Void> {
             statusHandler = (Handler)objects[3];
         }
         try {
-            File file = new File(context.getFilesDir(), "Menu.txt");
+            File file = new File(context.getCacheDir(), "Menu.txt");
             URL url = new URL("https://drive.google.com/uc?id=0Bzygl0tJta6ZZmdRdnZyb2Iyb0k&export=download");
             InputStream menus = url.openStream();
             FileOutputStream fos = new FileOutputStream(file);
@@ -61,7 +61,7 @@ public class DownloadNewMenuAsync extends AsyncTask<Object, String, Void> {
             SharedPreferences sharedPreferences = context.getSharedPreferences("mealVersionNumber",0);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             try{
-                Integer integer = Integer.parseInt(firstLine.substring(8).trim());
+                int integer = Integer.parseInt(firstLine.substring(9).trim());
                 editor.putInt("mealVersionNumber",integer);
                 editor.commit();
             } catch (NumberFormatException e){

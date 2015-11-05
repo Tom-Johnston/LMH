@@ -78,7 +78,7 @@ public class MenuFragment extends Fragment {
         main.startRefresh(5);
         showProgressBar();
 
-        File file = new File(context.getFilesDir(), "Menu.txt");
+        File file = new File(context.getCacheDir(), "Menu.txt");
         if (!file.exists()) {
 //                No menu. Get a new menu();
         } else {
