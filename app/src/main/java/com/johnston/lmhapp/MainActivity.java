@@ -219,7 +219,7 @@ public class MainActivity extends ActionBarActivity {
                     PermissionFailedDialog newFragment = PermissionFailedDialog.newInstance((String) message.obj);
                     newFragment.show(getFragmentManager(), "PERMISSION DENIED");
                 }else if(message.what==2){
-                    new DownloadNewMenuAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, this, false, null);
+                    new DownloadNewMenuAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, getApplicationContext(), false, null);
                 } else {
 //                Something has gone wrong checking.
                     passedHandler.obtainMessage(-1).sendToTarget();

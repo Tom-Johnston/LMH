@@ -61,7 +61,7 @@ public class DownloadNewMenuAsync extends AsyncTask<Object, String, Void> {
             SharedPreferences sharedPreferences = context.getSharedPreferences("mealVersionNumber",0);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             try{
-                Integer integer = Integer.parseInt(firstLine.substring(8).trim());
+                int integer = Integer.parseInt(firstLine.substring(9).trim());
                 editor.putInt("mealVersionNumber",integer);
                 editor.commit();
             } catch (NumberFormatException e){
