@@ -40,25 +40,30 @@ class BattelsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
         if (position == 0) {
-            ((TextView) viewHolder.itemView).setText("Finished");
+            ((TextView) viewHolder.itemView).setText(entries.get(0));
         }else if(position==getItemCount()-1){
             BattelsTotalHolder battelsTotalHolder = (BattelsTotalHolder) viewHolder;
-            position = (position - 1) * 4;
+            position = (position - 1) * 4 + 1;
             battelsTotalHolder.battelsAmount.setText(entries.get(position + 3));
             battelsTotalHolder.battelsReference.setText(entries.get(position + 1));
         } else {
             BattelsHolder battelsHolder = (BattelsHolder) viewHolder;
-            position = (position - 1) * 4;
+            position = (position - 1) * 4 + 1;
             battelsHolder.battelsDate.setText(entries.get(position));
+            if(entries.get(position + 1).charAt(0)=='¬'){
+                battelsHolder.battelsReference.setText(entries.get(position + 1).substring(1));
+            }else{
+                battelsHolder.battelsReference.setText(entries.get(position + 1));
+            }
             battelsHolder.battelsDescription.setText(entries.get(position + 2));
             battelsHolder.battelsAmount.setText(entries.get(position + 3));
-            battelsHolder.battelsReference.setText(entries.get(position + 1));
+            battelsHolder.battelsDescription.setText(entries.get(position + 2));
         }
     }
 
     @Override
     public int getItemCount() {
-        return entries.size() / 4 + 1;
+        return (entries.size() - 1)/4 + 1;
     }
 
     @Override
