@@ -31,39 +31,40 @@ public class BattelsFragment extends Fragment {
         public void handleMessage(Message message) {
 
 
-            MainActivity main = (MainActivity) getActivity();
-            if (main != null) {
-                main.stopRefresh(2);
+            if(message.what != 0) {
+                MainActivity main = (MainActivity) getActivity();
+                if (main != null) {
+                    main.stopRefresh(2);
+                }
+
+                refreshing = false;
+            }
+            finished = true;
+            if (view == null) {
+                return;
             }
 
             if (message.what == -1) {
-                refreshing = false;
-                finished = true;
-                if (view == null) {
-                    return;
-                }
                 showMessage(getResources().getString(R.string.somethingWentWrong));
                 return;
             }
 
-            finished = true;
-            refreshing = false;
             entries = (ArrayList<String>) message.obj;
-
-            if (view == null) {
-                return;
-            }
             RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
 
-            if (entries.size() > 0) {
+            if (entries.size() > 0 && message.what == 0) {
                 BattelsRecyclerAdapter battelsRecyclerAdapter = new BattelsRecyclerAdapter(entries);
                 recyclerView.setAdapter(battelsRecyclerAdapter);
                 showCards();
+            }else if(entries.size() > 0 && message.what == 1){
+                RecyclerView.Adapter battelsRecyclerAdapter = recyclerView.getAdapter();
+                battelsRecyclerAdapter.notifyItemRangeChanged(0,battelsRecyclerAdapter.getItemCount()-2);
             } else {
                 showMessage(getResources().getString(R.string.nothingToShow));
             }
         }
     };
+
     private MenuItem actionRefresh;
 
     public void LoadBattels() {
@@ -107,7 +108,8 @@ public class BattelsFragment extends Fragment {
             main.startRefresh(2);
             MainActivity.Status = (android.widget.TextView) view.findViewById(R.id.Status);
             showProgressBar();
-        } else if (finished) {
+        }
+        if (finished) {
             if (entries.size() > 0) {
                 BattelsRecyclerAdapter battelsRecyclerAdapter = new BattelsRecyclerAdapter(entries);
                 recyclerView.setAdapter(battelsRecyclerAdapter);
@@ -115,7 +117,8 @@ public class BattelsFragment extends Fragment {
             } else {
                 showMessage(getResources().getString(R.string.nothingToShow));
             }
-        } else {
+        }
+        if(!finished && !refreshing) {
             LoadBattels();
         }
 

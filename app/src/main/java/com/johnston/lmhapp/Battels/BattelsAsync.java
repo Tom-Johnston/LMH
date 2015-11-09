@@ -39,7 +39,8 @@ public class BattelsAsync extends AsyncTask<Object, String, Void> {
             int start;
             int end;
             byte column = 0;
-            ArrayList<String> Entries = new ArrayList<>();
+            ArrayList<String> entries = new ArrayList<>();
+            entries.add("Getting Better Descriptions");
             Boolean inTable = false;
             while (true) {
                 inputLine = in.readLine();
@@ -59,9 +60,9 @@ public class BattelsAsync extends AsyncTask<Object, String, Void> {
                             if (s.length()-s.lastIndexOf(".")==2){
                                 s+="0";
                             }
-                            Entries.add(s);
+                            entries.add(s);
                         } else {
-                            Entries.add(inputLine.substring(start + 1, end).trim());
+                            entries.add(inputLine.substring(start + 1, end).trim());
                         }
                     }
                 }
@@ -73,7 +74,7 @@ public class BattelsAsync extends AsyncTask<Object, String, Void> {
                         if (column == 5) {
                             column = 0;
                         }
-                        Entries.add("¬" + inputLine.substring(start + 1, end).trim());
+                        entries.add("¬" + inputLine.substring(start + 1, end).trim());
                     }
                 }
                 if (inputLine.contains("</b>") && inTable) {
@@ -92,11 +93,17 @@ public class BattelsAsync extends AsyncTask<Object, String, Void> {
                     inTable = false;
                 }
             }
+
+            entries.add("");
+            entries.add("Total");
+            entries.add("");
+            entries.add(Total);
+            handler.obtainMessage(0, entries).sendToTarget();
             publishProgress("Getting Better Descriptions");
-            for (int i = 1; i < Entries.size(); i += 4) {
-                if (Entries.get(i).contains("¬")) {
-                    Entries.set(i, Entries.get(i).substring(1));
-                    URL infoURL = new URL("https://intranet.lmh.ox.ac.uk/navbillingdetail.asp?invno=" + Entries.get(i));
+            for (int i = 2; i < entries.size(); i += 4) {
+                if (entries.get(i).contains("¬")) {
+                    entries.set(i, entries.get(i).substring(1));
+                    URL infoURL = new URL("https://intranet.lmh.ox.ac.uk/navbillingdetail.asp?invno=" + entries.get(i));
                     HttpsURLConnection infoConn = (HttpsURLConnection) infoURL.openConnection();
                     infoConn.setSSLSocketFactory(sslContext.getSocketFactory());
                     infoConn.setInstanceFollowRedirects(true);
@@ -111,7 +118,7 @@ public class BattelsAsync extends AsyncTask<Object, String, Void> {
                             end = inputLine.indexOf("</td>");
                             start = inputLine.lastIndexOf(">", end);
                             if (start + 1 != end) {
-                                Entries.set(i + 1, inputLine.substring(start + 1, end).trim());
+                                entries.set(i + 1, inputLine.substring(start + 1, end).trim());
                                 break;
                             }
                         }
@@ -119,19 +126,15 @@ public class BattelsAsync extends AsyncTask<Object, String, Void> {
                 }
 
             }
-
-            Entries.add("");
-            Entries.add("Total");
-            Entries.add("");
-            Entries.add(Total);
+            entries.set(0, "Finished");
             publishProgress("Finished");
-            handler.obtainMessage(0, Entries).sendToTarget();
+            handler.obtainMessage(1, entries).sendToTarget();
         } catch (MalformedURLException e) {
             e.printStackTrace();
-            statusHandler.obtainMessage(-1,"Error getting battels_layout: MalformedURLException").sendToTarget();
+            statusHandler.obtainMessage(-1,"Error getting battels: MalformedURLException").sendToTarget();
         } catch (IOException e) {
             e.printStackTrace();
-            statusHandler.obtainMessage(-1,"Error getting battels_layout: IOException. Check your network connection.").sendToTarget();
+            statusHandler.obtainMessage(-1,"Error getting battels: IOException. Check your network connection.").sendToTarget();
         }
         return null;
     }
