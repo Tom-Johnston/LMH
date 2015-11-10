@@ -21,6 +21,7 @@ import java.util.Locale;
  * Created by Johnston on 11/12/2014.
  */
 class TweetRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private String status = "Finished";
     private final List<Tweet> tweets;
     private final Bitmap[] profilePictures;
 
@@ -28,8 +29,6 @@ class TweetRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         tweets = passedtweets;
         profilePictures = passedprofilePictures;
     }
-
-
 
     @Override
     public int getItemViewType(int position) {
@@ -61,7 +60,7 @@ class TweetRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (position == 0) {
-            ((TextView) holder.itemView).setText("Finished");
+            ((TextView) holder.itemView).setText(status);
         return;
         }
         position--;
@@ -130,5 +129,9 @@ class TweetRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         }
     }
 
+    public void updateStatus(String newStatus) {
+        status = newStatus;
+        notifyItemChanged(0);
+    }
 
 }

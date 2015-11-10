@@ -1,6 +1,5 @@
 package com.johnston.lmhapp.Battels;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -13,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.johnston.lmhapp.BaseFragment;
 import com.johnston.lmhapp.MainActivity;
 import com.johnston.lmhapp.R;
 
@@ -21,11 +21,10 @@ import java.util.ArrayList;
 /**
  * Created by Tom on 27/10/2014.
  */
-public class BattelsFragment extends Fragment {
+public class BattelsFragment extends BaseFragment
+{
     private View view;
     private ArrayList<String> entries = new ArrayList<>();
-    private Boolean finished = false;
-    private Boolean refreshing = false;
     private final Handler handler = new Handler() {
         @Override
         public void handleMessage(Message message) {
@@ -37,7 +36,7 @@ public class BattelsFragment extends Fragment {
                     main.stopRefresh(2);
                 }
 
-                refreshing = false;
+                setFinishedRefreshing();
             }
             finished = true;
             if (view == null) {
@@ -45,6 +44,9 @@ public class BattelsFragment extends Fragment {
             }
 
             if (message.what == -1) {
+                if (view == null) {
+                    return;
+                }
                 showMessage(getResources().getString(R.string.somethingWentWrong));
                 return;
             }
@@ -67,13 +69,20 @@ public class BattelsFragment extends Fragment {
 
     private MenuItem actionRefresh;
 
-    public void LoadBattels() {
+    @Override
+    public void loadData() {
         refreshing = true;
         showProgressBar();
         MainActivity main = (MainActivity) this.getActivity();
         main.startRefresh(2);
         byte b = 2;
         main.getInfo(view, handler, b);
+    }
+
+    @Override
+    public View getScrollingView()
+    {
+        return view.findViewById(R.id.my_recycler_view);
     }
 
     void showProgressBar(){
@@ -119,7 +128,7 @@ public class BattelsFragment extends Fragment {
             }
         }
         if(!finished && !refreshing) {
-            LoadBattels();
+            loadData();
         }
 
 

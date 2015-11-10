@@ -1,6 +1,5 @@
 package com.johnston.lmhapp.Formal;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -13,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.johnston.lmhapp.BaseFragment;
 import com.johnston.lmhapp.MainActivity;
 import com.johnston.lmhapp.R;
 
@@ -21,21 +21,18 @@ import java.util.ArrayList;
 /**
  * Created by Tom on 11/11/2014.
  */
-public class FormalFragment extends Fragment {
+public class FormalFragment extends BaseFragment {
     private View view;
     private ArrayList<String> entries = new ArrayList<>();
     private ArrayList<String> listOfMeals;
     private ArrayList<ArrayList<String>> listOfListsOfPeople;
-    private Boolean finished = false;
-    private Boolean refreshing = false;
     private final Handler handler = new Handler() {
         @Override
         public void handleMessage(Message message) {
 
 
             if (message.what == -1) {
-                refreshing = false;
-                finished = true;
+                setFinishedRefreshing();
                 MainActivity main = (MainActivity) getActivity();
                 if (main != null) {
                     main.stopRefresh(4);
@@ -57,8 +54,7 @@ public class FormalFragment extends Fragment {
                 if (main != null) {
                     main.stopRefresh(4);
                 }
-                finished = true;
-                refreshing = false;
+                setFinishedRefreshing();
                 listOfListsOfPeople = (ArrayList<ArrayList<String>>) message.obj;
                 if (view == null) {
                     return;
@@ -76,7 +72,7 @@ public class FormalFragment extends Fragment {
         }
     };
 
-    public void GetTheData() {
+    public void loadData() {
         refreshing = true;
         showProgressBar();
 
@@ -84,6 +80,12 @@ public class FormalFragment extends Fragment {
         byte b = 4;
         main.startRefresh(4);
         main.getInfo(view, handler, b);
+    }
+
+    @Override
+    public View getScrollingView()
+    {
+        return view.findViewById(R.id.my_recycler_view);
     }
 
     public void showListofPeopleGoing(int position) {
@@ -131,7 +133,7 @@ public class FormalFragment extends Fragment {
                 showMessage(getResources().getString(R.string.nothingToShow));
             }
         } else {
-            GetTheData();
+            loadData();
 //            Get all the info.
         }
 

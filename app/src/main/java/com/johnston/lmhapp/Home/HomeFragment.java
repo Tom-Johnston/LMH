@@ -1,6 +1,5 @@
 package com.johnston.lmhapp.Home;
 
-import android.app.Fragment;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -15,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.johnston.lmhapp.BaseFragment;
 import com.johnston.lmhapp.MainActivity;
 import com.johnston.lmhapp.MealMenus.DownloadNewMenuAsync;
 import com.johnston.lmhapp.PermissionAsync;
@@ -26,8 +26,10 @@ import java.util.ArrayList;
 /**
  * Created by Johnston on 29/09/2014.
  */
-public class HomeFragment extends Fragment {
+public class HomeFragment extends BaseFragment
+{
     private static TextView Status = null;
+    private TweetRecyclerAdapter tweetAdapter;
     private final Handler statusHandler = new Handler() {
         @Override
         public void handleMessage(Message message) {
@@ -38,11 +40,13 @@ public class HomeFragment extends Fragment {
             if (Status != null) {
                 Status.setText(update);
             }
+            if(tweetAdapter != null)
+            {
+                tweetAdapter.updateStatus(update);
+            }
         }
     };
     private MenuItem actionRefresh;
-    private Boolean finished = false;
-    private Boolean refreshing = false;
     private View view;
     private ArrayList<Tweet> tweets = new ArrayList<>();
     private Bitmap[] profilePictures;
@@ -51,13 +55,12 @@ public class HomeFragment extends Fragment {
         public void handleMessage(Message message) {
 
 
-            refreshing = false;
+            setFinishedRefreshing();
             MainActivity main = (MainActivity) getActivity();
             if (main != null) {
                 main.stopRefresh(0);
             }
             if (message.what == -1) {
-                finished = true;
                 if (view == null) {
                     return;
                 }
@@ -65,7 +68,6 @@ public class HomeFragment extends Fragment {
                 return;
             }
 
-            finished = true;
             Object[] objects = (Object[]) message.obj;
             tweets = (ArrayList<Tweet>) objects[0];
             profilePictures = (Bitmap[]) objects[1];
@@ -76,7 +78,8 @@ public class HomeFragment extends Fragment {
 
             if (tweets.size() > 0) {
                 RecyclerView tweetList = (RecyclerView) view.findViewById(R.id.my_recycler_view);
-                tweetList.setAdapter(new TweetRecyclerAdapter(tweets, profilePictures));
+                tweetAdapter = new TweetRecyclerAdapter(tweets, profilePictures);
+                tweetList.setAdapter(tweetAdapter);
                 showTweets();
             } else {
                 showMessage(getResources().getString(R.string.nothingToShow));
@@ -84,9 +87,12 @@ public class HomeFragment extends Fragment {
         }
     };
 
-    public void loadTweeterFeed() {
+    @Override
+    public void loadData() {
         refreshing = true;
-        showProgressBar();
+        if(!finished) {
+            showProgressBar();
+        }
         MainActivity main = (MainActivity) getActivity();
         main.startRefresh(0);
         Handler permissionHandler = new Handler() {
@@ -111,6 +117,12 @@ public class HomeFragment extends Fragment {
 
         new PermissionAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, getActivity().getApplicationContext(), permissionHandler, statusHandler, "HomeFragment");
 
+    }
+
+    @Override
+    public View getScrollingView()
+    {
+        return view.findViewById(R.id.my_recycler_view);
     }
 
     void showTweets(){
@@ -142,10 +154,11 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
-    public android.view.View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(null, null, savedInstanceState);
         view = inflater.inflate(R.layout.home_fragment, container, false);
         Status  = (TextView)view.findViewById(R.id.Status);
+
         RecyclerView tweetList = (RecyclerView) view.findViewById(R.id.my_recycler_view);
         tweetList.setLayoutManager(new LinearLayoutManager(getActivity()));
         if (refreshing) {
@@ -160,7 +173,7 @@ public class HomeFragment extends Fragment {
                 showMessage(getResources().getString(R.string.nothingToShow));
             }
         } else {
-            loadTweeterFeed();
+            loadData();
         }
 
         return view;

@@ -1,7 +1,6 @@
 package com.johnston.lmhapp.EPOS;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.johnston.lmhapp.BaseFragment;
 import com.johnston.lmhapp.MainActivity;
 import com.johnston.lmhapp.R;
 
@@ -23,9 +23,8 @@ import java.util.ArrayList;
 /**
  * Created by Tom on 02/06/2014.
  */
-public class EPOSFragment extends Fragment {
-    private Boolean finished = false;
-    private Boolean refreshing = false;
+public class EPOSFragment extends BaseFragment
+{
     private View view;
     private ArrayList<String> transactions =new ArrayList<>();
     private final Handler handler = new Handler() {
@@ -34,8 +33,7 @@ public class EPOSFragment extends Fragment {
 
 
             if (message.what == -1) {
-                refreshing = false;
-                finished = true;
+                setFinishedRefreshing();
                 MainActivity main = (MainActivity) getActivity();
                 if (main != null) {
                     main.stopRefresh(3);
@@ -50,8 +48,7 @@ public class EPOSFragment extends Fragment {
 
             if (message.what == 0) {
                 transactions = (ArrayList<String>) message.obj;
-                refreshing = false;
-                finished = true;
+                setFinishedRefreshing();
                 MainActivity main = (MainActivity) getActivity();
                 if (main != null) {
                     main.stopRefresh(3);
@@ -82,13 +79,23 @@ public class EPOSFragment extends Fragment {
     };
     private MenuItem actionRefresh;
 
-    public void GetEpos() {
+    @Override
+    public void loadData() {
         refreshing = true;
         MainActivity main = (MainActivity) getActivity();
         main.startRefresh(3);
-        showProgressBar();
+        if(!finished)
+        {
+            showProgressBar();
+        }
         byte b = 1;
         main.getInfo(view, handler, b);
+    }
+
+    @Override
+    public View getScrollingView()
+    {
+        return view;
     }
 
 
@@ -156,16 +163,20 @@ public class EPOSFragment extends Fragment {
             MainActivity main = (MainActivity) getActivity();
             main.startRefresh(3);
             MainActivity.Status = (android.widget.TextView) view.findViewById(R.id.Status);
-            showProgressBar();
         } else if (finished) {
             addEntriesToList();
             showCards();
         } else {
-            GetEpos();
+            loadData();
         }
         return view;
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        view = null;
+    }
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {

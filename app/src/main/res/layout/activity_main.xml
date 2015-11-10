@@ -19,11 +19,15 @@
             android:theme="@style/toolBarTheme"
             app:theme="@style/toolBarTheme" />
 
-        <FrameLayout
-            android:id="@+id/Frame"
+        <com.johnston.lmhapp.CustomSwipeRefreshLayout
+            android:id="@+id/swipe_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-
+            android:layout_height="match_parent">
+            <FrameLayout
+                android:id="@+id/Frame"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </com.johnston.lmhapp.CustomSwipeRefreshLayout>
 
     </LinearLayout>
 

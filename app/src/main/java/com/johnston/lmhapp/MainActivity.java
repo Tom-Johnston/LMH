@@ -17,6 +17,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
@@ -65,7 +67,8 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends ActionBarActivity implements OnRefreshListener
+{
     //    Display information on the progress of the Async Tasks
     public static TextView Status = null;
     //    Navigation Drawer
@@ -89,31 +92,16 @@ public class MainActivity extends ActionBarActivity {
     private int refreshSpinRequestFragment = -99;
     private ImageView actionRefreshView;
 
+    public CustomSwipeRefreshLayout swipeLayout;
+
+    public void stopRefreshAnimation() {
+        swipeLayout.setRefreshing(false);
+    }
 
     //    Handle clicking on the refresh button
     public void Refresh(MenuItem item) {
-        Fragment fragment1 = getFragmentManager().findFragmentById(R.id.Frame);
-        String fragmentType = fragment1.getTag();
-        String[] Options = getResources().getStringArray(R.array.options);
-        if (fragmentType.equals(Options[1])) {
-            LaundryViewFragment fragment = (LaundryViewFragment) fragment1;
-            fragment.LoadStatus();
-        } else if (fragmentType.equals(Options[3])) {
-            EPOSFragment fragment = (EPOSFragment) fragment1;
-            fragment.GetEpos();
-        } else if (fragmentType.equals(Options[5])) {
-            MenuFragment fragment = (MenuFragment) fragment1;
-            fragment.checkForPermission();
-        } else if (fragmentType.equals(Options[0])) {
-            HomeFragment fragment = (HomeFragment) fragment1;
-            fragment.loadTweeterFeed();
-        } else if (fragmentType.equals(Options[2])) {
-            BattelsFragment fragment = (BattelsFragment) fragment1;
-            fragment.LoadBattels();
-        } else if (fragmentType.equals(Options[4])) {
-            FormalFragment fragment = (FormalFragment) fragment1;
-            fragment.GetTheData();
-        }
+        swipeLayout.setRefreshing(true); //TODO: Do we want this?
+        onRefresh();
     }
 
     public void startRefresh(int i) {
@@ -392,6 +380,14 @@ public class MainActivity extends ActionBarActivity {
 
         };
 
+        swipeLayout = (CustomSwipeRefreshLayout) findViewById(R.id.swipe_container);
+        swipeLayout.setOnRefreshListener(this);
+        swipeLayout.setColorScheme(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
+
         // Set the drawer toggle as the DrawerListener
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -519,42 +515,62 @@ public class MainActivity extends ActionBarActivity {
         }
     }
 
+    @Override
+    public void onRefresh()
+    {
+        Fragment fragment = getFragmentManager().findFragmentById(R.id.Frame);
+
+        if(fragment instanceof BaseFragment)
+        {
+            ((BaseFragment)fragment).loadData();
+        }
+    }
 
 
-    public class DrawerItemClickListener implements ListView.OnItemClickListener {
+    public class DrawerItemClickListener implements ListView.OnItemClickListener
+    {
 
         @Override
-        public void onItemClick(AdapterView parent, View view, int position, long id) {
+        public void onItemClick(AdapterView parent, View view, int position, long id)
+        {
 
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(parent.getApplicationWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
             mDrawerLayout.closeDrawers();
-            if (lastPosition == position) {
+            if(lastPosition == position)
+            {
                 return;
             }
             String[] iconNames = getResources().getStringArray(R.array.iconNames);
 
-            if (lastPosition == -1) {
+            if(lastPosition == -1)
+            {
                 lastPosition = 4;
             }
             View layout = parent.getChildAt(lastPosition - parent.getFirstVisiblePosition());
-            if (layout != null) {
-                ((TextView) layout.findViewById(R.id.text1)).setTextColor(Color.parseColor("#de000000"));
-                ImageView imageView = (ImageView) layout.findViewById(R.id.profilePicture);
-                if (iconNames[lastPosition].equals("Circle")) {
+            if(layout != null)
+            {
+                ((TextView)layout.findViewById(R.id.text1)).setTextColor(Color.parseColor("#de000000"));
+                ImageView imageView = (ImageView)layout.findViewById(R.id.profilePicture);
+                if(iconNames[lastPosition].equals("Circle"))
+                {
                     imageView.setImageBitmap(unselectedCircle);
-                } else {
+                } else
+                {
 
                     int drawableId = getResources().getIdentifier(iconNames[lastPosition], "drawable", "com.johnston.lmhapp");
                     imageView.setImageDrawable(getResources().getDrawable(drawableId));
                 }
             }
-            if (view != null) {
-                TextView tv = (TextView) view.findViewById(R.id.text1);
-                ImageView imgv = (ImageView) view.findViewById(R.id.profilePicture);
-                if (iconNames[position].equals("Circle")) {
+            if(view != null)
+            {
+                TextView tv = (TextView)view.findViewById(R.id.text1);
+                ImageView imgv = (ImageView)view.findViewById(R.id.profilePicture);
+                if(iconNames[position].equals("Circle"))
+                {
                     imgv.setImageBitmap(selectedCircle);
-                } else {
+                } else
+                {
 
                     int drawableId = getResources().getIdentifier(iconNames[position] + "_blue", "drawable", "com.johnston.lmhapp");
                     imgv.setImageDrawable(getResources().getDrawable(drawableId));
@@ -565,39 +581,42 @@ public class MainActivity extends ActionBarActivity {
             mDrawerAdapter.selected = position;
             String[] Options = getResources().getStringArray(R.array.options);
             mTitle = Options[position];
-            Fragment newFragment;
-            FragmentTransaction transaction = getFragmentManager().beginTransaction();
-            newFragment = getFragmentManager().findFragmentByTag(Options[position]);
-            if (newFragment != null) {
 
-            } else if (position == 0) {
-                newFragment = new HomeFragment();
-                transaction.addToBackStack(Options[position]);
-            } else if (position == 1) {
-                newFragment = new LaundryViewFragment();
-                transaction.addToBackStack(Options[position]);
-            } else if (position == 2) {
-                newFragment = new BattelsFragment();
-                transaction.addToBackStack(Options[position]);
-            } else if (position == 3) {
-                newFragment = new EPOSFragment();
-                transaction.addToBackStack(Options[position]);
-            } else if (position == 4) {
-                newFragment = new FormalFragment();
-                transaction.addToBackStack(Options[position]);
-            } else if (position == 5) {
-                newFragment = new MenuFragment();
-                transaction.addToBackStack(Options[position]);
-            } else if (position == 6) {
-                newFragment = new SettingsFragment();
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+            Fragment newFragment = getFragmentManager().findFragmentByTag(Options[position]);
+            if(newFragment == null)
+            {
+                switch(position)
+                {
+                    case 0:
+                        newFragment = new HomeFragment();
+                        break;
+                    case 1:
+                        newFragment = new LaundryViewFragment();
+                        break;
+                    case 2:
+                        newFragment = new BattelsFragment();
+                        break;
+                    case 3:
+                        newFragment = new EPOSFragment();
+                        break;
+                    case 4:
+                        newFragment = new FormalFragment();
+                        break;
+                    case 5:
+                        newFragment = new MenuFragment();
+                        break;
+                    case 6:
+                        newFragment = new SettingsFragment();
+                        break;
+                }
                 transaction.addToBackStack(Options[position]);
             }
+            swipeLayout.setChildScrollDelegate(newFragment instanceof BaseFragment ? (BaseFragment)newFragment : null);
             stopRefresh(-1);
             newFragment.setRetainInstance(true);
             transaction.replace(R.id.Frame, newFragment, Options[position]);
             transaction.commit();
-
-
         }
     }
 }

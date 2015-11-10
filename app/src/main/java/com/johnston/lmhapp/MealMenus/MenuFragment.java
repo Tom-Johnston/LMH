@@ -1,6 +1,5 @@
 package com.johnston.lmhapp.MealMenus;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -15,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.johnston.lmhapp.BaseFragment;
 import com.johnston.lmhapp.MainActivity;
 import com.johnston.lmhapp.PermissionAsync;
 import com.johnston.lmhapp.PermissionFailedDialog;
@@ -26,11 +26,9 @@ import java.util.ArrayList;
 /**
  * Created by Johnston on 10/09/2014.
  */
-public class MenuFragment extends Fragment {
+public class MenuFragment extends BaseFragment {
     private Boolean starting;
     private MenuItem actionRefresh;
-    private Boolean finished = false;
-    private Boolean refreshing = false;
     private View view;
     private Context context;
     private ArrayList<String> meals = new ArrayList<>();
@@ -44,7 +42,7 @@ public class MenuFragment extends Fragment {
         }
     };
 
-        public void checkForPermission(){
+    public void loadData() {
         refreshing = true;
         MainActivity main = (MainActivity) getActivity();
         main.startRefresh(5);
@@ -71,6 +69,12 @@ public class MenuFragment extends Fragment {
             }
         };
         new PermissionAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, getActivity().getApplicationContext(), permissionHandler, statusHandler, "MenuFragment");
+    }
+
+    @Override
+    public View getScrollingView()
+    {
+        return view.findViewById(R.id.my_recycler_view);
     }
 
     void startMenu() {
@@ -103,8 +107,7 @@ public class MenuFragment extends Fragment {
             showMessage(getResources().getString(R.string.nothingToShow));
         }
 
-        finished = true;
-        refreshing = false;
+        setFinishedRefreshing();
     }
 
     void showCards(){
@@ -130,7 +133,7 @@ public class MenuFragment extends Fragment {
 
 
     @Override
-    public android.view.View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(null, null, savedInstanceState);
         context = this.getActivity().getApplicationContext();
         view = inflater.inflate(R.layout.menu_layout, container, false);
@@ -180,7 +183,7 @@ public class MenuFragment extends Fragment {
                 meals = (ArrayList<String>) message.obj;
                 if (starting) {
                     if (meals.size() == 0) {
-                        checkForPermission();
+                        loadData();
                     } else if (view != null) {
                         showMenu();
                     }

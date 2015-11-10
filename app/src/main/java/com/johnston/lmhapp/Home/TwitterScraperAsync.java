@@ -63,7 +63,7 @@ class TwitterScraperAsync extends AsyncTask<Object, String, Void> {
             long cutOffTime = 0;
             for (int j = 0; j < urls.length; j++) {
                 URL url = urls[j];
-                publishProgress("Getting Tweets From: "+url.toString());
+                publishProgress("Getting Tweets From: "+url.toString().replace("https://twitter.com/", "@"));
 
                 HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
                 conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.124 Safari/537.36");
@@ -302,6 +302,7 @@ class TwitterScraperAsync extends AsyncTask<Object, String, Void> {
             objects[0] = tweets;
             objects[1] = profilePictures;
             handler.obtainMessage(0, objects).sendToTarget();
+            publishProgress("Finished");
         } catch (MalformedURLException e) {
             handler.obtainMessage(-1, "Error getting tweets: MalformedURLException").sendToTarget();
             e.printStackTrace();
