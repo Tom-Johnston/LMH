@@ -23,7 +23,7 @@ import java.util.ArrayList;
  */
 public class BattelsFragment extends BaseFragment
 {
-    private View view;
+    private final int localFragmentNumber = 2;
     private ArrayList<String> entries = new ArrayList<>();
     private final Handler handler = new Handler() {
         @Override
@@ -31,11 +31,6 @@ public class BattelsFragment extends BaseFragment
 
 
             if(message.what != 0) {
-                MainActivity main = (MainActivity) getActivity();
-                if (main != null) {
-                    main.stopRefresh(2);
-                }
-
                 setFinishedRefreshing();
             }
             finished = true;
@@ -61,6 +56,7 @@ public class BattelsFragment extends BaseFragment
             }else if(entries.size() > 0 && message.what == 1){
                 RecyclerView.Adapter battelsRecyclerAdapter = recyclerView.getAdapter();
                 battelsRecyclerAdapter.notifyItemRangeChanged(0,battelsRecyclerAdapter.getItemCount()-2);
+                setFinishedRefreshing();
             } else {
                 showMessage(getResources().getString(R.string.nothingToShow));
             }
@@ -72,11 +68,14 @@ public class BattelsFragment extends BaseFragment
     @Override
     public void loadData() {
         refreshing = true;
-        showProgressBar();
+        if(finished){
+            setStartedRefreshing();
+        }else{
+            showProgressBar();
+        }
         MainActivity main = (MainActivity) this.getActivity();
         main.startRefresh(2);
-        byte b = 2;
-        main.getInfo(view, handler, b);
+        main.getInfo(view, handler, (byte) localFragmentNumber);
     }
 
     @Override
@@ -85,38 +84,22 @@ public class BattelsFragment extends BaseFragment
         return view.findViewById(R.id.my_recycler_view);
     }
 
-    void showProgressBar(){
-        view.findViewById(R.id.Status).setVisibility(View.VISIBLE);
-        (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
-        (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
-        (view.findViewById(R.id.my_recycler_view)).setVisibility(View.GONE);
-    }
 
-    void showMessage(String message){
-        view.findViewById(R.id.Status).setVisibility(View.VISIBLE);
-        (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
-        (view.findViewById(R.id.nothingToShow)).setVisibility(View.VISIBLE);
-        ((TextView)view.findViewById(R.id.nothingToShow)).setText(message);
-        (view.findViewById(R.id.my_recycler_view)).setVisibility(View.GONE);
-    }
-    void showCards(){
-        (view.findViewById(R.id.Status)).setVisibility(View.GONE);
-        (view.findViewById(R.id.my_recycler_view)).setVisibility(View.VISIBLE);
-        (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
-        (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.battels_layout, container, false);
+        fragmentNumber = localFragmentNumber;
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         if (refreshing) {
-            MainActivity main = (MainActivity) this.getActivity();
-            main.startRefresh(2);
             MainActivity.Status = (android.widget.TextView) view.findViewById(R.id.Status);
-            showProgressBar();
+            if(!finished){
+                refreshWithProgressBar();
+            }else{
+                setStartedRefreshing();
+            }
         }
         if (finished) {
             if (entries.size() > 0) {

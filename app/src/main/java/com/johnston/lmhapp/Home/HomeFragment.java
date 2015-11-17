@@ -28,6 +28,7 @@ import java.util.ArrayList;
  */
 public class HomeFragment extends BaseFragment
 {
+    private final int localFragmentNumber = 0;
     private static TextView Status = null;
     private TweetRecyclerAdapter tweetAdapter;
     private final Handler statusHandler = new Handler() {
@@ -47,7 +48,6 @@ public class HomeFragment extends BaseFragment
         }
     };
     private MenuItem actionRefresh;
-    private View view;
     private ArrayList<Tweet> tweets = new ArrayList<>();
     private Bitmap[] profilePictures;
     private final Handler handler = new Handler() {
@@ -56,10 +56,6 @@ public class HomeFragment extends BaseFragment
 
 
             setFinishedRefreshing();
-            MainActivity main = (MainActivity) getActivity();
-            if (main != null) {
-                main.stopRefresh(0);
-            }
             if (message.what == -1) {
                 if (view == null) {
                     return;
@@ -80,7 +76,7 @@ public class HomeFragment extends BaseFragment
                 RecyclerView tweetList = (RecyclerView) view.findViewById(R.id.my_recycler_view);
                 tweetAdapter = new TweetRecyclerAdapter(tweets, profilePictures);
                 tweetList.setAdapter(tweetAdapter);
-                showTweets();
+                showCards();
             } else {
                 showMessage(getResources().getString(R.string.nothingToShow));
             }
@@ -90,11 +86,11 @@ public class HomeFragment extends BaseFragment
     @Override
     public void loadData() {
         refreshing = true;
-        if(!finished) {
+        if(finished){
+            setStartedRefreshing();
+        }else{
             showProgressBar();
         }
-        MainActivity main = (MainActivity) getActivity();
-        main.startRefresh(0);
         Handler permissionHandler = new Handler() {
             @Override
             public void handleMessage(Message message) {
@@ -125,27 +121,6 @@ public class HomeFragment extends BaseFragment
         return view.findViewById(R.id.my_recycler_view);
     }
 
-    void showTweets(){
-        view.findViewById(R.id.Status).setVisibility(View.GONE);
-        view.findViewById(R.id.my_recycler_view).setVisibility(View.VISIBLE);
-        view.findViewById(R.id.progressBar).setVisibility(View.GONE);
-        view.findViewById(R.id.nothingToShow).setVisibility(View.GONE);
-    }
-    void showMessage(String message){
-        view.findViewById(R.id.Status).setVisibility(View.VISIBLE);
-        view.findViewById(R.id.my_recycler_view).setVisibility(View.GONE);
-        view.findViewById(R.id.progressBar).setVisibility(View.GONE);
-        view.findViewById(R.id.nothingToShow).setVisibility(View.VISIBLE);
-        ((TextView)view.findViewById(R.id.nothingToShow)).setText(message);
-    }
-    void showProgressBar(){
-        view.findViewById(R.id.Status).setVisibility(View.VISIBLE);
-        view.findViewById(R.id.my_recycler_view).setVisibility(View.GONE);
-        view.findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
-        view.findViewById(R.id.nothingToShow).setVisibility(View.GONE);
-    }
-
-
 
     @Override
     public void onDestroyView() {
@@ -157,18 +132,20 @@ public class HomeFragment extends BaseFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(null, null, savedInstanceState);
         view = inflater.inflate(R.layout.home_fragment, container, false);
-        Status  = (TextView)view.findViewById(R.id.Status);
 
         RecyclerView tweetList = (RecyclerView) view.findViewById(R.id.my_recycler_view);
         tweetList.setLayoutManager(new LinearLayoutManager(getActivity()));
         if (refreshing) {
-            MainActivity main = (MainActivity) getActivity();
-            main.startRefresh(0);
-            showProgressBar();
+            MainActivity.Status = (android.widget.TextView) view.findViewById(R.id.Status);
+            if(!finished){
+                showProgressBar();
+            }else{
+                setStartedRefreshing();
+            }
         } else if (finished) {
             if (tweets.size() > 0) {
                 tweetList.setAdapter(new TweetRecyclerAdapter(tweets, profilePictures));
-                showTweets();
+                showCards();
             } else {
                 showMessage(getResources().getString(R.string.nothingToShow));
             }

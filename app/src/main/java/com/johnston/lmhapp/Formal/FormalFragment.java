@@ -22,7 +22,7 @@ import java.util.ArrayList;
  * Created by Tom on 11/11/2014.
  */
 public class FormalFragment extends BaseFragment {
-    private View view;
+    final int localFragmentNumber = 4;
     private ArrayList<String> entries = new ArrayList<>();
     private ArrayList<String> listOfMeals;
     private ArrayList<ArrayList<String>> listOfListsOfPeople;
@@ -50,10 +50,6 @@ public class FormalFragment extends BaseFragment {
             } else if (message.what == 1) {
                 listOfMeals = (ArrayList<String>) message.obj;
             } else if (message.what == 2) {
-                MainActivity main = (MainActivity) getActivity();
-                if (main != null) {
-                    main.stopRefresh(4);
-                }
                 setFinishedRefreshing();
                 listOfListsOfPeople = (ArrayList<ArrayList<String>>) message.obj;
                 if (view == null) {
@@ -74,12 +70,13 @@ public class FormalFragment extends BaseFragment {
 
     public void loadData() {
         refreshing = true;
-        showProgressBar();
-
+        if(finished){
+            setStartedRefreshing();
+        }else{
+            showProgressBar();
+        }
         MainActivity main = (MainActivity) this.getActivity();
-        byte b = 4;
-        main.startRefresh(4);
-        main.getInfo(view, handler, b);
+        main.getInfo(view, handler, (byte) localFragmentNumber);
     }
 
     @Override
@@ -93,25 +90,6 @@ public class FormalFragment extends BaseFragment {
         dialog.show(getFragmentManager(), "details");
     }
 
-    void showCards(){
-        (view.findViewById(R.id.Status)).setVisibility(View.GONE);
-        (view.findViewById(R.id.my_recycler_view)).setVisibility(View.VISIBLE);
-        (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
-        (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
-    }
-    void showMessage(String message){
-        (view.findViewById(R.id.Status)).setVisibility(View.VISIBLE);
-        (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
-        (view.findViewById(R.id.nothingToShow)).setVisibility(View.VISIBLE);
-        ((TextView)view.findViewById(R.id.nothingToShow)).setText(message);
-        (view.findViewById(R.id.my_recycler_view)).setVisibility(View.GONE);
-    }
-    void showProgressBar(){
-        (view.findViewById(R.id.Status)).setVisibility(View.VISIBLE);
-        (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
-        (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
-        (view.findViewById(R.id.my_recycler_view)).setVisibility(View.GONE);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -120,10 +98,12 @@ public class FormalFragment extends BaseFragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         if (refreshing) {
-            MainActivity main = (MainActivity) this.getActivity();
-            main.startRefresh(4);
             MainActivity.Status = (android.widget.TextView) view.findViewById(R.id.Status);
-            showProgressBar();
+            if(!finished){
+                showProgressBar();
+            }else{
+                setStartedRefreshing();
+            }
         } else if (finished) {
             if (entries.size() > 0) {
                 FormalRecyclerAdapter formalRecyclerAdapter = new FormalRecyclerAdapter(entries, listOfMeals);
@@ -144,6 +124,7 @@ public class FormalFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+        fragmentNumber = localFragmentNumber;
     }
 
     @Override

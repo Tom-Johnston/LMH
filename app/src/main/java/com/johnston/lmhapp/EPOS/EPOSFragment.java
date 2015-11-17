@@ -25,6 +25,7 @@ import java.util.ArrayList;
  */
 public class EPOSFragment extends BaseFragment
 {
+    private final int localFragmentNumber = 1;
     private View view;
     private ArrayList<String> transactions =new ArrayList<>();
     private final Handler handler = new Handler() {
@@ -34,10 +35,6 @@ public class EPOSFragment extends BaseFragment
 
             if (message.what == -1) {
                 setFinishedRefreshing();
-                MainActivity main = (MainActivity) getActivity();
-                if (main != null) {
-                    main.stopRefresh(3);
-                }
                 if (view == null) {
                     return;
                 }
@@ -49,10 +46,6 @@ public class EPOSFragment extends BaseFragment
             if (message.what == 0) {
                 transactions = (ArrayList<String>) message.obj;
                 setFinishedRefreshing();
-                MainActivity main = (MainActivity) getActivity();
-                if (main != null) {
-                    main.stopRefresh(3);
-                }
                 if (view == null) {
                     return;
                 }
@@ -82,14 +75,13 @@ public class EPOSFragment extends BaseFragment
     @Override
     public void loadData() {
         refreshing = true;
-        MainActivity main = (MainActivity) getActivity();
-        main.startRefresh(3);
-        if(!finished)
-        {
+        if(finished){
+            setStartedRefreshing();
+        }else{
             showProgressBar();
         }
-        byte b = 1;
-        main.getInfo(view, handler, b);
+        MainActivity main = (MainActivity) getActivity();
+        main.getInfo(view, handler, (byte) localFragmentNumber);
     }
 
     @Override
@@ -125,15 +117,16 @@ public class EPOSFragment extends BaseFragment
             linearLayout.addView(divider);
         }
     }
-    void showCards(){
+    @Override
+    protected void showCards(){
         (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
         (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
         (view.findViewById(R.id.card_view)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.card_view2)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.card_view3)).setVisibility(View.VISIBLE);
     }
-
-    void showMessage(String message){
+    @Override
+    protected void showMessage(String message){
         (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
         (view.findViewById(R.id.nothingToShow)).setVisibility(View.VISIBLE);
         ((TextView)view.findViewById(R.id.nothingToShow)).setText(message);
@@ -141,7 +134,8 @@ public class EPOSFragment extends BaseFragment
         (view.findViewById(R.id.card_view2)).setVisibility(View.GONE);
         (view.findViewById(R.id.card_view3)).setVisibility(View.GONE);
     }
-    void showProgressBar(){
+    @Override
+    protected void showProgressBar(){
         (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
         (view.findViewById(R.id.card_view)).setVisibility(View.GONE);
@@ -160,9 +154,12 @@ public class EPOSFragment extends BaseFragment
         super.onCreateView(null, null, savedInstanceState);
         view = inflater.inflate(R.layout.epos_layout, container, false);
         if (refreshing) {
-            MainActivity main = (MainActivity) getActivity();
-            main.startRefresh(3);
             MainActivity.Status = (android.widget.TextView) view.findViewById(R.id.Status);
+            if(!finished){
+                refreshWithProgressBar();
+            }else{
+                setStartedRefreshing();
+            }
         } else if (finished) {
             addEntriesToList();
             showCards();

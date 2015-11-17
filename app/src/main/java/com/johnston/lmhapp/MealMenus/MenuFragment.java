@@ -27,26 +27,27 @@ import java.util.ArrayList;
  * Created by Johnston on 10/09/2014.
  */
 public class MenuFragment extends BaseFragment {
+    private  final int localFragmentNumber = 5;
     private Boolean starting;
     private MenuItem actionRefresh;
-    private View view;
     private Context context;
     private ArrayList<String> meals = new ArrayList<>();
-    private static TextView Status;
     Handler statusHandler = new Handler() {
         @Override
         public void handleMessage(Message message) {
-            if(Status!=null){
-                Status.setText((String)message.obj);
+            if(MainActivity.Status!=null){
+                MainActivity.Status.setText((String) message.obj);
             }
         }
     };
 
     public void loadData() {
         refreshing = true;
-        MainActivity main = (MainActivity) getActivity();
-        main.startRefresh(5);
-        showProgressBar();
+        if(finished){
+            setStartedRefreshing();
+        }else{
+            showProgressBar();
+        }
 
         Handler permissionHandler = new Handler() {
             @Override
@@ -78,13 +79,15 @@ public class MenuFragment extends BaseFragment {
     }
 
     void startMenu() {
-        MainActivity main = (MainActivity) getActivity();
-        main.startRefresh(5);
-        showProgressBar();
-
+        if(finished){
+            setStartedRefreshing();
+        }else{
+            showProgressBar();
+        }
         File file = new File(context.getCacheDir(), "Menu.txt");
         if (!file.exists()) {
 //                No menu. Get a new menu();
+            loadData();
         } else {
             starting = true;
             new MenuAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, context, handler, statusHandler);
@@ -93,14 +96,11 @@ public class MenuFragment extends BaseFragment {
     }
 
     void showMenu() {
+        finished = true;
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
         MenuRecyclerAdapter menuRecyclerAdapter = new MenuRecyclerAdapter(meals);
         recyclerView.setAdapter(menuRecyclerAdapter);
 
-        MainActivity main = (MainActivity) getActivity();
-        if (main != null) {
-            main.stopRefresh(5);
-        }
         if (meals.size() > 0) {
             showCards();
         } else {
@@ -110,26 +110,6 @@ public class MenuFragment extends BaseFragment {
         setFinishedRefreshing();
     }
 
-    void showCards(){
-        (view.findViewById(R.id.Status)).setVisibility(View.GONE);
-        (view.findViewById(R.id.my_recycler_view)).setVisibility(View.VISIBLE);
-        (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
-        (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
-    }
-    void showProgressBar(){
-        (view.findViewById(R.id.Status)).setVisibility(View.VISIBLE);
-        (view.findViewById(R.id.my_recycler_view)).setVisibility(View.GONE);
-        (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
-        (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
-    }
-    void showMessage(String message){
-        (view.findViewById(R.id.Status)).setVisibility(View.VISIBLE);
-        (view.findViewById(R.id.my_recycler_view)).setVisibility(View.GONE);
-        (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
-        (view.findViewById(R.id.nothingToShow)).setVisibility(View.VISIBLE);
-        ((TextView)view.findViewById(R.id.nothingToShow)).setText(message);
-
-    }
 
 
     @Override
@@ -137,14 +117,17 @@ public class MenuFragment extends BaseFragment {
         super.onCreateView(null, null, savedInstanceState);
         context = this.getActivity().getApplicationContext();
         view = inflater.inflate(R.layout.menu_layout, container, false);
-        Status = (TextView)view.findViewById(R.id.Status);
+        fragmentNumber = localFragmentNumber;
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         if (refreshing) {
-            MainActivity main = (MainActivity) getActivity();
-            main.startRefresh(5);
-            showProgressBar();
+            MainActivity.Status = (android.widget.TextView) view.findViewById(R.id.Status);
+            if(!finished){
+                showProgressBar();
+            }else{
+                setStartedRefreshing();
+            }
         } else if (!finished) {
             startMenu();
         } else {
@@ -168,30 +151,23 @@ public class MenuFragment extends BaseFragment {
             if (message.what == -1) {
                 refreshing = false;
                 finished = false;
-                MainActivity main = (MainActivity) getActivity();
-                if (main != null) {
-                    main.stopRefresh(5);
-                }
+                    if (meals.size() == 0) {
+                        loadData();
+                    } else if (view != null) {
+                        showMenu();
+                    }
 
                 if (view == null) {
                     return;
                 }
                 showMessage(getResources().getString(R.string.somethingWentWrong));
                 return;
-            }
-            if (message.what == 0) {
+            }else if (message.what == 0) {
                 meals = (ArrayList<String>) message.obj;
-                if (starting) {
-                    if (meals.size() == 0) {
-                        loadData();
-                    } else if (view != null) {
-                        showMenu();
-                    }
-                } else if (view != null) {
+                if (starting && view != null){
                     showMenu();
                 }
             } else {
-                starting = false;
                 new MenuAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, context, handler, statusHandler);
             }
         }

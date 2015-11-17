@@ -173,14 +173,16 @@ public class LaundryViewFragment extends BaseFragment
         return view;
     }
 
-    void showProgressBar() {
+    @Override
+    protected void showProgressBar() {
         (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
         (view.findViewById(R.id.card_view)).setVisibility(View.GONE);
         (view.findViewById(R.id.card_view2)).setVisibility(View.GONE);
         (view.findViewById(R.id.card_view3)).setVisibility(View.GONE);
     }
-    void showMessage(String message){
+    @Override
+    protected void showMessage(String message){
         (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
         (view.findViewById(R.id.nothingToShow)).setVisibility(View.VISIBLE);
         ((TextView)view.findViewById(R.id.nothingToShow)).setText(message);
@@ -188,7 +190,8 @@ public class LaundryViewFragment extends BaseFragment
         (view.findViewById(R.id.card_view2)).setVisibility(View.GONE);
         (view.findViewById(R.id.card_view3)).setVisibility(View.GONE);
     }
-    void showCards(){
+    @Override
+    protected void showCards(){
         (view.findViewById(R.id.card_view)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.card_view2)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.card_view3)).setVisibility(View.VISIBLE);
@@ -211,9 +214,11 @@ public class LaundryViewFragment extends BaseFragment
         Status = (TextView) view.findViewById(R.id.Status);
 
         if (refreshing) {
-            MainActivity main = (MainActivity) getActivity();
-            main.startRefresh(1);
-            showProgressBar();
+            if(finished){
+                setStartedRefreshing();
+            }else{
+                showProgressBar();
+            }
         } else if (!finished) {
             loadData();
         } else {
