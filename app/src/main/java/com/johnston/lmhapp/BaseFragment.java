@@ -58,10 +58,10 @@ public abstract class BaseFragment extends Fragment
 		Activity act = getActivity();
 		refreshing = false;
         finished = true;
-		if(act instanceof MainActivity)
-			((MainActivity)act).stopRefreshAnimation();
-            ((MainActivity)act).stopRefresh(fragmentNumber);
-
+		if(act instanceof MainActivity) {
+            ((MainActivity) act).stopRefreshAnimation();
+            ((MainActivity) act).stopRefresh(fragmentNumber);
+        }
 	}
 	public abstract void loadData();
 

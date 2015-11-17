@@ -598,6 +598,7 @@ public class MainActivity extends ActionBarActivity implements OnRefreshListener
             }
             swipeLayout.setChildScrollDelegate(newFragment instanceof BaseFragment ? (BaseFragment)newFragment : null);
             stopRefresh(-1);
+            stopRefreshAnimation();
             newFragment.setRetainInstance(true);
             transaction.replace(R.id.Frame, newFragment, Options[position]);
             transaction.commit();

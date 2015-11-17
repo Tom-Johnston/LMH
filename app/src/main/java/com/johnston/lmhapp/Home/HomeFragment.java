@@ -29,7 +29,7 @@ import java.util.ArrayList;
 public class HomeFragment extends BaseFragment
 {
     private final int localFragmentNumber = 0;
-    private static TextView Status = null;
+    private TextView status = null;
     private TweetRecyclerAdapter tweetAdapter;
     private final Handler statusHandler = new Handler() {
         @Override
@@ -38,8 +38,8 @@ public class HomeFragment extends BaseFragment
                 handler.obtainMessage(-1).sendToTarget();
             }
             String update = (String) message.obj;
-            if (Status != null) {
-                Status.setText(update);
+            if (status != null) {
+                status.setText(update);
             }
             if(tweetAdapter != null)
             {
@@ -56,14 +56,13 @@ public class HomeFragment extends BaseFragment
 
 
             setFinishedRefreshing();
+            if (view == null) {
+                return;
+            }
             if (message.what == -1) {
-                if (view == null) {
-                    return;
-                }
                 showMessage(getResources().getString(R.string.somethingWentWrong));
                 return;
             }
-
             Object[] objects = (Object[]) message.obj;
             tweets = (ArrayList<Tweet>) objects[0];
             profilePictures = (Bitmap[]) objects[1];
@@ -101,7 +100,7 @@ public class HomeFragment extends BaseFragment
                 }else if(message.what==2){
                     new DownloadNewMenuAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, getActivity(), false, null);
                 }else if(message.what == MainActivity.STATUS_UPDATE){
-                    handler.obtainMessage(MainActivity.STATUS_UPDATE,message.obj);
+                    statusHandler.obtainMessage(MainActivity.STATUS_UPDATE,message.obj);
                 } else {
 //                Something has gone wrong checking.
                     handler.obtainMessage(-1, "Unable to get permission.").sendToTarget();
@@ -130,6 +129,7 @@ public class HomeFragment extends BaseFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(null, null, savedInstanceState);
         view = inflater.inflate(R.layout.home_fragment, container, false);
+        status = (TextView) view.findViewById(R.id.Status);
         fragmentNumber = localFragmentNumber;
         RecyclerView tweetList = (RecyclerView) view.findViewById(R.id.my_recycler_view);
         tweetList.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -137,7 +137,7 @@ public class HomeFragment extends BaseFragment
             setStartedRefreshing();
         } else if (finished) {
             if (tweets.size() > 0) {
-                tweetList.setAdapter(new TweetRecyclerAdapter(tweets, profilePictures));
+                tweetList.setAdapter(tweetAdapter);
                 showCards();
             } else {
                 showMessage(getResources().getString(R.string.nothingToShow));
