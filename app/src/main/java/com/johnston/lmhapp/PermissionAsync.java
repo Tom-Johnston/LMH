@@ -19,15 +19,12 @@ import javax.net.ssl.HttpsURLConnection;
  * Created by Johnston on 29/12/2014.
  */
 public class PermissionAsync extends AsyncTask<Object, String, Void> {
-    private Handler statusHandler;
+    private Handler handler;
     @Override
     protected Void doInBackground(Object[] objects) {
         Context context = (Context) objects[0];
-        Handler handler = (Handler) objects[1];
-        if(objects[2]!=null){
-            statusHandler = (Handler)objects[2];
-        }
-        String sectionId = (String)objects[3];
+        handler = (Handler) objects[1];
+        String sectionId = (String)objects[2];
 
         try {
             // Setting the user agent seems to cause problems on some devices.
@@ -89,8 +86,7 @@ public class PermissionAsync extends AsyncTask<Object, String, Void> {
 
     @Override
     protected void onProgressUpdate(String... values) {
-        if (statusHandler != null) {
-            statusHandler.obtainMessage(0, values[0]).sendToTarget();
-        }
+        handler.obtainMessage(MainActivity.STATUS_UPDATE, values[0]).sendToTarget();
+
     }
 }

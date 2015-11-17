@@ -15,6 +15,7 @@ import java.util.ArrayList;
  */
 class MenuRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final ArrayList<String> entries;
+    private String status = "Finished";
 
     public MenuRecyclerAdapter(ArrayList<String> initialEntries) {
         entries = initialEntries;
@@ -44,7 +45,7 @@ class MenuRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
         if (position == 0) {
-            ((TextView) viewHolder.itemView).setText("Finished");
+            ((TextView) viewHolder.itemView).setText(status);
         } else {
             MealHolder mealHolder = (MealHolder) viewHolder;
             position = (position - 1) * 3;
@@ -57,6 +58,11 @@ class MenuRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     @Override
     public int getItemCount() {
         return entries.size() / 3 + 1;
+    }
+
+    public void updateStatus(String statusUpdate) {
+        status = statusUpdate;
+        notifyItemChanged(0);
     }
 
     public static class MealHolder extends RecyclerView.ViewHolder {

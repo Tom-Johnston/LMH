@@ -25,8 +25,8 @@ import java.util.ArrayList;
  */
 public class EPOSFragment extends BaseFragment
 {
+    private TextView status;
     private final int localFragmentNumber = 1;
-    private View view;
     private ArrayList<String> transactions =new ArrayList<>();
     private final Handler handler = new Handler() {
         @Override
@@ -42,6 +42,13 @@ public class EPOSFragment extends BaseFragment
                 return;
             }
 
+            if(message.what == MainActivity.STATUS_UPDATE){
+                if(status!=null) {
+                    status.setText((String) message.obj);
+                }
+                return;
+            }
+
 
             if (message.what == 0) {
                 transactions = (ArrayList<String>) message.obj;
@@ -52,7 +59,7 @@ public class EPOSFragment extends BaseFragment
                 showCards();
                 addEntriesToList();
 
-            } else {
+            } else if(message.what == 1){
                 String[] strings = (String[]) message.obj;
                 if (view == null) {
                     return;
@@ -74,12 +81,7 @@ public class EPOSFragment extends BaseFragment
 
     @Override
     public void loadData() {
-        refreshing = true;
-        if(finished){
-            setStartedRefreshing();
-        }else{
-            showProgressBar();
-        }
+        setStartedRefreshing();
         MainActivity main = (MainActivity) getActivity();
         main.getInfo(view, handler, (byte) localFragmentNumber);
     }
@@ -153,13 +155,9 @@ public class EPOSFragment extends BaseFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(null, null, savedInstanceState);
         view = inflater.inflate(R.layout.epos_layout, container, false);
+        status = (TextView) view.findViewById(R.id.Status);
         if (refreshing) {
-            MainActivity.Status = (android.widget.TextView) view.findViewById(R.id.Status);
-            if(!finished){
-                refreshWithProgressBar();
-            }else{
-                setStartedRefreshing();
-            }
+            setStartedRefreshing();
         } else if (finished) {
             addEntriesToList();
             showCards();

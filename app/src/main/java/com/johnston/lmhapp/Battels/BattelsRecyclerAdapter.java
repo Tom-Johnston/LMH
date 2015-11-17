@@ -20,6 +20,11 @@ class BattelsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         entries = initialEntries;
     }
 
+    public void updateStatus(String statusUpdate){
+        entries.set(0,statusUpdate);
+        notifyItemChanged(0);
+    }
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         if (i == 0) {

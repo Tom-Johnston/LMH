@@ -28,26 +28,28 @@ import java.util.ArrayList;
  */
 public class MenuFragment extends BaseFragment {
     private  final int localFragmentNumber = 5;
-    private Boolean starting;
+    private TextView status;
+    private MenuRecyclerAdapter menuRecyclerAdapter;
+    private Boolean justDownloadedNewMenu = false;
     private MenuItem actionRefresh;
     private Context context;
     private ArrayList<String> meals = new ArrayList<>();
     Handler statusHandler = new Handler() {
         @Override
         public void handleMessage(Message message) {
-            if(MainActivity.Status!=null){
-                MainActivity.Status.setText((String) message.obj);
+            if(status!=null){
+                status.setText((String) message.obj);
             }
+            if(menuRecyclerAdapter != null){
+                menuRecyclerAdapter.updateStatus((String) message.obj);
+            }
+
         }
     };
 
     public void loadData() {
         refreshing = true;
-        if(finished){
-            setStartedRefreshing();
-        }else{
-            showProgressBar();
-        }
+        setStartedRefreshing();
 
         Handler permissionHandler = new Handler() {
             @Override
@@ -60,16 +62,17 @@ public class MenuFragment extends BaseFragment {
                     handler.obtainMessage(-1).sendToTarget();
                     PermissionFailedDialog newFragment = PermissionFailedDialog.newInstance((String) message.obj);
                     newFragment.show(getFragmentManager(), "PERMISSION DENIED");
-                }else if(message.what==2){
+                }else if(message.what==2) {
 //                    Do nothing. We are downloading a new menu anyway.
-
+                }else if(message.what == MainActivity.STATUS_UPDATE){
+                    handler.obtainMessage(MainActivity.STATUS_UPDATE,message.obj);
                 } else {
 //                Something has gone wrong checking.
                     handler.obtainMessage(-1).sendToTarget();
                 }
             }
         };
-        new PermissionAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, getActivity().getApplicationContext(), permissionHandler, statusHandler, "MenuFragment");
+        new PermissionAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, getActivity().getApplicationContext(), permissionHandler, "MenuFragment");
     }
 
     @Override
@@ -79,26 +82,20 @@ public class MenuFragment extends BaseFragment {
     }
 
     void startMenu() {
-        if(finished){
-            setStartedRefreshing();
-        }else{
-            showProgressBar();
-        }
+        setStartedRefreshing();
         File file = new File(context.getCacheDir(), "Menu.txt");
         if (!file.exists()) {
 //                No menu. Get a new menu();
             loadData();
         } else {
-            starting = true;
             new MenuAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, context, handler, statusHandler);
 
         }
     }
 
     void showMenu() {
-        finished = true;
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
-        MenuRecyclerAdapter menuRecyclerAdapter = new MenuRecyclerAdapter(meals);
+        menuRecyclerAdapter = new MenuRecyclerAdapter(meals);
         recyclerView.setAdapter(menuRecyclerAdapter);
 
         if (meals.size() > 0) {
@@ -117,17 +114,13 @@ public class MenuFragment extends BaseFragment {
         super.onCreateView(null, null, savedInstanceState);
         context = this.getActivity().getApplicationContext();
         view = inflater.inflate(R.layout.menu_layout, container, false);
+        status = (TextView) view.findViewById(R.id.Status);
         fragmentNumber = localFragmentNumber;
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         if (refreshing) {
-            MainActivity.Status = (android.widget.TextView) view.findViewById(R.id.Status);
-            if(!finished){
-                showProgressBar();
-            }else{
-                setStartedRefreshing();
-            }
+            setStartedRefreshing();
         } else if (!finished) {
             startMenu();
         } else {
@@ -150,12 +143,7 @@ public class MenuFragment extends BaseFragment {
         public void handleMessage(Message message) {
             if (message.what == -1) {
                 refreshing = false;
-                finished = false;
-                    if (meals.size() == 0) {
-                        loadData();
-                    } else if (view != null) {
-                        showMenu();
-                    }
+                finished = true;
 
                 if (view == null) {
                     return;
@@ -164,7 +152,10 @@ public class MenuFragment extends BaseFragment {
                 return;
             }else if (message.what == 0) {
                 meals = (ArrayList<String>) message.obj;
-                if (starting && view != null){
+                if(meals.size() == 0 && justDownloadedNewMenu == false){
+                    justDownloadedNewMenu = true;
+                    loadData();
+                }else if (view != null){
                     showMenu();
                 }
             } else {

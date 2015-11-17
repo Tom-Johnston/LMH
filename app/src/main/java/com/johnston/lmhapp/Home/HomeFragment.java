@@ -86,11 +86,7 @@ public class HomeFragment extends BaseFragment
     @Override
     public void loadData() {
         refreshing = true;
-        if(finished){
-            setStartedRefreshing();
-        }else{
-            showProgressBar();
-        }
+        setStartedRefreshing();
         Handler permissionHandler = new Handler() {
             @Override
             public void handleMessage(Message message) {
@@ -104,6 +100,8 @@ public class HomeFragment extends BaseFragment
                     newFragment.show(getFragmentManager(), "PERMISSION DENIED");
                 }else if(message.what==2){
                     new DownloadNewMenuAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, getActivity(), false, null);
+                }else if(message.what == MainActivity.STATUS_UPDATE){
+                    handler.obtainMessage(MainActivity.STATUS_UPDATE,message.obj);
                 } else {
 //                Something has gone wrong checking.
                     handler.obtainMessage(-1, "Unable to get permission.").sendToTarget();
@@ -111,7 +109,7 @@ public class HomeFragment extends BaseFragment
             }
         };
 
-        new PermissionAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, getActivity().getApplicationContext(), permissionHandler, statusHandler, "HomeFragment");
+        new PermissionAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, getActivity().getApplicationContext(), permissionHandler, "HomeFragment");
 
     }
 
@@ -132,16 +130,11 @@ public class HomeFragment extends BaseFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(null, null, savedInstanceState);
         view = inflater.inflate(R.layout.home_fragment, container, false);
-
+        fragmentNumber = localFragmentNumber;
         RecyclerView tweetList = (RecyclerView) view.findViewById(R.id.my_recycler_view);
         tweetList.setLayoutManager(new LinearLayoutManager(getActivity()));
         if (refreshing) {
-            MainActivity.Status = (android.widget.TextView) view.findViewById(R.id.Status);
-            if(!finished){
-                showProgressBar();
-            }else{
-                setStartedRefreshing();
-            }
+            setStartedRefreshing();
         } else if (finished) {
             if (tweets.size() > 0) {
                 tweetList.setAdapter(new TweetRecyclerAdapter(tweets, profilePictures));

@@ -3,6 +3,8 @@ package com.johnston.lmhapp.Battels;
 import android.os.AsyncTask;
 import android.os.Handler;
 
+import com.johnston.lmhapp.MainActivity;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -17,16 +19,14 @@ import javax.net.ssl.SSLContext;
  * Created by Tom on 27/10/2014.
  */
 public class BattelsAsync extends AsyncTask<Object, String, Void> {
-    private Handler statusHandler;
-
+        private Handler handler;
     @Override
     protected Void doInBackground(Object[] objects) {
 //        Going to need custom SSL again.
 
         try {
             SSLContext sslContext = (SSLContext) objects[0];
-            statusHandler = (Handler) objects[1];
-            Handler handler = (Handler) objects[2];
+            handler = (Handler) objects[1];
 
             publishProgress("Getting Account Information");
             URL battelsURL = new URL("https://intranet.lmh.ox.ac.uk/navbilling.asp");
@@ -131,17 +131,19 @@ public class BattelsAsync extends AsyncTask<Object, String, Void> {
             handler.obtainMessage(1, entries).sendToTarget();
         } catch (MalformedURLException e) {
             e.printStackTrace();
-            statusHandler.obtainMessage(-1,"Error getting battels: MalformedURLException").sendToTarget();
+            handler.obtainMessage(-1, "Error getting battels: MalformedURLException").sendToTarget();
+            handler.obtainMessage(MainActivity.STATUS_UPDATE, "Error getting battels: MalformedURLException").sendToTarget();
         } catch (IOException e) {
             e.printStackTrace();
-            statusHandler.obtainMessage(-1,"Error getting battels: IOException. Check your network connection.").sendToTarget();
+            handler.obtainMessage(-1,"Error getting battels: IOException. Check your network connection.").sendToTarget();
+            handler.obtainMessage(MainActivity.STATUS_UPDATE,"Error getting battels: IOException. Check your network connection.").sendToTarget();
         }
         return null;
     }
 
     @Override
     protected void onProgressUpdate(String... values) {
-        statusHandler.obtainMessage(0, values[0]).sendToTarget();
+        handler.obtainMessage(MainActivity.STATUS_UPDATE, values[0]).sendToTarget();
     }
 
 

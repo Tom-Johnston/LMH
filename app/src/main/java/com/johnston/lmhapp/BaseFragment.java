@@ -18,17 +18,7 @@ public abstract class BaseFragment extends Fragment
 
     public boolean refreshing = false;
 	public boolean finished = false;
-
-	public boolean isGoingToRefresh()
-	{
-		return refreshing || !finished;
-	}
-
-	public boolean isRefreshing()
-	{
-		return refreshing;
-	}
-
+    
     protected void showProgressBar(){
         view.findViewById(R.id.Status).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
@@ -50,28 +40,24 @@ public abstract class BaseFragment extends Fragment
         (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
     }
 
-    protected void refreshWithProgressBar() {
-        Activity act = getActivity();
-        showProgressBar();
-        refreshing = true;
-        if (act instanceof MainActivity) {
-            ((MainActivity) act).startRefresh(fragmentNumber);
-        }
-    }
 
-    protected void setStartedRefreshing(){
+    protected void setStartedRefreshing() {
         Activity act = getActivity();
         refreshing = true;
-        if(act instanceof MainActivity)
-            ((MainActivity)act).startRefreshAnimation();
-            ((MainActivity)act).startRefresh(fragmentNumber);
+        if (act instanceof MainActivity && finished) {
+            ((MainActivity) act).startRefreshAnimation();
+            ((MainActivity) act).startRefresh(fragmentNumber);
+        }else if(act instanceof  MainActivity){
+            ((MainActivity) act).startRefresh(fragmentNumber);
+            showProgressBar();
+        }
     }
 
 	protected void setFinishedRefreshing()
 	{
 		Activity act = getActivity();
 		refreshing = false;
-		finished = true;
+        finished = true;
 		if(act instanceof MainActivity)
 			((MainActivity)act).stopRefreshAnimation();
             ((MainActivity)act).stopRefresh(fragmentNumber);

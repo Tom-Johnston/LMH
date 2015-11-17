@@ -23,6 +23,8 @@ import java.util.ArrayList;
  */
 public class BattelsFragment extends BaseFragment
 {
+    private TextView Status;
+    private BattelsRecyclerAdapter battelsRecyclerAdapter;
     private final int localFragmentNumber = 2;
     private ArrayList<String> entries = new ArrayList<>();
     private final Handler handler = new Handler() {
@@ -30,18 +32,20 @@ public class BattelsFragment extends BaseFragment
         public void handleMessage(Message message) {
 
 
-            if(message.what != 0) {
-                setFinishedRefreshing();
-            }
             finished = true;
             if (view == null) {
                 return;
             }
-
-            if (message.what == -1) {
-                if (view == null) {
-                    return;
+            if(message.what == MainActivity.STATUS_UPDATE){
+                if(!finished && Status !=null){
+                    Status.setText((String)message.obj);
                 }
+                if(battelsRecyclerAdapter != null){
+                    battelsRecyclerAdapter.updateStatus((String) message.obj);
+                }
+                return;
+            }else if (message.what == -1) {
+                setFinishedRefreshing();
                 showMessage(getResources().getString(R.string.somethingWentWrong));
                 return;
             }
@@ -50,12 +54,11 @@ public class BattelsFragment extends BaseFragment
             RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
 
             if (entries.size() > 0 && message.what == 0) {
-                BattelsRecyclerAdapter battelsRecyclerAdapter = new BattelsRecyclerAdapter(entries);
+                battelsRecyclerAdapter = new BattelsRecyclerAdapter(entries);
                 recyclerView.setAdapter(battelsRecyclerAdapter);
                 showCards();
             }else if(entries.size() > 0 && message.what == 1){
-                RecyclerView.Adapter battelsRecyclerAdapter = recyclerView.getAdapter();
-                battelsRecyclerAdapter.notifyItemRangeChanged(0,battelsRecyclerAdapter.getItemCount()-2);
+                battelsRecyclerAdapter.notifyItemRangeChanged(0,battelsRecyclerAdapter.getItemCount());
                 setFinishedRefreshing();
             } else {
                 showMessage(getResources().getString(R.string.nothingToShow));
@@ -68,13 +71,8 @@ public class BattelsFragment extends BaseFragment
     @Override
     public void loadData() {
         refreshing = true;
-        if(finished){
-            setStartedRefreshing();
-        }else{
-            showProgressBar();
-        }
+        setStartedRefreshing();
         MainActivity main = (MainActivity) this.getActivity();
-        main.startRefresh(2);
         main.getInfo(view, handler, (byte) localFragmentNumber);
     }
 
@@ -94,16 +92,11 @@ public class BattelsFragment extends BaseFragment
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         if (refreshing) {
-            MainActivity.Status = (android.widget.TextView) view.findViewById(R.id.Status);
-            if(!finished){
-                refreshWithProgressBar();
-            }else{
-                setStartedRefreshing();
-            }
+            setStartedRefreshing();
         }
         if (finished) {
             if (entries.size() > 0) {
-                BattelsRecyclerAdapter battelsRecyclerAdapter = new BattelsRecyclerAdapter(entries);
+                battelsRecyclerAdapter = new BattelsRecyclerAdapter(entries);
                 recyclerView.setAdapter(battelsRecyclerAdapter);
                 showCards();
             } else {

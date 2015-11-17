@@ -20,7 +20,6 @@ public class CustomSwipeRefreshLayout extends SwipeRefreshLayout
 	public void setChildScrollDelegate(BaseFragment delegate) {
 		fragment = delegate;
 		setEnabled(fragment != null);
-		setRefreshing(false);
 	}
 
 	@Override

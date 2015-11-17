@@ -17,7 +17,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -69,8 +68,8 @@ import javax.net.ssl.TrustManagerFactory;
 
 public class MainActivity extends ActionBarActivity implements OnRefreshListener
 {
+    public final static int STATUS_UPDATE = 7;
     //    Display information on the progress of the Async Tasks
-    public static TextView Status = null;
     //    Navigation Drawer
     private ActionBarDrawerToggle mDrawerToggle;
     private String mTitle;
@@ -170,39 +169,22 @@ public class MainActivity extends ActionBarActivity implements OnRefreshListener
 
     //The method called at the initial request for information.
     public void getInfo(View v, final Handler passedHandler, byte passedType) {
-        if (v != null) {
-            Status = (TextView) v.findViewById(R.id.Status);
-        } else {
-            Status = null;
-        }
-        final Handler statusHandler = new Handler() {
-            @Override
-            public void handleMessage(Message message) {
-                if (message.what == -1) {
-                    passedHandler.obtainMessage(-1).sendToTarget();
-                }
-                String update = (String) message.obj;
-                if (Status != null) {
-                    Status.setText(update);
-                }
-            }
-        };
         if (passedType == 3) {
 //            This is a request to get the name of the current log in. Hence we need to remove the previous cookie to logout any previous accounts.
             manager.getCookieStore().removeAll();
         }
-        LogInView(statusHandler, passedHandler, passedType);
+        LogInView(passedHandler, passedType);
 
     }
 
     //Called to check for permission to attempt to get the information
-    void LogInView(final Handler statusHandler, final Handler passedHandler,final byte passedType) {
+    void LogInView(final Handler passedHandler,final byte passedType) {
         Handler permissionHandler = new Handler() {
             @Override
             public void handleMessage(Message message) {
                 if (message.what == 0) {
 //                Success!
-                    LogIn(statusHandler,passedHandler,passedType);
+                    LogIn(passedHandler,passedType);
                 } else if (message.what == 1) {
 //                Failure
                     passedHandler.obtainMessage(-1).sendToTarget();
@@ -210,18 +192,20 @@ public class MainActivity extends ActionBarActivity implements OnRefreshListener
                     newFragment.show(getFragmentManager(), "PERMISSION DENIED");
                 }else if(message.what==2){
                     new DownloadNewMenuAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, getApplicationContext(), false, null);
-                } else {
+                } else if(message.what == MainActivity.STATUS_UPDATE){
+                    passedHandler.obtainMessage(MainActivity.STATUS_UPDATE, message.obj);
+                }else {
 //                Something has gone wrong checking.
                     passedHandler.obtainMessage(-1).sendToTarget();
                 }
             }
         };
 
-        new PermissionAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, this.getApplicationContext(), permissionHandler, statusHandler, Byte.toString(passedType));
+        new PermissionAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, this.getApplicationContext(), permissionHandler, Byte.toString(passedType));
     }
 
     //    This logs in to the intranet.
-    void LogIn(final Handler statusHandler, final Handler passedHandler, final byte passedType) {
+    void LogIn(final Handler passedHandler, final byte passedType) {
         SharedPreferences LogIn = getSharedPreferences("LogIn", 0);
         if (LogIn.contains("Username") && LogIn.contains("Password")) {
             String username = LogIn.getString("Username", "Fail");
@@ -231,26 +215,26 @@ public class MainActivity extends ActionBarActivity implements OnRefreshListener
                 @Override
                 public void handleMessage(Message message) {
                     if(message.what==1){
-                       Initialise(statusHandler,passedHandler,passedType);
+                       Initialise(passedHandler,passedType);
                     }
                 }
             };
-            new LoginAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, context, username, password, statusHandler, loginHandler, manager);
+            new LoginAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, context, username, password, passedHandler, loginHandler, manager);
         } else {
-            statusHandler.obtainMessage(-1,"Please input username and password").sendToTarget();
+            passedHandler.obtainMessage(-1,"Please input username and password").sendToTarget();
         }
     }
 
     //    Start the appropriate Async to get the information.
-    public void Initialise(Handler statusHandler, Handler passedHandler, Byte passedType) {
+    public void Initialise( Handler passedHandler, Byte passedType) {
         if (passedType == 1) {
-            new EPOSAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, manager, statusHandler, passedHandler);
+            new EPOSAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, manager, passedHandler);
         } else if (passedType == 2) {
-            new BattelsAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, sslContext, statusHandler, passedHandler);
+            new BattelsAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, sslContext, passedHandler);
         } else if (passedType == 3) {
             new NameGrabberAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, sslContext, this.getApplicationContext(), passedHandler);
         } else if (passedType == 4) {
-            new FormalAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, sslContext, passedHandler, statusHandler);
+            new FormalAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, sslContext, passedHandler);
         }
     }
 
@@ -316,8 +300,6 @@ public class MainActivity extends ActionBarActivity implements OnRefreshListener
 //            Return to the last position.
             lastPosition = savedInstanceState.getInt("lastPosition");
         }
-
-        Status = null;
 //
 //      Set the persons information.
         File file = new File(getFilesDir(), "CustomGraphic.png");

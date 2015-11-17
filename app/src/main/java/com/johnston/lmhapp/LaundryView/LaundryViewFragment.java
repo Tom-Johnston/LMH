@@ -158,13 +158,15 @@ public class LaundryViewFragment extends BaseFragment
                     newFragment.show(getFragmentManager(), "PERMISSION DENIED");
                 }else if(message.what==2){
                     new DownloadNewMenuAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, getActivity(), false, null);
-                } else {
+                } else if(message.what == MainActivity.STATUS_UPDATE){
+                    handler.obtainMessage(MainActivity.STATUS_UPDATE, message.obj);
+                }else {
 //                Something has gone wrong checking.
                     handler.obtainMessage(-1).sendToTarget();
                 }
             }
         };
-        new PermissionAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, getActivity().getApplicationContext(), permissionHandler, statusHandler, "LaundryView");
+        new PermissionAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, getActivity().getApplicationContext(), permissionHandler, "LaundryView");
     }
 
     @Override
@@ -214,11 +216,7 @@ public class LaundryViewFragment extends BaseFragment
         Status = (TextView) view.findViewById(R.id.Status);
 
         if (refreshing) {
-            if(finished){
-                setStartedRefreshing();
-            }else{
-                showProgressBar();
-            }
+            setStartedRefreshing();
         } else if (!finished) {
             loadData();
         } else {

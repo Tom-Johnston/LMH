@@ -87,13 +87,13 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
                         new DownloadNewMenuAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,context, true, handler);
                     }else if(message.what==2){
                         //Do nothing.
-                    } else{
+                    } else if(message.what == -1){
 //                Failure
                         permissionFailed(context);
                     }
                 }
             };
-            new PermissionAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,context, permissionHandler,null,"Widget");
+            new PermissionAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,context, permissionHandler,"Widget");
 
         } else {
             part2(file, context);
@@ -122,13 +122,13 @@ public class WidgetBroadcastReceiver extends BroadcastReceiver {
                             new DownloadNewMenuAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,context, true, handler);
                         }else if(message.what==2){
                         // Do nothing.
-                        } else{
+                        } else if(message.what == -1){
 //                Failure
                             permissionFailed(context);
                         }
                     }
                 };
-                new PermissionAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,context, permissionHandler,null,"Widget");
+                new PermissionAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,context, permissionHandler,"Widget");
             } else {
                 part3(file, context);
             }

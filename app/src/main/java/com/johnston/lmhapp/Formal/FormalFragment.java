@@ -23,6 +23,8 @@ import java.util.ArrayList;
  */
 public class FormalFragment extends BaseFragment {
     final int localFragmentNumber = 4;
+    private FormalRecyclerAdapter formalRecyclerAdapter;
+    private TextView status;
     private ArrayList<String> entries = new ArrayList<>();
     private ArrayList<String> listOfMeals;
     private ArrayList<ArrayList<String>> listOfListsOfPeople;
@@ -30,19 +32,24 @@ public class FormalFragment extends BaseFragment {
         @Override
         public void handleMessage(Message message) {
 
-
+            if(message.what == MainActivity.STATUS_UPDATE){
+                if(!finished && status !=null){
+                    status.setText((String) message.obj);
+                }
+                if(formalRecyclerAdapter != null){
+                    formalRecyclerAdapter.updateStatus((String) message.obj);
+                }
+                return;
+            }
             if (message.what == -1) {
                 setFinishedRefreshing();
-                MainActivity main = (MainActivity) getActivity();
-                if (main != null) {
-                    main.stopRefresh(4);
-                }
                 if (view == null) {
                     return;
                 }
                 showMessage(getResources().getString(R.string.somethingWentWrong));
                 return;
             }
+
 
             if (message.what == 0) {
                 entries = (ArrayList<String>) message.obj;
@@ -57,7 +64,7 @@ public class FormalFragment extends BaseFragment {
                 }
                 RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
                 if (entries.size() > 0) {
-                    FormalRecyclerAdapter formalRecyclerAdapter = new FormalRecyclerAdapter(entries, listOfMeals);
+                    formalRecyclerAdapter = new FormalRecyclerAdapter(entries, listOfMeals);
                     recyclerView.setAdapter(formalRecyclerAdapter);
                     showCards();
                 } else {
@@ -70,11 +77,7 @@ public class FormalFragment extends BaseFragment {
 
     public void loadData() {
         refreshing = true;
-        if(finished){
-            setStartedRefreshing();
-        }else{
-            showProgressBar();
-        }
+        setStartedRefreshing();
         MainActivity main = (MainActivity) this.getActivity();
         main.getInfo(view, handler, (byte) localFragmentNumber);
     }
@@ -97,16 +100,12 @@ public class FormalFragment extends BaseFragment {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
+        status = (TextView) view.findViewById(R.id.Status);
         if (refreshing) {
-            MainActivity.Status = (android.widget.TextView) view.findViewById(R.id.Status);
-            if(!finished){
-                showProgressBar();
-            }else{
-                setStartedRefreshing();
-            }
+            setStartedRefreshing();
         } else if (finished) {
             if (entries.size() > 0) {
-                FormalRecyclerAdapter formalRecyclerAdapter = new FormalRecyclerAdapter(entries, listOfMeals);
+                formalRecyclerAdapter = new FormalRecyclerAdapter(entries, listOfMeals);
                 recyclerView.setAdapter(formalRecyclerAdapter);
                 showCards();
             } else {

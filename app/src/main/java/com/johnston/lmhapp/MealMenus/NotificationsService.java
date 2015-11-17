@@ -93,13 +93,13 @@ public class NotificationsService extends BroadcastReceiver {
                         new DownloadNewMenuAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,context, true, handler);
                     }else if(message.what==2){
 //                        Do nothing. We are already downloading a new menu.
-                    } else{
+                    }else if(message.what == -1) {
 //                      Failure
                         permissionFailed(context);
                     }
                 }
             };
-            new PermissionAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,context, permissionHandler,null,"NotificationService");
+            new PermissionAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,context, permissionHandler,"NotificationService");
 
         } else {
             part2(file, context);
@@ -127,13 +127,13 @@ public class NotificationsService extends BroadcastReceiver {
                         }else if(message.what==2){
 //                            Do nothing.
 
-                        } else{
+                        } else if(message.what ==-1){
 //                          Failure
                             permissionFailed(context);
                         }
                     }
                 };
-                new PermissionAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,context, permissionHandler,null,"NotificationsService");
+                new PermissionAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,context, permissionHandler,"NotificationsService");
             } else {
                 part3(file, context);
             }

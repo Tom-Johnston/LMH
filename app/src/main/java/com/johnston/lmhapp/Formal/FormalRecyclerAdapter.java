@@ -22,10 +22,16 @@ import java.util.ArrayList;
 class FormalRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private final ArrayList<String> entries;
     private final ArrayList<String> listOfMeals;
+    private String status = "Finished";
 
     public FormalRecyclerAdapter(ArrayList<String> initialEntries, ArrayList<String> listOfMeals) {
         entries = initialEntries;
         this.listOfMeals = listOfMeals;
+    }
+
+    public void updateStatus(String statusUpdate){
+        status = statusUpdate;
+        notifyItemChanged(0);
     }
 
     @Override
@@ -44,7 +50,7 @@ class FormalRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
         if (position == 0) {
-            ((TextView) viewHolder.itemView).setText("Finished");
+            ((TextView) viewHolder.itemView).setText(status);
         } else {
             FormalHolder formalHolder = (FormalHolder) viewHolder;
             formalHolder.formalButton.setTag(position);
