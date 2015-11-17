@@ -32,7 +32,6 @@ public class BattelsFragment extends BaseFragment
         public void handleMessage(Message message) {
 
 
-            finished = true;
             if (view == null) {
                 return;
             }
