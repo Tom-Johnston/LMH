@@ -129,11 +129,13 @@ class TwitterScraperAsync extends AsyncTask<Object, String, Void> {
                         String photoUrl = inputLine.substring(start, inputLine.indexOf("\"", start));
                         for (int i = 0; i < previousSize; i++) {
                             if (photoUrl.equals(pictureURLs.get(i))) {
-                                pictureUsed.set(i, true);
                                 File file = new File(context.getCacheDir(), Long.toString(pictureIDs.get(i)));
-                                InputStream in2 = new FileInputStream(file);
-                                picture = BitmapFactory.decodeStream(in2);
-                                break;
+                                if(file.exists()) {
+                                    pictureUsed.set(i, true);
+                                    InputStream in2 = new FileInputStream(file);
+                                    picture = BitmapFactory.decodeStream(in2);
+                                    break;
+                                }
                             }
                         }
                         if (picture == null) {
@@ -247,11 +249,13 @@ class TwitterScraperAsync extends AsyncTask<Object, String, Void> {
                     String url = ProfilePictureURLS.get(i);
                     for (int j = 0; j < previousSize; j++) {
                         if (url.equals(pictureURLs.get(j))) {
-                            pictureUsed.set(j, true);
                             File file = new File(context.getCacheDir(), Long.toString(pictureIDs.get(j)));
-                            InputStream in2 = new FileInputStream(file);
-                            profilePictures[i] = BitmapFactory.decodeStream(in2);
-                            break;
+                            if(file.exists()){
+                                pictureUsed.set(j, true);
+                                InputStream in2 = new FileInputStream(file);
+                                profilePictures[i] = BitmapFactory.decodeStream(in2);
+                                break;
+                            }
                         }
                     }
                     if (profilePictures[i] == null) {
