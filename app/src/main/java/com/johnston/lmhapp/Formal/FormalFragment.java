@@ -103,7 +103,8 @@ public class FormalFragment extends BaseFragment {
         status = (TextView) view.findViewById(R.id.Status);
         if (refreshing) {
             setStartedRefreshing();
-        } else if (finished) {
+        }
+        if (finished) {
             if (entries.size() > 0) {
                 formalRecyclerAdapter = new FormalRecyclerAdapter(entries, listOfMeals);
                 recyclerView.setAdapter(formalRecyclerAdapter);
@@ -111,7 +112,8 @@ public class FormalFragment extends BaseFragment {
             } else {
                 showMessage(getResources().getString(R.string.nothingToShow));
             }
-        } else {
+        }
+        if(!refreshing && !finished){
             loadData();
 //            Get all the info.
         }

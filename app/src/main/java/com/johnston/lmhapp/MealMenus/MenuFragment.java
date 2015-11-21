@@ -107,7 +107,10 @@ public class MenuFragment extends BaseFragment {
         setFinishedRefreshing();
     }
 
-
+    protected void showMessage(String message){
+        super.showMessage(message);
+        (view.findViewById(R.id.my_recycler_view)).setVisibility(View.VISIBLE);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -119,12 +122,15 @@ public class MenuFragment extends BaseFragment {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
-        if (refreshing) {
+        if (refreshing)
+        {
             setStartedRefreshing();
-        } else if (!finished) {
-            startMenu();
-        } else {
+        }
+        if (finished) {
             showMenu();
+        }
+        if(!refreshing && !finished){
+            startMenu();
         }
         setHasOptionsMenu(true);
         return view;

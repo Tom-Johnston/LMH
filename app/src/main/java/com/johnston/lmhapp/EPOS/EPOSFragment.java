@@ -156,12 +156,15 @@ public class EPOSFragment extends BaseFragment
         super.onCreateView(null, null, savedInstanceState);
         view = inflater.inflate(R.layout.epos_layout, container, false);
         status = (TextView) view.findViewById(R.id.Status);
-        if (refreshing) {
+        if (refreshing)
+        {
             setStartedRefreshing();
-        } else if (finished) {
+        }
+        if (finished) {
             addEntriesToList();
             showCards();
-        } else {
+        }
+        if(!refreshing && !finished){
             loadData();
         }
         return view;

@@ -143,7 +143,8 @@ public class HomeFragment extends BaseFragment
             } else {
                 showMessage(getResources().getString(R.string.nothingToShow));
             }
-        } else {
+        }
+        if(!refreshing && !finished){
             loadData();
         }
 

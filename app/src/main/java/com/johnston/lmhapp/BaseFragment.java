@@ -20,26 +20,41 @@ public abstract class BaseFragment extends Fragment
 	public boolean finished = false;
     
     protected void showProgressBar(){
+        Activity act = getActivity();
+        if(act instanceof MainActivity)
+        {
+            ((MainActivity)act).disableSwipeLayout();
+        }
         view.findViewById(R.id.Status).setVisibility(View.VISIBLE);
-        (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
-        (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
-        (view.findViewById(R.id.my_recycler_view)).setVisibility(View.GONE);
+        view.findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
+        view.findViewById(R.id.nothingToShow).setVisibility(View.GONE);
+        view.findViewById(R.id.my_recycler_view).setVisibility(View.GONE);
     }
 
     protected void showMessage(String message){
+        Activity act = getActivity();
+        if(act instanceof MainActivity)
+        {
+            ((MainActivity)act).enableSwipeLayout();
+        }
         view.findViewById(R.id.Status).setVisibility(View.VISIBLE);
-        (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
-        (view.findViewById(R.id.nothingToShow)).setVisibility(View.VISIBLE);
+        view.findViewById(R.id.progressBar).setVisibility(View.GONE);
+        view.findViewById(R.id.nothingToShow).setVisibility(View.VISIBLE);
         ((TextView)view.findViewById(R.id.nothingToShow)).setText(message);
-        (view.findViewById(R.id.my_recycler_view)).setVisibility(View.GONE);
-    }
-    protected void showCards(){
-        (view.findViewById(R.id.Status)).setVisibility(View.GONE);
-        (view.findViewById(R.id.my_recycler_view)).setVisibility(View.VISIBLE);
-        (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
-        (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
+        view.findViewById(R.id.my_recycler_view).setVisibility(View.GONE);
     }
 
+    protected void showCards(){
+        Activity act = getActivity();
+        if(act instanceof MainActivity)
+        {
+            ((MainActivity)act).enableSwipeLayout();
+        }
+        view.findViewById(R.id.Status).setVisibility(View.GONE);
+        view.findViewById(R.id.progressBar).setVisibility(View.GONE);
+        view.findViewById(R.id.nothingToShow).setVisibility(View.GONE);
+        view.findViewById(R.id.my_recycler_view).setVisibility(View.VISIBLE);
+    }
 
     protected void setStartedRefreshing() {
         Activity act = getActivity();

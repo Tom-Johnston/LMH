@@ -93,10 +93,20 @@ public class MainActivity extends ActionBarActivity implements OnRefreshListener
 
     public CustomSwipeRefreshLayout swipeLayout;
 
-    public void startRefreshAnimation(){swipeLayout.setRefreshing(true);}
+    public void startRefreshAnimation(){
+        swipeLayout.setRefreshing(true);
+    }
 
     public void stopRefreshAnimation() {
         swipeLayout.setRefreshing(false);
+    }
+
+    public void enableSwipeLayout() {
+        swipeLayout.setEnabled(true);
+    }
+
+    public void disableSwipeLayout() {
+        swipeLayout.setEnabled(false);
     }
 
     //    Handle clicking on the refresh button
@@ -366,10 +376,8 @@ public class MainActivity extends ActionBarActivity implements OnRefreshListener
 
         swipeLayout = (CustomSwipeRefreshLayout) findViewById(R.id.swipe_container);
         swipeLayout.setOnRefreshListener(this);
-        swipeLayout.setColorScheme(android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
+        swipeLayout.setColorSchemeResources(R.color.colorAccent,
+                R.color.colorYellow);
 
 
         // Set the drawer toggle as the DrawerListener
