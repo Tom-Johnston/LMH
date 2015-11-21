@@ -93,7 +93,7 @@ public class MainActivity extends ActionBarActivity implements OnRefreshListener
 
     public CustomSwipeRefreshLayout swipeLayout;
 
-    public void startRefreshAnimation(){ swipeLayout.setRefreshing(true);}
+    public void startRefreshAnimation(){swipeLayout.setRefreshing(true);}
 
     public void stopRefreshAnimation() {
         swipeLayout.setRefreshing(false);

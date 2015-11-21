@@ -44,12 +44,16 @@ public abstract class BaseFragment extends Fragment
     protected void setStartedRefreshing() {
         Activity act = getActivity();
         refreshing = true;
-        if (act instanceof MainActivity && finished) {
-            ((MainActivity) act).startRefreshAnimation();
-            ((MainActivity) act).startRefresh(fragmentNumber);
-        }else if(act instanceof  MainActivity){
-            ((MainActivity) act).startRefresh(fragmentNumber);
-            showProgressBar();
+        if (act instanceof MainActivity)
+        {
+            if(finished)
+            {
+                ((MainActivity)act).startRefreshAnimation();
+            } else
+            {
+                showProgressBar();
+            }
+            ((MainActivity)act).startRefresh(fragmentNumber);
         }
     }
 

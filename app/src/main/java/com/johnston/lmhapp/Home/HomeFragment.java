@@ -135,7 +135,8 @@ public class HomeFragment extends BaseFragment
         tweetList.setLayoutManager(new LinearLayoutManager(getActivity()));
         if (refreshing) {
             setStartedRefreshing();
-        } else if (finished) {
+        }
+        if (finished) {
             if (tweets.size() > 0) {
                 tweetList.setAdapter(tweetAdapter);
                 showCards();

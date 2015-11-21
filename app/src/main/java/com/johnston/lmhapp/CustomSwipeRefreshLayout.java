@@ -13,6 +13,8 @@ import android.widget.AbsListView;
 public class CustomSwipeRefreshLayout extends SwipeRefreshLayout
 {
 	private BaseFragment fragment;
+	private boolean mMeasured = false;
+	private boolean mPreMeasureRefreshing = false;
 
 	public CustomSwipeRefreshLayout(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -30,4 +32,21 @@ public class CustomSwipeRefreshLayout extends SwipeRefreshLayout
 		return super.canChildScrollUp();
 	}
 
+	@Override
+	public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+		if (!mMeasured) {
+			mMeasured = true;
+			setRefreshing(mPreMeasureRefreshing);
+		}
+	}
+
+	@Override
+	public void setRefreshing(boolean refreshing) {
+		if (mMeasured) {
+			super.setRefreshing(refreshing);
+		} else {
+			mPreMeasureRefreshing = refreshing;
+		}
+	}
 }
