@@ -55,10 +55,11 @@ class BattelsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             BattelsHolder battelsHolder = (BattelsHolder) viewHolder;
             position = (position - 1) * 4 + 1;
             battelsHolder.battelsDate.setText(entries.get(position));
-            if(entries.get(position + 1).charAt(0)=='¬'){
-                battelsHolder.battelsReference.setText(entries.get(position + 1).substring(1));
+            String s = entries.get(position + 1);
+            if(s.length() > 0 && s.charAt(0)=='¬'){
+                battelsHolder.battelsReference.setText(s.substring(1));
             }else{
-                battelsHolder.battelsReference.setText(entries.get(position + 1));
+                battelsHolder.battelsReference.setText(s);
             }
             battelsHolder.battelsDescription.setText(entries.get(position + 2));
             battelsHolder.battelsAmount.setText(entries.get(position + 3));
