@@ -25,6 +25,7 @@ import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -378,6 +379,13 @@ public class MainActivity extends ActionBarActivity implements OnRefreshListener
         swipeLayout.setOnRefreshListener(this);
         swipeLayout.setColorSchemeResources(R.color.colorAccent,
                 R.color.colorYellow);
+        findViewById(R.id.Frame).setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+//              It appears SwipeRefreshListener can't be trusted to handle the clicks properly.
+                return true;
+            }
+        });
 
 
         // Set the drawer toggle as the DrawerListener
