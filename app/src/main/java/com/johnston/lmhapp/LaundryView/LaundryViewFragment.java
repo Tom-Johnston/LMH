@@ -1,7 +1,6 @@
 package com.johnston.lmhapp.LaundryView;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -15,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.johnston.lmhapp.BaseFragment;
 import com.johnston.lmhapp.MainActivity;
 import com.johnston.lmhapp.MealMenus.DownloadNewMenuAsync;
 import com.johnston.lmhapp.PermissionAsync;
@@ -28,10 +28,8 @@ import java.util.ArrayList;
 /**
  * Created by Tom on 02/06/2014.
  */
-public class
-        LaundryViewFragment extends Fragment {
-    private Boolean finished = false;
-    private Boolean refreshing = false;
+public class LaundryViewFragment extends BaseFragment
+{
     private View view;
     private long startTime = 0;
     private ArrayList<String> KatieLee;
@@ -44,8 +42,9 @@ public class
             if(message.what==-1){
                 handler.obtainMessage(-1).sendToTarget();
             }
+            String update = (String)message.obj;
             if(Status!=null){
-                Status.setText((String)message.obj);
+                Status.setText(update);
             }
         }
     };
@@ -55,8 +54,7 @@ public class
 
 
             if (message.what == -1) {
-                refreshing = false;
-                finished = true;
+                setFinishedRefreshing();
                 MainActivity main = (MainActivity) getActivity();
                 if (main != null) {
                     main.stopRefresh(1);
@@ -69,8 +67,7 @@ public class
             }
             if (message.what == 0) {
                 startTime = (Long) message.obj;
-                finished = true;
-                refreshing = false;
+                setFinishedRefreshing();
             } else if (message.what == 1) {
                 KatieLee = (ArrayList<String>) message.obj;
                 if (view != null) {
@@ -108,6 +105,7 @@ public class
             }
         }
     };
+
     private MenuItem actionRefresh;
 
     void addEntriesToList(int resource, ArrayList<String> entries) {
@@ -130,50 +128,63 @@ public class
         }
     }
 
-    public void LoadStatus() {
+    @Override
+    public void loadData() {
         handler.removeCallbacksAndMessages(null);
         refreshing = true;
         MainActivity main = (MainActivity) getActivity();
         main.startRefresh(1);
-        showProgressBar();
-
-            Handler permissionHandler = new Handler() {
-                @Override
-                public void handleMessage(Message message) {
-                    if (message.what == 0) {
+        if(!finished)
+        {
+            showProgressBar();
+        }
+        Handler permissionHandler = new Handler() {
+            @Override
+            public void handleMessage(Message message) {
+                if (message.what == 0) {
 //                Success!
-                        try {
-                            URL KatieLee = new URL("http://classic.laundryview.com/laundry_room.php?lr=870043400887");
-                            URL NewOldHall = new URL("http://classic.laundryview.com/laundry_room.php?lr=870043400853");
-                            URL Talbot = new URL("http://classic.laundryview.com/laundry_room.php?lr=870043400855");
-                            new LaundryViewAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, statusHandler, handler, KatieLee, NewOldHall, Talbot);
-                        } catch (MalformedURLException e) {
-                            e.printStackTrace();
-                        }
-                    } else if (message.what == 1) {
-//                Failure
-                        handler.obtainMessage(-1).sendToTarget();
-                        PermissionFailedDialog newFragment = PermissionFailedDialog.newInstance((String) message.obj);
-                        newFragment.show(getFragmentManager(), "PERMISSION DENIED");
-                    }else if(message.what==2){
-                        new DownloadNewMenuAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, getActivity(), false, null);
-                    } else {
-//                Something has gone wrong checking.
-                        handler.obtainMessage(-1).sendToTarget();
+                    try {
+                        URL KatieLee = new URL("http://classic.laundryview.com/laundry_room.php?lr=870043400887");
+                        URL NewOldHall = new URL("http://classic.laundryview.com/laundry_room.php?lr=870043400853");
+                        URL Talbot = new URL("http://classic.laundryview.com/laundry_room.php?lr=870043400855");
+                        new LaundryViewAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, statusHandler, handler, KatieLee, NewOldHall, Talbot);
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
                     }
+                } else if (message.what == 1) {
+//                Failure
+                    handler.obtainMessage(-1).sendToTarget();
+                    PermissionFailedDialog newFragment = PermissionFailedDialog.newInstance((String) message.obj);
+                    newFragment.show(getFragmentManager(), "PERMISSION DENIED");
+                }else if(message.what==2){
+                    new DownloadNewMenuAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, getActivity(), false, null);
+                } else if(message.what == MainActivity.STATUS_UPDATE){
+                    handler.obtainMessage(MainActivity.STATUS_UPDATE, message.obj);
+                }else {
+//                Something has gone wrong checking.
+                    handler.obtainMessage(-1).sendToTarget();
                 }
-            };
-            new PermissionAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, getActivity().getApplicationContext(), permissionHandler, statusHandler, "LaundryView");
+            }
+        };
+        new PermissionAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, getActivity().getApplicationContext(), permissionHandler, "LaundryView");
     }
 
-    void showProgressBar() {
+    @Override
+    public View getScrollingView()
+    {
+        return view;
+    }
+
+    @Override
+    protected void showProgressBar() {
         (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
         (view.findViewById(R.id.card_view)).setVisibility(View.GONE);
         (view.findViewById(R.id.card_view2)).setVisibility(View.GONE);
         (view.findViewById(R.id.card_view3)).setVisibility(View.GONE);
     }
-    void showMessage(String message){
+    @Override
+    protected void showMessage(String message){
         (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
         (view.findViewById(R.id.nothingToShow)).setVisibility(View.VISIBLE);
         ((TextView)view.findViewById(R.id.nothingToShow)).setText(message);
@@ -181,7 +192,8 @@ public class
         (view.findViewById(R.id.card_view2)).setVisibility(View.GONE);
         (view.findViewById(R.id.card_view3)).setVisibility(View.GONE);
     }
-    void showCards(){
+    @Override
+    protected void showCards(){
         (view.findViewById(R.id.card_view)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.card_view2)).setVisibility(View.VISIBLE);
         (view.findViewById(R.id.card_view3)).setVisibility(View.VISIBLE);
@@ -196,22 +208,22 @@ public class
     }
 
     @Override
-    public android.view.View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
         super.onCreateView(null, null, savedInstanceState);
         if (view == null) {
             view = inflater.inflate(R.layout.laundry_view, container, false);
         }
         Status = (TextView) view.findViewById(R.id.Status);
+
         if (refreshing) {
-            MainActivity main = (MainActivity) getActivity();
-            main.startRefresh(1);
-            showProgressBar();
+            setStartedRefreshing();
         } else if (!finished) {
-            LoadStatus();
+            loadData();
         } else {
             showCards();
             handler.obtainMessage(4).sendToTarget();
         }
+
         return view;
     }
 

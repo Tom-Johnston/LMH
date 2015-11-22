@@ -1,6 +1,5 @@
 package com.johnston.lmhapp.Home;
 
-import android.app.Fragment;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -15,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.johnston.lmhapp.BaseFragment;
 import com.johnston.lmhapp.MainActivity;
 import com.johnston.lmhapp.MealMenus.DownloadNewMenuAsync;
 import com.johnston.lmhapp.PermissionAsync;
@@ -26,8 +26,11 @@ import java.util.ArrayList;
 /**
  * Created by Johnston on 29/09/2014.
  */
-public class HomeFragment extends Fragment {
-    private static TextView Status = null;
+public class HomeFragment extends BaseFragment
+{
+    private final int localFragmentNumber = 0;
+    private TextView status = null;
+    private TweetRecyclerAdapter tweetAdapter;
     private final Handler statusHandler = new Handler() {
         @Override
         public void handleMessage(Message message) {
@@ -35,15 +38,16 @@ public class HomeFragment extends Fragment {
                 handler.obtainMessage(-1).sendToTarget();
             }
             String update = (String) message.obj;
-            if (Status != null) {
-                Status.setText(update);
+            if (status != null) {
+                status.setText(update);
+            }
+            if(tweetAdapter != null)
+            {
+                tweetAdapter.updateStatus(update);
             }
         }
     };
     private MenuItem actionRefresh;
-    private Boolean finished = false;
-    private Boolean refreshing = false;
-    private View view;
     private ArrayList<Tweet> tweets = new ArrayList<>();
     private Bitmap[] profilePictures;
     private final Handler handler = new Handler() {
@@ -51,21 +55,14 @@ public class HomeFragment extends Fragment {
         public void handleMessage(Message message) {
 
 
-            refreshing = false;
-            MainActivity main = (MainActivity) getActivity();
-            if (main != null) {
-                main.stopRefresh(0);
+            setFinishedRefreshing();
+            if (view == null) {
+                return;
             }
             if (message.what == -1) {
-                finished = true;
-                if (view == null) {
-                    return;
-                }
                 showMessage(getResources().getString(R.string.somethingWentWrong));
                 return;
             }
-
-            finished = true;
             Object[] objects = (Object[]) message.obj;
             tweets = (ArrayList<Tweet>) objects[0];
             profilePictures = (Bitmap[]) objects[1];
@@ -76,19 +73,19 @@ public class HomeFragment extends Fragment {
 
             if (tweets.size() > 0) {
                 RecyclerView tweetList = (RecyclerView) view.findViewById(R.id.my_recycler_view);
-                tweetList.setAdapter(new TweetRecyclerAdapter(tweets, profilePictures));
-                showTweets();
+                tweetAdapter = new TweetRecyclerAdapter(tweets, profilePictures);
+                tweetList.setAdapter(tweetAdapter);
+                showCards();
             } else {
                 showMessage(getResources().getString(R.string.nothingToShow));
             }
         }
     };
 
-    public void loadTweeterFeed() {
+    @Override
+    public void loadData() {
         refreshing = true;
-        showProgressBar();
-        MainActivity main = (MainActivity) getActivity();
-        main.startRefresh(0);
+        setStartedRefreshing();
         Handler permissionHandler = new Handler() {
             @Override
             public void handleMessage(Message message) {
@@ -102,6 +99,8 @@ public class HomeFragment extends Fragment {
                     newFragment.show(getFragmentManager(), "PERMISSION DENIED");
                 }else if(message.what==2){
                     new DownloadNewMenuAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, getActivity(), false, null);
+                }else if(message.what == MainActivity.STATUS_UPDATE){
+                    statusHandler.obtainMessage(MainActivity.STATUS_UPDATE,message.obj);
                 } else {
 //                Something has gone wrong checking.
                     handler.obtainMessage(-1, "Unable to get permission.").sendToTarget();
@@ -109,30 +108,15 @@ public class HomeFragment extends Fragment {
             }
         };
 
-        new PermissionAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, getActivity().getApplicationContext(), permissionHandler, statusHandler, "HomeFragment");
+        new PermissionAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, getActivity().getApplicationContext(), permissionHandler, "HomeFragment");
 
     }
 
-    void showTweets(){
-        view.findViewById(R.id.Status).setVisibility(View.GONE);
-        view.findViewById(R.id.my_recycler_view).setVisibility(View.VISIBLE);
-        view.findViewById(R.id.progressBar).setVisibility(View.GONE);
-        view.findViewById(R.id.nothingToShow).setVisibility(View.GONE);
+    @Override
+    public View getScrollingView()
+    {
+        return view.findViewById(R.id.my_recycler_view);
     }
-    void showMessage(String message){
-        view.findViewById(R.id.Status).setVisibility(View.VISIBLE);
-        view.findViewById(R.id.my_recycler_view).setVisibility(View.GONE);
-        view.findViewById(R.id.progressBar).setVisibility(View.GONE);
-        view.findViewById(R.id.nothingToShow).setVisibility(View.VISIBLE);
-        ((TextView)view.findViewById(R.id.nothingToShow)).setText(message);
-    }
-    void showProgressBar(){
-        view.findViewById(R.id.Status).setVisibility(View.VISIBLE);
-        view.findViewById(R.id.my_recycler_view).setVisibility(View.GONE);
-        view.findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
-        view.findViewById(R.id.nothingToShow).setVisibility(View.GONE);
-    }
-
 
 
     @Override
@@ -142,25 +126,26 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
-    public android.view.View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(null, null, savedInstanceState);
         view = inflater.inflate(R.layout.home_fragment, container, false);
-        Status  = (TextView)view.findViewById(R.id.Status);
+        status = (TextView) view.findViewById(R.id.Status);
+        fragmentNumber = localFragmentNumber;
         RecyclerView tweetList = (RecyclerView) view.findViewById(R.id.my_recycler_view);
         tweetList.setLayoutManager(new LinearLayoutManager(getActivity()));
         if (refreshing) {
-            MainActivity main = (MainActivity) getActivity();
-            main.startRefresh(0);
-            showProgressBar();
-        } else if (finished) {
+            setStartedRefreshing();
+        }
+        if (finished) {
             if (tweets.size() > 0) {
-                tweetList.setAdapter(new TweetRecyclerAdapter(tweets, profilePictures));
-                showTweets();
+                tweetList.setAdapter(tweetAdapter);
+                showCards();
             } else {
                 showMessage(getResources().getString(R.string.nothingToShow));
             }
-        } else {
-            loadTweeterFeed();
+        }
+        if(!refreshing && !finished){
+            loadData();
         }
 
         return view;

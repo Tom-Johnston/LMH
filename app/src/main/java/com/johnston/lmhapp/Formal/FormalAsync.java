@@ -3,6 +3,8 @@ package com.johnston.lmhapp.Formal;
 import android.os.AsyncTask;
 import android.os.Handler;
 
+import com.johnston.lmhapp.MainActivity;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -19,14 +21,14 @@ import javax.net.ssl.SSLContext;
  * Created by Tom on 11/11/2014.
  */
 public class FormalAsync extends AsyncTask<Object, String, Void> {
-    private Handler statusHandler;
+    private Handler handler;
 
     @Override
     protected Void doInBackground(Object[] params) {
         try {
             SSLContext sslContext = (SSLContext) params[0];
-            Handler handler = (Handler) params[1];
-            statusHandler = (Handler) params[2];
+            handler = (Handler) params[1];
+
             ArrayList<String> entries = new ArrayList<>();
             URL formalHome = new URL("https://intranet.lmh.ox.ac.uk/mealbookings.asp");
             HttpsURLConnection formalHomec = (HttpsURLConnection) formalHome.openConnection();
@@ -165,10 +167,12 @@ public class FormalAsync extends AsyncTask<Object, String, Void> {
             handler.obtainMessage(2, listOfListsOfPeople).sendToTarget();
             publishProgress("Finished");
         } catch (MalformedURLException e) {
-            statusHandler.obtainMessage(-1,"Error getting formals: MalformedURLException").sendToTarget();
+            handler.obtainMessage(-1,"Error getting formals: MalformedURLException").sendToTarget();
+            handler.obtainMessage(MainActivity.STATUS_UPDATE,"Error getting formals: MalformedURLException").sendToTarget();
             e.printStackTrace();
         } catch (IOException e) {
-            statusHandler.obtainMessage(-1,"Error getting formals: IOException. Check your network connection.").sendToTarget();
+            handler.obtainMessage(-1,"Error getting formals: IOException. Check your network connection.").sendToTarget();
+            handler.obtainMessage(MainActivity.STATUS_UPDATE,"Error getting formals: IOException. Check your network connection.").sendToTarget();
             e.printStackTrace();
         }
 
@@ -178,6 +182,6 @@ public class FormalAsync extends AsyncTask<Object, String, Void> {
 
     @Override
     protected void onProgressUpdate(String... values) {
-        statusHandler.obtainMessage(0, values[0]).sendToTarget();
+        handler.obtainMessage(MainActivity.STATUS_UPDATE, values[0]).sendToTarget();
     }
 }

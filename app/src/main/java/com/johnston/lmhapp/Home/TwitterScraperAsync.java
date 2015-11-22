@@ -63,7 +63,7 @@ class TwitterScraperAsync extends AsyncTask<Object, String, Void> {
             long cutOffTime = 0;
             for (int j = 0; j < urls.length; j++) {
                 URL url = urls[j];
-                publishProgress("Getting Tweets From: "+url.toString());
+                publishProgress("Getting Tweets From: "+url.toString().replace("https://twitter.com/", "@"));
 
                 HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
                 conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.124 Safari/537.36");
@@ -129,11 +129,13 @@ class TwitterScraperAsync extends AsyncTask<Object, String, Void> {
                         String photoUrl = inputLine.substring(start, inputLine.indexOf("\"", start));
                         for (int i = 0; i < previousSize; i++) {
                             if (photoUrl.equals(pictureURLs.get(i))) {
-                                pictureUsed.set(i, true);
                                 File file = new File(context.getCacheDir(), Long.toString(pictureIDs.get(i)));
-                                InputStream in2 = new FileInputStream(file);
-                                picture = BitmapFactory.decodeStream(in2);
-                                break;
+                                if(file.exists()) {
+                                    pictureUsed.set(i, true);
+                                    InputStream in2 = new FileInputStream(file);
+                                    picture = BitmapFactory.decodeStream(in2);
+                                    break;
+                                }
                             }
                         }
                         if (picture == null) {
@@ -247,11 +249,13 @@ class TwitterScraperAsync extends AsyncTask<Object, String, Void> {
                     String url = ProfilePictureURLS.get(i);
                     for (int j = 0; j < previousSize; j++) {
                         if (url.equals(pictureURLs.get(j))) {
-                            pictureUsed.set(j, true);
                             File file = new File(context.getCacheDir(), Long.toString(pictureIDs.get(j)));
-                            InputStream in2 = new FileInputStream(file);
-                            profilePictures[i] = BitmapFactory.decodeStream(in2);
-                            break;
+                            if(file.exists()){
+                                pictureUsed.set(j, true);
+                                InputStream in2 = new FileInputStream(file);
+                                profilePictures[i] = BitmapFactory.decodeStream(in2);
+                                break;
+                            }
                         }
                     }
                     if (profilePictures[i] == null) {
@@ -302,6 +306,7 @@ class TwitterScraperAsync extends AsyncTask<Object, String, Void> {
             objects[0] = tweets;
             objects[1] = profilePictures;
             handler.obtainMessage(0, objects).sendToTarget();
+            publishProgress("Finished");
         } catch (MalformedURLException e) {
             handler.obtainMessage(-1, "Error getting tweets: MalformedURLException").sendToTarget();
             e.printStackTrace();

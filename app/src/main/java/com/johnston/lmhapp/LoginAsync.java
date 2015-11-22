@@ -21,11 +21,11 @@ import javax.net.ssl.SSLContext;
  * Created by Tom on 28/05/2014.
  */
 class LoginAsync extends AsyncTask<Object, String, Void> {
-    private Handler statusHandler;
+    private Handler handler;
 
     @Override
     protected Void doInBackground(Object[] Objects) {
-        statusHandler = (Handler) Objects[3];
+        handler = (Handler) Objects[3];
         SSLContext context = (SSLContext) Objects[0];
         String args = (String) Objects[1];
         String args2 = (String) Objects[2];
@@ -81,7 +81,8 @@ class LoginAsync extends AsyncTask<Object, String, Void> {
                 in.close();
                 if (a.indexOf("Error") > 0) {
                     manager.getCookieStore().removeAll();
-                    statusHandler.obtainMessage(-1, "Error Logging In").sendToTarget();
+                    handler.obtainMessage(-1, "Error Logging In").sendToTarget();
+                    handler.obtainMessage(MainActivity.STATUS_UPDATE, "Error Logging In").sendToTarget();
                     return null;
                 }
                 publishProgress("Successful Login");
@@ -142,15 +143,19 @@ class LoginAsync extends AsyncTask<Object, String, Void> {
             }
         } catch (MalformedURLException e) {
             e.printStackTrace();
-            statusHandler.obtainMessage(-1, "Error logging in: MalformedURLException").sendToTarget();
+            handler.obtainMessage(-1, "Error logging in: MalformedURLException").sendToTarget();
+            handler.obtainMessage(MainActivity.STATUS_UPDATE, "Error logging in: MalformedURLException").sendToTarget();
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-            statusHandler.obtainMessage(-1, "Error logging in: UnsupportedEncodingException").sendToTarget();
+            handler.obtainMessage(-1, "Error logging in: UnsupportedEncodingException").sendToTarget();
+            handler.obtainMessage(MainActivity.STATUS_UPDATE, "Error logging in: UnsupportedEncodingException").sendToTarget();
         } catch (ProtocolException e) {
             e.printStackTrace();
-            statusHandler.obtainMessage(-1, "Error logging in: ProtocolException").sendToTarget();
+            handler.obtainMessage(-1, "Error logging in: ProtocolException").sendToTarget();
+            handler.obtainMessage(MainActivity.STATUS_UPDATE, "Error logging in: ProtocolException").sendToTarget();
         } catch (IOException e) {
-            statusHandler.obtainMessage(-1, "Error logging in: IOExeption. Check your network connection").sendToTarget();
+            handler.obtainMessage(-1, "Error logging in: IOExeption. Check your network connection").sendToTarget();
+            handler.obtainMessage(MainActivity.STATUS_UPDATE, "Error logging in: IOExeption. Check your network connection").sendToTarget();
             e.printStackTrace();
         }
         return null;
@@ -158,7 +163,7 @@ class LoginAsync extends AsyncTask<Object, String, Void> {
 
     @Override
     protected void onProgressUpdate(String... values) {
-        statusHandler.obtainMessage(0, values[0]).sendToTarget();
+        handler.obtainMessage(MainActivity.STATUS_UPDATE, values[0]).sendToTarget();
     }
 }
 

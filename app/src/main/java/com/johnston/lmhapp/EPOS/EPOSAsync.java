@@ -3,6 +3,8 @@ package com.johnston.lmhapp.EPOS;
 import android.os.AsyncTask;
 import android.os.Handler;
 
+import com.johnston.lmhapp.MainActivity;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -25,15 +27,13 @@ import javax.net.ssl.HttpsURLConnection;
  */
 public class EPOSAsync extends AsyncTask<Object, String, Void> {
     private final String UserAgent = "Mozilla/5.0 (Linux; Android 4.1.1; Nexus 7 Build/JRO03D) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.166  Safari/535.19";
-    private Handler statusHandler;
     private Handler handler;
 
     @Override
     protected Void doInBackground(Object[] Objects) {
         String[] Amounts = new String[3];
         String GetCookie;
-        statusHandler = (Handler) Objects[1];
-        handler = (Handler) Objects[2];
+        handler = (Handler) Objects[1];
         try {
             String inputLine;
             URL testLogIn = new URL("https://www.upay.co.uk/balance.aspx");
@@ -230,13 +230,13 @@ public class EPOSAsync extends AsyncTask<Object, String, Void> {
             publishProgress("Finished");
 
         } catch (MalformedURLException e) {
-            statusHandler.obtainMessage(-1,"Error getting EPOS: MalformedURLException").sendToTarget();
+            handler.obtainMessage(-1,"Error getting EPOS: MalformedURLException").sendToTarget();
             e.printStackTrace();
         } catch (IOException e) {
-            statusHandler.obtainMessage(-1,"Error getting EPOS: IOExcepion. Check your network connection.").sendToTarget();
+            handler.obtainMessage(-1,"Error getting EPOS: IOExcepion. Check your network connection.").sendToTarget();
             e.printStackTrace();
         } catch (URISyntaxException e) {
-            statusHandler.obtainMessage(-1,"Error getting EPOS:URISyntaxException").sendToTarget();
+            handler.obtainMessage(-1,"Error getting EPOS:URISyntaxException").sendToTarget();
             e.printStackTrace();
         }
         return null;
@@ -244,7 +244,7 @@ public class EPOSAsync extends AsyncTask<Object, String, Void> {
 
     @Override
     protected void onProgressUpdate(String... values) {
-        statusHandler.obtainMessage(1, values[0]).sendToTarget();
+        handler.obtainMessage(MainActivity.STATUS_UPDATE, values[0]).sendToTarget();
     }
 
 

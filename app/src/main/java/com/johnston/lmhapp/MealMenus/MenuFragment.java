@@ -1,6 +1,5 @@
 package com.johnston.lmhapp.MealMenus;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -15,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.johnston.lmhapp.BaseFragment;
 import com.johnston.lmhapp.MainActivity;
 import com.johnston.lmhapp.PermissionAsync;
 import com.johnston.lmhapp.PermissionFailedDialog;
@@ -26,29 +26,30 @@ import java.util.ArrayList;
 /**
  * Created by Johnston on 10/09/2014.
  */
-public class MenuFragment extends Fragment {
-    private Boolean starting;
+public class MenuFragment extends BaseFragment {
+    private  final int localFragmentNumber = 5;
+    private TextView status;
+    private MenuRecyclerAdapter menuRecyclerAdapter;
+    private Boolean justDownloadedNewMenu = false;
     private MenuItem actionRefresh;
-    private Boolean finished = false;
-    private Boolean refreshing = false;
-    private View view;
     private Context context;
     private ArrayList<String> meals = new ArrayList<>();
-    private static TextView Status;
     Handler statusHandler = new Handler() {
         @Override
         public void handleMessage(Message message) {
-            if(Status!=null){
-                Status.setText((String)message.obj);
+            if(status!=null){
+                status.setText((String) message.obj);
             }
+            if(menuRecyclerAdapter != null){
+                menuRecyclerAdapter.updateStatus((String) message.obj);
+            }
+
         }
     };
 
-        public void checkForPermission(){
+    public void loadData() {
         refreshing = true;
-        MainActivity main = (MainActivity) getActivity();
-        main.startRefresh(5);
-        showProgressBar();
+        setStartedRefreshing();
 
         Handler permissionHandler = new Handler() {
             @Override
@@ -61,28 +62,32 @@ public class MenuFragment extends Fragment {
                     handler.obtainMessage(-1).sendToTarget();
                     PermissionFailedDialog newFragment = PermissionFailedDialog.newInstance((String) message.obj);
                     newFragment.show(getFragmentManager(), "PERMISSION DENIED");
-                }else if(message.what==2){
+                }else if(message.what==2) {
 //                    Do nothing. We are downloading a new menu anyway.
-
+                }else if(message.what == MainActivity.STATUS_UPDATE){
+                    handler.obtainMessage(MainActivity.STATUS_UPDATE,message.obj);
                 } else {
 //                Something has gone wrong checking.
                     handler.obtainMessage(-1).sendToTarget();
                 }
             }
         };
-        new PermissionAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, getActivity().getApplicationContext(), permissionHandler, statusHandler, "MenuFragment");
+        new PermissionAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, getActivity().getApplicationContext(), permissionHandler, "MenuFragment");
+    }
+
+    @Override
+    public View getScrollingView()
+    {
+        return view.findViewById(R.id.my_recycler_view);
     }
 
     void startMenu() {
-        MainActivity main = (MainActivity) getActivity();
-        main.startRefresh(5);
-        showProgressBar();
-
+        setStartedRefreshing();
         File file = new File(context.getCacheDir(), "Menu.txt");
         if (!file.exists()) {
 //                No menu. Get a new menu();
+            loadData();
         } else {
-            starting = true;
             new MenuAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, context, handler, statusHandler);
 
         }
@@ -90,62 +95,41 @@ public class MenuFragment extends Fragment {
 
     void showMenu() {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
-        MenuRecyclerAdapter menuRecyclerAdapter = new MenuRecyclerAdapter(meals);
+        menuRecyclerAdapter = new MenuRecyclerAdapter(meals);
         recyclerView.setAdapter(menuRecyclerAdapter);
 
-        MainActivity main = (MainActivity) getActivity();
-        if (main != null) {
-            main.stopRefresh(5);
-        }
         if (meals.size() > 0) {
             showCards();
         } else {
             showMessage(getResources().getString(R.string.nothingToShow));
         }
 
-        finished = true;
-        refreshing = false;
+        setFinishedRefreshing();
     }
 
-    void showCards(){
-        (view.findViewById(R.id.Status)).setVisibility(View.GONE);
-        (view.findViewById(R.id.my_recycler_view)).setVisibility(View.VISIBLE);
-        (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
-        (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
+    protected void showMessage(String message){
+        super.showMessage(message);
     }
-    void showProgressBar(){
-        (view.findViewById(R.id.Status)).setVisibility(View.VISIBLE);
-        (view.findViewById(R.id.my_recycler_view)).setVisibility(View.GONE);
-        (view.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
-        (view.findViewById(R.id.nothingToShow)).setVisibility(View.GONE);
-    }
-    void showMessage(String message){
-        (view.findViewById(R.id.Status)).setVisibility(View.VISIBLE);
-        (view.findViewById(R.id.my_recycler_view)).setVisibility(View.GONE);
-        (view.findViewById(R.id.progressBar)).setVisibility(View.GONE);
-        (view.findViewById(R.id.nothingToShow)).setVisibility(View.VISIBLE);
-        ((TextView)view.findViewById(R.id.nothingToShow)).setText(message);
-
-    }
-
 
     @Override
-    public android.view.View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(null, null, savedInstanceState);
         context = this.getActivity().getApplicationContext();
         view = inflater.inflate(R.layout.menu_layout, container, false);
-        Status = (TextView)view.findViewById(R.id.Status);
+        status = (TextView) view.findViewById(R.id.Status);
+        fragmentNumber = localFragmentNumber;
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.my_recycler_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
-        if (refreshing) {
-            MainActivity main = (MainActivity) getActivity();
-            main.startRefresh(5);
-            showProgressBar();
-        } else if (!finished) {
-            startMenu();
-        } else {
+        if (refreshing)
+        {
+            setStartedRefreshing();
+        }
+        if (finished) {
             showMenu();
+        }
+        if(!refreshing && !finished){
+            startMenu();
         }
         setHasOptionsMenu(true);
         return view;
@@ -164,31 +148,23 @@ public class MenuFragment extends Fragment {
         public void handleMessage(Message message) {
             if (message.what == -1) {
                 refreshing = false;
-                finished = false;
-                MainActivity main = (MainActivity) getActivity();
-                if (main != null) {
-                    main.stopRefresh(5);
-                }
+                finished = true;
 
                 if (view == null) {
                     return;
                 }
+                setFinishedRefreshing();
                 showMessage(getResources().getString(R.string.somethingWentWrong));
                 return;
-            }
-            if (message.what == 0) {
+            }else if (message.what == 0) {
                 meals = (ArrayList<String>) message.obj;
-                if (starting) {
-                    if (meals.size() == 0) {
-                        checkForPermission();
-                    } else if (view != null) {
-                        showMenu();
-                    }
-                } else if (view != null) {
+                if(meals.size() == 0 && justDownloadedNewMenu == false){
+                    justDownloadedNewMenu = true;
+                    loadData();
+                }else if (view != null){
                     showMenu();
                 }
             } else {
-                starting = false;
                 new MenuAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, context, handler, statusHandler);
             }
         }
