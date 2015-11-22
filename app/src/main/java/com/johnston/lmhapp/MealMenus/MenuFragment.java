@@ -109,7 +109,7 @@ public class MenuFragment extends BaseFragment {
 
     protected void showMessage(String message){
         super.showMessage(message);
-        (view.findViewById(R.id.my_recycler_view)).setVisibility(View.VISIBLE);
+        (view.findViewById(R.id.my_recycler_view)).setVisibility(View.GONE);
     }
 
     @Override
