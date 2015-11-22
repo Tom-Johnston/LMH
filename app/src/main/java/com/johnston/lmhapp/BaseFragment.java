@@ -20,11 +20,6 @@ public abstract class BaseFragment extends Fragment
 	public boolean finished = false;
     
     protected void showProgressBar(){
-        Activity act = getActivity();
-        if(act instanceof MainActivity)
-        {
-            ((MainActivity)act).disableSwipeLayout();
-        }
         view.findViewById(R.id.Status).setVisibility(View.VISIBLE);
         view.findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
         view.findViewById(R.id.nothingToShow).setVisibility(View.GONE);
@@ -32,11 +27,6 @@ public abstract class BaseFragment extends Fragment
     }
 
     protected void showMessage(String message){
-        Activity act = getActivity();
-        if(act instanceof MainActivity)
-        {
-            ((MainActivity)act).enableSwipeLayout();
-        }
         view.findViewById(R.id.Status).setVisibility(View.VISIBLE);
         view.findViewById(R.id.progressBar).setVisibility(View.GONE);
         view.findViewById(R.id.nothingToShow).setVisibility(View.VISIBLE);
@@ -45,11 +35,6 @@ public abstract class BaseFragment extends Fragment
     }
 
     protected void showCards(){
-        Activity act = getActivity();
-        if(act instanceof MainActivity)
-        {
-            ((MainActivity)act).enableSwipeLayout();
-        }
         view.findViewById(R.id.Status).setVisibility(View.GONE);
         view.findViewById(R.id.progressBar).setVisibility(View.GONE);
         view.findViewById(R.id.nothingToShow).setVisibility(View.GONE);
@@ -66,6 +51,7 @@ public abstract class BaseFragment extends Fragment
                 ((MainActivity)act).startRefreshAnimation();
             } else
             {
+                ((MainActivity)act).disableSwipeLayout();
                 showProgressBar();
             }
             ((MainActivity)act).startRefresh(fragmentNumber);
@@ -80,6 +66,7 @@ public abstract class BaseFragment extends Fragment
 		if(act instanceof MainActivity) {
             ((MainActivity) act).stopRefreshAnimation();
             ((MainActivity) act).stopRefresh(fragmentNumber);
+            ((MainActivity) act).enableSwipeLayout();
         }
 	}
 	public abstract void loadData();
