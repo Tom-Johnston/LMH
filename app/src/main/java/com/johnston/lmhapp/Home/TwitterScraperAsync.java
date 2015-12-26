@@ -211,16 +211,29 @@ class TwitterScraperAsync extends AsyncTask<Object, String, Void> {
                     if (inputLine.contains("js-tweet-text")) {
                         bodyEnd = 0;
                         String bodySegment;
-                        body = inputLine.substring(inputLine.indexOf(">") + 1, inputLine.indexOf("</p>"));
-                        body = body.replace("\"/", "\"https://twitter.com/");
-                        while (true) {
-                            bodyStart = body.indexOf("class=", bodyEnd);
-                            bodyEnd = body.indexOf("\"", bodyStart + 7);
-                            if (bodyEnd == -1 || bodyStart == -1) {
-                                break;
+                        int startInd = inputLine.indexOf(">");
+                        int endInd = inputLine.indexOf("</p>");
+                        if(startInd >= 0)
+                        {
+                            while(endInd == -1)
+                            {
+                                inputLine += "\n" + in.readLine();
+                                endInd = inputLine.indexOf("</p>");
                             }
-                            bodySegment = body.substring(bodyStart, bodyEnd);
-                            body = body.replace(bodySegment, "");
+
+                            body = inputLine.substring(inputLine.indexOf(">") + 1, inputLine.indexOf("</p>"));
+                            body = body.replace("\"/", "\"https://twitter.com/");
+                            while(true)
+                            {
+                                bodyStart = body.indexOf("class=", bodyEnd);
+                                bodyEnd = body.indexOf("\"", bodyStart + 7);
+                                if(bodyEnd == -1 || bodyStart == -1)
+                                {
+                                    break;
+                                }
+                                bodySegment = body.substring(bodyStart, bodyEnd);
+                                body = body.replace(bodySegment, "");
+                            }
                         }
                     }
                 }
