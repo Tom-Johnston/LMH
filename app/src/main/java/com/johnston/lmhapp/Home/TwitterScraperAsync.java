@@ -217,7 +217,7 @@ class TwitterScraperAsync extends AsyncTask<Object, String, Void> {
                         {
                             while(endInd == -1)
                             {
-                                inputLine += "\n" + in.readLine();
+                                inputLine += "<br>" + in.readLine();
                                 endInd = inputLine.indexOf("</p>");
                             }
 
