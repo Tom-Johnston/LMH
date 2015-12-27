@@ -179,17 +179,17 @@ public class MainActivity extends ActionBarActivity implements OnRefreshListener
 
 
     //The method called at the initial request for information.
-    public void getInfo(View v, final Handler passedHandler, byte passedType) {
+    public void getInfo(View v, final Handler passedHandler,final byte passedType, final String stringType) {
         if (passedType == 3) {
 //            This is a request to get the name of the current log in. Hence we need to remove the previous cookie to logout any previous accounts.
             manager.getCookieStore().removeAll();
         }
-        LogInView(passedHandler, passedType);
+        LogInView(passedHandler, passedType, stringType);
 
     }
 
     //Called to check for permission to attempt to get the information
-    void LogInView(final Handler passedHandler,final byte passedType) {
+    void LogInView(final Handler passedHandler,final byte passedType, final String stringType) {
         Handler permissionHandler = new Handler() {
             @Override
             public void handleMessage(Message message) {
@@ -212,7 +212,7 @@ public class MainActivity extends ActionBarActivity implements OnRefreshListener
             }
         };
 
-        new PermissionAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, this.getApplicationContext(), permissionHandler, Byte.toString(passedType));
+        new PermissionAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, this.getApplicationContext(), permissionHandler, stringType);
     }
 
     //    This logs in to the intranet.
