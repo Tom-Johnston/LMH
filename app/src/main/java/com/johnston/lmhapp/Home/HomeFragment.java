@@ -108,7 +108,7 @@ public class HomeFragment extends BaseFragment
             }
         };
 
-        new PermissionAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, getActivity().getApplicationContext(), permissionHandler, "HomeFragment");
+        new PermissionAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, getActivity().getApplicationContext(), permissionHandler, "Home");
 
     }
 

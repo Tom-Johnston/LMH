@@ -27,6 +27,7 @@ public class EPOSFragment extends BaseFragment
 {
     private TextView status;
     private final int localFragmentNumber = 1;
+    private final String stringType = "EPOS";
     private ArrayList<String> transactions =new ArrayList<>();
     private final Handler handler = new Handler() {
         @Override
@@ -83,7 +84,7 @@ public class EPOSFragment extends BaseFragment
     public void loadData() {
         setStartedRefreshing();
         MainActivity main = (MainActivity) getActivity();
-        main.getInfo(view, handler, (byte) localFragmentNumber);
+        main.getInfo(view, handler, (byte) localFragmentNumber, stringType);
     }
 
     @Override

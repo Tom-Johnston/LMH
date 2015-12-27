@@ -23,6 +23,7 @@ import java.util.ArrayList;
  */
 public class FormalFragment extends BaseFragment {
     final int localFragmentNumber = 4;
+    private final String stringType = "Formal";
     private FormalRecyclerAdapter formalRecyclerAdapter;
     private TextView status;
     private ArrayList<String> entries = new ArrayList<>();
@@ -79,7 +80,7 @@ public class FormalFragment extends BaseFragment {
         refreshing = true;
         setStartedRefreshing();
         MainActivity main = (MainActivity) this.getActivity();
-        main.getInfo(view, handler, (byte) localFragmentNumber);
+        main.getInfo(view, handler, (byte) localFragmentNumber, stringType);
     }
 
     @Override
