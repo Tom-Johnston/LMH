@@ -16,8 +16,6 @@ import android.widget.TextView;
 
 import com.johnston.lmhapp.BaseFragment;
 import com.johnston.lmhapp.MainActivity;
-import com.johnston.lmhapp.PermissionAsync;
-import com.johnston.lmhapp.PermissionFailedDialog;
 import com.johnston.lmhapp.R;
 
 import java.io.File;
@@ -50,29 +48,7 @@ public class MenuFragment extends BaseFragment {
     public void loadData() {
         refreshing = true;
         setStartedRefreshing();
-
-        Handler permissionHandler = new Handler() {
-            @Override
-            public void handleMessage(Message message) {
-                if (message.what == 0) {
-//                Success!
-                    new DownloadNewMenuAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, context, false, handler, statusHandler);
-                } else if (message.what == 1) {
-//                Failure
-                    handler.obtainMessage(-1).sendToTarget();
-                    PermissionFailedDialog newFragment = PermissionFailedDialog.newInstance((String) message.obj);
-                    newFragment.show(getFragmentManager(), "PERMISSION DENIED");
-                }else if(message.what==2) {
-//                    Do nothing. We are downloading a new menu anyway.
-                }else if(message.what == MainActivity.STATUS_UPDATE){
-                    handler.obtainMessage(MainActivity.STATUS_UPDATE,message.obj);
-                } else {
-//                Something has gone wrong checking.
-                    handler.obtainMessage(-1).sendToTarget();
-                }
-            }
-        };
-        new PermissionAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, getActivity().getApplicationContext(), permissionHandler, "MenuFragment");
+        new DownloadNewMenuAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, context, false, handler, statusHandler);
     }
 
     @Override

@@ -93,7 +93,7 @@ public class LoginDialog extends DialogFragment {
                 };
                 TextView usernameTextView = (TextView) main.findViewById(R.id.username);
                 usernameTextView.setText(username);
-                main.getInfo(null, nameHandler, three,"NameGrabber");
+                main.getInfo(nameHandler, three);
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

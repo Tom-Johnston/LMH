@@ -43,7 +43,6 @@ import com.johnston.lmhapp.Formal.FormalAsync;
 import com.johnston.lmhapp.Formal.FormalFragment;
 import com.johnston.lmhapp.Home.HomeFragment;
 import com.johnston.lmhapp.LaundryView.LaundryViewFragment;
-import com.johnston.lmhapp.MealMenus.DownloadNewMenuAsync;
 import com.johnston.lmhapp.MealMenus.MenuFragment;
 import com.johnston.lmhapp.Settings.SettingsFragment;
 
@@ -179,40 +178,13 @@ public class MainActivity extends ActionBarActivity implements OnRefreshListener
 
 
     //The method called at the initial request for information.
-    public void getInfo(View v, final Handler passedHandler,final byte passedType, final String stringType) {
+    public void getInfo(final Handler passedHandler,final byte passedType) {
         if (passedType == 3) {
 //            This is a request to get the name of the current log in. Hence we need to remove the previous cookie to logout any previous accounts.
             manager.getCookieStore().removeAll();
         }
-        LogInView(passedHandler, passedType, stringType);
+        LogIn(passedHandler, passedType);
 
-    }
-
-    //Called to check for permission to attempt to get the information
-    void LogInView(final Handler passedHandler,final byte passedType, final String stringType) {
-        Handler permissionHandler = new Handler() {
-            @Override
-            public void handleMessage(Message message) {
-                if (message.what == 0) {
-//                Success!
-                    LogIn(passedHandler,passedType);
-                } else if (message.what == 1) {
-//                Failure
-                    passedHandler.obtainMessage(-1).sendToTarget();
-                    PermissionFailedDialog newFragment = PermissionFailedDialog.newInstance((String) message.obj);
-                    newFragment.show(getFragmentManager(), "PERMISSION DENIED");
-                }else if(message.what==2){
-                    new DownloadNewMenuAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, getApplicationContext(), false, null);
-                } else if(message.what == MainActivity.STATUS_UPDATE){
-                    passedHandler.obtainMessage(MainActivity.STATUS_UPDATE, message.obj);
-                }else {
-//                Something has gone wrong checking.
-                    passedHandler.obtainMessage(-1).sendToTarget();
-                }
-            }
-        };
-
-        new PermissionAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, this.getApplicationContext(), permissionHandler, stringType);
     }
 
     //    This logs in to the intranet.

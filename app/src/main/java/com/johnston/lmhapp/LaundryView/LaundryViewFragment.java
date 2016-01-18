@@ -17,8 +17,6 @@ import android.widget.TextView;
 import com.johnston.lmhapp.BaseFragment;
 import com.johnston.lmhapp.MainActivity;
 import com.johnston.lmhapp.MealMenus.DownloadNewMenuAsync;
-import com.johnston.lmhapp.PermissionAsync;
-import com.johnston.lmhapp.PermissionFailedDialog;
 import com.johnston.lmhapp.R;
 
 import java.net.MalformedURLException;
@@ -134,39 +132,18 @@ public class LaundryViewFragment extends BaseFragment
         refreshing = true;
         MainActivity main = (MainActivity) getActivity();
         main.startRefresh(1);
-        if(!finished)
-        {
+        if(!finished) {
             showProgressBar();
         }
-        Handler permissionHandler = new Handler() {
-            @Override
-            public void handleMessage(Message message) {
-                if (message.what == 0) {
-//                Success!
-                    try {
-                        URL KatieLee = new URL("http://classic.laundryview.com/laundry_room.php?lr=870043400887");
-                        URL NewOldHall = new URL("http://classic.laundryview.com/laundry_room.php?lr=870043400853");
-                        URL Talbot = new URL("http://classic.laundryview.com/laundry_room.php?lr=870043400855");
-                        new LaundryViewAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, statusHandler, handler, KatieLee, NewOldHall, Talbot);
-                    } catch (MalformedURLException e) {
-                        e.printStackTrace();
-                    }
-                } else if (message.what == 1) {
-//                Failure
-                    handler.obtainMessage(-1).sendToTarget();
-                    PermissionFailedDialog newFragment = PermissionFailedDialog.newInstance((String) message.obj);
-                    newFragment.show(getFragmentManager(), "PERMISSION DENIED");
-                }else if(message.what==2){
-                    new DownloadNewMenuAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, getActivity(), false, null);
-                } else if(message.what == MainActivity.STATUS_UPDATE){
-                    handler.obtainMessage(MainActivity.STATUS_UPDATE, message.obj);
-                }else {
-//                Something has gone wrong checking.
-                    handler.obtainMessage(-1).sendToTarget();
-                }
-            }
-        };
-        new PermissionAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, getActivity().getApplicationContext(), permissionHandler, "LaundryView");
+        try {
+            URL KatieLee = new URL("http://classic.laundryview.com/laundry_room.php?lr=870043400887");
+            URL NewOldHall = new URL("http://classic.laundryview.com/laundry_room.php?lr=870043400853");
+            URL Talbot = new URL("http://classic.laundryview.com/laundry_room.php?lr=870043400855");
+            new LaundryViewAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, statusHandler, handler, KatieLee, NewOldHall, Talbot);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override

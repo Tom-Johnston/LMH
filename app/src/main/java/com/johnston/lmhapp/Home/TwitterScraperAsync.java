@@ -53,12 +53,13 @@ class TwitterScraperAsync extends AsyncTask<Object, String, Void> {
         ArrayList<Tweet> tweets = new ArrayList<>();
         ArrayList<String> ProfilePictureURLS = new ArrayList<>();
         try {
-            URL[] urls = new URL[5];
+            URL[] urls = new URL[6];
             urls[0] = new URL("https://twitter.com/UniofOxford");
             urls[1] = new URL("https://twitter.com/LMHJCR");
             urls[2] = new URL("https://twitter.com/LMHITManager");
             urls[3] = new URL("https://twitter.com/lmhbursar");
             urls[4] = new URL("https://twitter.com/arusbridger");
+            urls[5] = new URL("https://twitter.com/lodgelmh");
 
             long cutOffTime = 0;
             for (int j = 0; j < urls.length; j++) {

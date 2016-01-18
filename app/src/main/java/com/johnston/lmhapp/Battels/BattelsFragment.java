@@ -26,7 +26,6 @@ public class BattelsFragment extends BaseFragment
     private TextView Status;
     private BattelsRecyclerAdapter battelsRecyclerAdapter;
     private final int localFragmentNumber = 2;
-    private final String stringType = "Battels";
     private ArrayList<String> entries = new ArrayList<>();
     private final Handler handler = new Handler() {
         @Override
@@ -56,6 +55,7 @@ public class BattelsFragment extends BaseFragment
             if (entries.size() > 0 && message.what == 0) {
                 battelsRecyclerAdapter = new BattelsRecyclerAdapter(entries);
                 recyclerView.setAdapter(battelsRecyclerAdapter);
+                finished = true;
                 showCards();
             }else if(entries.size() > 0 && message.what == 1){
                 battelsRecyclerAdapter.notifyItemRangeChanged(0,battelsRecyclerAdapter.getItemCount());
@@ -73,7 +73,7 @@ public class BattelsFragment extends BaseFragment
         refreshing = true;
         setStartedRefreshing();
         MainActivity main = (MainActivity) this.getActivity();
-        main.getInfo(view, handler, (byte) localFragmentNumber, stringType);
+        main.getInfo(handler, (byte) localFragmentNumber);
     }
 
     @Override
@@ -106,7 +106,6 @@ public class BattelsFragment extends BaseFragment
         if(!finished && !refreshing) {
             loadData();
         }
-
 
         return view;
     }
