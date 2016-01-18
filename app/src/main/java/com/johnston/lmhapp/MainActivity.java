@@ -43,7 +43,6 @@ import com.johnston.lmhapp.Formal.FormalAsync;
 import com.johnston.lmhapp.Formal.FormalFragment;
 import com.johnston.lmhapp.Home.HomeFragment;
 import com.johnston.lmhapp.LaundryView.LaundryViewFragment;
-import com.johnston.lmhapp.MealMenus.DownloadNewMenuAsync;
 import com.johnston.lmhapp.MealMenus.MenuFragment;
 import com.johnston.lmhapp.Settings.SettingsFragment;
 
