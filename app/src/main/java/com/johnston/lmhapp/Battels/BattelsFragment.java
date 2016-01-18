@@ -55,6 +55,7 @@ public class BattelsFragment extends BaseFragment
             if (entries.size() > 0 && message.what == 0) {
                 battelsRecyclerAdapter = new BattelsRecyclerAdapter(entries);
                 recyclerView.setAdapter(battelsRecyclerAdapter);
+                finished = true;
                 showCards();
             }else if(entries.size() > 0 && message.what == 1){
                 battelsRecyclerAdapter.notifyItemRangeChanged(0,battelsRecyclerAdapter.getItemCount());
@@ -105,7 +106,6 @@ public class BattelsFragment extends BaseFragment
         if(!finished && !refreshing) {
             loadData();
         }
-
 
         return view;
     }
