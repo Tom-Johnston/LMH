@@ -26,8 +26,8 @@ public class DownloadNewMenuAsync extends AsyncTask<Object, String, Void> {
         Boolean widget;
         Context context = (Context) objects[0];
         widget = (Boolean) objects[1];
-        Handler handler=null;
-        if(objects[2]!=null){
+        Handler handler = null;
+        if(objects[2] != null){
             handler = (Handler) objects[2];
         }
         if(objects.length==4&&objects[3]!=null){

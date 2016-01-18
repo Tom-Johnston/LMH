@@ -17,8 +17,6 @@ import android.widget.TextView;
 import com.johnston.lmhapp.BaseFragment;
 import com.johnston.lmhapp.MainActivity;
 import com.johnston.lmhapp.MealMenus.DownloadNewMenuAsync;
-import com.johnston.lmhapp.PermissionAsync;
-import com.johnston.lmhapp.PermissionFailedDialog;
 import com.johnston.lmhapp.R;
 
 import java.util.ArrayList;
@@ -86,30 +84,7 @@ public class HomeFragment extends BaseFragment
     public void loadData() {
         refreshing = true;
         setStartedRefreshing();
-        Handler permissionHandler = new Handler() {
-            @Override
-            public void handleMessage(Message message) {
-                if (message.what == 0) {
-//                Success!
-                    new TwitterScraperAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, handler, getActivity(), statusHandler);
-                } else if (message.what == 1) {
-//                Failure
-                    handler.obtainMessage(-1, "Unable to get permission.").sendToTarget();
-                    PermissionFailedDialog newFragment = PermissionFailedDialog.newInstance((String) message.obj);
-                    newFragment.show(getFragmentManager(), "PERMISSION DENIED");
-                }else if(message.what==2){
-                    new DownloadNewMenuAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, getActivity(), false, null);
-                }else if(message.what == MainActivity.STATUS_UPDATE){
-                    statusHandler.obtainMessage(MainActivity.STATUS_UPDATE,message.obj);
-                } else {
-//                Something has gone wrong checking.
-                    handler.obtainMessage(-1, "Unable to get permission.").sendToTarget();
-                }
-            }
-        };
-
-        new PermissionAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, getActivity().getApplicationContext(), permissionHandler, "Home");
-
+        new TwitterScraperAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, handler, getActivity(), statusHandler);
     }
 
     @Override

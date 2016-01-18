@@ -17,7 +17,6 @@ import android.os.PowerManager;
 import android.support.v4.app.NotificationCompat;
 
 import com.johnston.lmhapp.MainActivity;
-import com.johnston.lmhapp.PermissionAsync;
 import com.johnston.lmhapp.R;
 
 import java.io.BufferedReader;
@@ -79,28 +78,13 @@ public class NotificationsService extends BroadcastReceiver {
         final File file = new File(context.getCacheDir(), "Menu.txt");
 
         if (!file.exists()) {
-            Handler permissionHandler = new Handler() {
+            final Handler handler = new Handler() {
                 @Override
                 public void handleMessage(Message message) {
-                    if (message.what == 0) {
-//                      Success!
-                        final Handler handler = new Handler() {
-                            @Override
-                            public void handleMessage(Message message) {
-                                part3(file, context);
-                            }
-                        };
-                        new DownloadNewMenuAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,context, true, handler);
-                    }else if(message.what==2){
-//                        Do nothing. We are already downloading a new menu.
-                    }else if(message.what == -1) {
-//                      Failure
-                        permissionFailed(context);
-                    }
+                    part3(file, context);
                 }
             };
-            new PermissionAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,context, permissionHandler,"NotificationService");
-
+            new DownloadNewMenuAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,context, true, handler);
         } else {
             part2(file, context);
         }
@@ -112,28 +96,13 @@ public class NotificationsService extends BroadcastReceiver {
             long startOfMeal = (long) (new WidgetBroadcastReceiver()).constructMenu(br)[2];
             if (startOfMeal==-1) {
 //                We have an old menu.
-                Handler permissionHandler = new Handler() {
+                final Handler handler = new Handler() {
                     @Override
                     public void handleMessage(Message message) {
-                        if (message.what == 0) {
-//                          Success!
-                            final Handler handler = new Handler() {
-                                @Override
-                                public void handleMessage(Message message) {
-                                    part3(file, context);
-                                }
-                            };
-                            new DownloadNewMenuAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,context, true, handler);
-                        }else if(message.what==2){
-//                            Do nothing.
-
-                        } else if(message.what ==-1){
-//                          Failure
-                            permissionFailed(context);
-                        }
+                        part3(file, context);
                     }
                 };
-                new PermissionAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,context, permissionHandler,"NotificationsService");
+                new DownloadNewMenuAsync().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,context, true, handler);
             } else {
                 part3(file, context);
             }
